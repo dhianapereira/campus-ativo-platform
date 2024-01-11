@@ -1,5 +1,5 @@
 # Como contribuir
-> Siga os passos abaixo para contribuir com código ou sugestões de melhorias/correções no NOME_DO_PROJETO
+> Siga os passos abaixo para contribuir com código ou sugestões de melhorias/correções no projeto.
 ## Conteúdo:
 - [Pré-Requisitos](#1-pré-requisitos)
 - [Instalação](#2-siga-os-passos-do-guia-de-instalação)
@@ -127,7 +127,7 @@ Caso seja exigida alguma alteração, você pode realizar as correções seguind
 Se o PR foi aprovado, você pode enviar as alterações realizadas para a _branch_ de desenvolvimento (develop) através do botão de `merge` do seu PR. Após o merge, você pode excluir a _branch_ que criou no [passo 4](#4-inicie-a-branch-de-funcionalidade).
 
 ## Sugerir melhorias ou correções
-Caso você ainda não sinta segurança em contribuir com código ou encontrou um problema/situação de melhoria e quer reportar, crie uma [_issue_]().
+Caso você ainda não sinta segurança em contribuir com código ou encontrou um problema/situação de melhoria e quer reportar, crie uma [_issue_](https://github.com/campusativo/ifal-arapiraca-frontend/issues/new).
 
 Utilize [este guia](https://docs.github.com/pt/issues/tracking-your-work-with-issues/creating-an-issue) para reportar um problema ou indicar uma melhoria através de _issues_.
 

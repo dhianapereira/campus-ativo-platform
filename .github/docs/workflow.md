@@ -1,7 +1,7 @@
 # Fluxo de Trabalho
 Um fluxo de trabalho é importante para mantermos a equipe alinhada com os objetivos e expectativas do projeto evitando trabalharmos em tarefas que não trazem valor e mantendo nossas atividades da forma mais organizada possível. Neste sentido, utilizamos o board do Github para gerir nossas tarefas.
 
-## [Quadro do Github]()
+## [Quadro do Github](https://github.com/orgs/campusativo/projects/6)
 Nosso quadro possui 5 status. São eles:
 
 - `BACKLOG`
@@ -10,7 +10,7 @@ Nosso quadro possui 5 status. São eles:
 - `TO REVIEW`
 - `DONE`
 
-![Quadro do Github]()
+![Quadro do Github](https://github.com/campusativo/ifal-arapiraca-frontend/assets/40719464/f16fbd3f-a4d4-409a-bdd1-b8fc07e78fb0)
 
 ## Regras/Acordos 
 
