@@ -33,28 +33,6 @@ cd ifal-arapiraca-frontend
 npm install
 ```
 
-## Sincronizar com o frontend-repository-template
-Caso seja necessário sincronizar o repositório com o frontend-repository-template, siga os passos abaixo:
-
-### **1. Adicione o repositório remoto**
-```bash
-git remote add template https://github.com/campusativo/frontend-repository-template.git
-```
-
-### **2. Carregue todas as atualizações**
-```bash
-git fetch --all
-```
-
-### **3. Adicione os commits do template no repositório**
-```bash
-#Usando rebase
-git rebase template/main
-
-#Usando o merge
-git merge template/main
-```
-
 ## Documentação
 Para saber mais sobre nossas decisões técnicas e acordos de time, você pode acessar nossa documentação:
 
