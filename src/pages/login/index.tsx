@@ -1,12 +1,19 @@
 import { Button, Heading, LinkButton, Text, TextInput } from "@campusativo-ui/react";
 import { Container, Form, IllustrationContainer } from "./styles";
+import { useState } from "react";
+import PasswordIcon from "./components/PasswordIcon";
 import Image from "next/image";
-
 
 import illustrationLogin from '../../assets/illustration-login.png'
 import ifalLogo from '../../assets/ifal-logo.png'
 
 export default function Login() {
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    const togglePasswordVisibility = () => {
+        setIsPasswordVisible(!isPasswordVisible);
+    };
+
     return (
         <Container>
             <IllustrationContainer>
@@ -33,11 +40,19 @@ export default function Login() {
                 </Text>
                 <label>
                     <Text size="md">E-mail</Text>
-                    <TextInput />
+                    <TextInput type="email" />
                 </label>
                 <label>
                     <Text size="md">Senha</Text>
-                    <TextInput />
+                    <TextInput
+                        type={isPasswordVisible ? "text" : "password"}
+                        suffix={(
+                            <PasswordIcon
+                                isVisible={isPasswordVisible}
+                                onTap={togglePasswordVisibility}
+                            />
+                        )}
+                    />
                 </label>
                 <LinkButton variant="green">Esqueci a senha</LinkButton>
                 <Button type="submit">
