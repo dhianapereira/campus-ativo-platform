@@ -4,6 +4,10 @@
 
 **Issue:** <!-- Coloque o identificador da issue (ex.: #1), se não existir, adicione N/A-->
 
+**PR base** <!-- Coloque o identificador do PR base (ex.: #1), se não existir, adicione N/A-->
+
+**Commit para revisão** <!-- Coloque o commit que de fato precisa ser revisado, se não precisar, adicione N/A -->
+
 ### Você adicionou testes unitários?
 - [ ] Sim
 - [ ] Não
