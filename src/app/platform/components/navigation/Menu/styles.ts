@@ -1,4 +1,4 @@
-import { LinkButton, styled } from '@campusativo-ui/react'
+import { styled } from '@campusativo-ui/react'
 
 export const MenuContainer = styled('div', {
   width: 250,
@@ -7,15 +7,16 @@ export const MenuContainer = styled('div', {
   background: '$green',
   padding: '$12 $4',
 
-  '@media (max-width: 820px)': {
+  '@media(max-width: 820px)': {
     display: 'none',
   },
 })
 
 export const MenuOptions = styled('div', {
   paddingTop: '$12',
-
-  [`> ${LinkButton}`]: {
-    paddingBottom: '$8',
-  },
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  gap: '$8',
 })

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import Header from './components/Header'
-import Menu from './components/Menu'
+import Menu from './components/navigation/Menu'
 import { Container, Body, Content } from './styles'
 
 export default function PlatformLayout({ children }: { children: ReactNode }) {

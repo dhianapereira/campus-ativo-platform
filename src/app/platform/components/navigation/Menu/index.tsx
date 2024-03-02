@@ -2,7 +2,7 @@ import React from 'react'
 import { MenuContainer, MenuOptions } from './styles'
 import Image from 'next/image'
 import { LinkButton } from '@campusativo-ui/react'
-import { Warning, SignOut } from 'phosphor-react'
+import { menuOptions } from '../menu-options'
 
 import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 
@@ -17,18 +17,12 @@ export default function Menu() {
         alt="Logo do Instituto Federal de Alagoas."
       />
       <MenuOptions>
-        <LinkButton variant="white">
-          <>
-            <Warning weight="bold" />
-            Problemas
-          </>
-        </LinkButton>
-        <LinkButton variant="white">
-          <>
-            <SignOut weight="bold" />
-            Sair da plataforma
-          </>
-        </LinkButton>
+        {menuOptions.map((option) => (
+          <LinkButton key={option.id} variant="white" onClick={option.onClick}>
+            {option.icon}
+            {option.name}
+          </LinkButton>
+        ))}
       </MenuOptions>
     </MenuContainer>
   )
