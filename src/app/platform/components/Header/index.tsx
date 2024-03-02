@@ -1,9 +1,21 @@
-import React from 'react'
-import { HeaderContainer, Info, UserInfoContainer } from './styles'
+import React, { useState } from 'react'
+import { DrawerIcon, HeaderContainer, Info, UserInfoContainer } from './styles'
 import { Avatar, Heading, Text } from '@campusativo-ui/react'
 import { IProps } from './index.d'
+import { List } from 'phosphor-react'
+import Drawer from '../navigation/Drawer'
 
 export default function Header({ src, alt, name, position }: IProps) {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  const openDrawer = () => {
+    setIsDrawerOpen(true)
+  }
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false)
+  }
+
   return (
     <HeaderContainer>
       <Heading>Campus Ativo</Heading>
@@ -18,6 +30,10 @@ export default function Header({ src, alt, name, position }: IProps) {
           </Text>
         </Info>
       </UserInfoContainer>
+      <DrawerIcon>
+        <List weight="bold" size={24} onClick={openDrawer} />
+        {isDrawerOpen && <Drawer onClose={closeDrawer} />}
+      </DrawerIcon>
     </HeaderContainer>
   )
 }

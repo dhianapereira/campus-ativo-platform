@@ -13,6 +13,12 @@ export const HeaderContainer = styled('header', {
   },
 })
 
+export const DrawerIcon = styled('div', {
+  '@media(min-width: 821px)': {
+    display: 'none',
+  },
+})
+
 export const UserInfoContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
