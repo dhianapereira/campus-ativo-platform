@@ -9,7 +9,7 @@ export default function PlatformLayout({ children }: { children: ReactNode }) {
       <Menu />
       <Body>
         <Header
-          name="Charlingtonglaevionbeecheknavare dos Anjos Mendonça"
+          name="João dos Santos"
           alt="João dos Santos"
           position="Otorrinolaringologista"
         />

@@ -3,6 +3,7 @@ import { styled } from '@campusativo-ui/react'
 export const Container = styled('div', {
   display: 'flex',
   flexDirection: 'row',
+  overflow: 'hidden',
 
   '@media (max-width: 768px)': {
     flexDirection: 'column',
@@ -10,9 +11,13 @@ export const Container = styled('div', {
 })
 
 export const Body = styled('main', {
-  flex: '1',
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100vw',
+  height: '100vh',
+  overflow: 'auto',
 })
 
 export const Content = styled('div', {
-  padding: '0 $8',
+  padding: '$8 $3 $3 $8',
 })
