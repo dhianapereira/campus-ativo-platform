@@ -6,6 +6,8 @@ export const MenuContainer = styled('div', {
   display: 'block',
   background: '$green',
   padding: '$12 $4',
+  top: 0,
+  left: 0,
 
   '@media(max-width: 820px)': {
     display: 'none',
