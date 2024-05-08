@@ -1,0 +1,65 @@
+import { Heading, Text, styled } from '@campusativo-ui/react'
+
+export const Container = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+  height: '100%',
+  backgroundColor: '$greenishWhite',
+})
+
+export const Header = styled('header', {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: '0 $4',
+  height: '12vh',
+  borderBottom: '1px solid $lightGray',
+
+  '& .back-icon': {
+    cursor: 'pointer',
+  },
+})
+
+export const Title = styled(Heading, {
+  marginLeft: '$4',
+})
+
+export const Body = styled('form', {
+  display: 'flex',
+  flexDirection: 'column',
+  padding: '$6',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: '$6',
+  width: '100%',
+  overflowY: 'auto',
+  flexGrow: 1,
+  alignSelf: 'center',
+  minHeight: '70vh',
+  maxWidth: '600px',
+
+  '> *': {
+    width: '100%',
+  },
+})
+
+export const Input = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'start',
+  gap: '$4',
+  width: '100%',
+
+  [`> ${Text}`]: {
+    color: '$darkGray',
+  },
+
+  '> *': {
+    width: '100%',
+  },
+
+  '& .error-message': {
+    color: '$red',
+  },
+})

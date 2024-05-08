@@ -1,11 +1,24 @@
 import PlatformLayout from '@/app/platform/layout'
-import { GridView } from './styles'
+import { ActionsContainer, GridView } from './styles'
 import ProblemCard from './components/ProblemCard'
 import { problems } from './mocks/problems'
+import { Button } from '@campusativo-ui/react'
+import { useRouter } from 'next/router'
 
 export default function Home() {
+  const router = useRouter()
+
+  async function goToRegisterProblem() {
+    await router.push('/register-problem')
+  }
+
   return (
     <PlatformLayout>
+      <ActionsContainer>
+        <Button onClick={goToRegisterProblem} variant="primary">
+          Adicionar Problema
+        </Button>
+      </ActionsContainer>
       <GridView>
         {problems.map((problem) => (
           <ProblemCard
