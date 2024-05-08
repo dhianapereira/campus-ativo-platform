@@ -14,3 +14,10 @@ export const GridView = styled('div', {
     gridTemplateColumns: 'repeat(3, 1fr)',
   },
 })
+
+export const ActionsContainer = styled('div', {
+  display: 'flex',
+  flexDirection: 'row',
+  marginBottom: '$8',
+  justifyContent: 'end',
+})
