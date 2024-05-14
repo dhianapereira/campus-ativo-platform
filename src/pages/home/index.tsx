@@ -8,14 +8,14 @@ import { useRouter } from 'next/router'
 export default function Home() {
   const router = useRouter()
 
-  async function goToRegisterProblem() {
-    await router.push('/register-problem')
+  async function goToAddProblem() {
+    await router.push('/problems/add')
   }
 
   return (
     <PlatformLayout>
       <ActionsContainer>
-        <Button onClick={goToRegisterProblem} variant="primary">
+        <Button onClick={() => goToAddProblem()} variant="primary">
           Adicionar Problema
         </Button>
       </ActionsContainer>

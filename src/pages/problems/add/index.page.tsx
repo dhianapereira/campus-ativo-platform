@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { problemFormSchema } from '@/validators/problem-form'
 
-export default function RegisterProblem() {
+export default function AddProblem() {
   const {
     register,
     handleSubmit,
