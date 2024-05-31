@@ -2,6 +2,7 @@ import { StatusBadge } from '@campusativo-ui/react'
 import { IProps } from './index.d'
 import { Container, Description, Location, Title } from './styles'
 import { ReactElement } from 'react'
+import { useRouter } from 'next/router'
 
 export default function ProblemCard({
   id,
@@ -10,18 +11,20 @@ export default function ProblemCard({
   description,
   badgeId,
 }: IProps) {
+  const router = useRouter()
+
+  async function goToDetails() {
+    await router.push(`/problems/${id}/`)
+  }
+
   return (
-    <Container onClick={() => handleClick(id)}>
+    <Container onClick={() => goToDetails()}>
       <Title size="sm">{title}</Title>
       <Location size="sm">{location}</Location>
       <Description size="sm">{description}</Description>
       {badges[badgeId]}
     </Container>
   )
-}
-
-function handleClick(id: string) {
-  console.log(id)
 }
 
 type BadgeMapProps = {

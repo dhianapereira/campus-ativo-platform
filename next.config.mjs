@@ -1,10 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    pageExtensions: [
-        'page.tsx',
-        'api.ts',
-        'api.tsx',
-    ]
-};
+  images: {
+    remotePatterns: [{ hostname: 'imgs.search.brave.com' }],
+  },
+  pageExtensions: ['page.tsx', 'api.ts', 'api.tsx'],
+}
 
-export default nextConfig;
+export default nextConfig
