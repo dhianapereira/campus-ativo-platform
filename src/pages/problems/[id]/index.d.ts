@@ -3,8 +3,9 @@ export interface IProps {
   location: string
   description: string
   status: string
-  imageUrl?: string
+  category: string | null
+  imageUrl: string | null
   rapporteur: string
   createdAt: string
-  updatedAt?: string
+  updatedAt: string | null
 }

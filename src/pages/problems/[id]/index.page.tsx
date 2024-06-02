@@ -12,6 +12,8 @@ import { ArrowLeft, NotePencil } from 'phosphor-react'
 import { useRouter } from 'next/router'
 import { IProps } from './index.d'
 import { Button, Text } from '@campusativo-ui/react'
+import { Actions } from './components/Actions'
+import { Status } from '@/data/static/status-data'
 
 export default function ProblemDetails() {
   const router = useRouter()
@@ -35,6 +37,7 @@ export default function ProblemDetails() {
           createdAt: '14 de Março de 2024',
           updatedAt: '14 de Março de 2024 as 15h41min',
           status: 'toAnalysis',
+          category: null,
         }
         setProblemData(response)
       }
@@ -65,7 +68,7 @@ export default function ProblemDetails() {
             {problemData.title}
           </Title>
         </div>
-        {problemData.status === 'toAnalysis' && (
+        {problemData.status === Status.ToAnalysis && (
           <>
             <Button
               className="desktop"
@@ -131,6 +134,10 @@ export default function ProblemDetails() {
             <Text size="md">{problemData.updatedAt}</Text>
           </InfoContainer>
         )}
+        <Actions
+          initialStatus={problemData.status}
+          initialCategory={problemData.category}
+        />
       </Body>
     </Container>
   )
