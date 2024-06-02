@@ -1,0 +1,34 @@
+import { Status } from '@/data/static/status-data'
+import { z } from 'zod'
+
+export const actionsFormSchema = z
+  .object({
+    status: z.string().trim().min(1, 'Este campo é obrigatório.'),
+    note: z
+      .string()
+      .trim()
+      .max(200, 'A descrição não pode passar de 200 caracteres.')
+      .optional(),
+    category: z.string().trim().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.status === Status.Rejected && !data.note) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Este campo é obrigatório.',
+        path: ['note'],
+      })
+    }
+    if (
+      [Status.Accepted, Status.InProgress, Status.Finished].includes(
+        data.status as Status,
+      ) &&
+      !data.category
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Este campo é obrigatório.',
+        path: ['category'],
+      })
+    }
+  })

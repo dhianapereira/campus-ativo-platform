@@ -50,7 +50,7 @@ export const Header = styled('header', {
   flexDirection: 'row',
   alignItems: 'center',
   padding: '0 $4',
-  height: '12vh',
+  height: '20vh',
   justifyContent: 'space-between',
   borderBottom: '1px solid $lightGray',
   overflow: 'hidden',
