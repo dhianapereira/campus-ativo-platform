@@ -21,4 +21,4 @@ Nosso quadro possui 5 status. São eles:
 
 ---
 
-Surgiu alguma dúvida? Entre em contato com um dos membros do repositório ;)
+Surgiu alguma dúvida? Entre em contato com um dos membros do repositório :)

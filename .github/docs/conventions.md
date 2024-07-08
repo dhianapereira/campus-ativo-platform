@@ -5,6 +5,8 @@ O padrão para títulos de _pull request_ e mensagens de _commit_ é o seguinte:
 tipo: mensagem
 ```
 
+A `mensagem` é um pequeno texto que descreve a alteração que você realizou. Ela deve estar escrita em **inglês**.
+
 ---
 
 O `tipo` pode ser um desses:
@@ -28,5 +30,3 @@ O `tipo` pode ser um desses:
 - `revert`: reversão de um _commit_ anterior;
 
 ---
-
-A `mensagem` é um pequeno texto que descreve a alteração que você realizou. Ela deve estar escrita em **inglês**.

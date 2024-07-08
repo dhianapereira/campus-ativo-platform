@@ -11,7 +11,7 @@ Para que todos tenham o ambiente de desenvolvimento o mais parecido possível e 
 | Ferramenta | Versão |
 | --- | --- |
 | Git | A mais recente |
-| NodeJS | v18.17.1 |
+| NodeJS | v18.18.0 |
 
 Para instalar as devidas versões, siga o passo a passo do arquivo [`dev_environment.md`](./.github/docs/dev_environment.md).
 
@@ -33,8 +33,7 @@ cd ifal-arapiraca-frontend
 npm install
 ```
 
-## Documentação
-Para saber mais sobre nossas decisões técnicas e acordos de time, você pode acessar nossa documentação:
-
-- [Acordos de Time]()
-- [Decisões Técnicas]()
+### **3. Executar a aplicação**
+```bash
+npm run dev
+```

@@ -10,9 +10,7 @@ git --version
 
 Se aparecer a versão (algo como `git version 2.37.3`), ele está instalado.
 
-Caso não esteja, acesse https://git-scm.com e baixe para o seu sistema operacional. Exemplo:
-
-![imagem](https://user-images.githubusercontent.com/63798776/188479149-b85735a6-f9f2-4ee8-904a-9e6cb113925a.png)
+Caso não esteja, acesse https://git-scm.com e baixe para o seu sistema operacional.
 
 Para confirmar a instalação, execute o comando acima.
 

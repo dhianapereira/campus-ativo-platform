@@ -1,16 +1,19 @@
 # Como contribuir
 > Siga os passos abaixo para contribuir com código ou sugestões de melhorias/correções no projeto.
 ## Conteúdo:
-- [Pré-Requisitos](#1-pré-requisitos)
-- [Instalação](#2-siga-os-passos-do-guia-de-instalação)
-- [Sincronização](#3-antes-de-tudo-sincronize-com-o-repositório-remoto)
-- [Criar uma _branch_](#4-inicie-a-branch-de-funcionalidade)
-- [Realizar as alterações](#5-realize-as-alterações-necessárias)
-- [Registrar as alterações](#6-registre-as-alterações-realizadas)
-- [Submeter contribuição](#7-enviar-as-modificações-para-análise)
-- [Solicitar avaliação](#8-abra-um-pull-request-pr-para-os-mais-íntimos)
-- [O PR foi aprovado?](#9-o-pr-foi-aprovado)
-- [Sugerir melhorias ou correções](#sugerir-melhorias-ou-correções)
+- [Como contribuir](#como-contribuir)
+  - [Conteúdo:](#conteúdo)
+  - [1. Pré-Requisitos](#1-pré-requisitos)
+  - [2. Siga os passos do Guia de Instalação](#2-siga-os-passos-do-guia-de-instalação)
+  - [3. Antes de tudo, sincronize com o repositório remoto](#3-antes-de-tudo-sincronize-com-o-repositório-remoto)
+  - [4. Inicie a _branch_ de funcionalidade](#4-inicie-a-branch-de-funcionalidade)
+  - [5. Realize as alterações necessárias](#5-realize-as-alterações-necessárias)
+  - [6. Registre as alterações realizadas](#6-registre-as-alterações-realizadas)
+    - [Fiz algo de errado... E agora?](#fiz-algo-de-errado-e-agora)
+  - [7. Enviar as modificações para análise](#7-enviar-as-modificações-para-análise)
+  - [8. Abra um _Pull Request_](#8-abra-um-pull-request)
+  - [9. O PR foi aprovado?](#9-o-pr-foi-aprovado)
+  - [Sugerir melhorias ou correções](#sugerir-melhorias-ou-correções)
 
 ---
 
@@ -34,8 +37,6 @@ Após entrar na branch de desenvolvimento (`develop`), execute:
 ```bash
 git pull origin develop
 ```
-
-Assim, você evitará muitos problemas e todo mundo fica feliz ;)
 
 ## 4. Inicie a _branch_ de funcionalidade
 > Não sabe o que é uma _branch_? Não tem problema, [clique aqui](https://git-scm.com/book/pt-br/v2/Branches-no-Git-Branches-em-poucas-palavras) para entender.
@@ -67,31 +68,6 @@ git commit -m "tipo: mensagem"
 
 Verifique no arquivo [`conventions.md`](./conventions.md) o padrão de mensagens de _commit_ que você deve seguir.
 
-### Atenção!
-Não dê pequenos commits para uma mesma atividade dividindo ela em pequenos passos, em vez disso reúna tudo em um único commit. Se você não se sentir seguro(a) e/ou prefere fazer pequenos commits, então use o `amend`:
-
-Após ter dado o commit com uma parte da sua feature:
-
-```bash
-git add .
-git commit -m "tipo: mensagem"
-```
-
-No segundo commit para adicionar mais atualizações, no lugar de dar mais um commit, utilize:
-
-```bash
-git add .
-git commit --amend --no-edit
-```
-Sucesso! Agora tudo que tu modificou foi adicionado ao seu commit (um único commit).
-Caso você tenha errado a mensagem do commit, ou queira alterá-la, basta **remover** o `--no-edit`, assim o comando será:
-
-```bash
-git commit --amend
-```
-
-Uma mensagem irá aparecer no seu terminal possibilitando a edição da mensagem de commit. Basta editar, salvar a alteração e fechar a aba aberta. 
-
 ### Fiz algo de errado... E agora?
 Se você chegou em algum ponto que não sabe o que fazer, dá uma olhada nesse artigo: https://ohshitgit.com/ 
 
@@ -106,7 +82,7 @@ git push origin feature/<nome-da-branch>
 # Troque <nome-da-branch> pelo nome da branch que você criou no passo 4 deste guia
 ```
 
-## 8. Abra um _Pull Request_ (PR para os mais íntimos)
+## 8. Abra um _Pull Request_
 > Não sabe o que é um _Pull Request_? [Clique aqui](https://docs.github.com/pt/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests) para entender.
 Você pode seguir [este guia](https://docs.github.com/pt/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) para criar um _pull request_.
 
@@ -133,4 +109,4 @@ Utilize [este guia](https://docs.github.com/pt/issues/tracking-your-work-with-is
 
 ---
 
-Surgiu alguma dúvida? Entre em contato com um dos membros do repositório ;)
+Surgiu alguma dúvida? Entre em contato com um dos membros do repositório :)
