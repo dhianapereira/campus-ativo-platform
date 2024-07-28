@@ -38,6 +38,7 @@ export default function ProblemDetails() {
           updatedAt: '14 de Março de 2024 as 15h41min',
           status: 'toAnalysis',
           category: null,
+          maintenanceType: null
         }
         setProblemData(response)
       }
@@ -137,6 +138,7 @@ export default function ProblemDetails() {
         <Actions
           initialStatus={problemData.status}
           initialCategory={problemData.category}
+          initialMaintenanceType={problemData.maintenanceType}
         />
       </Body>
     </Container>

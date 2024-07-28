@@ -10,6 +10,7 @@ export const Section = styled('div', {
   display: 'flex',
   flexDirection: 'row',
   gap: '$4',
+  width: '100%',
 
   '@media(max-width: 620px)': {
     flexDirection: 'column',
@@ -26,6 +27,13 @@ export const Form = styled('form', {
   [`> ${Button}`]: {
     maxWidth: 120,
   },
+})
+
+export const Column = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$4',
+  width: '100%',
 })
 
 export const Input = styled('div', {

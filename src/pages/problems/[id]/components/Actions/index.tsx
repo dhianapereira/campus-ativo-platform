@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button, Heading, Text, TextArea } from '@campusativo-ui/react'
-import { Container, Form, Input, Section } from './styles'
+import { Column, Container, Form, Input, Section } from './styles'
 import { Dropdown } from '../Dropdown'
 import { IProps } from './index.d'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,8 +9,14 @@ import { actionsFormSchema } from '@/validators/actions-form'
 import { ActionsFormData } from '@/@types/form'
 import { StatusDataList } from '@/data/static/status-data'
 import { CategoryDataList } from '@/data/static/category-data'
+import { RadioGroup } from '../RadioGroup'
+import maintenanceTypes from '@/data/static/maintenance-types'
 
-export function Actions({ initialStatus, initialCategory }: IProps) {
+export function Actions({
+  initialStatus,
+  initialCategory,
+  initialMaintenanceType,
+}: IProps) {
   const {
     register,
     handleSubmit,
@@ -22,6 +28,7 @@ export function Actions({ initialStatus, initialCategory }: IProps) {
     defaultValues: {
       status: initialStatus || '',
       category: initialCategory || '',
+      maintenance: initialMaintenanceType || '',
     },
   })
 
@@ -39,6 +46,15 @@ export function Actions({ initialStatus, initialCategory }: IProps) {
     trigger('category')
   }
 
+  const handleMaintenanceChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = event.target.value
+    setValue('maintenance', value, { shouldValidate: true })
+    trigger('maintenance')
+    console.log(value)
+  }
+
   async function handleSave(data: ActionsFormData) {
     console.log(data)
   }
@@ -54,51 +70,66 @@ export function Actions({ initialStatus, initialCategory }: IProps) {
       <Heading size="md">Ações</Heading>
       <Form onSubmit={handleSubmit(handleSave)}>
         <Section>
-          <Input>
-            <Dropdown
-              id="status"
-              label="Status"
-              hint="Selecione o status"
-              items={StatusDataList}
-              itemSelected={initialStatus}
-              onChange={handleStatusChange}
-            />
-            {errors.status && (
-              <Text className="error-message" size="sm">
-                {errors.status.message}
-              </Text>
-            )}
-          </Input>
+          <Column>
+            <Input>
+              <Dropdown
+                id="status"
+                label="Status"
+                hint="Selecione o status"
+                items={StatusDataList}
+                itemSelected={initialStatus}
+                onChange={handleStatusChange}
+              />
+              {errors.status && (
+                <Text className="error-message" size="sm">
+                  {errors.status.message}
+                </Text>
+              )}
+            </Input>
 
-          <Input>
-            <Dropdown
-              id="category"
-              label="Categoria"
-              hint="Selecione a categoria"
-              items={CategoryDataList}
-              itemSelected={initialCategory}
-              onChange={handleCategoryChange}
-            />
-            {errors.category && (
-              <Text className="error-message" size="sm">
-                {errors.category.message}
-              </Text>
-            )}
-          </Input>
-        </Section>
-        <Section>
-          <Input>
-            <Text size="md">Observações</Text>
-            <TextArea
-              placeholder="Adicione aqui as observações relacionadas ao status escolhido."
-              {...register('note')}
-            />
-            {errors.note && (
-              <Text className="error-message" size="sm">
-                {errors.note.message}
-              </Text>
-            )}
-          </Input>
+            <Input>
+              <Dropdown
+                id="category"
+                label="Categoria"
+                hint="Selecione a categoria"
+                items={CategoryDataList}
+                itemSelected={initialCategory}
+                onChange={handleCategoryChange}
+              />
+              {errors.category && (
+                <Text className="error-message" size="sm">
+                  {errors.category.message}
+                </Text>
+              )}
+            </Input>
+          </Column>
+          <Column>
+            <Input>
+              <Text size="md">Observações</Text>
+              <TextArea
+                placeholder="Adicione aqui as observações relacionadas ao status escolhido."
+                {...register('note')}
+              />
+              {errors.note && (
+                <Text className="error-message" size="sm">
+                  {errors.note.message}
+                </Text>
+              )}
+            </Input>
+            <Input>
+              <RadioGroup
+                options={maintenanceTypes}
+                title="Manutenção"
+                name="maintenance"
+                onChange={handleMaintenanceChange}
+              />
+              {errors.maintenance && (
+                <Text className="error-message" size="sm">
+                  {errors.maintenance.message}
+                </Text>
+              )}
+            </Input>
+          </Column>
         </Section>
         <Button variant="primary" type="submit" disabled={isSubmitting}>
           Salvar

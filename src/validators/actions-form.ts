@@ -10,6 +10,7 @@ export const actionsFormSchema = z
       .max(200, 'A descrição não pode passar de 200 caracteres.')
       .optional(),
     category: z.string().trim().optional(),
+    maintenance: z.string().trim().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.status === Status.Rejected && !data.note) {
@@ -29,6 +30,18 @@ export const actionsFormSchema = z
         code: z.ZodIssueCode.custom,
         message: 'Este campo é obrigatório.',
         path: ['category'],
+      })
+    }
+    if (
+      [Status.Accepted, Status.InProgress, Status.Finished].includes(
+        data.status as Status,
+      )
+      && !data.maintenance
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Este campo é obrigatório.',
+        path: ['maintenance'],
       })
     }
   })

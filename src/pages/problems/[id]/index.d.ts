@@ -4,6 +4,7 @@ export interface IProps {
   description: string
   status: string
   category: string | null
+  maintenanceType: string | null
   imageUrl: string | null
   rapporteur: string
   createdAt: string
