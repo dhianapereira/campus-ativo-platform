@@ -9,8 +9,8 @@ import { actionsFormSchema } from '@/validators/actions-form'
 import { ActionsFormData } from '@/@types/form'
 import { StatusDataList } from '@/data/static/status-data'
 import { CategoryDataList } from '@/data/static/category-data'
-import { RadioGroup } from '../RadioGroup'
-import maintenanceTypes from '@/data/static/maintenance-types'
+import { RadioGroup } from '@/pages/problems/[id]/components/RadioGroup'
+
 
 export function Actions({
   initialStatus,
@@ -52,7 +52,6 @@ export function Actions({
     const value = event.target.value
     setValue('maintenance', value, { shouldValidate: true })
     trigger('maintenance')
-    console.log(value)
   }
 
   async function handleSave(data: ActionsFormData) {
@@ -105,6 +104,18 @@ export function Actions({
           </Column>
           <Column>
             <Input>
+              <RadioGroup
+                title="Manutenção"
+                name="maintenance"
+                onChange={handleMaintenanceChange}
+              />
+              {errors.maintenance && (
+                <Text className="error-message" size="sm">
+                  {errors.maintenance.message}
+                </Text>
+              )}
+            </Input>
+            <Input>
               <Text size="md">Observações</Text>
               <TextArea
                 placeholder="Adicione aqui as observações relacionadas ao status escolhido."
@@ -113,19 +124,6 @@ export function Actions({
               {errors.note && (
                 <Text className="error-message" size="sm">
                   {errors.note.message}
-                </Text>
-              )}
-            </Input>
-            <Input>
-              <RadioGroup
-                options={maintenanceTypes}
-                title="Manutenção"
-                name="maintenance"
-                onChange={handleMaintenanceChange}
-              />
-              {errors.maintenance && (
-                <Text className="error-message" size="sm">
-                  {errors.maintenance.message}
                 </Text>
               )}
             </Input>

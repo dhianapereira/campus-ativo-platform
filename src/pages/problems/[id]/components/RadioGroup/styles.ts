@@ -7,13 +7,8 @@ export const Container = styled('div', {
 })
 
 export const Title = styled('p', {
-    marginTop: '$2',
     fontFamily: '$default',
     fontSize: '$md',
     fontWeight: '$bold',
     color: '$gray',
-
-    '@media(max-width: 620px)': {
-        marginTop: '0'
-    },
 })

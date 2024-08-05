@@ -28,7 +28,6 @@ export const RadioInput = styled('input', {
     width: '65%',
     height: '65%',
     borderRadius: '50%',
-    backgroundColor: '$lightGray',
     position: 'absolute',
     top: '50%',
     left: '50%',

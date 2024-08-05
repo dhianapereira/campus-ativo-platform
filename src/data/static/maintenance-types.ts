@@ -1,11 +1,6 @@
-export interface IProps {
-    id: string
-    label: string
-    isActive: boolean
-}
+import { IMaintenance } from './maintenance-types.d';
 
-
-export const maintenanceTypes: IProps[] = [
+export const maintenanceTypes: IMaintenance[] = [
     {
         id: 'preventive',
         label: 'Preventiva',
@@ -17,5 +12,3 @@ export const maintenanceTypes: IProps[] = [
         isActive: false,
     }
 ]
-
-export default maintenanceTypes;

@@ -13,6 +13,7 @@ export const actionsFormSchema = z
     maintenance: z.string().trim().optional(),
   })
   .superRefine((data, ctx) => {
+    // Verifica se o status é 'Rejected' e se a nota está ausente
     if (data.status === Status.Rejected && !data.note) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -20,6 +21,7 @@ export const actionsFormSchema = z
         path: ['note'],
       })
     }
+    // Verifica se o status é 'Accepted', 'InProgress' ou 'Finished' e se a categoria está ausente
     if (
       [Status.Accepted, Status.InProgress, Status.Finished].includes(
         data.status as Status,
@@ -32,6 +34,7 @@ export const actionsFormSchema = z
         path: ['category'],
       })
     }
+    // Verifica se o status é 'Accepted', 'InProgress' ou 'Finished' e se a manutenção está ausente
     if (
       [Status.Accepted, Status.InProgress, Status.Finished].includes(
         data.status as Status,
