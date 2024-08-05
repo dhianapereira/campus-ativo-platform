@@ -1,6 +1,10 @@
 import { Status } from '@/data/static/status-data'
 import { z } from 'zod'
 
+///This list contains the statuses required to carry out 
+///certain actions, such as filling in the notes field and the maintenance type field
+const requiredStatus = [Status.Accepted, Status.InProgress, Status.Finished]
+
 export const actionsFormSchema = z
   .object({
     status: z.string().trim().min(1, 'Este campo é obrigatório.'),
@@ -13,7 +17,6 @@ export const actionsFormSchema = z
     maintenance: z.string().trim().optional(),
   })
   .superRefine((data, ctx) => {
-    // Verifica se o status é 'Rejected' e se a nota está ausente
     if (data.status === Status.Rejected && !data.note) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -21,26 +24,14 @@ export const actionsFormSchema = z
         path: ['note'],
       })
     }
-    // Verifica se o status é 'Accepted', 'InProgress' ou 'Finished' e se a categoria está ausente
-    if (
-      [Status.Accepted, Status.InProgress, Status.Finished].includes(
-        data.status as Status,
-      ) &&
-      !data.category
-    ) {
+    if (requiredStatus.includes(data.status as Status) && !data.category) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Este campo é obrigatório.',
         path: ['category'],
       })
     }
-    // Verifica se o status é 'Accepted', 'InProgress' ou 'Finished' e se a manutenção está ausente
-    if (
-      [Status.Accepted, Status.InProgress, Status.Finished].includes(
-        data.status as Status,
-      )
-      && !data.maintenance
-    ) {
+    if (requiredStatus.includes(data.status as Status) && !data.maintenance) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Este campo é obrigatório.',
