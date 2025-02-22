@@ -27,6 +27,9 @@ export default function AddProblem() {
           onClick={() => window.history.back()}
           weight="bold"
           size={24}
+          aria-label="Voltar para a página anterior"
+          tabIndex={0}
+          role="button"
         />
         <Title as="h2" size="md">
           Cadastrar problema
@@ -38,6 +41,8 @@ export default function AddProblem() {
           <TextInput
             placeholder="Descreva brevemente o problema"
             {...register('title')}
+            aria-label="Título do problema"
+            tabIndex={0}
           />
           {errors.title && (
             <Text className="error-message" size="sm">
@@ -50,6 +55,8 @@ export default function AddProblem() {
           <TextInput
             placeholder="Informe o local do problema (ex: sala 101, bloco A)"
             {...register('location')}
+            aria-label="Local do problema"
+            tabIndex={0}
           />
           {errors.location && (
             <Text className="error-message" size="sm">
@@ -62,6 +69,8 @@ export default function AddProblem() {
           <TextArea
             placeholder="Detalhe o problema com o máximo de informações possível"
             {...register('description')}
+            aria-label="Descrição do problema"
+            tabIndex={0}
           />
           {errors.description && (
             <Text className="error-message" size="sm">
@@ -69,7 +78,13 @@ export default function AddProblem() {
             </Text>
           )}
         </Input>
-        <Button variant="primary" type="submit" disabled={isSubmitting}>
+        <Button
+          variant="primary"
+          type="submit"
+          disabled={isSubmitting}
+          aria-label="Cadastrar problema"
+          tabIndex={0}
+        >
           Cadastrar
         </Button>
       </Body>

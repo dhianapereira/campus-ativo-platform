@@ -15,7 +15,12 @@ export default function Home() {
   return (
     <PlatformLayout>
       <ActionsContainer>
-        <Button onClick={() => goToAddProblem()} variant="primary">
+        <Button
+          onClick={() => goToAddProblem()}
+          variant="primary"
+          aria-label="Adicionar novo problema"
+          tabIndex={0}
+        >
           Adicionar Problema
         </Button>
       </ActionsContainer>

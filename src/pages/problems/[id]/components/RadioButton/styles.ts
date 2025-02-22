@@ -1,10 +1,10 @@
-import { styled } from '@campusativo-ui/react';
+import { styled } from '@campusativo-ui/react'
 
 export const RadioContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
   gap: '$2',
-});
+})
 
 export const RadioInput = styled('input', {
   all: 'unset',
@@ -44,9 +44,9 @@ export const RadioInput = styled('input', {
   '&:focus': {
     borderColor: '$green',
   },
-});
+})
 
 export const RadioLabel = styled('label', {
   fontFamily: '$default',
   cursor: 'pointer',
-});
+})

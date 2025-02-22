@@ -1,6 +1,6 @@
-import React, { useId } from 'react';
-import { RadioContainer, RadioInput, RadioLabel } from './styles';
-import { IProps } from './index.d';
+import React, { useId } from 'react'
+import { RadioContainer, RadioInput, RadioLabel } from './styles'
+import { IProps } from './index.d'
 
 export function RadioButton({
   label,
@@ -9,7 +9,7 @@ export function RadioButton({
   onChange,
   name,
 }: IProps) {
-  const id = useId();
+  const id = useId()
 
   return (
     <RadioContainer>
@@ -23,5 +23,5 @@ export function RadioButton({
       />
       <RadioLabel htmlFor={id}>{label}</RadioLabel>
     </RadioContainer>
-  );
+  )
 }

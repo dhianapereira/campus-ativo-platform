@@ -18,7 +18,12 @@ export default function ProblemCard({
   }
 
   return (
-    <Container onClick={() => goToDetails()}>
+    <Container
+      onClick={() => goToDetails()}
+      role="card"
+      tabIndex={0}
+      aria-label={`Card do problema: ${title}`}
+    >
       <Title size="sm">{title}</Title>
       <Location size="sm">{location}</Location>
       <Description size="sm">{description}</Description>

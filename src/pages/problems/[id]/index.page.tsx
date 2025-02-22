@@ -38,7 +38,7 @@ export default function ProblemDetails() {
           updatedAt: '14 de Março de 2024 as 15h41min',
           status: 'toAnalysis',
           category: null,
-          maintenanceType: null
+          maintenanceType: null,
         }
         setProblemData(response)
       }
@@ -64,6 +64,9 @@ export default function ProblemDetails() {
             onClick={() => window.history.back()}
             weight="bold"
             size={24}
+            aria-label="Voltar para a página anterior"
+            tabIndex={0}
+            role="button"
           />
           <Title as="h2" size="md">
             {problemData.title}
@@ -75,13 +78,21 @@ export default function ProblemDetails() {
               className="desktop"
               variant="secondary"
               onClick={goToEditPage}
+              aria-label="Editar problema"
+              tabIndex={0}
             >
               <>
                 <NotePencil weight="bold" size={24} />
                 Editar
               </>
             </Button>
-            <EditButton className="mobile" onClick={goToEditPage}>
+            <EditButton
+              className="mobile"
+              onClick={goToEditPage}
+              aria-label="Editar problema"
+              tabIndex={0}
+              role="button"
+            >
               <NotePencil weight="bold" size={24} />
             </EditButton>
           </>

@@ -63,7 +63,12 @@ export default function Login() {
         </Text>
         <label>
           <Text size="md">E-mail</Text>
-          <TextInput type="email" {...register('email')} />
+          <TextInput
+            type="email"
+            {...register('email')}
+            aria-label="Digite seu e-mail"
+            tabIndex={0}
+          />
           {errors.email && (
             <FormError size="sm">{errors.email.message}</FormError>
           )}
@@ -77,15 +82,25 @@ export default function Login() {
               <PasswordIcon
                 isVisible={isPasswordVisible}
                 onTap={togglePasswordVisibility}
+                aria-label="Alternar visibilidade da senha"
               />
             }
+            aria-label="Digite sua senha"
+            tabIndex={0}
           />
           {errors.password && (
             <FormError size="sm">{errors.password.message}</FormError>
           )}
         </label>
-        <LinkButton variant="green">Esqueci a senha</LinkButton>
-        <Button type="submit" disabled={isSubmitting}>
+        <LinkButton variant="green" tabIndex={0} aria-label="Esqueci a senha">
+          Esqueci a senha
+        </LinkButton>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          tabIndex={0}
+          aria-label="Entrar na plataforma"
+        >
           Entrar
         </Button>
       </Form>

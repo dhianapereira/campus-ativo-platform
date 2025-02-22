@@ -63,6 +63,9 @@ export default function EditProblem() {
           onClick={() => window.history.back()}
           weight="bold"
           size={24}
+          aria-label="Voltar para a página anterior"
+          tabIndex={0}
+          role="button"
         />
         <Title as="h2" size="md">
           Editar problema
@@ -74,6 +77,8 @@ export default function EditProblem() {
           <TextInput
             placeholder="Descreva brevemente o problema"
             {...register('title')}
+            aria-label="Título do problema"
+            tabIndex={0}
           />
           {errors.title && (
             <Text className="error-message" size="sm">
@@ -86,6 +91,8 @@ export default function EditProblem() {
           <TextInput
             placeholder="Informe o local do problema (ex: sala 101, bloco A)"
             {...register('location')}
+            aria-label="Local do problema"
+            tabIndex={0}
           />
           {errors.location && (
             <Text className="error-message" size="sm">
@@ -98,6 +105,8 @@ export default function EditProblem() {
           <TextArea
             placeholder="Detalhe o problema com o máximo de informações possível"
             {...register('description')}
+            aria-label="Descrição do problema"
+            tabIndex={0}
           />
           {errors.description && (
             <Text className="error-message" size="sm">
@@ -105,7 +114,13 @@ export default function EditProblem() {
             </Text>
           )}
         </Input>
-        <Button variant="primary" type="submit" disabled={isSubmitting}>
+        <Button
+          variant="primary"
+          type="submit"
+          disabled={isSubmitting}
+          aria-label="Salvar edição do problema"
+          tabIndex={0}
+        >
           Editar
         </Button>
       </Body>

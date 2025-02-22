@@ -31,7 +31,14 @@ export default function Header({ src, alt, name, position }: IProps) {
         </Info>
       </UserInfoContainer>
       <DrawerIcon>
-        <List weight="bold" size={24} onClick={openDrawer} />
+        <List
+          weight="bold"
+          size={24}
+          onClick={openDrawer}
+          aria-label="Abrir menu de navegação"
+          tabIndex={0}
+          role="button"
+        />
         {isDrawerOpen && <Drawer onClose={closeDrawer} />}
       </DrawerIcon>
     </HeaderContainer>

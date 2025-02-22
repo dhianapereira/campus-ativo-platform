@@ -8,7 +8,7 @@ import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 
 export default function Menu() {
   return (
-    <MenuContainer>
+    <MenuContainer role="navigation" aria-label="Menu principal">
       <Image
         src={whiteIfalLogo}
         height={68}
@@ -18,7 +18,13 @@ export default function Menu() {
       />
       <MenuOptions>
         {menuOptions.map((option) => (
-          <LinkButton key={option.id} variant="white" onClick={option.onClick}>
+          <LinkButton
+            key={option.id}
+            variant="white"
+            onClick={option.onClick}
+            aria-label={`Ir para ${option.name}`}
+            tabIndex={0}
+          >
             {option.icon}
             {option.name}
           </LinkButton>

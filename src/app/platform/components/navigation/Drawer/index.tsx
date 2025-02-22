@@ -11,10 +11,14 @@ import { X } from 'phosphor-react'
 export default function Drawer({ onClose }: IProps) {
   return (
     <>
-      <Overlay />
+      <Overlay aria-hidden="true" />
 
-      <DrawerContainer>
-        <CloseButton onClick={onClose}>
+      <DrawerContainer
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu de navegação"
+      >
+        <CloseButton onClick={onClose} aria-label="Fechar menu" tabIndex={0}>
           <X className="close-icon" weight="bold" size={24} />
         </CloseButton>
         <Image
@@ -30,6 +34,8 @@ export default function Drawer({ onClose }: IProps) {
               key={option.id}
               variant="white"
               onClick={option.onClick}
+              aria-label={`Ir para ${option.name}`}
+              tabIndex={0}
             >
               {option.icon}
               {option.name}
