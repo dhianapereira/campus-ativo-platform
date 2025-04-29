@@ -1,10 +1,4 @@
-import {
-  Button,
-  Heading,
-  LinkButton,
-  Text,
-  TextInput,
-} from '@campusativo-ui/react'
+import { Button, Heading, Text, TextInput } from '@campusativo-ui/react'
 import PasswordIcon from './components/PasswordIcon'
 import { Container, Form, FormError, IllustrationContainer } from './styles'
 import { useState } from 'react'
@@ -92,9 +86,6 @@ export default function Login() {
             <FormError size="sm">{errors.password.message}</FormError>
           )}
         </label>
-        <LinkButton variant="green" tabIndex={0} aria-label="Esqueci a senha">
-          Esqueci a senha
-        </LinkButton>
         <Button
           type="submit"
           disabled={isSubmitting}
