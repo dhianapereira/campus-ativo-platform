@@ -6,6 +6,7 @@ import { problems } from '../home/mocks/problems'
 import { Button } from '@campusativo-ui/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { FilterButton } from '../home/components/FilterButton'
 
 export default function Home() {
   const router = useRouter()
@@ -52,6 +53,7 @@ export default function Home() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          gap: '1rem',
           marginBottom: '2rem',
         }}
       >
@@ -59,17 +61,18 @@ export default function Home() {
           value={searchValue}
           onSearch={handleSearch}
           onInputChange={handleInputChange}
-          placeholder="Busque pelo título ou local do problema..."
-          buttonText="Pesquisar"
         />
-        <Button
-          onClick={() => goToAddProblem()}
-          variant="primary"
-          aria-label="Adicionar novo problema"
-          tabIndex={0}
-        >
-          Adicionar Problema
-        </Button>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <FilterButton />
+          <Button
+            onClick={() => goToAddProblem()}
+            variant="primary"
+            aria-label="Adicionar novo problema"
+          >
+            Adicionar Problema
+          </Button>
+        </div>
       </div>
 
       <div
