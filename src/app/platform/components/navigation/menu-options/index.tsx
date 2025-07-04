@@ -32,26 +32,3 @@ export const createMenuOptions = ({
     },
   },
 ]
-
-export const menuOptions: IOption[] = [
-  {
-    id: 'problems',
-    name: 'Problemas',
-    icon: <Warning weight="bold" />,
-    onClick: () => {
-      console.warn(
-        'Menu options usado sem configuração. Use createMenuOptions() instead.',
-      )
-    },
-  },
-  {
-    id: 'logout',
-    name: 'Sair da plataforma',
-    icon: <SignOut weight="bold" />,
-    onClick: () => {
-      console.warn(
-        'Menu options usado sem configuração. Use createMenuOptions() instead.',
-      )
-    },
-  },
-]
