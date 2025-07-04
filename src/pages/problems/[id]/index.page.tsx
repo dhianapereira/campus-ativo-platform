@@ -14,6 +14,7 @@ import { IProps } from './index.d'
 import { Button, Text } from '@campusativo-ui/react'
 import { Actions } from './components/Actions'
 import { Status } from '@/data/static/status-data'
+import { ImageError } from '@/app/platform/components/Error'
 
 export default function ProblemDetails() {
   const router = useRouter()
@@ -107,7 +108,9 @@ export default function ProblemDetails() {
             alt={problemData.title}
             onError={() => setImageError(true)}
           />
-        ) : null}
+        ) : (
+          <ImageError />
+        )}
         <InfoContainer>
           <Text className="label" size="md">
             Título:
