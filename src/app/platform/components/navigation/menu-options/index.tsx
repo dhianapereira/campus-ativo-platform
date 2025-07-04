@@ -2,13 +2,24 @@ import { Warning, SignOut } from 'phosphor-react'
 import { NextRouter } from 'next/router'
 import { IOption } from './index.d'
 
-export const getMenuOptions = (router: NextRouter): IOption[] => [
+interface MenuOptionsConfig {
+  router: NextRouter
+  onLogoutClick: () => void
+  onClose?: () => void
+}
+
+export const createMenuOptions = ({
+  router,
+  onLogoutClick,
+  onClose,
+}: MenuOptionsConfig): IOption[] => [
   {
     id: 'problems',
     name: 'Problemas',
     icon: <Warning weight="bold" />,
     onClick: () => {
       router.push('/problems')
+      onClose?.()
     },
   },
   {
@@ -16,7 +27,31 @@ export const getMenuOptions = (router: NextRouter): IOption[] => [
     name: 'Sair da plataforma',
     icon: <SignOut weight="bold" />,
     onClick: () => {
-      //* TODO: Executar função para sair da plataforma*
+      onLogoutClick()
+      onClose?.()
+    },
+  },
+]
+
+export const menuOptions: IOption[] = [
+  {
+    id: 'problems',
+    name: 'Problemas',
+    icon: <Warning weight="bold" />,
+    onClick: () => {
+      console.warn(
+        'Menu options usado sem configuração. Use createMenuOptions() instead.',
+      )
+    },
+  },
+  {
+    id: 'logout',
+    name: 'Sair da plataforma',
+    icon: <SignOut weight="bold" />,
+    onClick: () => {
+      console.warn(
+        'Menu options usado sem configuração. Use createMenuOptions() instead.',
+      )
     },
   },
 ]
