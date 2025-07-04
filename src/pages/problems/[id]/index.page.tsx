@@ -33,7 +33,7 @@ export default function ProblemDetails() {
             'Problemas no ar-condicionado foram identificados na sala 05232. Verificar com urgência.',
           imageUrl:
             'https://imgs.search.brave.com/XR7WZESq-wVfAbqa2Yno-_e1JWAGEyfpnWId1P3oH9s/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9maWxl/cy50ZWNub2Jsb2cu/bmV0L3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIyLzAzL2NvbmRl/bnNhZG9yLWFjLTEt/NzAweDUyNS5qcGc',
-          rapporteur: 'email@email.com',
+          reporter: 'email@email.com',
           createdAt: '14 de Março de 2024',
           updatedAt: '14 de Março de 2024 as 15h41min',
           status: 'toAnalysis',
@@ -130,7 +130,7 @@ export default function ProblemDetails() {
           <Text className="label" size="md">
             Relator:
           </Text>
-          <Text size="md">{problemData.rapporteur}</Text>
+          <Text size="md">{problemData.reporter}</Text>
         </InfoContainer>
         <InfoContainer>
           <Text className="label" size="md">
