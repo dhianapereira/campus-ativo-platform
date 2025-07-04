@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form'
 import { LoginFormData } from '@/@types/form.d'
 import { loginFormSchema } from '@/validators/login-form'
 import Image from 'next/image'
-
 import illustrationLogin from '../../assets/illustration-login.png'
 import ifalLogo from '../../assets/ifal-logo.png'
 
@@ -15,17 +14,23 @@ export default function Login() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
   })
+
+  const email = watch('email')
+  const password = watch('password')
+
+  const isFormValid =
+    email && password && email.trim() !== '' && password.trim() !== ''
 
   async function handleLogin(data: LoginFormData) {
     console.log(data)
   }
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible)
   }
@@ -88,7 +93,7 @@ export default function Login() {
         </label>
         <Button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isFormValid}
           tabIndex={0}
           aria-label="Entrar na plataforma"
         >
