@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form'
 import { problemFormSchema } from '@/validators/problem-form'
 import { useRouter } from 'next/router'
 import { IProps } from './index.d'
+import ImageUpload from '../../components/ImageUpload'
 
 export default function EditProblem() {
   const router = useRouter()
@@ -114,6 +115,7 @@ export default function EditProblem() {
             </Text>
           )}
         </Input>
+        <ImageUpload />
         <Button
           variant="primary"
           type="submit"
