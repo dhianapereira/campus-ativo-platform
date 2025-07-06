@@ -2,6 +2,7 @@ import PlatformLayout from '@/app/platform/layout'
 import { GridView } from './styles'
 import ProblemCard from '../home/components/ProblemCard'
 import { SearchBar } from '../home/components/SearchBar'
+import { FilterButton } from '../home/components/FilterButton'
 import { problems } from '../home/mocks/problems'
 import { Button } from '@campusativo-ui/react'
 import { useRouter } from 'next/router'
@@ -21,7 +22,6 @@ export default function Home() {
       setFilteredProblems(problems)
       return
     }
-
     const filtered = problems.filter(
       (problem) =>
         problem.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -32,7 +32,6 @@ export default function Home() {
 
   const handleInputChange = (value: string) => {
     setSearchValue(value)
-
     if (!value.trim()) {
       setFilteredProblems(problems)
     } else {
@@ -52,6 +51,7 @@ export default function Home() {
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          gap: '1rem',
           marginBottom: '2rem',
         }}
       >
@@ -62,22 +62,23 @@ export default function Home() {
           placeholder="Busque pelo título ou local do problema..."
           buttonText="Pesquisar"
         />
-        <Button
-          onClick={() => goToAddProblem()}
-          variant="primary"
-          aria-label="Adicionar novo problema"
-          tabIndex={0}
-        >
-          Adicionar Problema
-        </Button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <FilterButton />
+          <Button
+            onClick={() => goToAddProblem()}
+            variant="primary"
+            aria-label="Adicionar novo problema"
+            tabIndex={0}
+          >
+            Adicionar Problema
+          </Button>
+        </div>
       </div>
-
       <div
         style={{ marginBottom: '1.5rem', color: '#6c757d', fontSize: '1rem' }}
       >
         {filteredProblems.length} problemas ao total
       </div>
-
       <GridView>
         {filteredProblems.map((problem) => (
           <ProblemCard key={problem.id} {...problem} />

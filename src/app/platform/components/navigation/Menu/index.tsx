@@ -1,12 +1,23 @@
 import React from 'react'
 import { MenuContainer, MenuOptions } from './styles'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { LinkButton } from '@campusativo-ui/react'
-import { menuOptions } from '../menu-options'
-
+import { createMenuOptions } from '../menu-options'
 import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 
-export default function Menu() {
+interface MenuProps {
+  onLogoutClick: () => void
+}
+
+export default function Menu({ onLogoutClick }: MenuProps) {
+  const router = useRouter()
+
+  const menuOptions = createMenuOptions({
+    router,
+    onLogoutClick,
+  })
+
   return (
     <MenuContainer role="navigation" aria-label="Menu principal">
       <Image
@@ -16,6 +27,7 @@ export default function Menu() {
         quality={100}
         alt="Logo do Instituto Federal de Alagoas."
       />
+
       <MenuOptions>
         {menuOptions.map((option) => (
           <LinkButton
