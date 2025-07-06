@@ -5,6 +5,7 @@ import { ProblemFormData } from '@/@types/form.d'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { problemFormSchema } from '@/validators/problem-form'
+import ImageUpload from '../components/ImageUpload'
 
 export default function AddProblem() {
   const {
@@ -91,6 +92,7 @@ export default function AddProblem() {
             </Text>
           )}
         </Input>
+        <ImageUpload />
         <Button
           variant="primary"
           type="submit"
