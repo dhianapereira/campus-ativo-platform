@@ -6,7 +6,7 @@ export interface IProps {
   category: string | null
   maintenanceType: string | null
   imageUrl: string | null
-  rapporteur: string
+  reporter: string
   createdAt: string
   updatedAt: string | null
 }
