@@ -1,16 +1,22 @@
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { Button, Heading, Text, TextArea } from '@campusativo-ui/react'
+import {
+  Button,
+  Heading,
+  Text,
+  TextArea,
+  Dropdown,
+  RadioGroup,
+} from '@campusativo-ui/react'
 import { Column, Container, Form, Input, Section } from './styles'
-import { Dropdown } from '../Dropdown'
 import { IProps } from './index.d'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { actionsFormSchema } from '@/validators/actions-form'
 import { ActionsFormData } from '@/@types/form'
 import { StatusDataList } from '@/data/static/status-data'
 import { CategoryDataList } from '@/data/static/category-data'
-import { RadioGroup } from '@/pages/problems/[id]/components/RadioGroup'
 
+const maintenanceOptions = [{ id: 'manutencao', label: 'Manutenção' }]
 
 export function Actions({
   initialStatus,
@@ -21,6 +27,7 @@ export function Actions({
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors, isSubmitting },
     trigger,
   } = useForm<ActionsFormData>({
@@ -32,24 +39,17 @@ export function Actions({
     },
   })
 
-  const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value
+  const handleStatusChange = (value: string) => {
     setValue('status', value, { shouldValidate: true })
     trigger('status')
   }
 
-  const handleCategoryChange = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const value = event.target.value
+  const handleCategoryChange = (value: string) => {
     setValue('category', value, { shouldValidate: true })
     trigger('category')
   }
 
-  const handleMaintenanceChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const value = event.target.value
+  const handleMaintenanceChange = (value: string) => {
     setValue('maintenance', value, { shouldValidate: true })
     trigger('maintenance')
   }
@@ -58,8 +58,6 @@ export function Actions({
     console.log(data)
   }
 
-  /// The trigger method in useEffect force initial validation
-  /// and ensure that fields are validated correctly from the start
   useEffect(() => {
     trigger()
   }, [trigger])
@@ -76,14 +74,11 @@ export function Actions({
                 label="Status"
                 hint="Selecione o status"
                 items={StatusDataList}
-                itemSelected={initialStatus}
+                itemSelected={watch('status')}
                 onChange={handleStatusChange}
+                hasError={!!errors.status}
+                errorMessage={errors.status?.message}
               />
-              {errors.status && (
-                <Text className="error-message" size="sm">
-                  {errors.status.message}
-                </Text>
-              )}
             </Input>
 
             <Input>
@@ -92,14 +87,11 @@ export function Actions({
                 label="Categoria"
                 hint="Selecione a categoria"
                 items={CategoryDataList}
-                itemSelected={initialCategory}
+                itemSelected={watch('category')}
                 onChange={handleCategoryChange}
+                hasError={!!errors.category}
+                errorMessage={errors.category?.message}
               />
-              {errors.category && (
-                <Text className="error-message" size="sm">
-                  {errors.category.message}
-                </Text>
-              )}
             </Input>
           </Column>
           <Column>
@@ -107,13 +99,12 @@ export function Actions({
               <RadioGroup
                 title="Manutenção"
                 name="maintenance"
+                options={maintenanceOptions}
+                value={watch('maintenance')}
                 onChange={handleMaintenanceChange}
+                hasError={!!errors.maintenance}
+                errorMessage={errors.maintenance?.message}
               />
-              {errors.maintenance && (
-                <Text className="error-message" size="sm">
-                  {errors.maintenance.message}
-                </Text>
-              )}
             </Input>
             <Input>
               <Text size="md">Observações</Text>
