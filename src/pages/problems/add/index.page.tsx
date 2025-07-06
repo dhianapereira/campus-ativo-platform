@@ -10,10 +10,23 @@ export default function AddProblem() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<ProblemFormData>({
     resolver: zodResolver(problemFormSchema),
   })
+
+  const title = watch('title')
+  const location = watch('location')
+  const description = watch('description')
+
+  const isFormValid =
+    title &&
+    location &&
+    description &&
+    title.trim() !== '' &&
+    location.trim() !== '' &&
+    description.trim() !== ''
 
   async function handleRegisterProblem(data: ProblemFormData) {
     console.log(data)
@@ -81,7 +94,7 @@ export default function AddProblem() {
         <Button
           variant="primary"
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isFormValid}
           aria-label="Cadastrar problema"
           tabIndex={0}
         >
