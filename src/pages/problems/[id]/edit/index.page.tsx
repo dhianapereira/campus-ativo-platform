@@ -13,7 +13,6 @@ import ImageUpload from '../../components/ImageUpload'
 export default function EditProblem() {
   const router = useRouter()
   const { id } = router.query
-
   const [problemData, setProblemData] = useState<IProps | null>(null)
 
   useEffect(() => {
@@ -29,18 +28,30 @@ export default function EditProblem() {
         setProblemData(response)
       }
     }
-
     fetchProblemData()
   }, [id])
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ProblemFormData>({
     resolver: zodResolver(problemFormSchema),
   })
+
+  const title = watch('title')
+  const location = watch('location')
+  const description = watch('description')
+
+  const isFormValid =
+    title &&
+    location &&
+    description &&
+    title.trim() !== '' &&
+    location.trim() !== '' &&
+    description.trim() !== ''
 
   useEffect(() => {
     if (problemData) {
@@ -119,7 +130,7 @@ export default function EditProblem() {
         <Button
           variant="primary"
           type="submit"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isFormValid}
           aria-label="Salvar edição do problema"
           tabIndex={0}
         >

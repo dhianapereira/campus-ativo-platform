@@ -31,18 +31,5 @@ export const Info = styled('div', {
 
   '& .name': {
     fontWeight: 'bold',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    display: '-webkit-box',
-    WebkitLineClamp: 1,
-    WebkitBoxOrient: 'vertical',
-    maxWidth: 180,
-  },
-
-  '& .position': {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap',
-    maxWidth: 180,
   },
 })

@@ -1,13 +1,25 @@
 import { Warning, SignOut } from 'phosphor-react'
+import { NextRouter } from 'next/router'
 import { IOption } from './index.d'
 
-export const menuOptions: IOption[] = [
+interface MenuOptionsConfig {
+  router: NextRouter
+  onLogoutClick: () => void
+  onClose?: () => void
+}
+
+export const createMenuOptions = ({
+  router,
+  onLogoutClick,
+  onClose,
+}: MenuOptionsConfig): IOption[] => [
   {
     id: 'problems',
     name: 'Problemas',
     icon: <Warning weight="bold" />,
     onClick: () => {
-      // TODO: Adicionar a chamada para a tela de problemas
+      router.push('/problems')
+      onClose?.()
     },
   },
   {
@@ -15,7 +27,8 @@ export const menuOptions: IOption[] = [
     name: 'Sair da plataforma',
     icon: <SignOut weight="bold" />,
     onClick: () => {
-      // TODO: Executar função para sair da plataforma
+      onLogoutClick()
+      onClose?.()
     },
   },
 ]
