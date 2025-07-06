@@ -15,8 +15,7 @@ import { actionsFormSchema } from '@/validators/actions-form'
 import { ActionsFormData } from '@/@types/form'
 import { StatusDataList } from '@/data/static/status-data'
 import { CategoryDataList } from '@/data/static/category-data'
-
-const maintenanceOptions = [{ id: 'manutencao', label: 'Manutenção' }]
+import { maintenanceTypes } from '@/data/static/maintenance-types'
 
 export function Actions({
   initialStatus,
@@ -99,7 +98,7 @@ export function Actions({
               <RadioGroup
                 title="Manutenção"
                 name="maintenance"
-                options={maintenanceOptions}
+                options={maintenanceTypes}
                 value={watch('maintenance')}
                 onChange={handleMaintenanceChange}
                 hasError={!!errors.maintenance}
