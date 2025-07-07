@@ -1,4 +1,4 @@
-import { styled, Button } from '@campusativo-ui/react'
+import { styled, Button, Text } from '@campusativo-ui/react'
 import { SearchBar } from '../home/components/SearchBar'
 
 export const GridView = styled('div', {
@@ -170,23 +170,19 @@ export const ResultsCounter = styled('div', {
   },
 })
 
-export const FilterBadge = styled('span', {
+export const FilterBadge = styled(Text, {
   background: '#e3f2fd',
   color: '#1976d2',
   padding: '$1 $2',
   borderRadius: '$3',
-  fontSize: '$3',
-  fontWeight: '500',
   display: 'inline-flex',
   alignItems: 'center',
 
   '@media(max-width: 640px)': {
-    fontSize: '$2',
     padding: '$1',
   },
 
   '@media(max-width: 480px)': {
-    fontSize: '$1',
     padding: '2px 4px',
   },
 })

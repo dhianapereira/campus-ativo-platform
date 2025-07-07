@@ -14,7 +14,7 @@ import {
 import ProblemCard from '../home/components/ProblemCard'
 import { FilterButton } from '../home/components/FilterButton'
 import { problems } from '../home/mocks/problems'
-import { FilterDialog, FilterOption } from '@campusativo-ui/react'
+import { FilterDialog, FilterOption, Text } from '@campusativo-ui/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Status } from '@/data/static/status-data'
@@ -127,9 +127,9 @@ export default function Home() {
         </HeaderContainer>
 
         <ResultsCounter>
-          <span>{filteredProblems.length} problemas ao total</span>
+          <Text size="sm">{filteredProblems.length} problemas ao total</Text>
           {getActiveFiltersCount() > 0 && (
-            <FilterBadge>
+            <FilterBadge size="sm">
               {getActiveFiltersCount()} filtro(s) ativo(s)
             </FilterBadge>
           )}
