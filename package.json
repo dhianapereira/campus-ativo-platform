@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@campusativo-ui/react": "^2.0.0",
+    "@campusativo-ui/react": "^2.1.0",
     "@hookform/resolvers": "^3.3.4",
     "next": "^14.2.3",
     "phosphor-react": "^1.4.1",
