@@ -17,7 +17,7 @@ export const SearchInputContainer = styled('div', {
   boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
   border: '1px solid #e9ecef',
   transition: 'all 0.2s ease',
-  maxWidth: '37.5rem',
+  maxWidth: '33.5rem',
   borderRadius: '$md 0 0 $md',
   borderRight: 'none',
 

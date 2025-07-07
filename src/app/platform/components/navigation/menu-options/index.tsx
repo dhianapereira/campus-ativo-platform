@@ -6,12 +6,14 @@ interface MenuOptionsConfig {
   router: NextRouter
   onLogoutClick: () => void
   onClose?: () => void
+  openLogoutModal?: () => void // Nova prop para abrir o modal
 }
 
 export const createMenuOptions = ({
   router,
   onLogoutClick,
   onClose,
+  openLogoutModal,
 }: MenuOptionsConfig): IOption[] => [
   {
     id: 'problems',
@@ -27,8 +29,14 @@ export const createMenuOptions = ({
     name: 'Sair da plataforma',
     icon: <SignOut weight="bold" />,
     onClick: () => {
-      onLogoutClick()
-      onClose?.()
+      if (openLogoutModal) {
+        // Se o modal estiver disponível, abre o modal
+        openLogoutModal()
+      } else {
+        // Fallback: comportamento original (para compatibilidade)
+        onLogoutClick()
+        onClose?.()
+      }
     },
   },
 ]

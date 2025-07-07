@@ -118,6 +118,12 @@ export default function EditProblem() {
             placeholder="Detalhe o problema com o máximo de informações possível"
             {...register('description')}
             aria-label="Descrição do problema"
+            css={{
+              width: '100%',
+              minHeight: '120px',
+              resize: 'vertical',
+              boxSizing: 'border-box',
+            }}
             tabIndex={0}
           />
           {errors.description && (

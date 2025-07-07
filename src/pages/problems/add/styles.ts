@@ -1,4 +1,10 @@
-import { Heading, Text, styled } from '@campusativo-ui/react'
+import {
+  Heading,
+  Text,
+  styled,
+  TextArea,
+  TextInput,
+} from '@campusativo-ui/react'
 
 export const Container = styled('div', {
   display: 'flex',
@@ -57,6 +63,20 @@ export const Input = styled('div', {
 
   '> *': {
     width: '100%',
+    boxSizing: 'border-box',
+  },
+
+  [`> ${TextInput}`]: {
+    width: '100%',
+    minWidth: 0,
+  },
+
+  [`> ${TextArea}`]: {
+    width: '100% !important',
+    minWidth: 0,
+    maxWidth: '100%',
+    boxSizing: 'border-box',
+    resize: 'vertical',
   },
 
   '& .error-message': {
