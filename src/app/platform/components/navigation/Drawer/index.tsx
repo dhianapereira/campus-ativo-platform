@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { LinkButton } from '@campusativo-ui/react'
 import { createMenuOptions } from '../menu-options'
-import { LogoutConfirmationModal } from '../../LogoutModal' // Ajuste o caminho conforme necessário/ Ajuste o caminho conforme necessário
+import { LogoutConfirmationModal } from '../../LogoutModal'
 import { IProps } from './index.d'
 import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 import { X } from 'phosphor-react'
@@ -25,13 +25,13 @@ export default function Drawer({ onClose, onLogoutClick }: DrawerProps) {
   })
 
   const handleLogoutConfirm = () => {
-    onLogoutClick() // Executa a função de logout
-    onClose() // Fecha o drawer
-    setIsLogoutModalOpen(false) // Fecha o modal
+    onLogoutClick()
+    onClose()
+    setIsLogoutModalOpen(false)
   }
 
   const handleLogoutCancel = () => {
-    setIsLogoutModalOpen(false) // Apenas fecha o modal, drawer permanece aberto
+    setIsLogoutModalOpen(false)
   }
 
   return (

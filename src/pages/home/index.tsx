@@ -26,7 +26,6 @@ export default function Home() {
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
 
-  // Opções de filtro baseadas nos status reais
   const filterOptions: FilterOption[] = [
     { id: Status.ToAnalysis, label: 'Para análise', checked: false },
     { id: Status.InAnalysis, label: 'Em análise', checked: false },

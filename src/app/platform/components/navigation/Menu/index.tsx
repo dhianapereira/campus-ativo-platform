@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { LinkButton } from '@campusativo-ui/react'
 import { createMenuOptions } from '../menu-options'
-import { LogoutConfirmationModal } from '../../LogoutModal' // Ajuste o caminho conforme necessário
+import { LogoutConfirmationModal } from '../../LogoutModal'
 import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 
 interface MenuProps {
@@ -22,12 +22,12 @@ export default function Menu({ onLogoutClick }: MenuProps) {
   })
 
   const handleLogoutConfirm = () => {
-    onLogoutClick() // Executa a função de logout
-    setIsLogoutModalOpen(false) // Fecha o modal
+    onLogoutClick()
+    setIsLogoutModalOpen(false)
   }
 
   const handleLogoutCancel = () => {
-    setIsLogoutModalOpen(false) // Apenas fecha o modal
+    setIsLogoutModalOpen(false)
   }
 
   return (

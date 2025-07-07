@@ -26,7 +26,7 @@ export const ActionsContainer = styled('div', {
 export const HeaderContainer = styled('div', {
   display: 'flex',
   flexDirection: 'column',
-  gap: '$6', // Espaçamento maior entre pesquisa e controles
+  gap: '$6',
   marginBottom: '$8',
 
   '@media(max-width: 640px)': {
@@ -47,7 +47,7 @@ export const SearchContainer = styled('div', {
   gap: '$2',
   '@media(max-width: 1024px)': {
     flexDirection: 'column',
-    gap: '$10', // Aumenta o gap para telas menores
+    gap: '$10',
   },
   '@media(max-width: 640px)': {
     gap: '$10',
@@ -64,29 +64,28 @@ export const ControlsContainer = styled('div', {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  gap: '$4', // 16px entre os botões conforme Figma
+  gap: '$4',
   flexWrap: 'nowrap',
 
   '@media(max-width: 1024px)': {
     flex: 'nowrap',
-    width: '100%', // Garante que ocupe toda a largura
+    width: '100%',
   },
 
-  // Mantém os botões lado a lado no mobile e ocupa largura total
   '@media(max-width: 853px)': {
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: '$4', // Mantém 16px de gap
-    width: '100%', // Ocupa toda a largura disponível
+    gap: '$4',
+    width: '100%',
   },
 
   '@media(max-width: 640px)': {
-    gap: '$4', // Mantém 16px
+    gap: '$4',
     width: '100%',
   },
 
   '@media(max-width: 480px)': {
-    gap: '$3', // Reduz um pouco em telas muito pequenas
+    gap: '$3',
     width: '100%',
   },
 })
@@ -95,14 +94,14 @@ export const FilterGroup = styled('div', {
   display: 'flex',
   alignItems: 'center',
   gap: '$3',
-  flex: '0 0 auto', // Não cresce nem diminui
+  flex: '0 0 auto',
 
   '@media(max-width: 1024px)': {
-    flex: '1 1 auto', // Permite crescer no mobile
+    flex: '1 1 auto',
   },
 
   '@media(max-width: 853px)': {
-    flex: '1 1 auto', // Cresce para ocupar espaço disponível
+    flex: '1 1 auto',
     width: 'auto',
   },
 
@@ -122,15 +121,15 @@ export const AddButton = styled(Button, {
   minWidth: 'fit-content',
   fontSize: '$4',
   padding: '$3 $5',
-  flex: '0 0 auto', // Não cresce nem diminui
+  flex: '0 0 auto',
 
   '@media(max-width: 1024px)': {
     padding: '$3 $4',
-    flex: '1 1 auto', // Permite crescer no mobile
+    flex: '1 1 auto',
   },
 
   '@media(max-width: 853px)': {
-    flex: '1 1 auto', // Cresce para ocupar espaço disponível
+    flex: '1 1 auto',
     width: 'auto',
   },
 
