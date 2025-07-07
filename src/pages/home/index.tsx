@@ -1,89 +1,155 @@
 import PlatformLayout from '@/app/platform/layout'
-import { GridView } from './styles'
+import {
+  GridView,
+  HeaderContainer,
+  SearchContainer,
+  ControlsContainer,
+  FilterGroup,
+  AddButton,
+  ResultsCounter,
+  FilterBadge,
+  ResponsiveSearchBar,
+  MainContainer,
+} from './styles'
 import ProblemCard from '../home/components/ProblemCard'
-import { SearchBar } from '../home/components/SearchBar'
 import { FilterButton } from '../home/components/FilterButton'
 import { problems } from '../home/mocks/problems'
-import { Button } from '@campusativo-ui/react'
+import { FilterDialog, FilterOption } from '@campusativo-ui/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { Status } from '@/data/static/status-data'
 
 export default function Home() {
   const router = useRouter()
   const [filteredProblems, setFilteredProblems] = useState(problems)
   const [searchValue, setSearchValue] = useState('')
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
+  const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
+
+  // Opções de filtro baseadas nos status reais
+  const filterOptions: FilterOption[] = [
+    { id: Status.ToAnalysis, label: 'Para análise', checked: false },
+    { id: Status.InAnalysis, label: 'Em análise', checked: false },
+    { id: Status.Accepted, label: 'Aceito', checked: false },
+    { id: Status.Rejected, label: 'Recusado', checked: false },
+    { id: Status.InProgress, label: 'Em andamento', checked: false },
+    { id: Status.Finished, label: 'Concluído', checked: false },
+  ]
 
   async function goToAddProblem() {
     await router.push('/problems/add')
   }
 
-  const handleSearch = (query: string) => {
-    if (!query.trim()) {
-      setFilteredProblems(problems)
-      return
+  const applyFilters = (
+    searchQuery: string = searchValue,
+    filters: FilterOption[] = activeFilters,
+  ) => {
+    let filtered = problems
+
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(
+        (problem) =>
+          problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          problem.location.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
     }
-    const filtered = problems.filter(
-      (problem) =>
-        problem.title.toLowerCase().includes(query.toLowerCase()) ||
-        problem.location.toLowerCase().includes(query.toLowerCase()),
-    )
+
+    const activeFilterIds = filters.filter((f) => f.checked).map((f) => f.id)
+
+    if (activeFilterIds.length > 0) {
+      filtered = filtered.filter((problem) => {
+        return activeFilterIds.includes(problem.badgeId)
+      })
+    }
+
     setFilteredProblems(filtered)
+  }
+
+  const handleSearch = (query: string) => {
+    setSearchValue(query)
+    applyFilters(query, activeFilters)
   }
 
   const handleInputChange = (value: string) => {
     setSearchValue(value)
-    if (!value.trim()) {
-      setFilteredProblems(problems)
-    } else {
-      const filtered = problems.filter(
-        (problem) =>
-          problem.title.toLowerCase().includes(value.toLowerCase()) ||
-          problem.location.toLowerCase().includes(value.toLowerCase()),
-      )
-      setFilteredProblems(filtered)
-    }
+    applyFilters(value, activeFilters)
   }
+
+  const handleFilterApply = (filters: FilterOption[]) => {
+    setActiveFilters(filters)
+    applyFilters(searchValue, filters)
+  }
+
+  const openFilterDialog = () => {
+    setIsFilterDialogOpen(true)
+  }
+
+  const closeFilterDialog = () => {
+    setIsFilterDialogOpen(false)
+  }
+
+  const getActiveFiltersCount = () => {
+    return activeFilters.filter((f) => f.checked).length
+  }
+
+  const currentFilterOptions = filterOptions.map((option) => {
+    const activeFilter = activeFilters.find((f) => f.id === option.id)
+    return activeFilter || option
+  })
 
   return (
     <PlatformLayout>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: '1rem',
-          marginBottom: '2rem',
-        }}
-      >
-        <SearchBar
-          value={searchValue}
-          onSearch={handleSearch}
-          onInputChange={handleInputChange}
-          placeholder="Busque pelo título ou local do problema..."
-          buttonText="Pesquisar"
-        />
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <FilterButton />
-          <Button
-            onClick={() => goToAddProblem()}
-            variant="primary"
-            aria-label="Adicionar novo problema"
-            tabIndex={0}
-          >
-            Adicionar Problema
-          </Button>
-        </div>
-      </div>
-      <div
-        style={{ marginBottom: '1.5rem', color: '#6c757d', fontSize: '1rem' }}
-      >
-        {filteredProblems.length} problemas ao total
-      </div>
-      <GridView>
-        {filteredProblems.map((problem) => (
-          <ProblemCard key={problem.id} {...problem} />
-        ))}
-      </GridView>
+      <MainContainer>
+        <HeaderContainer>
+          <SearchContainer>
+            <ResponsiveSearchBar
+              value={searchValue}
+              onSearch={handleSearch}
+              onInputChange={handleInputChange}
+              placeholder="Busque pelo título ou local do problema..."
+              buttonText="Pesquisar"
+            />
+            <ControlsContainer>
+              <FilterGroup>
+                <FilterButton onClick={openFilterDialog} />
+              </FilterGroup>
+
+              <AddButton
+                onClick={() => goToAddProblem()}
+                variant="primary"
+                aria-label="Adicionar novo problema"
+                tabIndex={0}
+              >
+                Adicionar Problema
+              </AddButton>
+            </ControlsContainer>
+          </SearchContainer>
+        </HeaderContainer>
+
+        <ResultsCounter>
+          <span>{filteredProblems.length} problemas ao total</span>
+          {getActiveFiltersCount() > 0 && (
+            <FilterBadge>
+              {getActiveFiltersCount()} filtro(s) ativo(s)
+            </FilterBadge>
+          )}
+        </ResultsCounter>
+
+        <GridView>
+          {filteredProblems.map((problem) => (
+            <ProblemCard key={problem.id} {...problem} />
+          ))}
+        </GridView>
+      </MainContainer>
+
+      <FilterDialog
+        isOpen={isFilterDialogOpen}
+        onClose={closeFilterDialog}
+        onApply={handleFilterApply}
+        filterOptions={currentFilterOptions}
+        title="Filtrar Problemas"
+        description="Selecione os status para refinar sua busca"
+      />
     </PlatformLayout>
   )
 }

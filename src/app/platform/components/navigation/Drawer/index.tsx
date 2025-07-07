@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { CloseButton, DrawerContainer, DrawerOptions, Overlay } from './styles'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { LinkButton } from '@campusativo-ui/react'
 import { createMenuOptions } from '../menu-options'
+import { LogoutConfirmationModal } from '../../LogoutModal' // Ajuste o caminho conforme necessário/ Ajuste o caminho conforme necessário
 import { IProps } from './index.d'
 import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 import { X } from 'phosphor-react'
@@ -14,12 +15,24 @@ interface DrawerProps extends IProps {
 
 export default function Drawer({ onClose, onLogoutClick }: DrawerProps) {
   const router = useRouter()
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
 
   const menuOptions = createMenuOptions({
     router,
     onLogoutClick,
     onClose,
+    openLogoutModal: () => setIsLogoutModalOpen(true),
   })
+
+  const handleLogoutConfirm = () => {
+    onLogoutClick() // Executa a função de logout
+    onClose() // Fecha o drawer
+    setIsLogoutModalOpen(false) // Fecha o modal
+  }
+
+  const handleLogoutCancel = () => {
+    setIsLogoutModalOpen(false) // Apenas fecha o modal, drawer permanece aberto
+  }
 
   return (
     <>
@@ -32,7 +45,6 @@ export default function Drawer({ onClose, onLogoutClick }: DrawerProps) {
         <CloseButton onClick={onClose} aria-label="Fechar menu" tabIndex={0}>
           <X className="close-icon" weight="bold" size={24} />
         </CloseButton>
-
         <Image
           src={whiteIfalLogo}
           height={68}
@@ -40,7 +52,6 @@ export default function Drawer({ onClose, onLogoutClick }: DrawerProps) {
           quality={100}
           alt="Logo do Instituto Federal de Alagoas."
         />
-
         <DrawerOptions>
           {menuOptions.map((option) => (
             <LinkButton
@@ -56,6 +67,15 @@ export default function Drawer({ onClose, onLogoutClick }: DrawerProps) {
           ))}
         </DrawerOptions>
       </DrawerContainer>
+
+      {/* Modal de confirmação de logout */}
+      <LogoutConfirmationModal
+        isOpen={isLogoutModalOpen}
+        onClose={handleLogoutCancel}
+        onConfirm={handleLogoutConfirm}
+        title="Sair da Plataforma"
+        description="Tem certeza que deseja sair da plataforma? Você precisará fazer login novamente para acessar o sistema."
+      />
     </>
   )
 }

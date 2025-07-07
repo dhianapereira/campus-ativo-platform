@@ -43,7 +43,14 @@ export default function Header({ src, alt, name, position }: IProps) {
           tabIndex={0}
           role="button"
         />
-        {isDrawerOpen && <Drawer onClose={closeDrawer} />}
+        {isDrawerOpen && (
+          <Drawer
+            onClose={closeDrawer}
+            onLogoutClick={function (): void {
+              throw new Error('Function not implemented.')
+            }}
+          />
+        )}
       </DrawerIcon>
     </HeaderContainer>
   )

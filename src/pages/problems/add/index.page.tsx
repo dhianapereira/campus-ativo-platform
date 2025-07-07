@@ -64,6 +64,7 @@ export default function AddProblem() {
             </Text>
           )}
         </Input>
+
         <Input>
           <Text size="md">Local</Text>
           <TextInput
@@ -78,6 +79,7 @@ export default function AddProblem() {
             </Text>
           )}
         </Input>
+
         <Input>
           <Text size="md">Descrição</Text>
           <TextArea
@@ -85,6 +87,12 @@ export default function AddProblem() {
             {...register('description')}
             aria-label="Descrição do problema"
             tabIndex={0}
+            css={{
+              width: '100%',
+              minHeight: '120px',
+              resize: 'vertical',
+              boxSizing: 'border-box',
+            }}
           />
           {errors.description && (
             <Text className="error-message" size="sm">
@@ -92,7 +100,9 @@ export default function AddProblem() {
             </Text>
           )}
         </Input>
+
         <ImageUpload />
+
         <Button
           variant="primary"
           type="submit"
