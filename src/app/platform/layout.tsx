@@ -6,7 +6,11 @@ import { Container, Body, Content } from './styles'
 export default function PlatformLayout({ children }: { children: ReactNode }) {
   return (
     <Container>
-      <Menu />
+      <Menu
+        onLogoutClick={function (): void {
+          throw new Error('Function not implemented.')
+        }}
+      />
       <Body>
         <Header
           name="João dos Santos"
