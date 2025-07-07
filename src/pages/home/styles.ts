@@ -26,16 +26,16 @@ export const ActionsContainer = styled('div', {
 export const HeaderContainer = styled('div', {
   display: 'flex',
   flexDirection: 'column',
-  gap: '$4',
+  gap: '$6', // Espaçamento maior entre pesquisa e controles
   marginBottom: '$8',
 
   '@media(max-width: 640px)': {
-    gap: '$3',
+    gap: '$4',
     marginBottom: '$6',
   },
 
   '@media(max-width: 480px)': {
-    gap: '$2',
+    gap: '$3',
     marginBottom: '$4',
   },
 })
@@ -45,18 +45,18 @@ export const SearchContainer = styled('div', {
   flexDirection: 'row',
   width: '100%',
   gap: '$2',
-
   '@media(max-width: 1024px)': {
     flexDirection: 'column',
-    gap: '$3',
+    gap: '$10', // Aumenta o gap para telas menores
   },
-
   '@media(max-width: 640px)': {
-    gap: '$2',
+    gap: '$10',
+    flexDirection: 'column',
   },
 
   '@media(max-width: 480px)': {
-    gap: '$1',
+    gap: '$10',
+    flexDirection: 'column',
   },
 })
 
@@ -64,25 +64,30 @@ export const ControlsContainer = styled('div', {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  gap: '$4',
+  gap: '$4', // 16px entre os botões conforme Figma
   flexWrap: 'nowrap',
 
   '@media(max-width: 1024px)': {
-    flexWrap: 'wrap',
+    flex: 'nowrap',
+    width: '100%', // Garante que ocupe toda a largura
   },
 
+  // Mantém os botões lado a lado no mobile e ocupa largura total
   '@media(max-width: 853px)': {
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    gap: '$3',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '$4', // Mantém 16px de gap
+    width: '100%', // Ocupa toda a largura disponível
   },
 
   '@media(max-width: 640px)': {
-    gap: '$2',
+    gap: '$4', // Mantém 16px
+    width: '100%',
   },
 
   '@media(max-width: 480px)': {
-    gap: '$1',
+    gap: '$3', // Reduz um pouco em telas muito pequenas
+    width: '100%',
   },
 })
 
@@ -90,24 +95,25 @@ export const FilterGroup = styled('div', {
   display: 'flex',
   alignItems: 'center',
   gap: '$3',
-  flex: '1',
+  flex: '0 0 auto', // Não cresce nem diminui
 
   '@media(max-width: 1024px)': {
-    flex: 'none',
-    minWidth: 'fit-content',
+    flex: '1 1 auto', // Permite crescer no mobile
   },
 
   '@media(max-width: 853px)': {
-    justifyContent: 'center',
-    width: '100%',
+    flex: '1 1 auto', // Cresce para ocupar espaço disponível
+    width: 'auto',
   },
 
   '@media(max-width: 640px)': {
     gap: '$2',
+    flex: '1 1 auto',
   },
 
   '@media(max-width: 480px)': {
     gap: '$1',
+    flex: '1 1 auto',
   },
 })
 
@@ -116,24 +122,28 @@ export const AddButton = styled(Button, {
   minWidth: 'fit-content',
   fontSize: '$4',
   padding: '$3 $5',
+  flex: '0 0 auto', // Não cresce nem diminui
 
   '@media(max-width: 1024px)': {
     padding: '$3 $4',
+    flex: '1 1 auto', // Permite crescer no mobile
   },
 
   '@media(max-width: 853px)': {
-    width: '100%',
-    justifyContent: 'center',
+    flex: '1 1 auto', // Cresce para ocupar espaço disponível
+    width: 'auto',
   },
 
   '@media(max-width: 640px)': {
     padding: '$2 $3',
     fontSize: '$3',
+    flex: '1 1 auto',
   },
 
   '@media(max-width: 480px)': {
     padding: '$2',
     fontSize: '$2',
+    flex: '1 1 auto',
   },
 })
 
