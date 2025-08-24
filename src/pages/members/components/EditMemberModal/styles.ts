@@ -22,6 +22,9 @@ export const ModalContent = styled('div', {
   maxWidth: '600px',
   maxHeight: '90vh',
   overflow: 'hidden',
+  '@media (max-width: 768px)': {
+    maxWidth: '92vw',
+  },
 })
 
 export const ModalHeader = styled('div', {
@@ -65,6 +68,9 @@ export const ModalBody = styled('div', {
   padding: '0 2rem 1rem 2rem',
   maxHeight: '60vh',
   overflow: 'auto',
+  '@media (max-width: 768px)': {
+    padding: '0 1.25rem 1rem 1.25rem',
+  },
 })
 
 export const ModalFooter = styled('div', {
@@ -91,9 +97,12 @@ export const Form = styled('form', {
     '@media (max-width: 768px)': {
       flexDirection: 'column',
       gap: '1.25rem',
+  alignItems: 'stretch',
+  justifyContent: 'flex-start',
 
       '& .name-field': {
-        flex: 'none',
+  flex: 'none',
+  width: '100%',
       },
     },
   },
@@ -118,6 +127,7 @@ export const Input = styled('input', {
   fontSize: '1rem',
   transition: 'border-color 0.2s',
   backgroundColor: 'white',
+  width: '100%',
 
   '&:focus': {
     outline: 'none',
@@ -182,19 +192,17 @@ export const BottomFieldsContainer = styled('div', {
   display: 'flex',
   gap: '2rem',
   alignItems: 'flex-end',
+  justifyContent: 'space-between',
 
   '& > div:first-child': {
     flex: 1,
   },
 
   '@media (max-width: 768px)': {
-    flexDirection: 'column',
-    gap: '1.5rem',
-    alignItems: 'stretch',
-
-    '& > div:first-child': {
-      flex: 'none',
-    },
+  flexDirection: 'row',
+  gap: '1rem',
+  alignItems: 'flex-end',
+  '& > div:first-child': { flex: 1 },
   },
 })
 
@@ -203,8 +211,11 @@ export const StatusContainer = styled('div', {
   flexDirection: 'column',
   gap: '0.5rem',
   minWidth: '120px',
-  alignItems: 'flex-end',
+  alignItems: 'flex-start',
   paddingBottom: 0,
+  '@media (max-width: 768px)': {
+    minWidth: 'auto',
+  },
 })
 
 export const StatusLabel = styled('span', {
@@ -215,9 +226,9 @@ export const StatusLabel = styled('span', {
 
 export const StatusToggle = styled('button', {
   position: 'relative',
-  width: '3.25rem',
-  height: '3rem',
-  borderRadius: '0.75rem',
+  width: '3.5rem',
+  height: '1.75rem',
+  borderRadius: '0.875rem',
   border: 'none',
   cursor: 'pointer',
   transition: 'background-color 0.2s',
@@ -242,10 +253,10 @@ export const StatusToggle = styled('button', {
 
 export const StatusIndicator = styled('div', {
   position: 'absolute',
-  top: '0.875rem',
+  top: '0.25rem',
   left: '0.25rem',
-  width: '1.5rem',
-  height: '1.5rem',
+  width: '1.25rem',
+  height: '1.25rem',
   borderRadius: '50%',
   backgroundColor: 'white',
   transition: 'transform 0.2s',

@@ -186,17 +186,6 @@ export function EditMemberModal({
                   <ErrorMessage>{errors.name.message}</ErrorMessage>
                 )}
               </FormField>
-
-              <StatusContainer>
-                <StatusLabel>Status</StatusLabel>
-                <StatusToggle
-                  isActive={isActive}
-                  onClick={() => setIsActive(!isActive)}
-                  disabled={isSubmitting}
-                >
-                  <StatusIndicator isActive={isActive} />
-                </StatusToggle>
-              </StatusContainer>
             </div>
 
             <FormField>
@@ -226,7 +215,7 @@ export function EditMemberModal({
 
             <BottomFieldsContainer>
               <FormField>
-                <Label htmlFor="permissions">Permissões</Label>
+                <Label htmlFor="permissions">Permissão</Label>
                 <SelectContainer>
                   <Select
                     id="permissions"
@@ -244,6 +233,18 @@ export function EditMemberModal({
                   <ErrorMessage>{errors.permissions.message}</ErrorMessage>
                 )}
               </FormField>
+
+              <StatusContainer>
+                <StatusLabel>Status</StatusLabel>
+                <StatusToggle
+                  type="button"
+                  isActive={isActive}
+                  onClick={() => setIsActive(!isActive)}
+                  disabled={isSubmitting}
+                >
+                  <StatusIndicator isActive={isActive} />
+                </StatusToggle>
+              </StatusContainer>
             </BottomFieldsContainer>
           </Form>
         </ModalBody>
