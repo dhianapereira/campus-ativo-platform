@@ -4,8 +4,7 @@ import { MainContainer } from './styles'
 export default function Home() {
   return (
     <PlatformLayout>
-      <MainContainer>
-      </MainContainer>
+      <MainContainer></MainContainer>
     </PlatformLayout>
   )
 }

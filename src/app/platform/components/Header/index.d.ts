@@ -3,4 +3,5 @@ export interface IProps {
   alt: string
   name: string
   position: string
+  showLoadingState?: boolean
 }

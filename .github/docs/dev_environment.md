@@ -1,7 +1,9 @@
 # Ambiente de Desenvolvimento
+
 Para manter um padrão de versão das ferramentas usadas no projeto, siga esse passo a passo:
 
 ## Instale o Git
+
 Para verificar se o Git está instalado na sua máquina, execute:
 
 ```bash
@@ -15,6 +17,7 @@ Caso não esteja, acesse https://git-scm.com e baixe para o seu sistema operacio
 Para confirmar a instalação, execute o comando acima.
 
 ## Instale o NodeJS
+
 Assim como o Git, verifique se já possui o NodeJS instalado com o comando abaixo.
 
 ```bash

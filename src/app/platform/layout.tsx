@@ -2,23 +2,36 @@ import { ReactNode } from 'react'
 import Header from './components/Header'
 import Menu from './components/navigation/Menu'
 import { Container, Body, Content } from './styles'
+import { ProtectedRoute } from '@/components/protected-route'
+import { useAuth } from '@/contexts/auth-context'
 
 export default function PlatformLayout({ children }: { children: ReactNode }) {
+  const { user, signOut, isLoading, isProfileLoading, profileError } = useAuth()
+
+  const handleLogout = async () => {
+    await signOut()
+  }
+
+  const showLoadingState =
+    isLoading || isProfileLoading || (!user && !profileError)
+
+  const userName = user?.name || 'Usuário'
+  const userPosition = user?.position || 'Sem cargo definido'
+
   return (
-    <Container>
-      <Menu
-        onLogoutClick={function (): void {
-          throw new Error('Function not implemented.')
-        }}
-      />
-      <Body>
-        <Header
-          name="João dos Santos"
-          alt="João dos Santos"
-          position="Otorrinolaringologista"
-        />
-        <Content>{children}</Content>
-      </Body>
-    </Container>
+    <ProtectedRoute>
+      <Container>
+        <Menu onLogoutClick={handleLogout} />
+        <Body>
+          <Header
+            name={userName}
+            alt={userName}
+            position={userPosition}
+            showLoadingState={showLoadingState}
+          />
+          <Content>{children}</Content>
+        </Body>
+      </Container>
+    </ProtectedRoute>
   )
 }

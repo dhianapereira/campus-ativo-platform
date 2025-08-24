@@ -5,25 +5,31 @@ import { useRouter } from 'next/router'
 import { LinkButton } from '@campusativo-ui/react'
 import { createMenuOptions } from '../menu-options'
 import { LogoutConfirmationModal } from '../../LogoutModal'
+import { useAuth } from '@/contexts/auth-context'
 import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 
 interface MenuProps {
-  onLogoutClick: () => void
+  onLogoutClick: () => Promise<void>
 }
 
 export default function Menu({ onLogoutClick }: MenuProps) {
   const router = useRouter()
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+  const { canAccessUserManagement, canAccessSettings } = useAuth()
 
   const menuOptions = createMenuOptions({
     router,
     onLogoutClick,
     openLogoutModal: () => setIsLogoutModalOpen(true),
+    canAccessUserManagement: canAccessUserManagement(),
+    canAccessSettings: canAccessSettings(),
   })
 
-  const handleLogoutConfirm = () => {
-    onLogoutClick()
-    setIsLogoutModalOpen(false)
+  const handleLogoutConfirm = async () => {
+    try {
+      await onLogoutClick()
+      setIsLogoutModalOpen(false)
+    } catch (error) {}
   }
 
   const handleLogoutCancel = () => {
