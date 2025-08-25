@@ -12,7 +12,7 @@ export function mapRoleToDisplayName(role: string): string {
     case 'REPORTER':
       return 'Usuário'
     default:
-      return 'Usuário'
+      return 'Relator'
   }
 }
 
