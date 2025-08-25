@@ -31,8 +31,8 @@ const categorySchema = z.object({
     .max(100, 'Nome deve ter no máximo 100 caracteres'),
   description: z
     .string()
-    .min(1, 'Descrição é obrigatória')
-    .max(500, 'Descrição deve ter no máximo 500 caracteres'),
+    .max(500, 'Descrição deve ter no máximo 500 caracteres')
+    .optional(),
 })
 
 type CategoryFormData = z.infer<typeof categorySchema>
@@ -61,7 +61,7 @@ export function AddCategoryModal({
   })
 
   const createCategoryMutation = useMutation({
-    mutationFn: async (data: CategoryFormData) => {
+    mutationFn: async (data: { name: string; description?: string }) => {
       const response = await fetch('/api/categories', {
         method: 'POST',
         headers: {
@@ -96,7 +96,11 @@ export function AddCategoryModal({
 
   const onSubmit = async (data: CategoryFormData) => {
     setIsSubmitting(true)
-    createCategoryMutation.mutate(data)
+    const payload: { name: string; description?: string } = { name: data.name }
+    if (data.description && data.description.trim() !== '') {
+      payload.description = data.description.trim()
+    }
+    createCategoryMutation.mutate(payload)
   }
 
   const handleClose = () => {
@@ -125,7 +129,7 @@ export function AddCategoryModal({
               <Input
                 id="name"
                 {...register('name')}
-                placeholder="Insira o nome do local..."
+                placeholder="Insira o nome da categoria..."
                 disabled={isSubmitting}
               />
               {errors.name && (
@@ -138,7 +142,7 @@ export function AddCategoryModal({
               <TextArea
                 id="description"
                 {...register('description')}
-                placeholder="Detalhe o local brevemente..."
+                placeholder="Detalhe a categoria brevemente..."
                 rows={6}
                 disabled={isSubmitting}
               />

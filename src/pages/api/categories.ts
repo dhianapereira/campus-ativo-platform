@@ -42,17 +42,15 @@ export default async function handler(
     try {
       const { name, description } = req.body
 
-      if (!name || !description) {
-        return res
-          .status(400)
-          .json({ message: 'Nome e descrição são obrigatórios' })
+      if (!name || name.trim() === '') {
+        return res.status(400).json({ message: 'Nome é obrigatório' })
       }
 
       const result = await AXIOS_INSTANCE.post(
         '/categories',
         {
           name,
-          description,
+          description: description ?? '',
         },
         {
           headers: {

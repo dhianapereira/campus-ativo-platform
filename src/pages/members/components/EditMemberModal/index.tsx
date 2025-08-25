@@ -29,6 +29,7 @@ import {
 import { X } from 'phosphor-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { useAuth } from '@/contexts/auth-context'
 import type {
   FetchUsersControllerHandle200UsersItem,
   ChangeUserRoleControllerHandleBodyRole,
@@ -60,7 +61,7 @@ interface EditMemberModalProps {
 }
 
 const permissionOptions = [
-  { value: 'REPORTER', label: 'Usuário' },
+  { value: 'REPORTER', label: 'Relator' },
   { value: 'MANAGER', label: 'Gerente' },
   { value: 'DIRECTOR', label: 'Diretor' },
   { value: 'ADMIN', label: 'Administrador' },
@@ -72,6 +73,7 @@ export function EditMemberModal({
   onSuccess,
   member,
 }: EditMemberModalProps) {
+  const { user, canManageUserRole } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isActive, setIsActive] = useState(true)
   const queryClient = useQueryClient()
@@ -162,6 +164,11 @@ export function EditMemberModal({
 
   if (!isOpen || !member) return null
 
+  const isSelf = user?.id && member?.id && user.id === member.id
+  const visiblePermissionOptions = permissionOptions.filter((opt) =>
+    canManageUserRole(opt.value as ChangeUserRoleControllerHandleBodyRole),
+  )
+
   return (
     <ModalOverlay onClick={handleClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -220,9 +227,9 @@ export function EditMemberModal({
                   <Select
                     id="permissions"
                     {...register('permissions')}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !!isSelf}
                   >
-                    {permissionOptions.map((option) => (
+                    {visiblePermissionOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>

@@ -34,12 +34,12 @@ const locationSchema = z.object({
     .max(100, 'Nome deve ter no máximo 100 caracteres'),
   code: z
     .string()
-    .min(1, 'Número é obrigatório')
-    .max(20, 'Número deve ter no máximo 20 caracteres'),
+    .max(20, 'Número deve ter no máximo 20 caracteres')
+    .optional(),
   description: z
     .string()
-    .min(1, 'Descrição é obrigatória')
-    .max(500, 'Descrição deve ter no máximo 500 caracteres'),
+    .max(500, 'Descrição deve ter no máximo 500 caracteres')
+    .optional(),
 })
 
 type LocationFormData = z.infer<typeof locationSchema>

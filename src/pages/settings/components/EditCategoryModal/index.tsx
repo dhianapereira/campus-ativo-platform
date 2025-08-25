@@ -34,8 +34,8 @@ const categorySchema = z.object({
     .max(100, 'Nome deve ter no máximo 100 caracteres'),
   description: z
     .string()
-    .min(1, 'Descrição é obrigatória')
-    .max(500, 'Descrição deve ter no máximo 500 caracteres'),
+    .max(500, 'Descrição deve ter no máximo 500 caracteres')
+    .optional(),
 })
 
 type CategoryFormData = z.infer<typeof categorySchema>
@@ -45,6 +45,12 @@ interface CategoryItem {
   name: string
   description: string
   isActive?: boolean
+}
+
+type UpdateCategoryPayload = {
+  name: string
+  description?: string
+  isActive: boolean
 }
 
 interface EditCategoryModalProps {
@@ -76,13 +82,13 @@ export function EditCategoryModal({
   useEffect(() => {
     if (category) {
       setValue('name', category.name)
-      setValue('description', category.description)
+      setValue('description', category.description ?? '')
       setIsActive(category.isActive ?? true)
     }
   }, [category, setValue])
 
   const updateCategoryMutation = useMutation({
-    mutationFn: async (payload: CategoryFormData & { isActive: boolean }) => {
+    mutationFn: async (payload: UpdateCategoryPayload) => {
       return new Promise((resolve) => {
         setTimeout(() => {
           resolve({ success: true, received: !!payload })
@@ -101,7 +107,16 @@ export function EditCategoryModal({
 
   const onSubmit = async (data: CategoryFormData) => {
     setIsSubmitting(true)
-    updateCategoryMutation.mutate({ ...data, isActive })
+    const payload: UpdateCategoryPayload = {
+      name: data.name,
+      isActive,
+    }
+
+    if (data.description && data.description.trim() !== '') {
+      payload.description = data.description.trim()
+    }
+
+    updateCategoryMutation.mutate(payload)
   }
 
   const handleClose = () => {

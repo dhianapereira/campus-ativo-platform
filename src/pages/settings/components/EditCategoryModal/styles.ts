@@ -13,7 +13,7 @@ export const ModalOverlay = styled('div', {
   zIndex: 1000,
   padding: '1rem',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '1rem',
     alignItems: 'center',
     justifyContent: 'center',
@@ -29,10 +29,10 @@ export const ModalContent = styled('div', {
   maxHeight: '90vh',
   overflow: 'hidden',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     width: 'calc(100vw - 2rem)',
     maxWidth: 'calc(100vw - 2rem)',
-    borderRadius: '16px',
+    borderRadius: '1rem',
     maxHeight: 'none',
     height: 'auto',
   },
@@ -44,7 +44,7 @@ export const ModalHeader = styled('div', {
   justifyContent: 'space-between',
   padding: '2rem 2rem 1rem 2rem',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '1.5rem 1.5rem 1rem 1.5rem',
   },
 })
@@ -57,7 +57,7 @@ export const ModalTitle = styled('h2', {
   color: '#111827',
   margin: 0,
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     fontSize: '1.375rem',
     fontWeight: 700,
   },
@@ -91,7 +91,7 @@ export const ModalBody = styled('div', {
   overflowY: 'auto',
   maxHeight: 'calc(90vh - 200px)',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '0 1.5rem',
     maxHeight: 'none',
   },
@@ -107,21 +107,19 @@ export const Form = styled('form', {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: '1.5rem',
+    gap: '2rem',
 
     '& .name-field': {
       flex: 1,
-      marginRight: '2rem',
     },
 
-    '@media (max-width: 640px)': {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
+    '@media (max-width: 48rem)': {
       gap: '1rem',
       marginBottom: '1.25rem',
 
       '& .name-field': {
-        marginRight: '1rem',
         flex: 1,
+        minWidth: '0',
       },
     },
   },
@@ -217,12 +215,9 @@ export const StatusContainer = styled('div', {
   minWidth: '120px',
   paddingBottom: 0,
 
-  '@media (max-width: 640px)': {
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    gap: '0.75rem',
-    paddingTop: '0',
-    minWidth: '100px',
+  '@media (max-width: 48rem)': {
+    alignItems: 'flex-start',
+    minWidth: 'auto',
     flexShrink: 0,
   },
 })
@@ -258,8 +253,8 @@ export const StatusToggle = styled('button', {
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },
 
-  '@media (max-width: 640px)': {
-    borderRadius: '16px',
+  '@media (max-width: 48rem)': {
+    borderRadius: '1rem',
   },
 
   variants: {
@@ -294,7 +289,7 @@ export const ModalFooter = styled('div', {
   padding: '1.5rem 2rem 2rem 2rem',
   borderTop: 'none',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '1rem 1.5rem 1.5rem 1.5rem',
   },
 })
@@ -309,7 +304,7 @@ export const ButtonGroup = styled('div', {
     display: 'flex',
     gap: '1rem',
 
-    '@media (max-width: 640px)': {
+    '@media (max-width: 48rem)': {
       gap: '0.75rem',
       flex: 1,
 
@@ -319,7 +314,7 @@ export const ButtonGroup = styled('div', {
     },
   },
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -359,11 +354,11 @@ export const DeleteButton = styled('button', {
     display: 'inline',
   },
 
-  '@media (max-width: 640px)': {
-    width: '48px',
-    height: '48px',
+  '@media (max-width: 48rem)': {
+    width: '3rem',
+    height: '3rem',
     padding: '0',
-    borderRadius: '8px',
+    borderRadius: '0.5rem',
     fontSize: '0',
     border: '1px solid #dc2626',
     backgroundColor: '#ffffff',
@@ -399,11 +394,11 @@ export const CancelButton = styled('button', {
     cursor: 'not-allowed',
   },
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '0.875rem 1.5rem',
     fontSize: '1rem',
     fontWeight: 500,
-    borderRadius: '8px',
+    borderRadius: '0.5rem',
   },
 })
 
@@ -431,11 +426,11 @@ export const SaveButton = styled('button', {
     cursor: 'not-allowed',
   },
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '0.875rem 1.5rem',
     fontSize: '1rem',
     fontWeight: 500,
-    borderRadius: '8px',
+    borderRadius: '0.5rem',
     backgroundColor: '#00875F',
     border: '1px solid #00875F',
   },

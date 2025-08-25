@@ -43,16 +43,14 @@ export default async function handler(
     try {
       const { name, number, description } = req.body
 
-      if (!name || !number || !description) {
-        return res
-          .status(400)
-          .json({ message: 'Nome, número e descrição são obrigatórios' })
+      if (!name || name.trim() === '') {
+        return res.status(400).json({ message: 'Nome é obrigatório' })
       }
 
       const locationData = {
         name,
-        code: number,
-        description,
+        code: number ?? undefined,
+        description: description ?? '',
       }
 
       const result = await createLocationControllerHandle(locationData, {

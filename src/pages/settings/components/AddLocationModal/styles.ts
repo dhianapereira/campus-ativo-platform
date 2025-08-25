@@ -13,7 +13,7 @@ export const ModalOverlay = styled('div', {
   zIndex: 1000,
   padding: '1rem',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '1rem',
     alignItems: 'center',
     justifyContent: 'center',
@@ -29,10 +29,10 @@ export const ModalContent = styled('div', {
   maxHeight: '90vh',
   overflow: 'hidden',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     width: 'calc(100vw - 2rem)',
     maxWidth: 'calc(100vw - 2rem)',
-    borderRadius: '16px',
+    borderRadius: '1rem',
     maxHeight: 'none',
     height: 'auto',
   },
@@ -44,7 +44,7 @@ export const ModalHeader = styled('div', {
   justifyContent: 'space-between',
   padding: '2rem 2rem 1rem 2rem',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '1.5rem 1.5rem 1rem 1.5rem',
   },
 })
@@ -55,7 +55,7 @@ export const ModalTitle = styled('h2', {
   color: '#111827',
   margin: 0,
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     fontSize: '1.375rem',
     fontWeight: 700,
   },
@@ -89,7 +89,7 @@ export const ModalBody = styled('div', {
   maxHeight: '60vh',
   overflow: 'auto',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '0 1.5rem',
     maxHeight: 'none',
   },
@@ -100,7 +100,7 @@ export const ModalFooter = styled('div', {
   borderTop: 'none',
   backgroundColor: 'white',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '1rem 1.5rem 1.5rem 1.5rem',
   },
 })
@@ -110,7 +110,7 @@ export const Form = styled('form', {
   flexDirection: 'column',
   gap: '1.5rem',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     gap: '1.25rem',
   },
 })
@@ -126,7 +126,7 @@ export const Label = styled('label', {
   fontWeight: 500,
   color: '#111827',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     fontSize: '1rem',
     fontWeight: 600,
     marginBottom: '0.25rem',
@@ -158,10 +158,10 @@ export const Input = styled('input', {
     cursor: 'not-allowed',
   },
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '1rem',
     fontSize: '1rem',
-    borderRadius: '8px',
+    borderRadius: '0.5rem',
     border: '1px solid #e5e7eb',
   },
 })
@@ -194,14 +194,14 @@ export const TextArea = styled('textarea', {
     cursor: 'not-allowed',
   },
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     padding: '1rem',
     fontSize: '1rem',
-    borderRadius: '8px',
+    borderRadius: '0.5rem',
     border: '1px solid #e5e7eb',
-    minHeight: '70px',
-    maxHeight: '70px',
-    height: '70px',
+    minHeight: '4.5rem',
+    maxHeight: '4.5rem',
+    height: '4.5rem',
     resize: 'none',
   },
 })
@@ -216,7 +216,7 @@ export const ButtonGroup = styled('div', {
   gap: '1rem',
   justifyContent: 'flex-end',
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     flexDirection: 'row',
     gap: '0.75rem',
     justifyContent: 'space-between',
@@ -246,13 +246,13 @@ export const CancelButton = styled('button', {
     cursor: 'not-allowed',
   },
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     flex: 1,
     justifyContent: 'center',
     padding: '0.875rem 1.5rem',
     fontSize: '1rem',
     fontWeight: 500,
-    borderRadius: '8px',
+    borderRadius: '0.5rem',
     border: '1px solid #d1d5db',
     color: '#374151',
   },
@@ -282,13 +282,13 @@ export const SubmitButton = styled('button', {
     cursor: 'not-allowed',
   },
 
-  '@media (max-width: 640px)': {
+  '@media (max-width: 48rem)': {
     flex: 1,
     justifyContent: 'center',
     padding: '0.875rem 1.5rem',
     fontSize: '1rem',
     fontWeight: 500,
-    borderRadius: '8px',
+    borderRadius: '0.5rem',
     backgroundColor: '#00875F',
     border: '1px solid #00875F',
   },

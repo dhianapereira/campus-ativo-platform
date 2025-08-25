@@ -45,10 +45,8 @@ export default function Login() {
       })
     } catch (error: unknown) {
       if (error instanceof Error) {
-        if (
-          error.message.includes('401') ||
-          error.message.includes('Authentication failed')
-        ) {
+        const status = (error as Error & { status?: number }).status
+        if (status === 400 || status === 401) {
           setError('password', {
             type: 'manual',
             message: 'E-mail ou senha incorretos',

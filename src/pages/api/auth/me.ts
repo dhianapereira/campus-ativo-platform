@@ -64,9 +64,9 @@ export default async function handler(
     const userData = {
       id: profileData.id,
       name: profileData.name,
-      email: emailFromToken || 'user@ifal.edu.br', // Fallback email
-      role: roleFromToken || profileData.role, // Keep role for authorization
-      position: profileData.position || 'Sem cargo definido', // Position for display
+      email: emailFromToken || 'user@ifal.edu.br',
+      role: roleFromToken || profileData.role,
+      position: profileData.position || 'Não informado',
     }
 
     return res.status(200).json({

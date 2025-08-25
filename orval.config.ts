@@ -7,7 +7,6 @@ export default defineConfig({
     },
     input: {
       target: "./server/openapi.json",
-      // validation: true,
     },
     output: {
       client: "react-query",

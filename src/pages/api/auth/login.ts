@@ -76,13 +76,24 @@ export default async function handler(
         name: profileData.name,
         email, // Use the email from login request
         role: roleFromToken || profileData.role, // Keep role for authorization
-        position: profileData.position || 'Sem cargo definido', // Position for display
+        position: profileData.position || 'Não informado', // Position for display
       },
     })
-  } catch (error) {
-    return res.status(500).json({
+  } catch (error: any) {
+    const status = error?.response?.status ?? 500
+    const backendError =
+      error?.response?.data?.error ||
+      error?.response?.data?.message ||
+      error?.message
+
+    const isAuthError = status === 400 || status === 401
+    const message = isAuthError
+      ? 'E-mail ou senha incorretos'
+      : backendError || 'Internal server error'
+
+    return res.status(status).json({
       success: false,
-      error: 'Internal server error',
+      error: message,
     })
   }
 }

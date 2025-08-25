@@ -38,6 +38,7 @@ import {
   PaginationDots,
 } from './styles'
 import PlatformLayout from '@/app/platform/layout'
+import EmptyState from '@/components/empty-state'
 import { RoleProtectedRoute } from '@/components/role-protected-route'
 import { AddCategoryModal } from './components/AddCategoryModal'
 import { AddLocationModal } from './components/AddLocationModal'
@@ -352,14 +353,11 @@ export default function SettingsPage() {
   }
 
   if (error) {
-    const errorMessage = error.message || 'Erro desconhecido'
     return (
       <RoleProtectedRoute requiredLevel={2}>
         <PlatformLayout>
           <MainContainer>
-            <div style={{ padding: '2rem', textAlign: 'center' }}>
-              Erro ao carregar dados: {errorMessage}
-            </div>
+            <EmptyState onAction={() => window.location.reload()} />
           </MainContainer>
         </PlatformLayout>
       </RoleProtectedRoute>
@@ -436,75 +434,86 @@ export default function SettingsPage() {
           </SearchActionsContainer>
 
           {/* Desktop Table */}
-          <DesktopTableWrapper>
-            <TableWrapper>
-              <Table>
-                <thead>
-                  <TableRow isHeader>
-                    <TableHeader>
-                      <Checkbox
-                        type="checkbox"
-                        checked={isAllCurrentSelected}
-                        onChange={handleSelectAll}
-                      />
-                    </TableHeader>
-                    <TableHeader>Nome</TableHeader>
-                    {activeTab === 'localizacao' && (
-                      <TableHeader>Número</TableHeader>
-                    )}
-                    <TableHeader>Descrição</TableHeader>
-                  </TableRow>
-                </thead>
-                <tbody>
-                  {currentItems.length === 0 && (
-                    <TableRow isHeader={false}>
-                      <TableCell colSpan={activeTab === 'localizacao' ? 4 : 3}>
-                        {searchTerm
-                          ? 'Nenhum resultado encontrado para a busca.'
-                          : 'Nenhum item cadastrado.'}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                  {currentItems.map((item: LocationItem | CategoryItem) => (
-                    <TableRow
-                      key={item.id}
-                      isHeader={false}
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => {
-                        if (activeTab === 'localizacao') {
-                          handleEditLocation(item as LocationItem)
-                        } else {
-                          handleEditCategory(item as CategoryItem)
-                        }
-                      }}
-                    >
-                      <TableCell onClick={(e) => e.stopPropagation()}>
+          {currentItems.length === 0 ? (
+            <EmptyState
+              title="Nenhum resultado encontrado"
+              message={
+                searchTerm
+                  ? 'Tente ajustar sua busca e tente novamente.'
+                  : activeTab === 'localizacao'
+                    ? 'Não há localizações cadastradas ainda.'
+                    : 'Não há categorias cadastradas ainda.'
+              }
+              onAction={() => window.location.reload()}
+            />
+          ) : (
+            <DesktopTableWrapper>
+              <TableWrapper>
+                <Table>
+                  <thead>
+                    <TableRow isHeader>
+                      <TableHeader>
                         <Checkbox
                           type="checkbox"
-                          checked={selectedItems.includes(item.id)}
-                          onChange={() => handleSelectItem(item.id)}
+                          checked={isAllCurrentSelected}
+                          onChange={handleSelectAll}
                         />
-                      </TableCell>
-                      <TableCell>{item.name}</TableCell>
+                      </TableHeader>
+                      <TableHeader>Nome</TableHeader>
                       {activeTab === 'localizacao' && (
-                        <TableCell>{(item as LocationItem).code}</TableCell>
+                        <TableHeader>Número</TableHeader>
                       )}
-                      <TableCell>{item.description}</TableCell>
+                      <TableHeader>Descrição</TableHeader>
                     </TableRow>
-                  ))}
-                </tbody>
-              </Table>
-            </TableWrapper>
-          </DesktopTableWrapper>
+                  </thead>
+                  <tbody>
+                    {currentItems.map((item: LocationItem | CategoryItem) => (
+                      <TableRow
+                        key={item.id}
+                        isHeader={false}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          if (activeTab === 'localizacao') {
+                            handleEditLocation(item as LocationItem)
+                          } else {
+                            handleEditCategory(item as CategoryItem)
+                          }
+                        }}
+                      >
+                        <TableCell onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            type="checkbox"
+                            checked={selectedItems.includes(item.id)}
+                            onChange={() => handleSelectItem(item.id)}
+                          />
+                        </TableCell>
+                        <TableCell>{item.name}</TableCell>
+                        {activeTab === 'localizacao' && (
+                          <TableCell>{(item as LocationItem).code}</TableCell>
+                        )}
+                        <TableCell>{item.description}</TableCell>
+                      </TableRow>
+                    ))}
+                  </tbody>
+                </Table>
+              </TableWrapper>
+            </DesktopTableWrapper>
+          )}
 
           {/* Mobile Cards */}
           <MobileCardsWrapper>
             {currentItems.length === 0 && (
-              <div style={{ padding: '2rem', textAlign: 'center' }}>
-                {searchTerm
-                  ? 'Nenhum resultado encontrado para a busca.'
-                  : 'Nenhum item cadastrado.'}
-              </div>
+              <EmptyState
+                title="Nenhum resultado encontrado"
+                message={
+                  searchTerm
+                    ? 'Tente ajustar sua busca e tente novamente.'
+                    : activeTab === 'localizacao'
+                      ? 'Não há localizações cadastradas ainda.'
+                      : 'Não há categorias cadastradas ainda.'
+                }
+                onAction={() => window.location.reload()}
+              />
             )}
             {currentItems.map((item: LocationItem | CategoryItem) => (
               <div key={item.id}>
@@ -548,7 +557,11 @@ export default function SettingsPage() {
             ))}
           </MobileCardsWrapper>
 
-          <PaginationContainer>{renderPaginationButtons()}</PaginationContainer>
+          {currentItems.length > 0 && (
+            <PaginationContainer>
+              {renderPaginationButtons()}
+            </PaginationContainer>
+          )}
 
           {/* Modals */}
           <AddCategoryModal

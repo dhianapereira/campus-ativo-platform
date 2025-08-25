@@ -16,7 +16,7 @@ export default function PlatformLayout({ children }: { children: ReactNode }) {
     isLoading || isProfileLoading || (!user && !profileError)
 
   const userName = user?.name || 'Usuário'
-  const userPosition = user?.position || 'Sem cargo definido'
+  const userPosition = user?.position || 'Não informado'
 
   return (
     <ProtectedRoute>

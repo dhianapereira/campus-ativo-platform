@@ -18,10 +18,11 @@ export default async function handler(
     const cookie = serialize('auth-token', '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
       maxAge: 0,
       expires: new Date(0),
       path: '/',
+      domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost',
     })
 
     res.setHeader('Set-Cookie', cookie)

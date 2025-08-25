@@ -36,6 +36,22 @@ export const HeaderContainer = styled('div', {
   },
 })
 
+export const SectionTitle = styled('h2', {
+  margin: 0,
+  color: '#111827',
+  fontWeight: 700,
+  lineHeight: 1.3,
+  fontSize: '1.5rem',
+
+  '@media(max-width: 768px)': {
+    fontSize: '1.375rem',
+  },
+
+  '@media(max-width: 480px)': {
+    fontSize: '1.25rem',
+  },
+})
+
 export const SearchContainer = styled('div', {
   display: 'flex',
   flexDirection: 'row',

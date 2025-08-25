@@ -81,8 +81,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }
 
-  // removed auto-refresh on focus/visibility/route changes
-
   async function signIn({ email, password }: AuthenticateRequest) {
     try {
       const response = await fetch('/api/auth/login', {
@@ -95,7 +93,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const data = await response.json()
 
       if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Authentication failed')
+        type ErrorWithStatus = Error & { status?: number }
+        const err: ErrorWithStatus = new Error(
+          data.error || 'Authentication failed',
+        )
+        err.status = response.status
+        throw err
       }
 
       setUser(data.user)
@@ -107,12 +110,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function signOut() {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+    } catch {}
+
     setUser(null)
 
     await router.replace('/login')
 
     if (typeof window !== 'undefined') {
-      window.history.pushState(null, '', '/login')
+      // Prevent going back into protected pages
+      window.history.replaceState(null, '', '/login')
     }
   }
 

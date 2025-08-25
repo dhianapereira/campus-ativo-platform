@@ -22,9 +22,10 @@ import {
   PaginationButton,
   PaginationDots,
   MainContainer,
+  SectionTitle,
 } from './styles'
 import PlatformLayout from '@/app/platform/layout'
-import { RoleProtectedRoute } from '@/components/role-protected-route'
+import EmptyState from '@/components/empty-state'
 import { useAuth } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
 import type { FetchUsersControllerHandle200UsersItem } from '../../../server/client/models'
@@ -59,7 +60,7 @@ export default function MembersPage() {
 
   const canLoad = hasRoleLevel(3)
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       const response = await fetch('/api/users', {
@@ -107,6 +108,10 @@ export default function MembersPage() {
     startIndex + itemsPerPage,
   )
 
+  if (currentPage > 1 && totalPages > 0 && currentPage > totalPages) {
+    setCurrentPage(totalPages)
+  }
+
   const handleSearch = (query: string) => {
     setSearchTerm(query)
     setCurrentPage(1)
@@ -117,17 +122,32 @@ export default function MembersPage() {
   }
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
+    if (totalPages === 0) return
+    const next = Math.max(1, Math.min(page, totalPages))
+    setCurrentPage(next)
   }
 
   const renderPaginationButtons = () => {
-    const buttons = []
+    const buttons: React.ReactNode[] = []
 
+    const addPageButton = (page: number) =>
+      buttons.push(
+        <PaginationButton
+          key={page}
+          onClick={() => handlePageChange(page)}
+          isActive={currentPage === page}
+          variant="number"
+        >
+          {page}
+        </PaginationButton>,
+      )
+
+    // Prev
     buttons.push(
       <PaginationButton
         key="prev"
         onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
+        disabled={currentPage <= 1}
         variant="nav"
         aria-label="Página anterior"
       >
@@ -136,79 +156,29 @@ export default function MembersPage() {
       </PaginationButton>,
     )
 
-    buttons.push(
-      <PaginationButton
-        key={1}
-        onClick={() => handlePageChange(1)}
-        isActive={currentPage === 1}
-        variant="number"
-      >
-        1
-      </PaginationButton>,
-    )
+    if (totalPages <= 7) {
+      for (let p = 1; p <= totalPages; p++) addPageButton(p)
+    } else {
+      const left = Math.max(2, currentPage - 1)
+      const right = Math.min(totalPages - 1, currentPage + 1)
+      addPageButton(1)
 
-    if (totalPages >= 2) {
-      buttons.push(
-        <PaginationButton
-          key={2}
-          onClick={() => handlePageChange(2)}
-          isActive={currentPage === 2}
-          variant="number"
-        >
-          2
-        </PaginationButton>,
-      )
-    }
+      if (left > 2)
+        buttons.push(<PaginationDots key="dots-left">...</PaginationDots>)
 
-    if (totalPages >= 3) {
-      buttons.push(
-        <PaginationButton
-          key={3}
-          onClick={() => handlePageChange(3)}
-          isActive={currentPage === 3}
-          variant="number"
-        >
-          3
-        </PaginationButton>,
-      )
-    }
+      for (let p = left; p <= right; p++) addPageButton(p)
 
-    if (totalPages > 5) {
-      buttons.push(<PaginationDots key="dots">...</PaginationDots>)
-    }
+      if (right < totalPages - 1)
+        buttons.push(<PaginationDots key="dots-right">...</PaginationDots>)
 
-    if (totalPages > 5) {
-      const secondToLast = totalPages - 1
-      const last = totalPages
-
-      buttons.push(
-        <PaginationButton
-          key={secondToLast}
-          onClick={() => handlePageChange(secondToLast)}
-          isActive={currentPage === secondToLast}
-          variant="number"
-        >
-          {secondToLast}
-        </PaginationButton>,
-      )
-
-      buttons.push(
-        <PaginationButton
-          key={last}
-          onClick={() => handlePageChange(last)}
-          isActive={currentPage === last}
-          variant="number"
-        >
-          {last}
-        </PaginationButton>,
-      )
+      addPageButton(totalPages)
     }
 
     buttons.push(
       <PaginationButton
         key="next"
         onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
+        disabled={currentPage >= totalPages}
         variant="nav"
         aria-label="Próxima página"
       >
@@ -222,70 +192,76 @@ export default function MembersPage() {
 
   if (!canLoad) {
     return (
-      <RoleProtectedRoute requiredLevel={3}>
-        <PlatformLayout>
-          <MainContainer>
-            <div>Você não tem permissão para visualizar os membros.</div>
-          </MainContainer>
-        </PlatformLayout>
-      </RoleProtectedRoute>
+      <PlatformLayout>
+        <MainContainer>
+          <div>Você não tem permissão para visualizar os membros.</div>
+        </MainContainer>
+      </PlatformLayout>
     )
   }
 
   if (isLoading) {
     return (
-      <RoleProtectedRoute requiredLevel={3}>
-        <PlatformLayout>
-          <MainContainer>
-            <div>Carregando...</div>
-          </MainContainer>
-        </PlatformLayout>
-      </RoleProtectedRoute>
+      <PlatformLayout>
+        <MainContainer>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            Carregando...
+          </div>
+        </MainContainer>
+      </PlatformLayout>
     )
   }
 
   if (error) {
-    const errorMessage = error.message || 'Erro desconhecido'
     return (
-      <RoleProtectedRoute requiredLevel={3}>
-        <PlatformLayout>
-          <MainContainer>
-            <div>Erro ao carregar membros: {errorMessage}</div>
-          </MainContainer>
-        </PlatformLayout>
-      </RoleProtectedRoute>
+      <PlatformLayout>
+        <MainContainer>
+          <EmptyState onAction={() => refetch()} />
+        </MainContainer>
+      </PlatformLayout>
     )
   }
 
   return (
-    <RoleProtectedRoute requiredLevel={3}>
-      <PlatformLayout>
-        <MainContainer>
-          <HeaderContainer>
-            <SearchContainer>
-              <SearchInputContainer>
-                <SearchIcon>
-                  <MagnifyingGlass size={20} weight="regular" />
-                </SearchIcon>
-                <SearchInput
-                  type="text"
-                  placeholder="Busque pelo nome ou cargo do membro..."
-                  value={searchTerm}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  onKeyPress={(e) =>
-                    e.key === 'Enter' && handleSearch(searchTerm)
-                  }
-                />
-              </SearchInputContainer>
-              <SearchButton
-                onClick={() => handleSearch(searchTerm)}
-                type="button"
-              >
-                Pesquisar
-              </SearchButton>
-            </SearchContainer>
-          </HeaderContainer>
+    <PlatformLayout>
+      <MainContainer>
+        <HeaderContainer>
+          <SearchContainer>
+            <SearchInputContainer>
+              <SearchIcon>
+                <MagnifyingGlass size={20} weight="regular" />
+              </SearchIcon>
+              <SearchInput
+                type="text"
+                placeholder="Busque pelo nome ou cargo do membro..."
+                value={searchTerm}
+                onChange={(e) => handleInputChange(e.target.value)}
+                onKeyPress={(e) =>
+                  e.key === 'Enter' && handleSearch(searchTerm)
+                }
+              />
+            </SearchInputContainer>
+            <SearchButton
+              onClick={() => handleSearch(searchTerm)}
+              type="button"
+            >
+              Pesquisar
+            </SearchButton>
+          </SearchContainer>
+          <SectionTitle>Gerenciamento de membros</SectionTitle>
+        </HeaderContainer>
 
+        {currentUsers.length === 0 ? (
+          <EmptyState
+            title="Nenhum resultado encontrado"
+            message={
+              searchTerm
+                ? 'Tente ajustar sua busca e tente novamente.'
+                : 'Não há membros cadastrados ainda.'
+            }
+            onAction={() => refetch()}
+          />
+        ) : (
           <DesktopTableWrapper>
             <TableWrapper>
               <Table>
@@ -297,15 +273,6 @@ export default function MembersPage() {
                   </TableRow>
                 </thead>
                 <tbody>
-                  {currentUsers.length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={3}>
-                        {searchTerm
-                          ? 'Nenhum membro encontrado para a busca.'
-                          : 'Nenhum membro cadastrado.'}
-                      </TableCell>
-                    </TableRow>
-                  )}
                   {currentUsers.map(
                     (userData: FetchUsersControllerHandle200UsersItem) => (
                       <TableRow
@@ -313,8 +280,12 @@ export default function MembersPage() {
                         isHeader={false}
                         onClick={() => handleMemberClick(userData)}
                       >
-                        <TableCell>{userData.name || 'Sem nome'}</TableCell>
-                        <TableCell>{userData.email || 'Sem e-mail'}</TableCell>
+                        <TableCell>
+                          {userData.name || 'Não informado'}
+                        </TableCell>
+                        <TableCell>
+                          {userData.email || 'Não informado'}
+                        </TableCell>
                         <TableCell>
                           {userData.position || 'Não informado'}
                         </TableCell>
@@ -325,26 +296,21 @@ export default function MembersPage() {
               </Table>
             </TableWrapper>
           </DesktopTableWrapper>
+        )}
 
+        {currentUsers.length > 0 && (
           <MobileCardsWrapper>
-            {currentUsers.length === 0 && (
-              <MemberCard style={{ border: '1px dashed #e5e7eb' }}>
-                <MemberCardName style={{ fontSize: '1rem' }}>
-                  {searchTerm
-                    ? 'Nenhum resultado para a busca.'
-                    : 'Nenhum membro cadastrado.'}
-                </MemberCardName>
-              </MemberCard>
-            )}
             {currentUsers.map(
               (userData: FetchUsersControllerHandle200UsersItem) => (
                 <MemberCard
                   key={userData.id || userData.email}
                   onClick={() => handleMemberClick(userData)}
                 >
-                  <MemberCardName>{userData.name || 'Sem nome'}</MemberCardName>
+                  <MemberCardName>
+                    {userData.name || 'Não informado'}
+                  </MemberCardName>
                   <MemberCardEmail>
-                    {userData.email || 'Sem e-mail'}
+                    {userData.email || 'Não informado'}
                   </MemberCardEmail>
                   <MemberCardPosition>
                     <span className="label">Cargo:</span>{' '}
@@ -354,17 +320,19 @@ export default function MembersPage() {
               ),
             )}
           </MobileCardsWrapper>
+        )}
 
+        {totalItems > 0 && (
           <PaginationContainer>{renderPaginationButtons()}</PaginationContainer>
-        </MainContainer>
+        )}
+      </MainContainer>
 
-        <EditMemberModal
-          isOpen={isEditModalOpen}
-          onClose={handleCloseModal}
-          onSuccess={handleModalSuccess}
-          member={selectedMember}
-        />
-      </PlatformLayout>
-    </RoleProtectedRoute>
+      <EditMemberModal
+        isOpen={isEditModalOpen}
+        onClose={handleCloseModal}
+        onSuccess={handleModalSuccess}
+        member={selectedMember}
+      />
+    </PlatformLayout>
   )
 }
