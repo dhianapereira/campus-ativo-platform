@@ -13,24 +13,25 @@ const PageContainer = styled('div', {
 
 const BackgroundWrapper = styled('div', {
   position: 'absolute',
-  left: 0,
-  right: 0,
-  bottom: '10vh',
-  top: '18vh',
-  margin: '0 auto',
+  left: '50%',
+  top: '-15vh',
+  transform: 'translateX(-50%)',
   maxWidth: '1200px',
+  width: '100%',
+  height: '600px',
   pointerEvents: 'none',
+  zIndex: 0,
 
   '@media (max-width: 820px)': {
-    top: '22vh',
-    bottom: '8vh',
-    maxWidth: '680px',
+    top: '-10vh',
+    maxWidth: '800px',
+    height: '600px',
   },
 })
 
 const Card = styled('div', {
   position: 'relative',
-  zIndex: 1,
+  zIndex: 10,
   width: 'min(560px, 86vw)',
   margin: '0 auto',
   marginTop: '14vh',
