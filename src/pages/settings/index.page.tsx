@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import {
   MagnifyingGlass,
   Trash,
@@ -38,7 +38,6 @@ import {
   PaginationDots,
 } from './styles'
 import PlatformLayout from '@/app/platform/layout'
-import EmptyState from '@/components/empty-state'
 import { RoleProtectedRoute } from '@/components/role-protected-route'
 import { AddCategoryModal } from './components/AddCategoryModal'
 import { AddLocationModal } from './components/AddLocationModal'
@@ -234,106 +233,81 @@ export default function SettingsPage() {
     }
   }
 
+  // Reset to last page if current page exceeds total pages
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
+
   const handlePageChange = (page: number) => {
-    setCurrentPage(page)
+    if (totalPages === 0) return
+    const next = Math.max(1, Math.min(page, totalPages))
+    setCurrentPage(next)
   }
 
   const renderPaginationButtons = () => {
-    const buttons = []
+    const buttons: React.ReactNode[] = []
 
-    buttons.push(
-      <PaginationButton
-        key="prev"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        variant="nav"
-        aria-label="Página anterior"
-      >
-        <ArrowLeft size={22} weight="bold" />
-        Anterior
-      </PaginationButton>,
-    )
-
-    buttons.push(
-      <PaginationButton
-        key={1}
-        onClick={() => handlePageChange(1)}
-        isActive={currentPage === 1}
-        variant="number"
-      >
-        1
-      </PaginationButton>,
-    )
-
-    if (totalPages >= 2) {
+    const addPageButton = (page: number) =>
       buttons.push(
         <PaginationButton
-          key={2}
-          onClick={() => handlePageChange(2)}
-          isActive={currentPage === 2}
+          key={page}
+          onClick={() => handlePageChange(page)}
+          isActive={currentPage === page}
           variant="number"
         >
-          2
+          {page}
+        </PaginationButton>,
+      )
+
+    // Only show Previous if not on first page
+    if (currentPage > 1) {
+      buttons.push(
+        <PaginationButton
+          key="prev"
+          onClick={() => handlePageChange(currentPage - 1)}
+          variant="nav"
+          aria-label="Página anterior"
+        >
+          <ArrowLeft size={22} weight="bold" />
+          Anterior
         </PaginationButton>,
       )
     }
 
-    if (totalPages >= 3) {
+    if (totalPages <= 7) {
+      for (let p = 1; p <= totalPages; p++) addPageButton(p)
+    } else {
+      const left = Math.max(2, currentPage - 1)
+      const right = Math.min(totalPages - 1, currentPage + 1)
+      addPageButton(1)
+
+      if (left > 2)
+        buttons.push(<PaginationDots key="dots-left">...</PaginationDots>)
+
+      for (let p = left; p <= right; p++) addPageButton(p)
+
+      if (right < totalPages - 1)
+        buttons.push(<PaginationDots key="dots-right">...</PaginationDots>)
+
+      addPageButton(totalPages)
+    }
+
+    // Only show Next if not on last page
+    if (currentPage < totalPages) {
       buttons.push(
         <PaginationButton
-          key={3}
-          onClick={() => handlePageChange(3)}
-          isActive={currentPage === 3}
-          variant="number"
+          key="next"
+          onClick={() => handlePageChange(currentPage + 1)}
+          variant="nav"
+          aria-label="Próxima página"
         >
-          3
+          Próximo
+          <ArrowRight size={22} weight="bold" />
         </PaginationButton>,
       )
     }
-
-    if (totalPages > 5) {
-      buttons.push(<PaginationDots key="dots">...</PaginationDots>)
-    }
-
-    if (totalPages > 5) {
-      const secondToLast = totalPages - 1
-      const last = totalPages
-
-      buttons.push(
-        <PaginationButton
-          key={secondToLast}
-          onClick={() => handlePageChange(secondToLast)}
-          isActive={currentPage === secondToLast}
-          variant="number"
-        >
-          {secondToLast}
-        </PaginationButton>,
-      )
-
-      buttons.push(
-        <PaginationButton
-          key={last}
-          onClick={() => handlePageChange(last)}
-          isActive={currentPage === last}
-          variant="number"
-        >
-          {last}
-        </PaginationButton>,
-      )
-    }
-
-    buttons.push(
-      <PaginationButton
-        key="next"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        variant="nav"
-        aria-label="Próxima página"
-      >
-        Próximo
-        <ArrowRight size={22} weight="bold" />
-      </PaginationButton>,
-    )
 
     return buttons
   }
@@ -357,7 +331,24 @@ export default function SettingsPage() {
       <RoleProtectedRoute requiredLevel={2}>
         <PlatformLayout>
           <MainContainer>
-            <EmptyState onAction={() => window.location.reload()} />
+            <div style={{ padding: '2rem', textAlign: 'center' }}>
+              <p>Não foi possível buscar as informações no momento.</p>
+              <p>Por favor, tente novamente mais tarde.</p>
+              <button
+                onClick={() => window.location.reload()}
+                style={{
+                  marginTop: '1rem',
+                  padding: '0.5rem 1rem',
+                  backgroundColor: '#2d5a3d',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+              >
+                Recarregar
+              </button>
+            </div>
           </MainContainer>
         </PlatformLayout>
       </RoleProtectedRoute>
@@ -404,7 +395,7 @@ export default function SettingsPage() {
                   }
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 />
               </SearchInputContainer>
               <SearchButton onClick={handleSearch} type="button">
@@ -435,17 +426,16 @@ export default function SettingsPage() {
 
           {/* Desktop Table */}
           {currentItems.length === 0 ? (
-            <EmptyState
-              title="Nenhum resultado encontrado"
-              message={
-                searchTerm
+            <div style={{ padding: '2rem', textAlign: 'center' }}>
+              <p>Nenhum resultado encontrado</p>
+              <p style={{ color: '#666', fontSize: '0.9em' }}>
+                {searchTerm
                   ? 'Tente ajustar sua busca e tente novamente.'
                   : activeTab === 'localizacao'
                     ? 'Não há localizações cadastradas ainda.'
-                    : 'Não há categorias cadastradas ainda.'
-              }
-              onAction={() => window.location.reload()}
-            />
+                    : 'Não há categorias cadastradas ainda.'}
+              </p>
+            </div>
           ) : (
             <DesktopTableWrapper>
               <TableWrapper>
@@ -503,17 +493,16 @@ export default function SettingsPage() {
           {/* Mobile Cards */}
           <MobileCardsWrapper>
             {currentItems.length === 0 && (
-              <EmptyState
-                title="Nenhum resultado encontrado"
-                message={
-                  searchTerm
+              <div style={{ padding: '2rem', textAlign: 'center' }}>
+                <p>Nenhum resultado encontrado</p>
+                <p style={{ color: '#666', fontSize: '0.9em' }}>
+                  {searchTerm
                     ? 'Tente ajustar sua busca e tente novamente.'
                     : activeTab === 'localizacao'
                       ? 'Não há localizações cadastradas ainda.'
-                      : 'Não há categorias cadastradas ainda.'
-                }
-                onAction={() => window.location.reload()}
-              />
+                      : 'Não há categorias cadastradas ainda.'}
+                </p>
+              </div>
             )}
             {currentItems.map((item: LocationItem | CategoryItem) => (
               <div key={item.id}>
@@ -557,7 +546,7 @@ export default function SettingsPage() {
             ))}
           </MobileCardsWrapper>
 
-          {currentItems.length > 0 && (
+          {totalPages > 1 && (
             <PaginationContainer>
               {renderPaginationButtons()}
             </PaginationContainer>

@@ -97,12 +97,12 @@ export const Form = styled('form', {
     '@media (max-width: 768px)': {
       flexDirection: 'column',
       gap: '1.25rem',
-  alignItems: 'stretch',
-  justifyContent: 'flex-start',
+      alignItems: 'stretch',
+      justifyContent: 'flex-start',
 
       '& .name-field': {
-  flex: 'none',
-  width: '100%',
+        flex: 'none',
+        width: '100%',
       },
     },
   },
@@ -199,10 +199,10 @@ export const BottomFieldsContainer = styled('div', {
   },
 
   '@media (max-width: 768px)': {
-  flexDirection: 'row',
-  gap: '1rem',
-  alignItems: 'flex-end',
-  '& > div:first-child': { flex: 1 },
+    flexDirection: 'row',
+    gap: '1rem',
+    alignItems: 'flex-end',
+    '& > div:first-child': { flex: 1 },
   },
 })
 

@@ -1,14 +1,13 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import Header from '@/app/platform/components/Header'
-import { useAuth } from '@/contexts/auth-context'
+import PlatformLayout from '@/app/platform/layout'
 import unauthorizedBg from '@/assets/unauthorized.svg'
 import { styled } from '@campusativo-ui/react'
 
 const PageContainer = styled('div', {
   position: 'relative',
-  minHeight: '100vh',
+  minHeight: 'calc(100vh - 80px)', // Account for header height
   backgroundColor: '#FFFFFF',
 })
 
@@ -118,7 +117,6 @@ const BackButton = styled('button', {
 
 export default function UnauthorizedPage() {
   const router = useRouter()
-  const { user, isProfileLoading, profileError } = useAuth()
 
   const back =
     typeof router.query.back === 'string' ? router.query.back : '/problems'
@@ -132,19 +130,11 @@ export default function UnauthorizedPage() {
   }
 
   return (
-    <>
+    <PlatformLayout>
       <Head>
         <title>Acesso negado • Campus Ativo</title>
       </Head>
       <PageContainer>
-        <Header
-          src={''}
-          alt={user?.name ?? 'Usuário'}
-          name={user?.name ?? ''}
-          position={user?.position ?? ''}
-          showLoadingState={isProfileLoading || !!profileError}
-        />
-
         <BackgroundWrapper aria-hidden="true">
           <Image
             src={unauthorizedBg}
@@ -164,6 +154,6 @@ export default function UnauthorizedPage() {
           <BackButton onClick={handleBack}>Voltar</BackButton>
         </Card>
       </PageContainer>
-    </>
+    </PlatformLayout>
   )
 }

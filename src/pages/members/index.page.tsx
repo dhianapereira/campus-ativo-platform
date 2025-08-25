@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { MagnifyingGlass, ArrowRight, ArrowLeft } from 'phosphor-react'
 import {
   HeaderContainer,
@@ -25,7 +26,6 @@ import {
   SectionTitle,
 } from './styles'
 import PlatformLayout from '@/app/platform/layout'
-import EmptyState from '@/components/empty-state'
 import { useAuth } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
 import type { FetchUsersControllerHandle200UsersItem } from '../../../server/client/models'
@@ -40,6 +40,7 @@ export default function MembersPage() {
   const itemsPerPage = 10
 
   const { hasRoleLevel } = useAuth()
+  const router = useRouter()
 
   const handleMemberClick = (
     member: FetchUsersControllerHandle200UsersItem,
@@ -59,6 +60,15 @@ export default function MembersPage() {
   }
 
   const canLoad = hasRoleLevel(3)
+
+  // Redirect to unauthorized page if user doesn't have permission
+  useEffect(() => {
+    if (!canLoad) {
+      const backTo =
+        typeof window !== 'undefined' ? window.location.pathname : '/problems'
+      router.replace({ pathname: '/unauthorized', query: { back: backTo } })
+    }
+  }, [canLoad, router])
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['users'],
@@ -108,9 +118,12 @@ export default function MembersPage() {
     startIndex + itemsPerPage,
   )
 
-  if (currentPage > 1 && totalPages > 0 && currentPage > totalPages) {
-    setCurrentPage(totalPages)
-  }
+  // Reset to last page if current page exceeds total pages
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages)
+    }
+  }, [currentPage, totalPages])
 
   const handleSearch = (query: string) => {
     setSearchTerm(query)
@@ -142,19 +155,20 @@ export default function MembersPage() {
         </PaginationButton>,
       )
 
-    // Prev
-    buttons.push(
-      <PaginationButton
-        key="prev"
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage <= 1}
-        variant="nav"
-        aria-label="Página anterior"
-      >
-        <ArrowLeft size={22} weight="bold" />
-        Anterior
-      </PaginationButton>,
-    )
+    // Only show Previous if not on first page
+    if (currentPage > 1) {
+      buttons.push(
+        <PaginationButton
+          key="prev"
+          onClick={() => handlePageChange(currentPage - 1)}
+          variant="nav"
+          aria-label="Página anterior"
+        >
+          <ArrowLeft size={22} weight="bold" />
+          Anterior
+        </PaginationButton>,
+      )
+    }
 
     if (totalPages <= 7) {
       for (let p = 1; p <= totalPages; p++) addPageButton(p)
@@ -174,30 +188,26 @@ export default function MembersPage() {
       addPageButton(totalPages)
     }
 
-    buttons.push(
-      <PaginationButton
-        key="next"
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage >= totalPages}
-        variant="nav"
-        aria-label="Próxima página"
-      >
-        Próximo
-        <ArrowRight size={22} weight="bold" />
-      </PaginationButton>,
-    )
+    // Only show Next if not on last page
+    if (currentPage < totalPages) {
+      buttons.push(
+        <PaginationButton
+          key="next"
+          onClick={() => handlePageChange(currentPage + 1)}
+          variant="nav"
+          aria-label="Próxima página"
+        >
+          Próximo
+          <ArrowRight size={22} weight="bold" />
+        </PaginationButton>,
+      )
+    }
 
     return buttons
   }
 
   if (!canLoad) {
-    return (
-      <PlatformLayout>
-        <MainContainer>
-          <div>Você não tem permissão para visualizar os membros.</div>
-        </MainContainer>
-      </PlatformLayout>
-    )
+    return null // Will be redirected by useEffect
   }
 
   if (isLoading) {
@@ -216,7 +226,24 @@ export default function MembersPage() {
     return (
       <PlatformLayout>
         <MainContainer>
-          <EmptyState onAction={() => refetch()} />
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <p>Não foi possível buscar as informações no momento.</p>
+            <p>Por favor, tente novamente mais tarde.</p>
+            <button
+              onClick={() => refetch()}
+              style={{
+                marginTop: '1rem',
+                padding: '0.5rem 1rem',
+                backgroundColor: '#2d5a3d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+            >
+              Recarregar
+            </button>
+          </div>
         </MainContainer>
       </PlatformLayout>
     )
@@ -236,9 +263,7 @@ export default function MembersPage() {
                 placeholder="Busque pelo nome ou cargo do membro..."
                 value={searchTerm}
                 onChange={(e) => handleInputChange(e.target.value)}
-                onKeyPress={(e) =>
-                  e.key === 'Enter' && handleSearch(searchTerm)
-                }
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchTerm)}
               />
             </SearchInputContainer>
             <SearchButton
@@ -252,15 +277,14 @@ export default function MembersPage() {
         </HeaderContainer>
 
         {currentUsers.length === 0 ? (
-          <EmptyState
-            title="Nenhum resultado encontrado"
-            message={
-              searchTerm
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <p>Nenhum resultado encontrado</p>
+            <p style={{ color: '#666', fontSize: '0.9em' }}>
+              {searchTerm
                 ? 'Tente ajustar sua busca e tente novamente.'
-                : 'Não há membros cadastrados ainda.'
-            }
-            onAction={() => refetch()}
-          />
+                : 'Não há membros cadastrados ainda.'}
+            </p>
+          </div>
         ) : (
           <DesktopTableWrapper>
             <TableWrapper>
@@ -322,7 +346,7 @@ export default function MembersPage() {
           </MobileCardsWrapper>
         )}
 
-        {totalItems > 0 && (
+        {totalPages > 1 && (
           <PaginationContainer>{renderPaginationButtons()}</PaginationContainer>
         )}
       </MainContainer>

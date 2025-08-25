@@ -169,6 +169,30 @@ export function EditMemberModal({
     canManageUserRole(opt.value as ChangeUserRoleControllerHandleBodyRole),
   )
 
+  // Always ensure the current member's role is visible in the dropdown
+  const finalPermissionOptions = (() => {
+    if (!member?.role) return visiblePermissionOptions
+
+    // Check if current role is already in visible options
+    const hasCurrentRole = visiblePermissionOptions.some(
+      (opt) => opt.value === member.role,
+    )
+
+    if (hasCurrentRole) {
+      return visiblePermissionOptions
+    }
+
+    // Add current role to options
+    const currentRoleOption = permissionOptions.find(
+      (opt) => opt.value === member.role,
+    )
+    if (currentRoleOption) {
+      return [...visiblePermissionOptions, currentRoleOption]
+    }
+
+    return visiblePermissionOptions
+  })()
+
   return (
     <ModalOverlay onClick={handleClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
@@ -229,7 +253,7 @@ export function EditMemberModal({
                     {...register('permissions')}
                     disabled={isSubmitting || !!isSelf}
                   >
-                    {visiblePermissionOptions.map((option) => (
+                    {finalPermissionOptions.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.label}
                       </option>
