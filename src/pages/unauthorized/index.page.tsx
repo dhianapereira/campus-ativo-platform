@@ -123,7 +123,7 @@ export default function UnauthorizedPage() {
 
   const handleBack = () => {
     if (back) {
-      router.replace(back)
+      router.replace('/')
     } else {
       router.replace('/problems')
     }
