@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { problemFormSchema } from '@/validators/problem-form'
 import ImageUpload from '../components/ImageUpload'
+import { ProtectedRoute } from '@/components/protected-route'
 
 export default function AddProblem() {
   const {
@@ -34,85 +35,87 @@ export default function AddProblem() {
   }
 
   return (
-    <Container>
-      <Header>
-        <ArrowLeft
-          className="back-icon"
-          onClick={() => window.history.back()}
-          weight="bold"
-          size={24}
-          aria-label="Voltar para a página anterior"
-          tabIndex={0}
-          role="button"
-        />
-        <Title as="h2" size="md">
-          Cadastrar problema
-        </Title>
-      </Header>
-      <Body onSubmit={handleSubmit(handleRegisterProblem)}>
-        <Input>
-          <Text size="md">Título</Text>
-          <TextInput
-            placeholder="Descreva brevemente o problema"
-            {...register('title')}
-            aria-label="Título do problema"
+    <ProtectedRoute>
+      <Container>
+        <Header>
+          <ArrowLeft
+            className="back-icon"
+            onClick={() => window.history.back()}
+            weight="bold"
+            size={24}
+            aria-label="Voltar para a página anterior"
             tabIndex={0}
+            role="button"
           />
-          {errors.title && (
-            <Text className="error-message" size="sm">
-              {errors.title.message}
-            </Text>
-          )}
-        </Input>
+          <Title as="h2" size="md">
+            Cadastrar problema
+          </Title>
+        </Header>
+        <Body onSubmit={handleSubmit(handleRegisterProblem)}>
+          <Input>
+            <Text size="md">Título</Text>
+            <TextInput
+              placeholder="Descreva brevemente o problema"
+              {...register('title')}
+              aria-label="Título do problema"
+              tabIndex={0}
+            />
+            {errors.title && (
+              <Text className="error-message" size="sm">
+                {errors.title.message}
+              </Text>
+            )}
+          </Input>
 
-        <Input>
-          <Text size="md">Local</Text>
-          <TextInput
-            placeholder="Informe o local do problema (ex: sala 101, bloco A)"
-            {...register('location')}
-            aria-label="Local do problema"
+          <Input>
+            <Text size="md">Local</Text>
+            <TextInput
+              placeholder="Informe o local do problema (ex: sala 101, bloco A)"
+              {...register('location')}
+              aria-label="Local do problema"
+              tabIndex={0}
+            />
+            {errors.location && (
+              <Text className="error-message" size="sm">
+                {errors.location.message}
+              </Text>
+            )}
+          </Input>
+
+          <Input>
+            <Text size="md">Descrição</Text>
+            <TextArea
+              placeholder="Detalhe o problema com o máximo de informações possível"
+              {...register('description')}
+              aria-label="Descrição do problema"
+              tabIndex={0}
+              css={{
+                width: '100%',
+                minHeight: '120px',
+                resize: 'vertical',
+                boxSizing: 'border-box',
+              }}
+            />
+            {errors.description && (
+              <Text className="error-message" size="sm">
+                {errors.description.message}
+              </Text>
+            )}
+          </Input>
+
+          <ImageUpload />
+
+          <Button
+            variant="primary"
+            type="submit"
+            disabled={isSubmitting || !isFormValid}
+            aria-label="Cadastrar problema"
             tabIndex={0}
-          />
-          {errors.location && (
-            <Text className="error-message" size="sm">
-              {errors.location.message}
-            </Text>
-          )}
-        </Input>
-
-        <Input>
-          <Text size="md">Descrição</Text>
-          <TextArea
-            placeholder="Detalhe o problema com o máximo de informações possível"
-            {...register('description')}
-            aria-label="Descrição do problema"
-            tabIndex={0}
-            css={{
-              width: '100%',
-              minHeight: '120px',
-              resize: 'vertical',
-              boxSizing: 'border-box',
-            }}
-          />
-          {errors.description && (
-            <Text className="error-message" size="sm">
-              {errors.description.message}
-            </Text>
-          )}
-        </Input>
-
-        <ImageUpload />
-
-        <Button
-          variant="primary"
-          type="submit"
-          disabled={isSubmitting || !isFormValid}
-          aria-label="Cadastrar problema"
-          tabIndex={0}
-        >
-          Cadastrar
-        </Button>
-      </Body>
-    </Container>
+          >
+            Cadastrar
+          </Button>
+        </Body>
+      </Container>
+    </ProtectedRoute>
   )
 }

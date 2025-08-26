@@ -5,8 +5,16 @@ import { IProps } from './index.d'
 import { List } from 'phosphor-react'
 import Drawer from '../navigation/Drawer'
 import { truncateUserName } from '../../../../utils/truncate-name'
+import { useAuth } from '@/contexts/auth-context'
 
-export default function Header({ src, alt, name, position }: IProps) {
+export default function Header({
+  src,
+  alt,
+  name,
+  position,
+  showLoadingState = false,
+}: IProps) {
+  const { signOut, profileError, retryProfileLoad } = useAuth()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const openDrawer = () => {
@@ -17,8 +25,22 @@ export default function Header({ src, alt, name, position }: IProps) {
     setIsDrawerOpen(false)
   }
 
-  const displayName = truncateUserName(name)
-  const displayPosition = truncateUserName(position)
+  const handleLogout = async () => {
+    await signOut()
+  }
+
+  const handleRetryProfile = async () => {
+    await retryProfileLoad()
+  }
+
+  const displayName = showLoadingState
+    ? 'Carregando...'
+    : truncateUserName(name)
+  const displayPosition = showLoadingState
+    ? 'Carregando...'
+    : truncateUserName(position)
+
+  const showError = profileError && !showLoadingState
 
   return (
     <HeaderContainer>
@@ -26,11 +48,23 @@ export default function Header({ src, alt, name, position }: IProps) {
       <UserInfoContainer>
         <Avatar src={src} alt={alt} />
         <Info>
-          <Text className="name" size="md" title={name}>
-            {displayName}
+          <Text
+            className="name"
+            size="md"
+            title={showError ? profileError : name}
+          >
+            {showError ? 'Erro ao carregar' : displayName}
           </Text>
-          <Text className="position" size="sm" title={position}>
-            {displayPosition}
+          <Text
+            className="position"
+            size="sm"
+            title={
+              showError ? 'Clique no menu para tentar novamente' : position
+            }
+            onClick={showError ? handleRetryProfile : undefined}
+            style={{ cursor: showError ? 'pointer' : 'default' }}
+          >
+            {showError ? 'Tentar novamente' : displayPosition}
           </Text>
         </Info>
       </UserInfoContainer>
@@ -46,9 +80,8 @@ export default function Header({ src, alt, name, position }: IProps) {
         {isDrawerOpen && (
           <Drawer
             onClose={closeDrawer}
-            onLogoutClick={function (): void {
-              throw new Error('Function not implemented.')
-            }}
+            onLogoutClick={handleLogout}
+            onRetryProfile={showError ? handleRetryProfile : undefined}
           />
         )}
       </DrawerIcon>

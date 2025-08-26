@@ -1,4 +1,5 @@
 # Padrão de Mensagens
+
 O padrão para títulos de _pull request_ e mensagens de _commit_ é o seguinte:
 
 ```

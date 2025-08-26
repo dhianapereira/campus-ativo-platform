@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   DialogOverlay,
   DialogContent,
@@ -14,7 +14,7 @@ import { X, SignOut } from 'phosphor-react'
 export interface LogoutConfirmationModalProps {
   isOpen: boolean
   onClose: () => void
-  onConfirm: () => void
+  onConfirm: () => Promise<void>
   title?: string
   description?: string
 }
@@ -26,9 +26,17 @@ export const LogoutConfirmationModal = ({
   title = 'Sair da Plataforma',
   description = 'Tem certeza que deseja sair da plataforma? Você precisará fazer login novamente para acessar o sistema.',
 }: LogoutConfirmationModalProps) => {
-  const handleConfirm = () => {
-    onConfirm()
-    onClose()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
+
+  const handleConfirm = async () => {
+    setIsLoggingOut(true)
+    try {
+      await onConfirm()
+      onClose()
+    } catch (error) {
+    } finally {
+      setIsLoggingOut(false)
+    }
   }
 
   if (!isOpen) return null
@@ -58,15 +66,18 @@ export const LogoutConfirmationModal = ({
         <DialogDescription>{description}</DialogDescription>
 
         <ButtonGroup style={{ marginTop: '24px' }}>
-          <CancelButton onClick={onClose}>Cancelar</CancelButton>
+          <CancelButton onClick={onClose} disabled={isLoggingOut}>
+            Cancelar
+          </CancelButton>
           <ConfirmButton
             onClick={handleConfirm}
+            disabled={isLoggingOut}
             style={{
               backgroundColor: '#ef4444',
               borderColor: '#ef4444',
             }}
           >
-            Sair da Plataforma
+            {isLoggingOut ? 'Saindo...' : 'Sair da Plataforma'}
           </ConfirmButton>
         </ButtonGroup>
       </DialogContent>

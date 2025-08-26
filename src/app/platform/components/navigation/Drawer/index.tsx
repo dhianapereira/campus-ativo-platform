@@ -8,26 +8,35 @@ import { LogoutConfirmationModal } from '../../LogoutModal'
 import { IProps } from './index.d'
 import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 import { X } from 'phosphor-react'
+import { useAuth } from '@/contexts/auth-context'
 
 interface DrawerProps extends IProps {
-  onLogoutClick: () => void
+  onLogoutClick: () => Promise<void>
 }
 
-export default function Drawer({ onClose, onLogoutClick }: DrawerProps) {
+export default function Drawer({
+  onClose,
+  onLogoutClick,
+  onRetryProfile,
+}: DrawerProps) {
   const router = useRouter()
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+  const { canAccessUserManagement, canAccessSettings } = useAuth()
 
   const menuOptions = createMenuOptions({
     router,
     onLogoutClick,
     onClose,
     openLogoutModal: () => setIsLogoutModalOpen(true),
+    onRetryProfile,
+    canAccessUserManagement: canAccessUserManagement(),
+    canAccessSettings: canAccessSettings(),
   })
 
-  const handleLogoutConfirm = () => {
-    onLogoutClick()
-    onClose()
+  const handleLogoutConfirm = async () => {
+    await onLogoutClick()
     setIsLogoutModalOpen(false)
+    onClose()
   }
 
   const handleLogoutCancel = () => {
@@ -68,7 +77,6 @@ export default function Drawer({ onClose, onLogoutClick }: DrawerProps) {
         </DrawerOptions>
       </DrawerContainer>
 
-      {/* Modal de confirmação de logout */}
       <LogoutConfirmationModal
         isOpen={isLogoutModalOpen}
         onClose={handleLogoutCancel}

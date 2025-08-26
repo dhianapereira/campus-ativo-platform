@@ -1,5 +1,5 @@
 export interface IMaintenance {
-    id: string
-    label: string
-    isActive: boolean
+  id: string
+  label: string
+  isActive: boolean
 }

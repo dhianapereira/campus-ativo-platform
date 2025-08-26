@@ -16,6 +16,7 @@ import { Actions } from './components/Actions'
 import { Status } from '@/data/static/status-data'
 import { ImageError } from '@/app/platform/components/ImageError'
 import { NoImage } from '@/app/platform/components/NoImage'
+import { ProtectedRoute } from '@/components/protected-route'
 
 export default function ProblemDetails() {
   const router = useRouter()
@@ -58,106 +59,108 @@ export default function ProblemDetails() {
   }
 
   return (
-    <Container>
-      <Header>
-        <div className="first-component">
-          <ArrowLeft
-            className="back-icon"
-            onClick={() => window.history.back()}
-            weight="bold"
-            size={24}
-            aria-label="Voltar para a página anterior"
-            tabIndex={0}
-            role="button"
-          />
-          <Title as="h2" size="md">
-            {problemData.title}
-          </Title>
-        </div>
-        {problemData.status === Status.ToAnalysis && (
-          <>
-            <Button
-              className="desktop"
-              variant="secondary"
-              onClick={goToEditPage}
-              aria-label="Editar problema"
-              tabIndex={0}
-            >
-              <>
-                <NotePencil weight="bold" size={24} />
-                Editar
-              </>
-            </Button>
-            <EditButton
-              className="mobile"
-              onClick={goToEditPage}
-              aria-label="Editar problema"
+    <ProtectedRoute>
+      <Container>
+        <Header>
+          <div className="first-component">
+            <ArrowLeft
+              className="back-icon"
+              onClick={() => window.history.back()}
+              weight="bold"
+              size={24}
+              aria-label="Voltar para a página anterior"
               tabIndex={0}
               role="button"
-            >
-              <NotePencil weight="bold" size={24} />
-            </EditButton>
-          </>
-        )}
-      </Header>
-      <Body>
-        {!problemData.imageUrl ? (
-          <NoImage />
-        ) : !imageError ? (
-          <ImageContainer
-            src={problemData.imageUrl}
-            height={331}
-            width={839}
-            alt={problemData.title}
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <ImageError />
-        )}
-        <InfoContainer>
-          <Text className="label" size="md">
-            Título:
-          </Text>
-          <Text size="md">{problemData.title}</Text>
-        </InfoContainer>
-        <InfoContainer>
-          <Text className="label" size="md">
-            Local:
-          </Text>
-          <Text size="md">{problemData.location}</Text>
-        </InfoContainer>
-        <InfoContainer>
-          <Text className="label" size="md">
-            Descrição:
-          </Text>
-          <Text size="md">{problemData.description}</Text>
-        </InfoContainer>
-        <InfoContainer>
-          <Text className="label" size="md">
-            Relator:
-          </Text>
-          <Text size="md">{problemData.reporter}</Text>
-        </InfoContainer>
-        <InfoContainer>
-          <Text className="label" size="md">
-            Cadastrado em:
-          </Text>
-          <Text size="md">{problemData.createdAt}</Text>
-        </InfoContainer>
-        {problemData.updatedAt && (
+            />
+            <Title as="h2" size="md">
+              {problemData.title}
+            </Title>
+          </div>
+          {problemData.status === Status.ToAnalysis && (
+            <>
+              <Button
+                className="desktop"
+                variant="secondary"
+                onClick={goToEditPage}
+                aria-label="Editar problema"
+                tabIndex={0}
+              >
+                <>
+                  <NotePencil weight="bold" size={24} />
+                  Editar
+                </>
+              </Button>
+              <EditButton
+                className="mobile"
+                onClick={goToEditPage}
+                aria-label="Editar problema"
+                tabIndex={0}
+                role="button"
+              >
+                <NotePencil weight="bold" size={24} />
+              </EditButton>
+            </>
+          )}
+        </Header>
+        <Body>
+          {!problemData.imageUrl ? (
+            <NoImage />
+          ) : !imageError ? (
+            <ImageContainer
+              src={problemData.imageUrl}
+              height={331}
+              width={839}
+              alt={problemData.title}
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <ImageError />
+          )}
           <InfoContainer>
             <Text className="label" size="md">
-              Última atualização:
+              Título:
             </Text>
-            <Text size="md">{problemData.updatedAt}</Text>
+            <Text size="md">{problemData.title}</Text>
           </InfoContainer>
-        )}
-        <Actions
-          initialStatus={problemData.status}
-          initialCategory={problemData.category}
-          initialMaintenanceType={problemData.maintenanceType}
-        />
-      </Body>
-    </Container>
+          <InfoContainer>
+            <Text className="label" size="md">
+              Local:
+            </Text>
+            <Text size="md">{problemData.location}</Text>
+          </InfoContainer>
+          <InfoContainer>
+            <Text className="label" size="md">
+              Descrição:
+            </Text>
+            <Text size="md">{problemData.description}</Text>
+          </InfoContainer>
+          <InfoContainer>
+            <Text className="label" size="md">
+              Relator:
+            </Text>
+            <Text size="md">{problemData.reporter}</Text>
+          </InfoContainer>
+          <InfoContainer>
+            <Text className="label" size="md">
+              Cadastrado em:
+            </Text>
+            <Text size="md">{problemData.createdAt}</Text>
+          </InfoContainer>
+          {problemData.updatedAt && (
+            <InfoContainer>
+              <Text className="label" size="md">
+                Última atualização:
+              </Text>
+              <Text size="md">{problemData.updatedAt}</Text>
+            </InfoContainer>
+          )}
+          <Actions
+            initialStatus={problemData.status}
+            initialCategory={problemData.category}
+            initialMaintenanceType={problemData.maintenanceType}
+          />
+        </Body>
+      </Container>
+    </ProtectedRoute>
   )
 }

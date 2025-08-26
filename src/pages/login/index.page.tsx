@@ -1,7 +1,7 @@
 import { Button, Heading, Text, TextInput } from '@campusativo-ui/react'
 import PasswordIcon from './components/PasswordIcon'
 import { Container, Form, FormError, IllustrationContainer } from './styles'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { LoginFormData } from '@/@types/form.d'
@@ -9,12 +9,17 @@ import { loginFormSchema } from '@/validators/login-form'
 import Image from 'next/image'
 import illustrationLogin from '../../assets/illustration-login.png'
 import ifalLogo from '../../assets/ifal-logo.png'
+import { useAuth } from '@/contexts/auth-context'
+import { useRouter } from 'next/router'
 
 export default function Login() {
+  const { signIn, isAuthenticated, isLoading } = useAuth()
+  const router = useRouter()
   const {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
@@ -26,8 +31,40 @@ export default function Login() {
   const isFormValid =
     email && password && email.trim() !== '' && password.trim() !== ''
 
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      router.push('/problems')
+    }
+  }, [isAuthenticated, isLoading, router])
+
   async function handleLogin(data: LoginFormData) {
-    console.log(data)
+    try {
+      await signIn({
+        email: data.email,
+        password: data.password,
+      })
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        const status = (error as Error & { status?: number }).status
+        if (status === 400 || status === 401) {
+          setError('password', {
+            type: 'manual',
+            message: 'E-mail ou senha incorretos',
+          })
+        } else {
+          setError('password', {
+            type: 'manual',
+            message:
+              error.message || 'Erro interno do servidor. Tente novamente.',
+          })
+        }
+      } else {
+        setError('password', {
+          type: 'manual',
+          message: 'Erro interno do servidor. Tente novamente.',
+        })
+      }
+    }
   }
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -97,7 +134,7 @@ export default function Login() {
           tabIndex={0}
           aria-label="Entrar na plataforma"
         >
-          Entrar
+          {isSubmitting ? 'Entrando...' : 'Entrar'}
         </Button>
       </Form>
     </Container>
