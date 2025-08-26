@@ -136,7 +136,9 @@ export const Input = styled('input', {
   },
 
   '&:disabled': {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#f9fafb',
+    color: '#6b7280',
+    border: '1px solid #e5e7eb',
     cursor: 'not-allowed',
   },
 })
@@ -177,7 +179,9 @@ export const Select = styled('select', {
   },
 
   '&:disabled': {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#f9fafb',
+    color: '#6b7280',
+    border: '1px solid #e5e7eb',
     cursor: 'not-allowed',
   },
 })

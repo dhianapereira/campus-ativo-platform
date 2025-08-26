@@ -105,14 +105,8 @@ export function EditMemberModal({
     try {
       const roleChanged =
         (data.permissions as string) !== (member?.role as string)
-      const otherChanged =
-        (data.name || '') !== (member?.name || '') ||
-        (data.email || '') !== (member?.email || '') ||
-        (data.position || '') !== (member?.position || '')
 
-      if (otherChanged && !roleChanged) {
-        // Backend does not expose an endpoint to edit name/email/position in the current OpenAPI
-        toast.info('Edição de nome, e-mail e cargo ainda não é suportada.')
+      if (!roleChanged) {
         setIsSubmitting(false)
         return
       }
@@ -143,12 +137,7 @@ export function EditMemberModal({
       setIsSubmitting(false)
       reset()
       onSuccess()
-      if (roleChanged) {
-        toast.success('Permissão atualizada com sucesso.')
-      }
-      if (otherChanged) {
-        toast.warning('Alterações de nome/e-mail/cargo não foram salvas.')
-      }
+      toast.success('Permissão atualizada com sucesso.')
     } catch (error) {
       setIsSubmitting(false)
       toast.error('Falha ao atualizar a permissão do usuário.')
@@ -208,11 +197,7 @@ export function EditMemberModal({
             <div className="form-row">
               <FormField className="name-field">
                 <Label htmlFor="name">Nome</Label>
-                <Input
-                  id="name"
-                  {...register('name')}
-                  disabled={isSubmitting}
-                />
+                <Input id="name" {...register('name')} disabled={true} />
                 {errors.name && (
                   <ErrorMessage>{errors.name.message}</ErrorMessage>
                 )}
@@ -225,7 +210,7 @@ export function EditMemberModal({
                 id="email"
                 type="email"
                 {...register('email')}
-                disabled={isSubmitting}
+                disabled={true}
               />
               {errors.email && (
                 <ErrorMessage>{errors.email.message}</ErrorMessage>
@@ -234,11 +219,7 @@ export function EditMemberModal({
 
             <FormField>
               <Label htmlFor="position">Cargo</Label>
-              <Input
-                id="position"
-                {...register('position')}
-                disabled={isSubmitting}
-              />
+              <Input id="position" {...register('position')} disabled={true} />
               {errors.position && (
                 <ErrorMessage>{errors.position.message}</ErrorMessage>
               )}
