@@ -11,4 +11,16 @@ export type FetchLocationsControllerHandleParams = {
    * Número da página (começa em 1)
    */
   page?: number;
+  /**
+   * Incluir localizações deletadas (na lixeira)
+   */
+  includeDeleted?: boolean;
+  /**
+   * Filtrar por status ativo/inativo
+   */
+  isActive?: boolean;
+  /**
+   * Termo de busca para filtrar localizações por nome, código ou descrição
+   */
+  query?: string;
 };

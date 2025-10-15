@@ -79,12 +79,17 @@ export default async function handler(
         position: profileData.position || 'Não informado', // Position for display
       },
     })
-  } catch (error: any) {
-    const status = error?.response?.status ?? 500
+  } catch (error: unknown) {
+    const err = error as {
+      response?: {
+        status?: number
+        data?: { error?: string; message?: string }
+      }
+      message?: string
+    }
+    const status = err?.response?.status ?? 500
     const backendError =
-      error?.response?.data?.error ||
-      error?.response?.data?.message ||
-      error?.message
+      err?.response?.data?.error || err?.response?.data?.message || err?.message
 
     const isAuthError = status === 400 || status === 401
     const message = isAuthError

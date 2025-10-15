@@ -6,13 +6,15 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type FetchProblemsControllerHandleParams = {
+export type ChangeUserPasswordControllerHandleBody = {
   /**
-   * Número da página (começa em 1)
+   * Senha atual do usuário
+   * @minLength 6
    */
-  page?: number;
+  oldPassword: string;
   /**
-   * Termo de busca para filtrar problemas por título ou descrição
+   * Nova senha do usuário
+   * @minLength 6
    */
-  query?: string;
+  newPassword: string;
 };

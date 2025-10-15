@@ -6,13 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type FetchProblemsControllerHandleParams = {
+export type FetchUsersControllerHandleParams = {
   /**
-   * Número da página (começa em 1)
-   */
-  page?: number;
-  /**
-   * Termo de busca para filtrar problemas por título ou descrição
+   * Termo de busca para filtrar usuários por nome ou email
    */
   query?: string;
+  /**
+   * Filtrar usuários por status (true para ativos, false para inativos)
+   */
+  isActive?: boolean;
 };
