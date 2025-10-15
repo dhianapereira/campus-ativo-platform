@@ -14,14 +14,38 @@ export default async function handler(
 
   if (req.method === 'GET') {
     try {
-      const result = await fetchCategoriesControllerHandle(
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
+      // Extrai os parâmetros da query
+      const { query, isActive, page, includeDeleted } = req.query
+
+      // Monta o objeto de parâmetros
+      const params: {
+        query?: string
+        isActive?: boolean
+        page?: number
+        includeDeleted?: boolean
+      } = {}
+
+      if (query && typeof query === 'string') {
+        params.query = query
+      }
+
+      if (isActive !== undefined) {
+        params.isActive = isActive === 'true'
+      }
+
+      if (page && typeof page === 'string') {
+        params.page = parseInt(page, 10)
+      }
+
+      if (includeDeleted !== undefined) {
+        params.includeDeleted = includeDeleted === 'true'
+      }
+
+      const result = await fetchCategoriesControllerHandle(params, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
         },
-      )
+      })
 
       return res.status(200).json(result)
     } catch (error) {

@@ -26,6 +26,7 @@ import {
 } from './styles'
 import { X, Trash } from 'phosphor-react'
 import { useMutation } from '@tanstack/react-query'
+import type { LocationResponse } from '../../../../../server/client/models/locationResponse'
 
 const locationSchema = z.object({
   name: z
@@ -44,13 +45,7 @@ const locationSchema = z.object({
 
 type LocationFormData = z.infer<typeof locationSchema>
 
-interface LocationItem {
-  id: string
-  name: string
-  code: string
-  description: string
-  isActive?: boolean
-}
+type LocationItem = LocationResponse
 
 interface EditLocationModalProps {
   isOpen: boolean
