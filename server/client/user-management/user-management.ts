@@ -24,7 +24,10 @@ import type {
 import type {
   ChangeUserRoleControllerHandle200,
   ChangeUserRoleControllerHandleBody,
+  ChangeUserStatusControllerHandle200,
+  ChangeUserStatusControllerHandleBody,
   FetchUsersControllerHandle200,
+  FetchUsersControllerHandleParams,
 } from ".././models";
 
 import { axiosInstance } from "../../axios";
@@ -37,40 +40,47 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Listar usuários
  */
 export const fetchUsersControllerHandle = (
+  params?: FetchUsersControllerHandleParams,
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal,
 ) => {
   return axiosInstance<FetchUsersControllerHandle200>(
-    { url: `/users`, method: "GET", signal },
+    { url: `/users`, method: "GET", params, signal },
     options,
   );
 };
 
-export const getFetchUsersControllerHandleQueryKey = () => {
-  return [`/users`] as const;
+export const getFetchUsersControllerHandleQueryKey = (
+  params?: FetchUsersControllerHandleParams,
+) => {
+  return [`/users`, ...(params ? [params] : [])] as const;
 };
 
 export const getFetchUsersControllerHandleQueryOptions = <
   TData = Awaited<ReturnType<typeof fetchUsersControllerHandle>>,
   TError = ErrorType<null | null>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof fetchUsersControllerHandle>>,
-      TError,
-      TData
-    >
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}) => {
+>(
+  params?: FetchUsersControllerHandleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchUsersControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+) => {
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getFetchUsersControllerHandleQueryKey();
+    queryOptions?.queryKey ?? getFetchUsersControllerHandleQueryKey(params);
 
   const queryFn: QueryFunction<
     Awaited<ReturnType<typeof fetchUsersControllerHandle>>
-  > = ({ signal }) => fetchUsersControllerHandle(requestOptions, signal);
+  > = ({ signal }) =>
+    fetchUsersControllerHandle(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof fetchUsersControllerHandle>>,
@@ -88,6 +98,7 @@ export function useFetchUsersControllerHandle<
   TData = Awaited<ReturnType<typeof fetchUsersControllerHandle>>,
   TError = ErrorType<null | null>,
 >(
+  params: undefined | FetchUsersControllerHandleParams,
   options: {
     query: Partial<
       UseQueryOptions<
@@ -114,6 +125,7 @@ export function useFetchUsersControllerHandle<
   TData = Awaited<ReturnType<typeof fetchUsersControllerHandle>>,
   TError = ErrorType<null | null>,
 >(
+  params?: FetchUsersControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -140,6 +152,7 @@ export function useFetchUsersControllerHandle<
   TData = Awaited<ReturnType<typeof fetchUsersControllerHandle>>,
   TError = ErrorType<null | null>,
 >(
+  params?: FetchUsersControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -162,6 +175,7 @@ export function useFetchUsersControllerHandle<
   TData = Awaited<ReturnType<typeof fetchUsersControllerHandle>>,
   TError = ErrorType<null | null>,
 >(
+  params?: FetchUsersControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
@@ -176,7 +190,10 @@ export function useFetchUsersControllerHandle<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getFetchUsersControllerHandleQueryOptions(options);
+  const queryOptions = getFetchUsersControllerHandleQueryOptions(
+    params,
+    options,
+  );
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,
@@ -280,6 +297,101 @@ export const useChangeUserRoleControllerHandle = <
 > => {
   const mutationOptions =
     getChangeUserRoleControllerHandleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Ativa ou desativa um usuário no sistema. Requer permissão de DIRECTOR ou superior.
+ * @summary Alterar status do usuário
+ */
+export const changeUserStatusControllerHandle = (
+  id: string,
+  changeUserStatusControllerHandleBody: BodyType<ChangeUserStatusControllerHandleBody>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<ChangeUserStatusControllerHandle200>(
+    {
+      url: `/users/${id}/status`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: changeUserStatusControllerHandleBody,
+    },
+    options,
+  );
+};
+
+export const getChangeUserStatusControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof changeUserStatusControllerHandle>>,
+    TError,
+    { id: string; data: BodyType<ChangeUserStatusControllerHandleBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof changeUserStatusControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<ChangeUserStatusControllerHandleBody> },
+  TContext
+> => {
+  const mutationKey = ["changeUserStatusControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof changeUserStatusControllerHandle>>,
+    { id: string; data: BodyType<ChangeUserStatusControllerHandleBody> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return changeUserStatusControllerHandle(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ChangeUserStatusControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof changeUserStatusControllerHandle>>
+>;
+export type ChangeUserStatusControllerHandleMutationBody =
+  BodyType<ChangeUserStatusControllerHandleBody>;
+export type ChangeUserStatusControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
+
+/**
+ * @summary Alterar status do usuário
+ */
+export const useChangeUserStatusControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof changeUserStatusControllerHandle>>,
+      TError,
+      { id: string; data: BodyType<ChangeUserStatusControllerHandleBody> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof changeUserStatusControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<ChangeUserStatusControllerHandleBody> },
+  TContext
+> => {
+  const mutationOptions =
+    getChangeUserStatusControllerHandleMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

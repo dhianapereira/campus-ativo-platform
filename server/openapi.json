@@ -95,7 +95,22 @@
       "get": {
         "description": "Lista todos os usuários do sistema com filtros baseados no role do usuário autenticado. ADMIN pode ver todos os usuários, DIRECTOR e abaixo não veem usuários ADMIN.",
         "operationId": "FetchUsersController_handle",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Termo de busca para filtrar usuários por nome ou email",
+            "schema": { "example": "João", "type": "string" }
+          },
+          {
+            "name": "isActive",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar usuários por status (true para ativos, false para inativos)",
+            "schema": { "example": true, "type": "boolean" }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Lista de usuários retornada com sucesso",
@@ -214,6 +229,256 @@
         "tags": ["User Management"]
       }
     },
+    "/users/{id}/status": {
+      "patch": {
+        "description": "Ativa ou desativa um usuário no sistema. Requer permissão de DIRECTOR ou superior.",
+        "operationId": "ChangeUserStatusController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário cujo status será alterado",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Novo status do usuário",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "isActive": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "true para ativar, false para desativar"
+                  }
+                },
+                "required": ["isActive"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status alterado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "User status updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Dados inválidos" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão para esta operação"
+          },
+          "404": { "description": "Usuário não encontrado" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Alterar status do usuário",
+        "tags": ["User Management"]
+      }
+    },
+    "/users/{id}/profile": {
+      "patch": {
+        "description": "Edita o perfil do próprio usuário. Apenas o próprio usuário pode editar seu perfil.",
+        "operationId": "EditUserProfileController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário cujo perfil será editado",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Dados do perfil a serem atualizados",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "João Silva",
+                    "description": "Nome completo do usuário"
+                  },
+                  "position": {
+                    "type": "string",
+                    "example": "Técnico em Informática",
+                    "description": "Cargo do usuário"
+                  }
+                },
+                "required": ["name", "position"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Profile updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Dados inválidos" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão para editar este perfil"
+          },
+          "404": { "description": "Usuário não encontrado" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Editar perfil do usuário",
+        "tags": ["User Profile"]
+      }
+    },
+    "/users/{id}/password": {
+      "patch": {
+        "description": "Altera a senha do próprio usuário. Apenas o próprio usuário pode alterar sua senha.",
+        "operationId": "ChangeUserPasswordController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário cuja senha será alterada",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Senha antiga e nova senha",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "oldPassword": {
+                    "type": "string",
+                    "example": "oldPassword123",
+                    "description": "Senha atual do usuário",
+                    "minLength": 6
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "example": "newPassword123",
+                    "description": "Nova senha do usuário",
+                    "minLength": 6
+                  }
+                },
+                "required": ["oldPassword", "newPassword"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Senha alterada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Password changed successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Dados inválidos" },
+          "401": {
+            "description": "Senha antiga incorreta ou token JWT inválido"
+          },
+          "403": {
+            "description": "Usuário não tem permissão para alterar esta senha"
+          },
+          "404": { "description": "Usuário não encontrado" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Alterar senha do usuário",
+        "tags": ["User Profile"]
+      }
+    },
+    "/users/{id}": {
+      "delete": {
+        "description": "Deleta a conta do próprio usuário. Apenas o próprio usuário pode deletar sua conta.",
+        "operationId": "DeleteUserAccountController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID do usuário cuja conta será deletada",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conta deletada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Account deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão para deletar esta conta"
+          },
+          "404": { "description": "Usuário não encontrado" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Deletar conta do usuário",
+        "tags": ["User Profile"]
+      }
+    },
     "/problems": {
       "post": {
         "description": "Cria um novo problema de infraestrutura",
@@ -246,6 +511,13 @@
             "in": "query",
             "description": "Número da página (começa em 1)",
             "schema": { "example": 1, "type": "number" }
+          },
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Termo de busca para filtrar problemas por título ou descrição",
+            "schema": { "example": "ar condicionado", "type": "string" }
           }
         ],
         "responses": {
@@ -323,6 +595,27 @@
             "in": "query",
             "description": "Número da página (começa em 1)",
             "schema": { "example": 1, "type": "number" }
+          },
+          {
+            "name": "includeDeleted",
+            "required": false,
+            "in": "query",
+            "description": "Incluir categorias deletadas (na lixeira)",
+            "schema": { "example": false, "type": "boolean" }
+          },
+          {
+            "name": "isActive",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status ativo/inativo",
+            "schema": { "example": true, "type": "boolean" }
+          },
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Busca por nome ou descrição",
+            "schema": { "example": "Climatização", "type": "string" }
           }
         ],
         "responses": {
@@ -374,6 +667,132 @@
         "tags": ["Categories"]
       }
     },
+    "/categories/{id}": {
+      "patch": {
+        "description": "Edita uma categoria existente (requer role MANAGER+)",
+        "operationId": "EditCategoryController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da categoria a ser editada",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EditCategoryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Categoria editada com sucesso" },
+          "400": { "description": "Dados inválidos ou categoria na lixeira" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão (requer MANAGER+)"
+          },
+          "404": { "description": "Categoria não encontrada" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Editar categoria",
+        "tags": ["Categories"]
+      },
+      "delete": {
+        "description": "Deleta permanentemente uma categoria do sistema (requer role MANAGER+)",
+        "operationId": "DeleteCategoryController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da categoria a ser deletada",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Categoria deletada com sucesso" },
+          "400": { "description": "Categoria não encontrada" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão (requer MANAGER+)"
+          },
+          "404": { "description": "Categoria não encontrada" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Deletar categoria",
+        "tags": ["Categories"]
+      }
+    },
+    "/categories/{id}/trash": {
+      "patch": {
+        "description": "Move uma categoria para a lixeira (soft delete, requer role MANAGER+)",
+        "operationId": "TrashCategoryController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da categoria a ser movida para lixeira",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Categoria movida para lixeira com sucesso" },
+          "400": { "description": "Categoria não encontrada" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão (requer MANAGER+)"
+          },
+          "404": { "description": "Categoria não encontrada" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Mover categoria para lixeira",
+        "tags": ["Categories"]
+      }
+    },
+    "/categories/{id}/restore": {
+      "patch": {
+        "description": "Restaura uma categoria que estava na lixeira (requer role MANAGER+)",
+        "operationId": "RestoreCategoryController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da categoria a ser restaurada",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Categoria restaurada com sucesso" },
+          "400": { "description": "Categoria não encontrada" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão (requer MANAGER+)"
+          },
+          "404": { "description": "Categoria não encontrada" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Restaurar categoria da lixeira",
+        "tags": ["Categories"]
+      }
+    },
     "/locations": {
       "post": {
         "description": "Cria uma nova localização no sistema (requer role MANAGER+)",
@@ -409,6 +828,27 @@
             "in": "query",
             "description": "Número da página (começa em 1)",
             "schema": { "example": 1, "type": "number" }
+          },
+          {
+            "name": "includeDeleted",
+            "required": false,
+            "in": "query",
+            "description": "Incluir localizações deletadas (na lixeira)",
+            "schema": { "example": false, "type": "boolean" }
+          },
+          {
+            "name": "isActive",
+            "required": false,
+            "in": "query",
+            "description": "Filtrar por status ativo/inativo",
+            "schema": { "example": true, "type": "boolean" }
+          },
+          {
+            "name": "query",
+            "required": false,
+            "in": "query",
+            "description": "Termo de busca para filtrar localizações por nome, código ou descrição",
+            "schema": { "example": "Bloco A", "type": "string" }
           }
         ],
         "responses": {
@@ -433,6 +873,134 @@
           "400": { "description": "Parâmetros inválidos" }
         },
         "summary": "Buscar localizações",
+        "tags": ["Locations"]
+      }
+    },
+    "/locations/{id}": {
+      "patch": {
+        "description": "Edita uma localização existente (requer role MANAGER+)",
+        "operationId": "EditLocationController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da localização a ser editada",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EditLocationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Localização editada com sucesso" },
+          "400": { "description": "Dados inválidos ou localização na lixeira" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão (requer MANAGER+)"
+          },
+          "404": { "description": "Localização não encontrada" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Editar localização",
+        "tags": ["Locations"]
+      },
+      "delete": {
+        "description": "Deleta permanentemente uma localização do sistema (requer role MANAGER+)",
+        "operationId": "DeleteLocationController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da localização a ser deletada",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Localização deletada com sucesso" },
+          "400": { "description": "Localização não encontrada" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão (requer MANAGER+)"
+          },
+          "404": { "description": "Localização não encontrada" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Deletar localização",
+        "tags": ["Locations"]
+      }
+    },
+    "/locations/{id}/trash": {
+      "patch": {
+        "description": "Move uma localização para a lixeira (soft delete, requer role MANAGER+)",
+        "operationId": "TrashLocationController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da localização a ser movida para lixeira",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Localização movida para lixeira com sucesso"
+          },
+          "400": { "description": "Localização não encontrada" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão (requer MANAGER+)"
+          },
+          "404": { "description": "Localização não encontrada" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Mover localização para lixeira",
+        "tags": ["Locations"]
+      }
+    },
+    "/locations/{id}/restore": {
+      "patch": {
+        "description": "Restaura uma localização que estava na lixeira (requer role MANAGER+)",
+        "operationId": "RestoreLocationController_handle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID da localização a ser restaurada",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Localização restaurada com sucesso" },
+          "400": { "description": "Localização não encontrada" },
+          "401": { "description": "Token JWT inválido ou expirado" },
+          "403": {
+            "description": "Usuário não tem permissão (requer MANAGER+)"
+          },
+          "404": { "description": "Localização não encontrada" }
+        },
+        "security": [{ "JWT-auth": [] }],
+        "summary": "Restaurar localização da lixeira",
         "tags": ["Locations"]
       }
     },
@@ -649,6 +1217,26 @@
         },
         "required": ["name", "description"]
       },
+      "EditCategoryRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome da categoria",
+            "example": "Climatização"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição da categoria",
+            "example": "Problemas relacionados a ar condicionado, ventilação e climatização"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Status ativo/inativo da categoria",
+            "example": true
+          }
+        }
+      },
       "CreateLocationRequest": {
         "type": "object",
         "properties": {
@@ -669,6 +1257,31 @@
           }
         },
         "required": ["name", "description", "code"]
+      },
+      "EditLocationRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome da localização",
+            "example": "Bloco A - Sala 201"
+          },
+          "code": {
+            "type": "string",
+            "description": "Código identificador da localização",
+            "example": "BLA-201"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição da localização",
+            "example": "Sala de aula localizada no primeiro andar do Bloco A"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Status ativo/inativo da localização",
+            "example": true
+          }
+        }
       },
       "EditProblemRequest": {
         "type": "object",

@@ -5,23 +5,33 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { UserResponse } from ".././models";
+import type {
+  ChangeUserPasswordControllerHandle200,
+  ChangeUserPasswordControllerHandleBody,
+  DeleteUserAccountControllerHandle200,
+  EditUserProfileControllerHandle200,
+  EditUserProfileControllerHandleBody,
+  UserResponse,
+} from ".././models";
 
 import { axiosInstance } from "../../axios";
-import type { ErrorType } from "../../axios";
+import type { ErrorType, BodyType } from "../../axios";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -180,3 +190,282 @@ export function useGetUserProfileControllerHandle<
 
   return query;
 }
+
+/**
+ * Edita o perfil do próprio usuário. Apenas o próprio usuário pode editar seu perfil.
+ * @summary Editar perfil do usuário
+ */
+export const editUserProfileControllerHandle = (
+  id: string,
+  editUserProfileControllerHandleBody: BodyType<EditUserProfileControllerHandleBody>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<EditUserProfileControllerHandle200>(
+    {
+      url: `/users/${id}/profile`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: editUserProfileControllerHandleBody,
+    },
+    options,
+  );
+};
+
+export const getEditUserProfileControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
+    TError,
+    { id: string; data: BodyType<EditUserProfileControllerHandleBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<EditUserProfileControllerHandleBody> },
+  TContext
+> => {
+  const mutationKey = ["editUserProfileControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
+    { id: string; data: BodyType<EditUserProfileControllerHandleBody> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return editUserProfileControllerHandle(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EditUserProfileControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof editUserProfileControllerHandle>>
+>;
+export type EditUserProfileControllerHandleMutationBody =
+  BodyType<EditUserProfileControllerHandleBody>;
+export type EditUserProfileControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
+
+/**
+ * @summary Editar perfil do usuário
+ */
+export const useEditUserProfileControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
+      TError,
+      { id: string; data: BodyType<EditUserProfileControllerHandleBody> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<EditUserProfileControllerHandleBody> },
+  TContext
+> => {
+  const mutationOptions =
+    getEditUserProfileControllerHandleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Altera a senha do próprio usuário. Apenas o próprio usuário pode alterar sua senha.
+ * @summary Alterar senha do usuário
+ */
+export const changeUserPasswordControllerHandle = (
+  id: string,
+  changeUserPasswordControllerHandleBody: BodyType<ChangeUserPasswordControllerHandleBody>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<ChangeUserPasswordControllerHandle200>(
+    {
+      url: `/users/${id}/password`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: changeUserPasswordControllerHandleBody,
+    },
+    options,
+  );
+};
+
+export const getChangeUserPasswordControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
+    TError,
+    { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> },
+  TContext
+> => {
+  const mutationKey = ["changeUserPasswordControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
+    { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return changeUserPasswordControllerHandle(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ChangeUserPasswordControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>
+>;
+export type ChangeUserPasswordControllerHandleMutationBody =
+  BodyType<ChangeUserPasswordControllerHandleBody>;
+export type ChangeUserPasswordControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
+
+/**
+ * @summary Alterar senha do usuário
+ */
+export const useChangeUserPasswordControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
+      TError,
+      { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> },
+  TContext
+> => {
+  const mutationOptions =
+    getChangeUserPasswordControllerHandleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Deleta a conta do próprio usuário. Apenas o próprio usuário pode deletar sua conta.
+ * @summary Deletar conta do usuário
+ */
+export const deleteUserAccountControllerHandle = (
+  id: string,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<DeleteUserAccountControllerHandle200>(
+    { url: `/users/${id}`, method: "DELETE" },
+    options,
+  );
+};
+
+export const getDeleteUserAccountControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deleteUserAccountControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteUserAccountControllerHandle(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteUserAccountControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>
+>;
+
+export type DeleteUserAccountControllerHandleMutationError = ErrorType<
+  null | null | null
+>;
+
+/**
+ * @summary Deletar conta do usuário
+ */
+export const useDeleteUserAccountControllerHandle = <
+  TError = ErrorType<null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions =
+    getDeleteUserAccountControllerHandleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};

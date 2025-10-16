@@ -23,6 +23,7 @@ import type {
 
 import type {
   CreateCategoryRequest,
+  EditCategoryRequest,
   FetchCategoriesControllerHandle200,
   FetchCategoriesControllerHandleParams,
 } from ".././models";
@@ -296,6 +297,365 @@ export const useCreateCategoryControllerHandle = <
 > => {
   const mutationOptions =
     getCreateCategoryControllerHandleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Edita uma categoria existente (requer role MANAGER+)
+ * @summary Editar categoria
+ */
+export const editCategoryControllerHandle = (
+  id: string,
+  editCategoryRequest: BodyType<EditCategoryRequest>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    {
+      url: `/categories/${id}`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: editCategoryRequest,
+    },
+    options,
+  );
+};
+
+export const getEditCategoryControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+    TError,
+    { id: string; data: BodyType<EditCategoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<EditCategoryRequest> },
+  TContext
+> => {
+  const mutationKey = ["editCategoryControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+    { id: string; data: BodyType<EditCategoryRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return editCategoryControllerHandle(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type EditCategoryControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof editCategoryControllerHandle>>
+>;
+export type EditCategoryControllerHandleMutationBody =
+  BodyType<EditCategoryRequest>;
+export type EditCategoryControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
+
+/**
+ * @summary Editar categoria
+ */
+export const useEditCategoryControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+      TError,
+      { id: string; data: BodyType<EditCategoryRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<EditCategoryRequest> },
+  TContext
+> => {
+  const mutationOptions =
+    getEditCategoryControllerHandleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Deleta permanentemente uma categoria do sistema (requer role MANAGER+)
+ * @summary Deletar categoria
+ */
+export const deleteCategoryControllerHandle = (
+  id: string,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    { url: `/categories/${id}`, method: "DELETE" },
+    options,
+  );
+};
+
+export const getDeleteCategoryControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deleteCategoryControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return deleteCategoryControllerHandle(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteCategoryControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteCategoryControllerHandle>>
+>;
+
+export type DeleteCategoryControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
+
+/**
+ * @summary Deletar categoria
+ */
+export const useDeleteCategoryControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions =
+    getDeleteCategoryControllerHandleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Move uma categoria para a lixeira (soft delete, requer role MANAGER+)
+ * @summary Mover categoria para lixeira
+ */
+export const trashCategoryControllerHandle = (
+  id: string,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    { url: `/categories/${id}/trash`, method: "PATCH" },
+    options,
+  );
+};
+
+export const getTrashCategoryControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["trashCategoryControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return trashCategoryControllerHandle(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type TrashCategoryControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof trashCategoryControllerHandle>>
+>;
+
+export type TrashCategoryControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
+
+/**
+ * @summary Mover categoria para lixeira
+ */
+export const useTrashCategoryControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions =
+    getTrashCategoryControllerHandleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+/**
+ * Restaura uma categoria que estava na lixeira (requer role MANAGER+)
+ * @summary Restaurar categoria da lixeira
+ */
+export const restoreCategoryControllerHandle = (
+  id: string,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    { url: `/categories/${id}/restore`, method: "PATCH" },
+    options,
+  );
+};
+
+export const getRestoreCategoryControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["restoreCategoryControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return restoreCategoryControllerHandle(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RestoreCategoryControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof restoreCategoryControllerHandle>>
+>;
+
+export type RestoreCategoryControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
+
+/**
+ * @summary Restaurar categoria da lixeira
+ */
+export const useRestoreCategoryControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions =
+    getRestoreCategoryControllerHandleMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
