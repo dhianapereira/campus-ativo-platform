@@ -26,6 +26,7 @@ import {
 } from './styles'
 import { X, Trash } from 'phosphor-react'
 import { useMutation } from '@tanstack/react-query'
+import type { CategoryResponse } from '../../../../../server/client/models/categoryResponse'
 
 const categorySchema = z.object({
   name: z
@@ -40,12 +41,7 @@ const categorySchema = z.object({
 
 type CategoryFormData = z.infer<typeof categorySchema>
 
-interface CategoryItem {
-  id: string
-  name: string
-  description: string
-  isActive?: boolean
-}
+type CategoryItem = CategoryResponse
 
 type UpdateCategoryPayload = {
   name: string

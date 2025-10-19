@@ -13,6 +13,9 @@ import {
   Tab,
   PageTitle,
   SearchActionsContainer,
+  SearchAndFiltersRow,
+  FiltersContainer,
+  FilterButton,
   SearchContainer,
   SearchInputContainer,
   SearchIcon,
@@ -44,18 +47,27 @@ import { AddLocationModal } from './components/AddLocationModal'
 import { EditLocationModal } from './components/EditLocationModal'
 import { EditCategoryModal } from './components/EditCategoryModal'
 import { useQuery } from '@tanstack/react-query'
+import type { LocationResponse } from '../../../server/client/models/locationResponse'
+import type { CategoryResponse } from '../../../server/client/models/categoryResponse'
 
-interface LocationItem {
-  id: string
-  name: string
-  code: string
-  description: string
-}
+type LocationItem = LocationResponse
+type CategoryItem = CategoryResponse
 
-interface CategoryItem {
-  id: string
-  name: string
-  description: string
+// Hook customizado para debounce
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
 }
 
 export default function SettingsPage() {
@@ -63,6 +75,9 @@ export default function SettingsPage() {
     'localizacao',
   )
   const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<
+    'all' | 'active' | 'inactive'
+  >('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false)
@@ -75,25 +90,40 @@ export default function SettingsPage() {
     useState<CategoryItem | null>(null)
   const itemsPerPage = 10
 
+  // Debounce do termo de busca para evitar muitas requisições
+  const debouncedSearchTerm = useDebounce(searchTerm, 500)
+
+  // Usa useQuery com fetch para as API routes do Next.js
   const {
     data: locationsData,
     isLoading: locationsLoading,
     error: locationsError,
   } = useQuery({
-    queryKey: ['locations'],
+    queryKey: ['locations', debouncedSearchTerm, statusFilter],
     queryFn: async () => {
-      const response = await fetch('/api/locations', {
+      const params = new URLSearchParams()
+
+      if (debouncedSearchTerm) {
+        params.append('query', debouncedSearchTerm)
+      }
+      if (statusFilter !== 'all') {
+        params.append('isActive', statusFilter === 'active' ? 'true' : 'false')
+      }
+
+      const url = `/api/locations${params.toString() ? `?${params.toString()}` : ''}`
+      const response = await fetch(url, {
         credentials: 'include',
       })
+
       if (!response.ok) {
-        const text = await response.text().catch(() => '')
-        throw new Error(
-          `Falha ao buscar localizações: ${response.status} ${response.statusText} ${text}`,
-        )
+        throw new Error('Falha ao buscar localizações')
       }
-      return response.json()
+
+      return response.json() as Promise<{ locations: LocationResponse[] }>
     },
     retry: false,
+    placeholderData: (previousData) => previousData,
+    staleTime: 30000, // 30 segundos - considera os dados como "frescos" por 30s
   })
 
   const {
@@ -101,49 +131,59 @@ export default function SettingsPage() {
     isLoading: categoriesLoading,
     error: categoriesError,
   } = useQuery({
-    queryKey: ['categories'],
+    queryKey: ['categories', debouncedSearchTerm, statusFilter],
     queryFn: async () => {
-      const response = await fetch('/api/categories', {
+      const params = new URLSearchParams()
+
+      if (debouncedSearchTerm) {
+        params.append('query', debouncedSearchTerm)
+      }
+      if (statusFilter !== 'all') {
+        params.append('isActive', statusFilter === 'active' ? 'true' : 'false')
+      }
+
+      const url = `/api/categories${params.toString() ? `?${params.toString()}` : ''}`
+      const response = await fetch(url, {
         credentials: 'include',
       })
+
       if (!response.ok) {
-        const text = await response.text().catch(() => '')
-        throw new Error(
-          `Falha ao buscar categorias: ${response.status} ${response.statusText} ${text}`,
-        )
+        throw new Error('Falha ao buscar categorias')
       }
-      return response.json()
+
+      return response.json() as Promise<{ categories: CategoryResponse[] }>
     },
     retry: false,
+    placeholderData: (previousData) => previousData,
+    staleTime: 30000, // 30 segundos - considera os dados como "frescos" por 30s
   })
+
+  // Memoiza os dados filtrados para evitar recálculos desnecessários
+  const filteredLocations = useMemo(
+    () => (locationsData?.locations || []).filter((item) => item.id),
+    [locationsData],
+  )
+
+  const filteredCategories = useMemo(
+    () => (categoriesData?.categories || []).filter((item) => item.id),
+    [categoriesData],
+  )
 
   const currentData: (LocationItem | CategoryItem)[] = useMemo(() => {
     if (activeTab === 'localizacao') {
-      return locationsData?.locations || []
+      return filteredLocations
     } else {
-      return categoriesData?.categories || []
+      return filteredCategories
     }
-  }, [activeTab, locationsData, categoriesData])
-
-  const filteredData = useMemo<(LocationItem | CategoryItem)[]>(() => {
-    if (!searchTerm) return currentData
-    return currentData.filter(
-      (item: LocationItem | CategoryItem) =>
-        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (activeTab === 'localizacao' &&
-          'code' in item &&
-          item.code?.toLowerCase().includes(searchTerm.toLowerCase())),
-    )
-  }, [currentData, searchTerm, activeTab])
+  }, [activeTab, filteredLocations, filteredCategories])
 
   const isLoading =
     activeTab === 'localizacao' ? locationsLoading : categoriesLoading
   const error = activeTab === 'localizacao' ? locationsError : categoriesError
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage)
+  const totalPages = Math.ceil(currentData.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
-  const currentItems: (LocationItem | CategoryItem)[] = filteredData.slice(
+  const currentItems: (LocationItem | CategoryItem)[] = currentData.slice(
     startIndex,
     startIndex + itemsPerPage,
   )
@@ -151,11 +191,17 @@ export default function SettingsPage() {
   const handleTabChange = (tab: 'localizacao' | 'categoria') => {
     setActiveTab(tab)
     setSearchTerm('')
+    setStatusFilter('all')
     setCurrentPage(1)
     setSelectedItems([])
   }
 
   const handleSearch = () => {
+    setCurrentPage(1)
+  }
+
+  const handleStatusFilterChange = (filter: 'all' | 'active' | 'inactive') => {
+    setStatusFilter(filter)
     setCurrentPage(1)
   }
 
@@ -166,9 +212,10 @@ export default function SettingsPage() {
   }
 
   const handleSelectAll = () => {
-    const currentItemIds = currentItems.map(
-      (item: LocationItem | CategoryItem) => item.id,
-    )
+    const currentItemIds = currentItems
+      .map((item: LocationItem | CategoryItem) => item.id)
+      .filter((id): id is string => id !== undefined)
+
     const allCurrentSelected = currentItemIds.every((id: string) =>
       selectedItems.includes(id),
     )
@@ -188,7 +235,7 @@ export default function SettingsPage() {
   const isAllCurrentSelected =
     currentItems.length > 0 &&
     currentItems.every((item: LocationItem | CategoryItem) =>
-      selectedItems.includes(item.id),
+      item.id ? selectedItems.includes(item.id) : false,
     )
 
   const handleDeleteSelected = () => {
@@ -381,47 +428,70 @@ export default function SettingsPage() {
           </PageTitle>
 
           <SearchActionsContainer>
-            <SearchContainer>
-              <SearchInputContainer>
-                <SearchIcon>
-                  <MagnifyingGlass size={20} weight="regular" />
-                </SearchIcon>
-                <SearchInput
-                  type="text"
-                  placeholder={
-                    activeTab === 'localizacao'
-                      ? 'Busque por no...'
-                      : 'Busque pelo nome da categoria...'
-                  }
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                />
-              </SearchInputContainer>
-              <SearchButton onClick={handleSearch} type="button">
-                Pesquisar
-              </SearchButton>
-              <ActionButton variant="mobile-add" onClick={handleAddNew}>
-                <Plus size={16} />
-              </ActionButton>
-            </SearchContainer>
+            <SearchAndFiltersRow>
+              <SearchContainer>
+                <SearchInputContainer>
+                  <SearchIcon>
+                    <MagnifyingGlass size={20} weight="regular" />
+                  </SearchIcon>
+                  <SearchInput
+                    type="text"
+                    placeholder={
+                      activeTab === 'localizacao'
+                        ? 'Busque por nome, número ou descrição...'
+                        : 'Busque pelo nome ou descrição...'
+                    }
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  />
+                </SearchInputContainer>
+                <SearchButton onClick={handleSearch} type="button">
+                  Pesquisar
+                </SearchButton>
+                <ActionButton variant="mobile-add" onClick={handleAddNew}>
+                  <Plus size={16} />
+                </ActionButton>
+              </SearchContainer>
 
-            <ActionsContainer>
-              <ActionButton
-                variant="delete"
-                onClick={handleDeleteSelected}
-                disabled={selectedItems.length === 0}
+              <ActionsContainer>
+                <ActionButton
+                  variant="delete"
+                  onClick={handleDeleteSelected}
+                  disabled={selectedItems.length === 0}
+                >
+                  <Trash size={16} />
+                  Mover para lixeira
+                </ActionButton>
+                <ActionButton variant="add" onClick={handleAddNew}>
+                  <Plus size={16} />
+                  {activeTab === 'localizacao'
+                    ? 'Adicionar Localização'
+                    : 'Adicionar Categoria'}
+                </ActionButton>
+              </ActionsContainer>
+            </SearchAndFiltersRow>
+
+            <FiltersContainer>
+              <FilterButton
+                isActive={statusFilter === 'all'}
+                onClick={() => handleStatusFilterChange('all')}
               >
-                <Trash size={16} />
-                Mover para lixeira
-              </ActionButton>
-              <ActionButton variant="add" onClick={handleAddNew}>
-                <Plus size={16} />
-                {activeTab === 'localizacao'
-                  ? 'Adicionar Localização'
-                  : 'Adicionar Categoria'}
-              </ActionButton>
-            </ActionsContainer>
+                Todos
+              </FilterButton>
+              <FilterButton
+                isActive={statusFilter === 'active'}
+                onClick={() => handleStatusFilterChange('active')}
+              >
+                Ativos
+              </FilterButton>
+              <FilterButton
+                isActive={statusFilter === 'inactive'}
+                onClick={() => handleStatusFilterChange('inactive')}
+              >
+                Inativos
+              </FilterButton>
+            </FiltersContainer>
           </SearchActionsContainer>
 
           {/* Desktop Table */}
@@ -457,33 +527,37 @@ export default function SettingsPage() {
                     </TableRow>
                   </thead>
                   <tbody>
-                    {currentItems.map((item: LocationItem | CategoryItem) => (
-                      <TableRow
-                        key={item.id}
-                        isHeader={false}
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => {
-                          if (activeTab === 'localizacao') {
-                            handleEditLocation(item as LocationItem)
-                          } else {
-                            handleEditCategory(item as CategoryItem)
-                          }
-                        }}
-                      >
-                        <TableCell onClick={(e) => e.stopPropagation()}>
-                          <Checkbox
-                            type="checkbox"
-                            checked={selectedItems.includes(item.id)}
-                            onChange={() => handleSelectItem(item.id)}
-                          />
-                        </TableCell>
-                        <TableCell>{item.name}</TableCell>
-                        {activeTab === 'localizacao' && (
-                          <TableCell>{(item as LocationItem).code}</TableCell>
-                        )}
-                        <TableCell>{item.description}</TableCell>
-                      </TableRow>
-                    ))}
+                    {currentItems.map((item: LocationItem | CategoryItem) => {
+                      if (!item.id) return null
+                      const itemId = item.id
+                      return (
+                        <TableRow
+                          key={itemId}
+                          isHeader={false}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => {
+                            if (activeTab === 'localizacao') {
+                              handleEditLocation(item as LocationItem)
+                            } else {
+                              handleEditCategory(item as CategoryItem)
+                            }
+                          }}
+                        >
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <Checkbox
+                              type="checkbox"
+                              checked={selectedItems.includes(itemId)}
+                              onChange={() => handleSelectItem(itemId)}
+                            />
+                          </TableCell>
+                          <TableCell>{item.name}</TableCell>
+                          {activeTab === 'localizacao' && (
+                            <TableCell>{(item as LocationItem).code}</TableCell>
+                          )}
+                          <TableCell>{item.description}</TableCell>
+                        </TableRow>
+                      )
+                    })}
                   </tbody>
                 </Table>
               </TableWrapper>
@@ -504,46 +578,49 @@ export default function SettingsPage() {
                 </p>
               </div>
             )}
-            {currentItems.map((item: LocationItem | CategoryItem) => (
-              <div key={item.id}>
-                {activeTab === 'localizacao' ? (
-                  <LocationCard
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleEditLocation(item as LocationItem)}
-                  >
-                    <div>
-                      <CardTitle>
-                        <strong>Nome:</strong> {item.name}
-                      </CardTitle>
-                      <CardInfo>
-                        <strong>Número:</strong> {(item as LocationItem).code}
-                      </CardInfo>
-                      <CardDescription>
-                        <strong>Descrição</strong>
-                        <br />
-                        {item.description}
-                      </CardDescription>
-                    </div>
-                  </LocationCard>
-                ) : (
-                  <CategoryCard
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => handleEditCategory(item as CategoryItem)}
-                  >
-                    <div>
-                      <CardTitle>
-                        <strong>Nome:</strong> {item.name}
-                      </CardTitle>
-                      <CardDescription>
-                        <strong>Descrição</strong>
-                        <br />
-                        {item.description}
-                      </CardDescription>
-                    </div>
-                  </CategoryCard>
-                )}
-              </div>
-            ))}
+            {currentItems.map((item: LocationItem | CategoryItem) => {
+              if (!item.id) return null
+              return (
+                <div key={item.id}>
+                  {activeTab === 'localizacao' ? (
+                    <LocationCard
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleEditLocation(item as LocationItem)}
+                    >
+                      <div>
+                        <CardTitle>
+                          <strong>Nome:</strong> {item.name}
+                        </CardTitle>
+                        <CardInfo>
+                          <strong>Número:</strong> {(item as LocationItem).code}
+                        </CardInfo>
+                        <CardDescription>
+                          <strong>Descrição</strong>
+                          <br />
+                          {item.description}
+                        </CardDescription>
+                      </div>
+                    </LocationCard>
+                  ) : (
+                    <CategoryCard
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleEditCategory(item as CategoryItem)}
+                    >
+                      <div>
+                        <CardTitle>
+                          <strong>Nome:</strong> {item.name}
+                        </CardTitle>
+                        <CardDescription>
+                          <strong>Descrição</strong>
+                          <br />
+                          {item.description}
+                        </CardDescription>
+                      </div>
+                    </CategoryCard>
+                  )}
+                </div>
+              )
+            })}
           </MobileCardsWrapper>
 
           {totalPages > 1 && (
