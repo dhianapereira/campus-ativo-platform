@@ -34,6 +34,7 @@ import type {
   FetchUsersControllerHandle200UsersItem,
   ChangeUserRoleControllerHandleBodyRole,
 } from '../../../../../server/client/models'
+import { ConfirmationModal } from '@/components/confirmation-modal'
 
 const memberSchema = z.object({
   name: z
@@ -76,6 +77,10 @@ export function EditMemberModal({
   const { user, canManageUserRole } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isActive, setIsActive] = useState(true)
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const [initialPermission, setInitialPermission] = useState<string>('')
+  const [initialStatus, setInitialStatus] = useState<boolean>(true)
   const queryClient = useQueryClient()
 
   const {
@@ -83,72 +88,140 @@ export function EditMemberModal({
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<MemberFormData>({
     resolver: zodResolver(memberSchema),
   })
 
+  const watchedFields = watch()
+
   // Sync form with the selected member whenever the modal opens or member changes
   useEffect(() => {
     if (isOpen && member) {
+      const memberRole = (member.role as string) || 'REPORTER'
+      const memberStatus = member.isActive ?? true
+
       reset({
         name: member.name || '',
         email: member.email || '',
         position: member.position || '',
-        permissions: (member.role as string) || 'REPORTER',
+        permissions: memberRole,
       })
+
+      setInitialPermission(memberRole)
+      setInitialStatus(memberStatus)
+      setIsActive(memberStatus)
     }
   }, [isOpen, member, reset])
 
+  // Check for unsaved changes
+  useEffect(() => {
+    if (!member) {
+      setHasUnsavedChanges(false)
+      return
+    }
+
+    const permissionChanged = watchedFields.permissions !== initialPermission
+    const statusChanged = isActive !== initialStatus
+
+    setHasUnsavedChanges(permissionChanged || statusChanged)
+  }, [watchedFields.permissions, isActive, initialPermission, initialStatus, member])
+
   const onSubmit = async (data: MemberFormData) => {
+    if (!member?.id) return
+
     setIsSubmitting(true)
 
     try {
-      const roleChanged =
-        (data.permissions as string) !== (member?.role as string)
+      const roleChanged = data.permissions !== initialPermission
+      const statusChanged = isActive !== initialStatus
 
-      if (!roleChanged) {
+      const updates: Promise<Response>[] = []
+
+      if (roleChanged) {
+        updates.push(
+          fetch(`/api/users/${member.id}/role`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              role: data.permissions as ChangeUserRoleControllerHandleBodyRole,
+            }),
+          }),
+        )
+      }
+
+      if (statusChanged) {
+        updates.push(
+          fetch(`/api/users/${member.id}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              isActive,
+            }),
+          }),
+        )
+      }
+
+      if (updates.length === 0) {
         setIsSubmitting(false)
+        toast.info('Nenhuma alteração foi realizada.')
         return
       }
 
-      if (member?.id && data.permissions && roleChanged) {
-        const response = await fetch(`/api/users/${member.id}/role`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            role: data.permissions as ChangeUserRoleControllerHandleBodyRole,
-          }),
-        })
+      const responses = await Promise.all(updates)
 
-        if (!response.ok) {
-          // Try to extract backend error message
-          let message = 'Falha ao atualizar a permissão do usuário.'
-          try {
-            const payload = await response.json()
-            if (payload?.message) message = payload.message
-          } catch {}
-          throw new Error(message)
+      // Check if all requests were successful
+      const allSuccessful = responses.every((response) => response.ok)
+
+      if (!allSuccessful) {
+        const firstError = responses.find((response) => !response.ok)
+        if (firstError) {
+          const errorData = await firstError.json().catch(() => ({}))
+          throw new Error(errorData.message || 'Falha ao atualizar usuário')
         }
-
-        await queryClient.invalidateQueries({ queryKey: ['users'] })
       }
 
+      await queryClient.invalidateQueries({ queryKey: ['users'] })
+
       setIsSubmitting(false)
+      setHasUnsavedChanges(false)
       reset()
       onSuccess()
-      toast.success('Permissão atualizada com sucesso.')
+
+      if (roleChanged && statusChanged) {
+        toast.success('Permissão e status atualizados com sucesso.')
+      } else if (roleChanged) {
+        toast.success('Permissão atualizada com sucesso.')
+      } else {
+        toast.success('Status atualizado com sucesso.')
+      }
     } catch (error) {
       setIsSubmitting(false)
-      toast.error('Falha ao atualizar a permissão do usuário.')
+      const errorMessage =
+        error instanceof Error ? error.message : 'Falha ao atualizar usuário'
+      toast.error(errorMessage)
     }
   }
 
   const handleClose = () => {
-    if (!isSubmitting) {
+    if (isSubmitting) return
+
+    if (hasUnsavedChanges) {
+      setShowConfirmationModal(true)
+    } else {
       reset()
+      setHasUnsavedChanges(false)
       onClose()
     }
+  }
+
+  const handleConfirmClose = () => {
+    reset()
+    setHasUnsavedChanges(false)
+    setShowConfirmationModal(false)
+    onClose()
   }
 
   if (!isOpen || !member) return null
@@ -183,98 +256,110 @@ export function EditMemberModal({
   })()
 
   return (
-    <ModalOverlay onClick={handleClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <ModalHeader>
-          <ModalTitle>Membro</ModalTitle>
-          <ModalCloseButton onClick={handleClose} disabled={isSubmitting}>
-            <X size={20} />
-          </ModalCloseButton>
-        </ModalHeader>
+    <>
+      <ModalOverlay onClick={handleClose}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <ModalHeader>
+            <ModalTitle>Membro</ModalTitle>
+            <ModalCloseButton onClick={handleClose} disabled={isSubmitting}>
+              <X size={20} />
+            </ModalCloseButton>
+          </ModalHeader>
 
-        <ModalBody>
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            <div className="form-row">
-              <FormField className="name-field">
-                <Label htmlFor="name">Nome</Label>
-                <Input id="name" {...register('name')} disabled={true} />
-                {errors.name && (
-                  <ErrorMessage>{errors.name.message}</ErrorMessage>
-                )}
-              </FormField>
-            </div>
+          <ModalBody>
+            <Form onSubmit={handleSubmit(onSubmit)}>
+              <div className="form-row">
+                <FormField className="name-field">
+                  <Label htmlFor="name">Nome</Label>
+                  <Input id="name" {...register('name')} disabled={true} />
+                  {errors.name && (
+                    <ErrorMessage>{errors.name.message}</ErrorMessage>
+                  )}
+                </FormField>
+              </div>
 
-            <FormField>
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                {...register('email')}
-                disabled={true}
-              />
-              {errors.email && (
-                <ErrorMessage>{errors.email.message}</ErrorMessage>
-              )}
-            </FormField>
-
-            <FormField>
-              <Label htmlFor="position">Cargo</Label>
-              <Input id="position" {...register('position')} disabled={true} />
-              {errors.position && (
-                <ErrorMessage>{errors.position.message}</ErrorMessage>
-              )}
-            </FormField>
-
-            <BottomFieldsContainer>
               <FormField>
-                <Label htmlFor="permissions">Permissão</Label>
-                <SelectContainer>
-                  <Select
-                    id="permissions"
-                    {...register('permissions')}
-                    disabled={isSubmitting || !!isSelf}
-                  >
-                    {finalPermissionOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </Select>
-                </SelectContainer>
-                {errors.permissions && (
-                  <ErrorMessage>{errors.permissions.message}</ErrorMessage>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  {...register('email')}
+                  disabled={true}
+                />
+                {errors.email && (
+                  <ErrorMessage>{errors.email.message}</ErrorMessage>
                 )}
               </FormField>
 
-              <StatusContainer>
-                <StatusLabel>Status</StatusLabel>
-                <StatusToggle
-                  type="button"
-                  isActive={isActive}
-                  onClick={() => setIsActive(!isActive)}
-                  disabled={isSubmitting}
-                >
-                  <StatusIndicator isActive={isActive} />
-                </StatusToggle>
-              </StatusContainer>
-            </BottomFieldsContainer>
-          </Form>
-        </ModalBody>
+              <FormField>
+                <Label htmlFor="position">Cargo</Label>
+                <Input id="position" {...register('position')} disabled={true} />
+                {errors.position && (
+                  <ErrorMessage>{errors.position.message}</ErrorMessage>
+                )}
+              </FormField>
 
-        <ModalFooter>
-          <ButtonGroup>
-            <CancelButton onClick={handleClose} disabled={isSubmitting}>
-              Cancelar
-            </CancelButton>
-            <SubmitButton
-              onClick={handleSubmit(onSubmit)}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Salvando...' : 'Salvar'}
-            </SubmitButton>
-          </ButtonGroup>
-        </ModalFooter>
-      </ModalContent>
-    </ModalOverlay>
+              <BottomFieldsContainer>
+                <FormField>
+                  <Label htmlFor="permissions">Permissão</Label>
+                  <SelectContainer>
+                    <Select
+                      id="permissions"
+                      {...register('permissions')}
+                      disabled={isSubmitting || !!isSelf}
+                    >
+                      {finalPermissionOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </Select>
+                  </SelectContainer>
+                  {errors.permissions && (
+                    <ErrorMessage>{errors.permissions.message}</ErrorMessage>
+                  )}
+                </FormField>
+
+                <StatusContainer>
+                  <StatusLabel>Status</StatusLabel>
+                  <StatusToggle
+                    type="button"
+                    isActive={isActive}
+                    onClick={() => setIsActive(!isActive)}
+                    disabled={isSubmitting}
+                  >
+                    <StatusIndicator isActive={isActive} />
+                  </StatusToggle>
+                </StatusContainer>
+              </BottomFieldsContainer>
+            </Form>
+          </ModalBody>
+
+          <ModalFooter>
+            <ButtonGroup>
+              <CancelButton onClick={handleClose} disabled={isSubmitting}>
+                Cancelar
+              </CancelButton>
+              <SubmitButton
+                onClick={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Salvando...' : 'Salvar'}
+              </SubmitButton>
+            </ButtonGroup>
+          </ModalFooter>
+        </ModalContent>
+      </ModalOverlay>
+
+      <ConfirmationModal
+        isOpen={showConfirmationModal}
+        onClose={handleConfirmClose}
+        onConfirm={() => setShowConfirmationModal(false)}
+        title="Descartar alterações?"
+        message="Se você sair agora, todas as suas alterações não salvas serão perdidas."
+        confirmText="Continuar editando"
+        cancelText="Descartar"
+      />
+    </>
   )
 }

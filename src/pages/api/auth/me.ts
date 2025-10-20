@@ -52,19 +52,10 @@ export default async function handler(
       roleFromToken = tokenPayload.role
     } catch (e) {}
 
-    // Get email from token payload as well
-    let emailFromToken = null
-    try {
-      const tokenPayload = JSON.parse(
-        Buffer.from(token.split('.')[1], 'base64').toString(),
-      )
-      emailFromToken = tokenPayload.email || tokenPayload.sub // sub might be email or ID
-    } catch (e) {}
-
     const userData = {
       id: profileData.id,
       name: profileData.name,
-      email: emailFromToken || 'user@ifal.edu.br',
+      email: profileData.email,
       role: roleFromToken || profileData.role,
       position: profileData.position || 'Não informado',
     }

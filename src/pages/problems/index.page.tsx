@@ -10,21 +10,47 @@ import {
   FilterBadge,
   ResponsiveSearchBar,
   MainContainer,
+  EmptyStateContainer,
+  EmptyStateImage,
 } from './styles'
 import ProblemCard from './components/ProblemCard'
 import { FilterButton } from './components/FilterButton'
 import { problems } from './mocks/problems'
 import { FilterDialog, FilterOption, Text } from '@/styles'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Status } from '@/data/static/status-data'
+import { useQuery } from '@tanstack/react-query'
+import NoProblemSvg from '@/assets/no-problem.svg'
+import Image from 'next/image'
 
 export default function Problems() {
   const router = useRouter()
-  const [filteredProblems, setFilteredProblems] = useState(problems)
   const [searchValue, setSearchValue] = useState('')
+  const [page, setPage] = useState(1)
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
+
+  // Fetch problems from Next.js API route
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['problems', page, searchValue],
+    queryFn: async () => {
+      const params = new URLSearchParams()
+      if (page) params.append('page', page.toString())
+      if (searchValue) params.append('query', searchValue)
+
+      const response = await fetch(`/api/problems?${params.toString()}`, {
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        throw new Error('Falha ao buscar problemas')
+      }
+
+      return response.json()
+    },
+    retry: false,
+  })
 
   const filterOptions: FilterOption[] = [
     { id: Status.ToAnalysis, label: 'Para análise', checked: false },
@@ -35,48 +61,45 @@ export default function Problems() {
     { id: Status.Finished, label: 'Concluído', checked: false },
   ]
 
+  // Transform API data to match current component structure
+  const problems = useMemo(() => {
+    if (!data?.problems) return []
+
+    return data.problems.map((problem: any) => ({
+      id: problem.id || problem.slug || '',
+      title: problem.title || '',
+      location: problem.locationName || 'Localização excluída',
+      description: problem.excerpt || problem.description || '',
+      badgeId: problem.status || Status.ToAnalysis,
+    }))
+  }, [data])
+
+  // Apply status filters on client side
+  const filteredProblems = useMemo(() => {
+    const activeFilterIds = activeFilters.filter((f) => f.checked).map((f) => f.id)
+
+    if (activeFilterIds.length === 0) {
+      return problems
+    }
+
+    return problems.filter((problem) => activeFilterIds.includes(problem.badgeId))
+  }, [problems, activeFilters])
+
   async function goToAddProblem() {
     await router.push('/problems/add')
   }
 
-  const applyFilters = (
-    searchQuery: string = searchValue,
-    filters: FilterOption[] = activeFilters,
-  ) => {
-    let filtered = problems
-
-    if (searchQuery.trim()) {
-      filtered = filtered.filter(
-        (problem) =>
-          problem.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          problem.location.toLowerCase().includes(searchQuery.toLowerCase()),
-      )
-    }
-
-    const activeFilterIds = filters.filter((f) => f.checked).map((f) => f.id)
-
-    if (activeFilterIds.length > 0) {
-      filtered = filtered.filter((problem) => {
-        return activeFilterIds.includes(problem.badgeId)
-      })
-    }
-
-    setFilteredProblems(filtered)
-  }
-
   const handleSearch = (query: string) => {
     setSearchValue(query)
-    applyFilters(query, activeFilters)
+    setPage(1) // Reset to first page on new search
   }
 
   const handleInputChange = (value: string) => {
     setSearchValue(value)
-    applyFilters(value, activeFilters)
   }
 
   const handleFilterApply = (filters: FilterOption[]) => {
     setActiveFilters(filters)
-    applyFilters(searchValue, filters)
   }
 
   const openFilterDialog = () => {
@@ -134,11 +157,39 @@ export default function Problems() {
           )}
         </ResultsCounter>
 
-        <GridView>
-          {filteredProblems.map((problem) => (
-            <ProblemCard key={problem.id} {...problem} />
-          ))}
-        </GridView>
+        {isLoading && (
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <Text>Carregando problemas...</Text>
+          </div>
+        )}
+
+        {error && (
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <Text>Erro ao carregar problemas. Tente novamente mais tarde.</Text>
+          </div>
+        )}
+
+        {!isLoading && !error && filteredProblems.length === 0 && (
+          <EmptyStateContainer>
+            <EmptyStateImage>
+              <Image
+                src={NoProblemSvg}
+                alt="Nenhum problema cadastrado"
+                width={364}
+                height={141}
+                priority
+              />
+            </EmptyStateImage>
+          </EmptyStateContainer>
+        )}
+
+        {!isLoading && !error && filteredProblems.length > 0 && (
+          <GridView>
+            {filteredProblems.map((problem) => (
+              <ProblemCard key={problem.id} {...problem} />
+            ))}
+          </GridView>
+        )}
       </MainContainer>
 
       <FilterDialog

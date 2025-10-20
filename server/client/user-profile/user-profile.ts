@@ -5,7 +5,10 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -18,8 +21,8 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
   ChangeUserPasswordControllerHandle200,
@@ -27,445 +30,295 @@ import type {
   DeleteUserAccountControllerHandle200,
   EditUserProfileControllerHandle200,
   EditUserProfileControllerHandleBody,
-  UserResponse,
-} from ".././models";
+  UserResponse
+} from '.././models';
 
-import { axiosInstance } from "../../axios";
-import type { ErrorType, BodyType } from "../../axios";
+import { axiosInstance } from '../../axios';
+import type { ErrorType , BodyType } from '../../axios';
+
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
 
 /**
  * Retorna as informações do perfil do usuário autenticado
  * @summary Obter perfil do usuário
  */
 export const getUserProfileControllerHandle = (
-  options?: SecondParameter<typeof axiosInstance>,
-  signal?: AbortSignal,
+    
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
 ) => {
-  return axiosInstance<UserResponse>(
-    { url: `/profile`, method: "GET", signal },
-    options,
-  );
-};
+      
+      
+      return axiosInstance<UserResponse>(
+      {url: `/profile`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getGetUserProfileControllerHandleQueryKey = () => {
-  return [`/profile`] as const;
-};
+    return [`/profile`] as const;
+    }
 
-export const getGetUserProfileControllerHandleQueryOptions = <
-  TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-  TError = ErrorType<null | null>,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-      TError,
-      TData
-    >
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+    
+export const getGetUserProfileControllerHandleQueryOptions = <TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError = ErrorType<null | null>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+) => {
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetUserProfileControllerHandleQueryKey();
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getUserProfileControllerHandle>>
-  > = ({ signal }) => getUserProfileControllerHandle(requestOptions, signal);
+  const queryKey =  queryOptions?.queryKey ?? getGetUserProfileControllerHandleQueryKey();
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  
 
-export type GetUserProfileControllerHandleQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getUserProfileControllerHandle>>
->;
-export type GetUserProfileControllerHandleQueryError = ErrorType<null | null>;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserProfileControllerHandle>>> = ({ signal }) => getUserProfileControllerHandle(requestOptions, signal);
 
-export function useGetUserProfileControllerHandle<
-  TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-  TError = ErrorType<null | null>,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetUserProfileControllerHandleQueryResult = NonNullable<Awaited<ReturnType<typeof getUserProfileControllerHandle>>>
+export type GetUserProfileControllerHandleQueryError = ErrorType<null | null>
+
+
+export function useGetUserProfileControllerHandle<TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError = ErrorType<null | null>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof getUserProfileControllerHandle>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetUserProfileControllerHandle<
-  TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-  TError = ErrorType<null | null>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetUserProfileControllerHandle<TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError = ErrorType<null | null>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof getUserProfileControllerHandle>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGetUserProfileControllerHandle<
-  TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-  TError = ErrorType<null | null>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetUserProfileControllerHandle<TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError = ErrorType<null | null>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Obter perfil do usuário
  */
 
-export function useGetUserProfileControllerHandle<
-  TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-  TError = ErrorType<null | null>,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof getUserProfileControllerHandle>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGetUserProfileControllerHandleQueryOptions(options);
+export function useGetUserProfileControllerHandle<TData = Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError = ErrorType<null | null>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserProfileControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getGetUserProfileControllerHandleQueryOptions(options)
 
-  query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
 
 /**
  * Edita o perfil do próprio usuário. Apenas o próprio usuário pode editar seu perfil.
  * @summary Editar perfil do usuário
  */
 export const editUserProfileControllerHandle = (
-  id: string,
-  editUserProfileControllerHandleBody: BodyType<EditUserProfileControllerHandleBody>,
-  options?: SecondParameter<typeof axiosInstance>,
-) => {
-  return axiosInstance<EditUserProfileControllerHandle200>(
-    {
-      url: `/users/${id}/profile`,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      data: editUserProfileControllerHandleBody,
+    id: string,
+    editUserProfileControllerHandleBody: BodyType<EditUserProfileControllerHandleBody>,
+ options?: SecondParameter<typeof axiosInstance>,) => {
+      
+      
+      return axiosInstance<EditUserProfileControllerHandle200>(
+      {url: `/users/${id}/profile`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: editUserProfileControllerHandleBody
     },
-    options,
-  );
-};
+      options);
+    }
+  
 
-export const getEditUserProfileControllerHandleMutationOptions = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
-    TError,
-    { id: string; data: BodyType<EditUserProfileControllerHandleBody> },
-    TContext
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
-  TError,
-  { id: string; data: BodyType<EditUserProfileControllerHandleBody> },
-  TContext
-> => {
-  const mutationKey = ["editUserProfileControllerHandle"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
-    { id: string; data: BodyType<EditUserProfileControllerHandleBody> }
-  > = (props) => {
-    const { id, data } = props ?? {};
+export const getEditUserProfileControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editUserProfileControllerHandle>>, TError,{id: string;data: BodyType<EditUserProfileControllerHandleBody>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof editUserProfileControllerHandle>>, TError,{id: string;data: BodyType<EditUserProfileControllerHandleBody>}, TContext> => {
 
-    return editUserProfileControllerHandle(id, data, requestOptions);
-  };
+const mutationKey = ['editUserProfileControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
 
-  return { mutationFn, ...mutationOptions };
-};
+      
 
-export type EditUserProfileControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof editUserProfileControllerHandle>>
->;
-export type EditUserProfileControllerHandleMutationBody =
-  BodyType<EditUserProfileControllerHandleBody>;
-export type EditUserProfileControllerHandleMutationError = ErrorType<
-  null | null | null | null
->;
 
-/**
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editUserProfileControllerHandle>>, {id: string;data: BodyType<EditUserProfileControllerHandleBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  editUserProfileControllerHandle(id,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EditUserProfileControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof editUserProfileControllerHandle>>>
+    export type EditUserProfileControllerHandleMutationBody = BodyType<EditUserProfileControllerHandleBody>
+    export type EditUserProfileControllerHandleMutationError = ErrorType<null | null | null | null>
+
+    /**
  * @summary Editar perfil do usuário
  */
-export const useEditUserProfileControllerHandle = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
-      TError,
-      { id: string; data: BodyType<EditUserProfileControllerHandleBody> },
-      TContext
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
-  TError,
-  { id: string; data: BodyType<EditUserProfileControllerHandleBody> },
-  TContext
-> => {
-  const mutationOptions =
-    getEditUserProfileControllerHandleMutationOptions(options);
+export const useEditUserProfileControllerHandle = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editUserProfileControllerHandle>>, TError,{id: string;data: BodyType<EditUserProfileControllerHandleBody>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof editUserProfileControllerHandle>>,
+        TError,
+        {id: string;data: BodyType<EditUserProfileControllerHandleBody>},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions, queryClient);
-};
-/**
+      const mutationOptions = getEditUserProfileControllerHandleMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * Altera a senha do próprio usuário. Apenas o próprio usuário pode alterar sua senha.
  * @summary Alterar senha do usuário
  */
 export const changeUserPasswordControllerHandle = (
-  id: string,
-  changeUserPasswordControllerHandleBody: BodyType<ChangeUserPasswordControllerHandleBody>,
-  options?: SecondParameter<typeof axiosInstance>,
-) => {
-  return axiosInstance<ChangeUserPasswordControllerHandle200>(
-    {
-      url: `/users/${id}/password`,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      data: changeUserPasswordControllerHandleBody,
+    id: string,
+    changeUserPasswordControllerHandleBody: BodyType<ChangeUserPasswordControllerHandleBody>,
+ options?: SecondParameter<typeof axiosInstance>,) => {
+      
+      
+      return axiosInstance<ChangeUserPasswordControllerHandle200>(
+      {url: `/users/${id}/password`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: changeUserPasswordControllerHandleBody
     },
-    options,
-  );
-};
+      options);
+    }
+  
 
-export const getChangeUserPasswordControllerHandleMutationOptions = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
-    TError,
-    { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> },
-    TContext
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
-  TError,
-  { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> },
-  TContext
-> => {
-  const mutationKey = ["changeUserPasswordControllerHandle"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
-    { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> }
-  > = (props) => {
-    const { id, data } = props ?? {};
+export const getChangeUserPasswordControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>, TError,{id: string;data: BodyType<ChangeUserPasswordControllerHandleBody>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>, TError,{id: string;data: BodyType<ChangeUserPasswordControllerHandleBody>}, TContext> => {
 
-    return changeUserPasswordControllerHandle(id, data, requestOptions);
-  };
+const mutationKey = ['changeUserPasswordControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
 
-  return { mutationFn, ...mutationOptions };
-};
+      
 
-export type ChangeUserPasswordControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>
->;
-export type ChangeUserPasswordControllerHandleMutationBody =
-  BodyType<ChangeUserPasswordControllerHandleBody>;
-export type ChangeUserPasswordControllerHandleMutationError = ErrorType<
-  null | null | null | null
->;
 
-/**
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>, {id: string;data: BodyType<ChangeUserPasswordControllerHandleBody>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  changeUserPasswordControllerHandle(id,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ChangeUserPasswordControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>>
+    export type ChangeUserPasswordControllerHandleMutationBody = BodyType<ChangeUserPasswordControllerHandleBody>
+    export type ChangeUserPasswordControllerHandleMutationError = ErrorType<null | null | null | null>
+
+    /**
  * @summary Alterar senha do usuário
  */
-export const useChangeUserPasswordControllerHandle = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
-      TError,
-      { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> },
-      TContext
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
-  TError,
-  { id: string; data: BodyType<ChangeUserPasswordControllerHandleBody> },
-  TContext
-> => {
-  const mutationOptions =
-    getChangeUserPasswordControllerHandleMutationOptions(options);
+export const useChangeUserPasswordControllerHandle = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>, TError,{id: string;data: BodyType<ChangeUserPasswordControllerHandleBody>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof changeUserPasswordControllerHandle>>,
+        TError,
+        {id: string;data: BodyType<ChangeUserPasswordControllerHandleBody>},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions, queryClient);
-};
-/**
+      const mutationOptions = getChangeUserPasswordControllerHandleMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * Deleta a conta do próprio usuário. Apenas o próprio usuário pode deletar sua conta.
  * @summary Deletar conta do usuário
  */
 export const deleteUserAccountControllerHandle = (
-  id: string,
-  options?: SecondParameter<typeof axiosInstance>,
-) => {
-  return axiosInstance<DeleteUserAccountControllerHandle200>(
-    { url: `/users/${id}`, method: "DELETE" },
-    options,
-  );
-};
+    id: string,
+ options?: SecondParameter<typeof axiosInstance>,) => {
+      
+      
+      return axiosInstance<DeleteUserAccountControllerHandle200>(
+      {url: `/users/${id}`, method: 'DELETE'
+    },
+      options);
+    }
+  
 
-export const getDeleteUserAccountControllerHandleMutationOptions = <
-  TError = ErrorType<null | null | null>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationKey = ["deleteUserAccountControllerHandle"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
+export const getDeleteUserAccountControllerHandleMutationOptions = <TError = ErrorType<null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>, TError,{id: string}, TContext> => {
 
-    return deleteUserAccountControllerHandle(id, requestOptions);
-  };
+const mutationKey = ['deleteUserAccountControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
 
-  return { mutationFn, ...mutationOptions };
-};
+      
 
-export type DeleteUserAccountControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>
->;
 
-export type DeleteUserAccountControllerHandleMutationError = ErrorType<
-  null | null | null
->;
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
 
-/**
+          return  deleteUserAccountControllerHandle(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteUserAccountControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>>
+    
+    export type DeleteUserAccountControllerHandleMutationError = ErrorType<null | null | null>
+
+    /**
  * @summary Deletar conta do usuário
  */
-export const useDeleteUserAccountControllerHandle = <
-  TError = ErrorType<null | null | null>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
-      TError,
-      { id: string },
-      TContext
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationOptions =
-    getDeleteUserAccountControllerHandleMutationOptions(options);
+export const useDeleteUserAccountControllerHandle = <TError = ErrorType<null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteUserAccountControllerHandle>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getDeleteUserAccountControllerHandleMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    

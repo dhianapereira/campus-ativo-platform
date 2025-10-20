@@ -5,15 +5,16 @@ export const problemFormSchema = z.object({
     .string()
     .trim()
     .min(1, 'O campo título é obrigatório.')
-    .max(50, 'O título não pode passar de 50 caracteres.'),
-  location: z
+    .max(100, 'O título não pode passar de 100 caracteres.'),
+  categoryId: z
     .string()
-    .trim()
-    .min(1, 'O campo local é obrigatório.')
-    .max(25, 'O local não pode passar de 25 caracteres.'),
+    .min(1, 'Selecione uma categoria.'),
+  locationId: z
+    .string()
+    .min(1, 'Selecione uma localização.'),
   description: z
     .string()
     .trim()
     .min(1, 'O campo descrição é obrigatório.')
-    .max(200, 'A descrição não pode passar de 200 caracteres.'),
+    .max(500, 'A descrição não pode passar de 500 caracteres.'),
 })

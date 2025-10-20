@@ -25,8 +25,10 @@ import {
   StatusToggle,
 } from './styles'
 import { X, Trash } from 'phosphor-react'
-import { useMutation } from '@tanstack/react-query'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import type { LocationResponse } from '../../../../../server/client/models/locationResponse'
+import { ConfirmationModal } from '@/components/confirmation-modal'
 
 const locationSchema = z.object({
   name: z
@@ -62,16 +64,23 @@ export function EditLocationModal({
 }: EditLocationModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isActive, setIsActive] = useState(true)
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  const queryClient = useQueryClient()
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     reset,
     setValue,
+    watch,
   } = useForm<LocationFormData>({
     resolver: zodResolver(locationSchema),
   })
+
+  // Watch form changes to detect unsaved changes
+  const watchedFields = watch()
 
   useEffect(() => {
     if (location) {
@@ -82,124 +91,185 @@ export function EditLocationModal({
     }
   }, [location, setValue])
 
+  // Check for unsaved changes
+  useEffect(() => {
+    if (!location) {
+      setHasUnsavedChanges(false)
+      return
+    }
+
+    const formChanged =
+      watchedFields.name !== location.name ||
+      watchedFields.code !== location.code ||
+      watchedFields.description !== location.description ||
+      isActive !== (location.isActive ?? true)
+
+    setHasUnsavedChanges(formChanged)
+  }, [watchedFields, isActive, location])
+
   const updateLocationMutation = useMutation({
-    mutationFn: async () => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve({ success: true })
-        }, 1000)
+    mutationFn: async (data: LocationFormData) => {
+      if (!location?.id) throw new Error('ID da localização não encontrado')
+
+      const response = await fetch(`/api/locations/${location.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          name: data.name,
+          code: data.code?.trim() || undefined,
+          description: data.description?.trim() || undefined,
+          isActive,
+        }),
       })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Falha ao atualizar localização')
+      }
+
+      return response.json()
     },
     onSuccess: () => {
       setIsSubmitting(false)
+      setHasUnsavedChanges(false)
       reset()
+      queryClient.invalidateQueries({ queryKey: ['locations'] })
       onSuccess()
+      toast.success('Localização atualizada com sucesso.')
     },
     onError: () => {
       setIsSubmitting(false)
+      toast.error('Falha ao atualizar localização.')
     },
   })
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: LocationFormData) => {
+    if (!location?.id) return
+
     setIsSubmitting(true)
-    updateLocationMutation.mutate()
+    updateLocationMutation.mutate(data)
   }
 
   const handleClose = () => {
-    if (!isSubmitting) {
+    if (isSubmitting) return
+
+    if (hasUnsavedChanges) {
+      setShowConfirmationModal(true)
+    } else {
       reset()
+      setHasUnsavedChanges(false)
       onClose()
     }
   }
 
+  const handleConfirmClose = () => {
+    reset()
+    setHasUnsavedChanges(false)
+    setShowConfirmationModal(false)
+    onClose()
+  }
+
   const handleDelete = () => {
-    alert(
-      'Funcionalidade de exclusão será implementada quando a API estiver pronta!',
-    )
+    toast.info('Funcionalidade de exclusão em desenvolvimento.')
   }
 
   if (!isOpen || !location) return null
 
   return (
-    <ModalOverlay onClick={handleClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <ModalHeader>
-          <ModalTitle>Localização</ModalTitle>
-          <ModalCloseButton onClick={handleClose} disabled={isSubmitting}>
-            <X size={24} />
-          </ModalCloseButton>
-        </ModalHeader>
+    <>
+      <ModalOverlay onClick={handleClose}>
+        <ModalContent onClick={(e) => e.stopPropagation()}>
+          <ModalHeader>
+            <ModalTitle>Localização</ModalTitle>
+            <ModalCloseButton onClick={handleClose} disabled={isSubmitting}>
+              <X size={24} />
+            </ModalCloseButton>
+          </ModalHeader>
 
-        <ModalBody>
-          <Form onSubmit={handleSubmit(onSubmit)}>
-            <FormField>
-              <Label htmlFor="name">Nome</Label>
-              <Input id="name" {...register('name')} disabled={isSubmitting} />
-              {errors.name && (
-                <ErrorMessage>{errors.name.message}</ErrorMessage>
-              )}
-            </FormField>
-
-            <div className="form-row">
-              <FormField className="code-field">
-                <Label htmlFor="code">Número</Label>
-                <Input
-                  id="code"
-                  {...register('code')}
-                  disabled={isSubmitting}
-                />
-                {errors.code && (
-                  <ErrorMessage>{errors.code.message}</ErrorMessage>
+          <ModalBody>
+            <Form onSubmit={handleSubmit(onSubmit)}>
+              <FormField>
+                <Label htmlFor="name">Nome</Label>
+                <Input id="name" {...register('name')} disabled={isSubmitting} />
+                {errors.name && (
+                  <ErrorMessage>{errors.name.message}</ErrorMessage>
                 )}
               </FormField>
-              <StatusContainer>
-                <StatusLabel>Status</StatusLabel>
-                <StatusToggle
-                  type="button"
-                  isActive={isActive}
-                  onClick={() => setIsActive(!isActive)}
+
+              <div className="form-row">
+                <FormField className="code-field">
+                  <Label htmlFor="code">Número</Label>
+                  <Input
+                    id="code"
+                    {...register('code')}
+                    disabled={isSubmitting}
+                  />
+                  {errors.code && (
+                    <ErrorMessage>{errors.code.message}</ErrorMessage>
+                  )}
+                </FormField>
+                <StatusContainer>
+                  <StatusLabel>Status</StatusLabel>
+                  <StatusToggle
+                    type="button"
+                    isActive={isActive}
+                    onClick={() => setIsActive(!isActive)}
+                    disabled={isSubmitting}
+                  >
+                    <div />
+                  </StatusToggle>
+                </StatusContainer>
+              </div>
+
+              <FormField>
+                <Label htmlFor="description">Descrição</Label>
+                <TextArea
+                  id="description"
+                  {...register('description')}
+                  rows={6}
+                  disabled={isSubmitting}
+                />
+                {errors.description && (
+                  <ErrorMessage>{errors.description.message}</ErrorMessage>
+                )}
+              </FormField>
+            </Form>
+          </ModalBody>
+
+          <ModalFooter>
+            <ButtonGroup>
+              <DeleteButton onClick={handleDelete} disabled={isSubmitting}>
+                <Trash size={20} />
+                <span className="label">Mover para lixeira</span>
+              </DeleteButton>
+              <div className="action-buttons">
+                <CancelButton onClick={handleClose} disabled={isSubmitting}>
+                  Cancelar
+                </CancelButton>
+                <SaveButton
+                  onClick={handleSubmit(onSubmit)}
                   disabled={isSubmitting}
                 >
-                  <div />
-                </StatusToggle>
-              </StatusContainer>
-            </div>
+                  {isSubmitting ? 'Salvando...' : 'Salvar'}
+                </SaveButton>
+              </div>
+            </ButtonGroup>
+          </ModalFooter>
+        </ModalContent>
+      </ModalOverlay>
 
-            <FormField>
-              <Label htmlFor="description">Descrição</Label>
-              <TextArea
-                id="description"
-                {...register('description')}
-                rows={6}
-                disabled={isSubmitting}
-              />
-              {errors.description && (
-                <ErrorMessage>{errors.description.message}</ErrorMessage>
-              )}
-            </FormField>
-          </Form>
-        </ModalBody>
-
-        <ModalFooter>
-          <ButtonGroup>
-            <DeleteButton onClick={handleDelete} disabled={isSubmitting}>
-              <Trash size={20} />
-              <span className="label">Mover para lixeira</span>
-            </DeleteButton>
-            <div className="action-buttons">
-              <CancelButton onClick={handleClose} disabled={isSubmitting}>
-                Cancelar
-              </CancelButton>
-              <SaveButton
-                onClick={handleSubmit(onSubmit)}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Salvando...' : 'Salvar'}
-              </SaveButton>
-            </div>
-          </ButtonGroup>
-        </ModalFooter>
-      </ModalContent>
-    </ModalOverlay>
+      <ConfirmationModal
+        isOpen={showConfirmationModal}
+        onClose={handleConfirmClose}
+        onConfirm={() => setShowConfirmationModal(false)}
+        title="Descartar alterações?"
+        message="Se você sair agora, todas as suas alterações não salvas serão perdidas."
+        confirmText="Continuar editando"
+        cancelText="Descartar"
+      />
+    </>
   )
 }

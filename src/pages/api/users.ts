@@ -13,16 +13,18 @@ export default async function handler(
     const authToken = req.cookies['auth-token']
 
     if (!authToken) {
-      return res.status(401).json({ message: 'Unauthorized' })
+      console.error('[API /users] No auth token found in cookies')
+      return res.status(401).json({ message: 'Unauthorized - No token' })
     }
-
-    const result = await fetchUsersControllerHandle({
+    const result = await fetchUsersControllerHandle(undefined, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     })
     return res.status(200).json(result)
   } catch (error) {
+    console.error('[API /users] Error:', error)
+
     if (error && typeof error === 'object' && 'response' in error) {
       const axiosError = error as unknown as {
         response?: { status?: number; data?: { message?: string } }
@@ -31,6 +33,7 @@ export default async function handler(
       const message =
         axiosError.response?.data?.message || 'Internal server error'
 
+      console.error('[API /users] Axios error:', { status, message })
       return res.status(status).json({ message })
     }
 

@@ -5,7 +5,10 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -18,643 +21,427 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
   CreateLocationRequest,
   EditLocationRequest,
   FetchLocationsControllerHandle200,
-  FetchLocationsControllerHandleParams,
-} from ".././models";
+  FetchLocationsControllerHandleParams
+} from '.././models';
 
-import { axiosInstance } from "../../axios";
-import type { ErrorType, BodyType } from "../../axios";
+import { axiosInstance } from '../../axios';
+import type { ErrorType , BodyType } from '../../axios';
+
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
+
 
 /**
  * Cria uma nova localização no sistema (requer role MANAGER+)
  * @summary Criar localização
  */
 export const createLocationControllerHandle = (
-  createLocationRequest: BodyType<CreateLocationRequest>,
-  options?: SecondParameter<typeof axiosInstance>,
-  signal?: AbortSignal,
+    createLocationRequest: BodyType<CreateLocationRequest>,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
 ) => {
-  return axiosInstance<null>(
-    {
-      url: `/locations`,
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      data: createLocationRequest,
-      signal,
+      
+      
+      return axiosInstance<null>(
+      {url: `/locations`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: createLocationRequest, signal
     },
-    options,
-  );
-};
+      options);
+    }
+  
 
-export const getCreateLocationControllerHandleMutationOptions = <
-  TError = ErrorType<null | null | null>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof createLocationControllerHandle>>,
-    TError,
-    { data: BodyType<CreateLocationRequest> },
-    TContext
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof createLocationControllerHandle>>,
-  TError,
-  { data: BodyType<CreateLocationRequest> },
-  TContext
-> => {
-  const mutationKey = ["createLocationControllerHandle"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof createLocationControllerHandle>>,
-    { data: BodyType<CreateLocationRequest> }
-  > = (props) => {
-    const { data } = props ?? {};
+export const getCreateLocationControllerHandleMutationOptions = <TError = ErrorType<null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createLocationControllerHandle>>, TError,{data: BodyType<CreateLocationRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof createLocationControllerHandle>>, TError,{data: BodyType<CreateLocationRequest>}, TContext> => {
 
-    return createLocationControllerHandle(data, requestOptions);
-  };
+const mutationKey = ['createLocationControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
 
-  return { mutationFn, ...mutationOptions };
-};
+      
 
-export type CreateLocationControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof createLocationControllerHandle>>
->;
-export type CreateLocationControllerHandleMutationBody =
-  BodyType<CreateLocationRequest>;
-export type CreateLocationControllerHandleMutationError = ErrorType<
-  null | null | null
->;
 
-/**
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createLocationControllerHandle>>, {data: BodyType<CreateLocationRequest>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  createLocationControllerHandle(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateLocationControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof createLocationControllerHandle>>>
+    export type CreateLocationControllerHandleMutationBody = BodyType<CreateLocationRequest>
+    export type CreateLocationControllerHandleMutationError = ErrorType<null | null | null>
+
+    /**
  * @summary Criar localização
  */
-export const useCreateLocationControllerHandle = <
-  TError = ErrorType<null | null | null>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof createLocationControllerHandle>>,
-      TError,
-      { data: BodyType<CreateLocationRequest> },
-      TContext
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof createLocationControllerHandle>>,
-  TError,
-  { data: BodyType<CreateLocationRequest> },
-  TContext
-> => {
-  const mutationOptions =
-    getCreateLocationControllerHandleMutationOptions(options);
+export const useCreateLocationControllerHandle = <TError = ErrorType<null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createLocationControllerHandle>>, TError,{data: BodyType<CreateLocationRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof createLocationControllerHandle>>,
+        TError,
+        {data: BodyType<CreateLocationRequest>},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions, queryClient);
-};
-/**
+      const mutationOptions = getCreateLocationControllerHandleMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * Retorna uma lista paginada de localizações disponíveis no sistema
  * @summary Buscar localizações
  */
 export const fetchLocationsControllerHandle = (
-  params?: FetchLocationsControllerHandleParams,
-  options?: SecondParameter<typeof axiosInstance>,
-  signal?: AbortSignal,
+    params?: FetchLocationsControllerHandleParams,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
 ) => {
-  return axiosInstance<FetchLocationsControllerHandle200>(
-    { url: `/locations`, method: "GET", params, signal },
-    options,
-  );
-};
+      
+      
+      return axiosInstance<FetchLocationsControllerHandle200>(
+      {url: `/locations`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
 
-export const getFetchLocationsControllerHandleQueryKey = (
-  params?: FetchLocationsControllerHandleParams,
+export const getFetchLocationsControllerHandleQueryKey = (params?: FetchLocationsControllerHandleParams,) => {
+    return [`/locations`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getFetchLocationsControllerHandleQueryOptions = <TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError = ErrorType<null>>(params?: FetchLocationsControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
 ) => {
-  return [`/locations`, ...(params ? [params] : [])] as const;
-};
 
-export const getFetchLocationsControllerHandleQueryOptions = <
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-  TError = ErrorType<null>,
->(
-  params?: FetchLocationsControllerHandleParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getFetchLocationsControllerHandleQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getFetchLocationsControllerHandleQueryKey(params);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
-  > = ({ signal }) =>
-    fetchLocationsControllerHandle(params, requestOptions, signal);
+  
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof fetchLocationsControllerHandle>>> = ({ signal }) => fetchLocationsControllerHandle(params, requestOptions, signal);
 
-export type FetchLocationsControllerHandleQueryResult = NonNullable<
-  Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
->;
-export type FetchLocationsControllerHandleQueryError = ErrorType<null>;
+      
 
-export function useFetchLocationsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-  TError = ErrorType<null>,
->(
-  params: undefined | FetchLocationsControllerHandleParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type FetchLocationsControllerHandleQueryResult = NonNullable<Awaited<ReturnType<typeof fetchLocationsControllerHandle>>>
+export type FetchLocationsControllerHandleQueryError = ErrorType<null>
+
+
+export function useFetchLocationsControllerHandle<TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError = ErrorType<null>>(
+ params: undefined |  FetchLocationsControllerHandleParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchLocationsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-  TError = ErrorType<null>,
->(
-  params?: FetchLocationsControllerHandleParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchLocationsControllerHandle<TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError = ErrorType<null>>(
+ params?: FetchLocationsControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
-        >,
-        "initialData"
-      >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useFetchLocationsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-  TError = ErrorType<null>,
->(
-  params?: FetchLocationsControllerHandleParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useFetchLocationsControllerHandle<TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError = ErrorType<null>>(
+ params?: FetchLocationsControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Buscar localizações
  */
 
-export function useFetchLocationsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-  TError = ErrorType<null>,
->(
-  params?: FetchLocationsControllerHandleParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
-        TError,
-        TData
-      >
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getFetchLocationsControllerHandleQueryOptions(
-    params,
-    options,
-  );
+export function useFetchLocationsControllerHandle<TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError = ErrorType<null>>(
+ params?: FetchLocationsControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchLocationsControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getFetchLocationsControllerHandleQueryOptions(params,options)
 
-  query.queryKey = queryOptions.queryKey;
+  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
 }
+
+
 
 /**
  * Edita uma localização existente (requer role MANAGER+)
  * @summary Editar localização
  */
 export const editLocationControllerHandle = (
-  id: string,
-  editLocationRequest: BodyType<EditLocationRequest>,
-  options?: SecondParameter<typeof axiosInstance>,
-) => {
-  return axiosInstance<null>(
-    {
-      url: `/locations/${id}`,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      data: editLocationRequest,
+    id: string,
+    editLocationRequest: BodyType<EditLocationRequest>,
+ options?: SecondParameter<typeof axiosInstance>,) => {
+      
+      
+      return axiosInstance<null>(
+      {url: `/locations/${id}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: editLocationRequest
     },
-    options,
-  );
-};
+      options);
+    }
+  
 
-export const getEditLocationControllerHandleMutationOptions = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof editLocationControllerHandle>>,
-    TError,
-    { id: string; data: BodyType<EditLocationRequest> },
-    TContext
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof editLocationControllerHandle>>,
-  TError,
-  { id: string; data: BodyType<EditLocationRequest> },
-  TContext
-> => {
-  const mutationKey = ["editLocationControllerHandle"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof editLocationControllerHandle>>,
-    { id: string; data: BodyType<EditLocationRequest> }
-  > = (props) => {
-    const { id, data } = props ?? {};
+export const getEditLocationControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editLocationControllerHandle>>, TError,{id: string;data: BodyType<EditLocationRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof editLocationControllerHandle>>, TError,{id: string;data: BodyType<EditLocationRequest>}, TContext> => {
 
-    return editLocationControllerHandle(id, data, requestOptions);
-  };
+const mutationKey = ['editLocationControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
 
-  return { mutationFn, ...mutationOptions };
-};
+      
 
-export type EditLocationControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof editLocationControllerHandle>>
->;
-export type EditLocationControllerHandleMutationBody =
-  BodyType<EditLocationRequest>;
-export type EditLocationControllerHandleMutationError = ErrorType<
-  null | null | null | null
->;
 
-/**
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editLocationControllerHandle>>, {id: string;data: BodyType<EditLocationRequest>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  editLocationControllerHandle(id,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type EditLocationControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof editLocationControllerHandle>>>
+    export type EditLocationControllerHandleMutationBody = BodyType<EditLocationRequest>
+    export type EditLocationControllerHandleMutationError = ErrorType<null | null | null | null>
+
+    /**
  * @summary Editar localização
  */
-export const useEditLocationControllerHandle = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof editLocationControllerHandle>>,
-      TError,
-      { id: string; data: BodyType<EditLocationRequest> },
-      TContext
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof editLocationControllerHandle>>,
-  TError,
-  { id: string; data: BodyType<EditLocationRequest> },
-  TContext
-> => {
-  const mutationOptions =
-    getEditLocationControllerHandleMutationOptions(options);
+export const useEditLocationControllerHandle = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editLocationControllerHandle>>, TError,{id: string;data: BodyType<EditLocationRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof editLocationControllerHandle>>,
+        TError,
+        {id: string;data: BodyType<EditLocationRequest>},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions, queryClient);
-};
-/**
+      const mutationOptions = getEditLocationControllerHandleMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * Deleta permanentemente uma localização do sistema (requer role MANAGER+)
  * @summary Deletar localização
  */
 export const deleteLocationControllerHandle = (
-  id: string,
-  options?: SecondParameter<typeof axiosInstance>,
-) => {
-  return axiosInstance<null>(
-    { url: `/locations/${id}`, method: "DELETE" },
-    options,
-  );
-};
+    id: string,
+ options?: SecondParameter<typeof axiosInstance>,) => {
+      
+      
+      return axiosInstance<null>(
+      {url: `/locations/${id}`, method: 'DELETE'
+    },
+      options);
+    }
+  
 
-export const getDeleteLocationControllerHandleMutationOptions = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteLocationControllerHandle>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof deleteLocationControllerHandle>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationKey = ["deleteLocationControllerHandle"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof deleteLocationControllerHandle>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
+export const getDeleteLocationControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteLocationControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteLocationControllerHandle>>, TError,{id: string}, TContext> => {
 
-    return deleteLocationControllerHandle(id, requestOptions);
-  };
+const mutationKey = ['deleteLocationControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
 
-  return { mutationFn, ...mutationOptions };
-};
+      
 
-export type DeleteLocationControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof deleteLocationControllerHandle>>
->;
 
-export type DeleteLocationControllerHandleMutationError = ErrorType<
-  null | null | null | null
->;
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteLocationControllerHandle>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
 
-/**
+          return  deleteLocationControllerHandle(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteLocationControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof deleteLocationControllerHandle>>>
+    
+    export type DeleteLocationControllerHandleMutationError = ErrorType<null | null | null | null>
+
+    /**
  * @summary Deletar localização
  */
-export const useDeleteLocationControllerHandle = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof deleteLocationControllerHandle>>,
-      TError,
-      { id: string },
-      TContext
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof deleteLocationControllerHandle>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationOptions =
-    getDeleteLocationControllerHandleMutationOptions(options);
+export const useDeleteLocationControllerHandle = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteLocationControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteLocationControllerHandle>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions, queryClient);
-};
-/**
+      const mutationOptions = getDeleteLocationControllerHandleMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * Move uma localização para a lixeira (soft delete, requer role MANAGER+)
  * @summary Mover localização para lixeira
  */
 export const trashLocationControllerHandle = (
-  id: string,
-  options?: SecondParameter<typeof axiosInstance>,
-) => {
-  return axiosInstance<null>(
-    { url: `/locations/${id}/trash`, method: "PATCH" },
-    options,
-  );
-};
+    id: string,
+ options?: SecondParameter<typeof axiosInstance>,) => {
+      
+      
+      return axiosInstance<null>(
+      {url: `/locations/${id}/trash`, method: 'PATCH'
+    },
+      options);
+    }
+  
 
-export const getTrashLocationControllerHandleMutationOptions = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof trashLocationControllerHandle>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof trashLocationControllerHandle>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationKey = ["trashLocationControllerHandle"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof trashLocationControllerHandle>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
+export const getTrashLocationControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof trashLocationControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof trashLocationControllerHandle>>, TError,{id: string}, TContext> => {
 
-    return trashLocationControllerHandle(id, requestOptions);
-  };
+const mutationKey = ['trashLocationControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
 
-  return { mutationFn, ...mutationOptions };
-};
+      
 
-export type TrashLocationControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof trashLocationControllerHandle>>
->;
 
-export type TrashLocationControllerHandleMutationError = ErrorType<
-  null | null | null | null
->;
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof trashLocationControllerHandle>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
 
-/**
+          return  trashLocationControllerHandle(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TrashLocationControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof trashLocationControllerHandle>>>
+    
+    export type TrashLocationControllerHandleMutationError = ErrorType<null | null | null | null>
+
+    /**
  * @summary Mover localização para lixeira
  */
-export const useTrashLocationControllerHandle = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof trashLocationControllerHandle>>,
-      TError,
-      { id: string },
-      TContext
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof trashLocationControllerHandle>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationOptions =
-    getTrashLocationControllerHandleMutationOptions(options);
+export const useTrashLocationControllerHandle = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof trashLocationControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof trashLocationControllerHandle>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions, queryClient);
-};
-/**
+      const mutationOptions = getTrashLocationControllerHandleMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    /**
  * Restaura uma localização que estava na lixeira (requer role MANAGER+)
  * @summary Restaurar localização da lixeira
  */
 export const restoreLocationControllerHandle = (
-  id: string,
-  options?: SecondParameter<typeof axiosInstance>,
-) => {
-  return axiosInstance<null>(
-    { url: `/locations/${id}/restore`, method: "PATCH" },
-    options,
-  );
-};
+    id: string,
+ options?: SecondParameter<typeof axiosInstance>,) => {
+      
+      
+      return axiosInstance<null>(
+      {url: `/locations/${id}/restore`, method: 'PATCH'
+    },
+      options);
+    }
+  
 
-export const getRestoreLocationControllerHandleMutationOptions = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof restoreLocationControllerHandle>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-  request?: SecondParameter<typeof axiosInstance>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof restoreLocationControllerHandle>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationKey = ["restoreLocationControllerHandle"];
-  const { mutation: mutationOptions, request: requestOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, request: undefined };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof restoreLocationControllerHandle>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
+export const getRestoreLocationControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restoreLocationControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof restoreLocationControllerHandle>>, TError,{id: string}, TContext> => {
 
-    return restoreLocationControllerHandle(id, requestOptions);
-  };
+const mutationKey = ['restoreLocationControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
 
-  return { mutationFn, ...mutationOptions };
-};
+      
 
-export type RestoreLocationControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof restoreLocationControllerHandle>>
->;
 
-export type RestoreLocationControllerHandleMutationError = ErrorType<
-  null | null | null | null
->;
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof restoreLocationControllerHandle>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
 
-/**
+          return  restoreLocationControllerHandle(id,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RestoreLocationControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof restoreLocationControllerHandle>>>
+    
+    export type RestoreLocationControllerHandleMutationError = ErrorType<null | null | null | null>
+
+    /**
  * @summary Restaurar localização da lixeira
  */
-export const useRestoreLocationControllerHandle = <
-  TError = ErrorType<null | null | null | null>,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof restoreLocationControllerHandle>>,
-      TError,
-      { id: string },
-      TContext
-    >;
-    request?: SecondParameter<typeof axiosInstance>;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof restoreLocationControllerHandle>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationOptions =
-    getRestoreLocationControllerHandleMutationOptions(options);
+export const useRestoreLocationControllerHandle = <TError = ErrorType<null | null | null | null>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restoreLocationControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof restoreLocationControllerHandle>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions, queryClient);
-};
+      const mutationOptions = getRestoreLocationControllerHandleMutationOptions(options);
+
+      return useMutation(mutationOptions , queryClient);
+    }
+    

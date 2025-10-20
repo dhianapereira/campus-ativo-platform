@@ -39,7 +39,7 @@ export default function MembersPage() {
     useState<FetchUsersControllerHandle200UsersItem | null>(null)
   const itemsPerPage = 10
 
-  const { hasRoleLevel } = useAuth()
+  const { hasRoleLevel, isLoading: isAuthLoading } = useAuth()
   const router = useRouter()
 
   const handleMemberClick = (
@@ -63,12 +63,12 @@ export default function MembersPage() {
 
   // Redirect to unauthorized page if user doesn't have permission
   useEffect(() => {
-    if (!canLoad) {
+    if (!isAuthLoading && !canLoad) {
       const backTo =
         typeof window !== 'undefined' ? window.location.pathname : '/problems'
       router.replace({ pathname: '/unauthorized', query: { back: backTo } })
     }
-  }, [canLoad, router])
+  }, [canLoad, router, isAuthLoading])
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['users'],
@@ -84,7 +84,7 @@ export default function MembersPage() {
       }
       return response.json()
     },
-    enabled: canLoad,
+    enabled: !isAuthLoading && canLoad,
     retry: false,
   })
 
@@ -206,6 +206,18 @@ export default function MembersPage() {
     return buttons
   }
 
+  if (isAuthLoading) {
+    return (
+      <PlatformLayout>
+        <MainContainer>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            Carregando autenticação...
+          </div>
+        </MainContainer>
+      </PlatformLayout>
+    )
+  }
+
   if (!canLoad) {
     return null // Will be redirected by useEffect
   }
@@ -215,7 +227,7 @@ export default function MembersPage() {
       <PlatformLayout>
         <MainContainer>
           <div style={{ padding: '2rem', textAlign: 'center' }}>
-            Carregando...
+            Carregando membros...
           </div>
         </MainContainer>
       </PlatformLayout>
