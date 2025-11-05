@@ -1,4 +1,4 @@
-import { Heading, styled } from '@campusativo-ui/react'
+import { styled, Heading } from '@/styles'
 
 export const HeaderContainer = styled('header', {
   display: 'flex',

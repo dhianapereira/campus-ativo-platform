@@ -11,12 +11,12 @@ import {
 import { ArrowLeft, NotePencil } from 'phosphor-react'
 import { useRouter } from 'next/router'
 import { IProps } from './index.d'
-import { Button, Text } from '@campusativo-ui/react'
+import { Button, Text } from '@/styles'
 import { Actions } from './components/Actions'
 import { Status } from '@/data/static/status-data'
 import { ImageError } from '@/app/platform/components/ImageError'
 import { NoImage } from '@/app/platform/components/NoImage'
-import { ProtectedRoute } from '@/components/protected-route'
+import { ProtectedRoute } from '@/styles/components/routes/ProtectedRoute'
 
 export default function ProblemDetails() {
   const router = useRouter()

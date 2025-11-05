@@ -3,7 +3,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import PlatformLayout from '@/app/platform/layout'
 import unauthorizedBg from '@/assets/unauthorized.svg'
-import { styled } from '@campusativo-ui/react'
+import { styled } from '@/styles'
 
 const PageContainer = styled('div', {
   position: 'relative',

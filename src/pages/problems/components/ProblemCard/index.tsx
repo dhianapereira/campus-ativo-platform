@@ -1,4 +1,4 @@
-import { StatusBadge } from '@campusativo-ui/react'
+import { StatusBadge } from '@/styles'
 import { IProps } from './index.d'
 import { Container, Description, Location, Title } from './styles'
 import { ReactElement } from 'react'

@@ -1,13 +1,6 @@
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import {
-  Button,
-  Heading,
-  Text,
-  TextArea,
-  Dropdown,
-  RadioGroup,
-} from '@campusativo-ui/react'
+import { Button, Heading, Text, TextArea, Dropdown, RadioGroup } from '@/styles'
 import { Column, Container, Form, Input, Section } from './styles'
 import { IProps } from './index.d'
 import { zodResolver } from '@hookform/resolvers/zod'

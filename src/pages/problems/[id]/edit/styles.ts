@@ -1,10 +1,4 @@
-import {
-  Heading,
-  Text,
-  styled,
-  TextArea,
-  TextInput,
-} from '@campusativo-ui/react'
+import { Heading, Text, styled, TextArea, TextInput } from '@/styles'
 
 export const Container = styled('div', {
   display: 'flex',

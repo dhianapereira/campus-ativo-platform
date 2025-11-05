@@ -14,7 +14,7 @@ import {
 import ProblemCard from './components/ProblemCard'
 import { FilterButton } from './components/FilterButton'
 import { problems } from './mocks/problems'
-import { FilterDialog, FilterOption, Text } from '@campusativo-ui/react'
+import { FilterDialog, FilterOption, Text } from '@/styles'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { Status } from '@/data/static/status-data'

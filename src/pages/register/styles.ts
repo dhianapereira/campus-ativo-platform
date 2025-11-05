@@ -1,4 +1,4 @@
-import { Heading, LinkButton, Text, styled } from '@campusativo-ui/react'
+import { Heading, LinkButton, Text, styled } from '@/styles'
 
 export const PageWrapper = styled('div', {
   width: '100vw',

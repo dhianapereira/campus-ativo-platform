@@ -1,4 +1,4 @@
-import { Button, Heading, Text, TextInput } from '@campusativo-ui/react'
+import { Button, Heading, Text, TextInput } from '@/styles'
 import PasswordIcon from '../login/components/PasswordIcon'
 import {
   PageWrapper,

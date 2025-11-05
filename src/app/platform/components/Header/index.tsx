@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { DrawerIcon, HeaderContainer, Info, UserInfoContainer } from './styles'
-import { Avatar, Heading, Text } from '@campusativo-ui/react'
 import { IProps } from './index.d'
 import { List } from 'phosphor-react'
 import Drawer from '../navigation/Drawer'
-import { truncateUserName } from '../../../../utils/truncate-name'
+import { truncateUserName } from '@/utils/truncate-name'
 import { useAuth } from '@/contexts/auth-context'
+import { Text, Avatar, Heading } from '@/styles'
 
 export default function Header({
   src,

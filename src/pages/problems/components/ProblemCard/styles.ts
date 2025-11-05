@@ -1,4 +1,4 @@
-import { Box, Text, styled } from '@campusativo-ui/react'
+import { Box, Text, styled } from '@/styles'
 
 export const Container = styled(Box, {
   width: 324,

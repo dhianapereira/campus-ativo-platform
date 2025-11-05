@@ -1,4 +1,4 @@
-import { styled, Button, Text } from '@campusativo-ui/react'
+import { styled, Button, Text } from '@/styles'
 import { SearchBar } from './components/SearchBar'
 
 export const GridView = styled('div', {

@@ -1,4 +1,4 @@
-import { globalCss } from '@campusativo-ui/react'
+import { globalCss } from '@/styles'
 
 export const globalStyles = globalCss({
   '*': {

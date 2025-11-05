@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Button, Text } from '@campusativo-ui/react'
+import { Button, Text } from '@/styles'
 import { Image as ImageIcon } from 'phosphor-react'
 import {
   UploadContainer,

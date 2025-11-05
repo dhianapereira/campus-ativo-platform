@@ -1,8 +1,7 @@
 import { ReactNode } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import { useAuthRedirect } from '@/hooks/use-auth-redirect'
-import { styled } from '@campusativo-ui/react'
-import { useRouter } from 'next/router'
+import { styled } from '@/styles/stitches'
 
 const LoadingContainer = styled('div', {
   display: 'flex',
@@ -36,23 +35,12 @@ const LoadingText = styled('p', {
   margin: 0,
 })
 
-// dedicated unauthorized page is used instead of inline UI
-
-interface RoleProtectedRouteProps {
+interface ProtectedRouteProps {
   children: ReactNode
-  requiredRole?: string
-  requiredLevel?: number
-  fallbackPath?: string
 }
 
-export function RoleProtectedRoute({
-  children,
-  requiredRole,
-  requiredLevel,
-  fallbackPath = '/problems',
-}: RoleProtectedRouteProps) {
-  const { isAuthenticated, isLoading, hasRole, hasRoleLevel } = useAuth()
-  const router = useRouter()
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { isAuthenticated, isLoading } = useAuth()
 
   useAuthRedirect({
     isAuthenticated,
@@ -71,17 +59,6 @@ export function RoleProtectedRoute({
   }
 
   if (!isAuthenticated) {
-    return null
-  }
-
-  const hasPermission =
-    (!requiredRole || hasRole(requiredRole)) &&
-    (!requiredLevel || hasRoleLevel(requiredLevel))
-
-  if (!hasPermission) {
-    const backTo =
-      typeof window !== 'undefined' ? window.location.pathname : fallbackPath
-    router.replace({ pathname: '/unauthorized', query: { back: backTo } })
     return null
   }
 

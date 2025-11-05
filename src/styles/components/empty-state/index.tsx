@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { styled } from '@campusativo-ui/react'
+import { styled } from '@/styles'
 import bgEllipse from '@/assets/unauthorized.svg'
 import notFoundIcon from '@/assets/not-found-icon.svg'
 

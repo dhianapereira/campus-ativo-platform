@@ -1,4 +1,4 @@
-import { styled } from '@campusativo-ui/react'
+import { styled } from '@/styles'
 
 export const FilterBtn = styled('button', {
   all: 'unset',

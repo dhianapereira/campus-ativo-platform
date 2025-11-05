@@ -1,12 +1,12 @@
 import { Container, Body, Header, Input, Title } from './styles'
 import { ArrowLeft } from 'phosphor-react'
-import { Button, Text, TextArea, TextInput } from '@campusativo-ui/react'
+import { Button, Text, TextArea, TextInput } from '@/styles'
 import { ProblemFormData } from '@/@types/form.d'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { problemFormSchema } from '@/validators/problem-form'
 import ImageUpload from '../components/ImageUpload'
-import { ProtectedRoute } from '@/components/protected-route'
+import { ProtectedRoute } from '@/styles/components/routes/ProtectedRoute'
 
 export default function AddProblem() {
   const {

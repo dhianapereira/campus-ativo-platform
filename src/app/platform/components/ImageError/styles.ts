@@ -1,4 +1,4 @@
-import { styled } from '@campusativo-ui/react'
+import { styled } from '@/styles'
 
 export const ErrorContainer = styled('div', {
   display: 'flex',

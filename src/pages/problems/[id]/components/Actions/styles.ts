@@ -1,4 +1,4 @@
-import { Button, styled, Text } from '@campusativo-ui/react'
+import { Button, styled, Text } from '@/styles'
 
 export const Container = styled('div', {
   display: 'flex',
