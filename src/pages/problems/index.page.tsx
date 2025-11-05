@@ -15,7 +15,6 @@ import {
 } from './styles'
 import ProblemCard from './components/ProblemCard'
 import { FilterButton } from './components/FilterButton'
-import { problems } from './mocks/problems'
 import { FilterDialog, FilterOption, Text } from '@/styles'
 import { useRouter } from 'next/router'
 import { useState, useMemo } from 'react'

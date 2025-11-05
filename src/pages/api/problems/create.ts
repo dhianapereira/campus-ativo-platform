@@ -19,7 +19,9 @@ export default async function handler(
     const { title, description, categoryId, locationId } = req.body
 
     if (!title || !description || !categoryId || !locationId) {
-      return res.status(400).json({ message: 'Todos os campos são obrigatórios' })
+      return res
+        .status(400)
+        .json({ message: 'Todos os campos são obrigatórios' })
     }
 
     const result = await createProblemControllerHandle(
@@ -36,7 +38,9 @@ export default async function handler(
       },
     )
 
-    return res.status(201).json({ message: 'Problema cadastrado com sucesso', data: result })
+    return res
+      .status(201)
+      .json({ message: 'Problema cadastrado com sucesso', data: result })
   } catch (error: any) {
     console.error('Erro ao cadastrar problema:', error)
     return res.status(error.status || 500).json({

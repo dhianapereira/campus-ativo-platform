@@ -44,8 +44,7 @@ export default async function handler(
   } catch (error: any) {
     console.error('Erro ao mover localizações para lixeira:', error)
     return res.status(error.status || 500).json({
-      message:
-        error.message || 'Erro ao mover localizações para a lixeira',
+      message: error.message || 'Erro ao mover localizações para a lixeira',
     })
   }
 }

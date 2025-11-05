@@ -125,7 +125,13 @@ export function EditMemberModal({
     const statusChanged = isActive !== initialStatus
 
     setHasUnsavedChanges(permissionChanged || statusChanged)
-  }, [watchedFields.permissions, isActive, initialPermission, initialStatus, member])
+  }, [
+    watchedFields.permissions,
+    isActive,
+    initialPermission,
+    initialStatus,
+    member,
+  ])
 
   const onSubmit = async (data: MemberFormData) => {
     if (!member?.id) return
@@ -293,7 +299,11 @@ export function EditMemberModal({
 
               <FormField>
                 <Label htmlFor="position">Cargo</Label>
-                <Input id="position" {...register('position')} disabled={true} />
+                <Input
+                  id="position"
+                  {...register('position')}
+                  disabled={true}
+                />
                 {errors.position && (
                   <ErrorMessage>{errors.position.message}</ErrorMessage>
                 )}

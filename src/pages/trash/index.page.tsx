@@ -48,7 +48,7 @@ import {
   RetryButton,
 } from './styles'
 import PlatformLayout from '@/app/platform/layout'
-import { RoleProtectedRoute } from '@/components/role-protected-route'
+import { RoleProtectedRoute } from '@/styles'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { ConfirmationModal } from '@/components/confirmation-modal'

@@ -1,7 +1,6 @@
 import * as Avatar from '@radix-ui/react-avatar'
 import { styled } from '@/styles/stitches'
 
-
 export const AvatarContainer = styled(Avatar.Root, {
   borderRadius: '$full',
   display: 'inline-block',

@@ -71,7 +71,7 @@ export function EditLocationModal({
   const {
     register,
     handleSubmit,
-    formState: { errors, isDirty },
+    formState: { errors },
     reset,
     setValue,
     watch,
@@ -193,7 +193,11 @@ export function EditLocationModal({
             <Form onSubmit={handleSubmit(onSubmit)}>
               <FormField>
                 <Label htmlFor="name">Nome</Label>
-                <Input id="name" {...register('name')} disabled={isSubmitting} />
+                <Input
+                  id="name"
+                  {...register('name')}
+                  disabled={isSubmitting}
+                />
                 {errors.name && (
                   <ErrorMessage>{errors.name.message}</ErrorMessage>
                 )}

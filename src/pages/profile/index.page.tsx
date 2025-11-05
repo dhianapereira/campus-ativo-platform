@@ -31,9 +31,12 @@ import { ConfirmationModal } from '@/components/confirmation-modal'
 import { useAuth } from '@/contexts/auth-context'
 
 export default function ProfilePage() {
-  const router = useRouter()
-  const queryClient = useQueryClient()
-  const { user, isProfileLoading: isLoading, retryProfileLoad, signOut } = useAuth()
+  const {
+    user,
+    isProfileLoading: isLoading,
+    retryProfileLoad,
+    signOut,
+  } = useAuth()
 
   // Profile form state
   const [name, setName] = useState('')
@@ -62,8 +65,7 @@ export default function ProfilePage() {
   // Check for profile changes
   useEffect(() => {
     if (user) {
-      const changed =
-        name !== user.name || position !== user.position
+      const changed = name !== user.name || position !== user.position
       setHasProfileChanges(changed)
     }
   }, [name, position, user])
@@ -171,7 +173,10 @@ export default function ProfilePage() {
       return
     }
 
-    updateProfileMutation.mutate({ name: name.trim(), position: position.trim() })
+    updateProfileMutation.mutate({
+      name: name.trim(),
+      position: position.trim(),
+    })
   }
 
   const handleProfileReset = () => {
@@ -262,7 +267,11 @@ export default function ProfilePage() {
           <Section>
             <SectionHeader>
               <SectionTitle>
-                <User size={20} weight="bold" style={{ display: 'inline', marginRight: '0.5rem' }} />
+                <User
+                  size={20}
+                  weight="bold"
+                  style={{ display: 'inline', marginRight: '0.5rem' }}
+                />
                 Informações do Perfil
               </SectionTitle>
               <SectionDescription>
@@ -313,17 +322,23 @@ export default function ProfilePage() {
                   type="button"
                   variant="secondary"
                   onClick={handleProfileReset}
-                  disabled={!hasProfileChanges || updateProfileMutation.isPending}
+                  disabled={
+                    !hasProfileChanges || updateProfileMutation.isPending
+                  }
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
                   variant="primary"
-                  disabled={!hasProfileChanges || updateProfileMutation.isPending}
+                  disabled={
+                    !hasProfileChanges || updateProfileMutation.isPending
+                  }
                 >
                   <FloppyDisk size={18} weight="bold" />
-                  {updateProfileMutation.isPending ? 'Salvando...' : 'Salvar alterações'}
+                  {updateProfileMutation.isPending
+                    ? 'Salvando...'
+                    : 'Salvar alterações'}
                 </Button>
               </ButtonsContainer>
             </Form>
@@ -333,7 +348,11 @@ export default function ProfilePage() {
           <Section>
             <SectionHeader>
               <SectionTitle>
-                <LockKey size={20} weight="bold" style={{ display: 'inline', marginRight: '0.5rem' }} />
+                <LockKey
+                  size={20}
+                  weight="bold"
+                  style={{ display: 'inline', marginRight: '0.5rem' }}
+                />
                 Alterar Senha
               </SectionTitle>
               <SectionDescription>
@@ -343,7 +362,8 @@ export default function ProfilePage() {
 
             <InfoBox>
               <InfoText>
-                Sua senha deve ter no mínimo 6 caracteres. Recomendamos usar uma combinação de letras, números e caracteres especiais.
+                Sua senha deve ter no mínimo 6 caracteres. Recomendamos usar uma
+                combinação de letras, números e caracteres especiais.
               </InfoText>
             </InfoBox>
 
@@ -408,7 +428,9 @@ export default function ProfilePage() {
                   disabled={changePasswordMutation.isPending}
                 >
                   <LockKey size={18} weight="bold" />
-                  {changePasswordMutation.isPending ? 'Alterando...' : 'Alterar senha'}
+                  {changePasswordMutation.isPending
+                    ? 'Alterando...'
+                    : 'Alterar senha'}
                 </Button>
               </ButtonsContainer>
             </Form>
@@ -418,7 +440,11 @@ export default function ProfilePage() {
           <Section>
             <SectionHeader>
               <SectionTitle>
-                <Trash size={20} weight="bold" style={{ display: 'inline', marginRight: '0.5rem' }} />
+                <Trash
+                  size={20}
+                  weight="bold"
+                  style={{ display: 'inline', marginRight: '0.5rem' }}
+                />
                 Zona de Perigo
               </SectionTitle>
               <SectionDescription>
@@ -428,7 +454,10 @@ export default function ProfilePage() {
 
             <DangerZone>
               <DangerText>
-                <strong>Atenção:</strong> Ao excluir sua conta, todos os seus dados serão permanentemente removidos do sistema. Esta ação não pode ser desfeita. Você perderá acesso a todos os problemas reportados e histórico de atividades.
+                <strong>Atenção:</strong> Ao excluir sua conta, todos os seus
+                dados serão permanentemente removidos do sistema. Esta ação não
+                pode ser desfeita. Você perderá acesso a todos os problemas
+                reportados e histórico de atividades.
               </DangerText>
               <Button
                 variant="danger"
@@ -436,7 +465,9 @@ export default function ProfilePage() {
                 disabled={deleteAccountMutation.isPending}
               >
                 <Trash size={18} weight="bold" />
-                {deleteAccountMutation.isPending ? 'Excluindo...' : 'Excluir minha conta'}
+                {deleteAccountMutation.isPending
+                  ? 'Excluindo...'
+                  : 'Excluir minha conta'}
               </Button>
             </DangerZone>
           </Section>

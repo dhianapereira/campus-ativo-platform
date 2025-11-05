@@ -24,7 +24,8 @@ export default async function handler(
     try {
       const { query, page, type } = req.query
 
-      const pageNumber = page && typeof page === 'string' ? parseInt(page, 10) : 1
+      const pageNumber =
+        page && typeof page === 'string' ? parseInt(page, 10) : 1
       const searchQuery = query && typeof query === 'string' ? query : undefined
 
       // Tipo pode ser: 'location', 'category', 'problem' ou undefined (todos)
@@ -65,18 +66,26 @@ export default async function handler(
 
         // Filtrar apenas itens deletados
         const deletedLocations =
-          locationsData?.locations?.filter((loc: { deletedAt?: string | null }) =>
-            loc.deletedAt !== null && loc.deletedAt !== undefined
+          locationsData?.locations?.filter(
+            (loc: { deletedAt?: string | null }) =>
+              loc.deletedAt !== null && loc.deletedAt !== undefined,
           ) || []
         const deletedCategories =
-          categoriesData?.categories?.filter((cat: { deletedAt?: string | null }) =>
-            cat.deletedAt !== null && cat.deletedAt !== undefined
+          categoriesData?.categories?.filter(
+            (cat: { deletedAt?: string | null }) =>
+              cat.deletedAt !== null && cat.deletedAt !== undefined,
           ) || []
 
         // Combinar e adicionar tipo
         const allItems = [
-          ...deletedLocations.map((item: unknown) => ({ ...item, itemType: 'location' })),
-          ...deletedCategories.map((item: unknown) => ({ ...item, itemType: 'category' })),
+          ...deletedLocations.map((item: unknown) => ({
+            ...item,
+            itemType: 'location',
+          })),
+          ...deletedCategories.map((item: unknown) => ({
+            ...item,
+            itemType: 'category',
+          })),
         ]
 
         results.items = allItems
@@ -94,8 +103,15 @@ export default async function handler(
           },
         )
 
-        const deletedItems = data?.locations?.filter((loc: { deletedAt?: string | null }) => loc.deletedAt !== null && loc.deletedAt !== undefined) || []
-        results.items = deletedItems.map((item: unknown) => ({ ...item, itemType: 'location' }))
+        const deletedItems =
+          data?.locations?.filter(
+            (loc: { deletedAt?: string | null }) =>
+              loc.deletedAt !== null && loc.deletedAt !== undefined,
+          ) || []
+        results.items = deletedItems.map((item: unknown) => ({
+          ...item,
+          itemType: 'location',
+        }))
         results.total = deletedItems.length
         results.type = 'location'
       } else if (itemType === 'category') {
@@ -111,8 +127,15 @@ export default async function handler(
           },
         )
 
-        const deletedItems = data?.categories?.filter((cat: { deletedAt?: string | null }) => cat.deletedAt !== null && cat.deletedAt !== undefined) || []
-        results.items = deletedItems.map((item: unknown) => ({ ...item, itemType: 'category' }))
+        const deletedItems =
+          data?.categories?.filter(
+            (cat: { deletedAt?: string | null }) =>
+              cat.deletedAt !== null && cat.deletedAt !== undefined,
+          ) || []
+        results.items = deletedItems.map((item: unknown) => ({
+          ...item,
+          itemType: 'category',
+        }))
         results.total = deletedItems.length
         results.type = 'category'
       }
@@ -161,7 +184,9 @@ export default async function handler(
         })
 
         await Promise.all(promises)
-        return res.status(200).json({ message: 'Itens restaurados com sucesso' })
+        return res
+          .status(200)
+          .json({ message: 'Itens restaurados com sucesso' })
       } else if (action === 'delete') {
         // Deletar permanentemente
         const promises = ids.map((id: string) => {
@@ -182,7 +207,9 @@ export default async function handler(
         })
 
         await Promise.all(promises)
-        return res.status(200).json({ message: 'Itens excluídos permanentemente' })
+        return res
+          .status(200)
+          .json({ message: 'Itens excluídos permanentemente' })
       } else {
         return res.status(400).json({ message: 'Ação inválida' })
       }

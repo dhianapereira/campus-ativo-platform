@@ -1,4 +1,11 @@
-import { Warning, SignOut, ArrowClockwise, Users, Gear, Trash } from 'phosphor-react'
+import {
+  Warning,
+  SignOut,
+  ArrowClockwise,
+  Users,
+  Gear,
+  Trash,
+} from 'phosphor-react'
 import { NextRouter } from 'next/router'
 import { IOption } from './index.d'
 
