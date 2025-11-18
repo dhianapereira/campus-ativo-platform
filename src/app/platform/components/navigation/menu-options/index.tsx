@@ -1,4 +1,11 @@
-import { Warning, SignOut, ArrowClockwise, Users, Gear } from 'phosphor-react'
+import {
+  Warning,
+  SignOut,
+  ArrowClockwise,
+  Users,
+  Gear,
+  Trash,
+} from 'phosphor-react'
 import { NextRouter } from 'next/router'
 import { IOption } from './index.d'
 
@@ -52,6 +59,16 @@ export const createMenuOptions = ({
       icon: <Gear weight="bold" />,
       onClick: () => {
         router.push('/settings')
+        onClose?.()
+      },
+    })
+
+    options.push({
+      id: 'trash',
+      name: 'Lixeira',
+      icon: <Trash weight="bold" />,
+      onClick: () => {
+        router.push('/trash')
         onClose?.()
       },
     })

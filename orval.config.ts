@@ -2,9 +2,6 @@ import { defineConfig } from "orval";
 
 export default defineConfig({
   ifalbackend: {
-    hooks: {
-      afterAllFilesWrite: "prettier --write .",
-    },
     input: {
       target: "./server/openapi.json",
     },

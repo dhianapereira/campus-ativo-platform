@@ -6,6 +6,7 @@ import Drawer from '../navigation/Drawer'
 import { truncateUserName } from '@/utils/truncate-name'
 import { useAuth } from '@/contexts/auth-context'
 import { Text, Avatar, Heading } from '@/styles'
+import { useRouter } from 'next/router'
 
 export default function Header({
   src,
@@ -15,6 +16,7 @@ export default function Header({
   showLoadingState = false,
 }: IProps) {
   const { signOut, profileError, retryProfileLoad } = useAuth()
+  const router = useRouter()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const openDrawer = () => {
@@ -33,6 +35,12 @@ export default function Header({
     await retryProfileLoad()
   }
 
+  const handleProfileClick = () => {
+    if (!showError) {
+      router.push('/profile')
+    }
+  }
+
   const displayName = showLoadingState
     ? 'Carregando...'
     : truncateUserName(name)
@@ -45,7 +53,10 @@ export default function Header({
   return (
     <HeaderContainer>
       <Heading>Campus Ativo</Heading>
-      <UserInfoContainer>
+      <UserInfoContainer
+        onClick={handleProfileClick}
+        style={{ cursor: showError ? 'default' : 'pointer' }}
+      >
         <Avatar src={src} alt={alt} />
         <Info>
           <Text

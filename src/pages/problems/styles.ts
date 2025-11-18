@@ -268,3 +268,41 @@ export const MainContainer = styled('div', {
     padding: '0 $1',
   },
 })
+
+export const EmptyStateContainer = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '$10 $4',
+  minHeight: '400px',
+
+  '@media(max-width: 640px)': {
+    padding: '$8 $2',
+    minHeight: '300px',
+  },
+})
+
+export const EmptyStateImage = styled('div', {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginBottom: '$4',
+
+  '& img': {
+    maxWidth: '100%',
+    height: 'auto',
+  },
+
+  '@media(max-width: 640px)': {
+    '& img': {
+      width: '280px',
+    },
+  },
+
+  '@media(max-width: 480px)': {
+    '& img': {
+      width: '240px',
+    },
+  },
+})

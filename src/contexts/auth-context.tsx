@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { AuthenticateRequest, UserResponse } from '../../server/client/models'
-import { useGetUserProfileControllerHandle } from '../../server/client/user-profile/user-profile'
 import { getRoleLevel, hasRequiredRole } from '@/utils/role-mapping'
 
 type User = UserResponse & { position: string }
@@ -28,85 +28,80 @@ interface AuthProviderProps {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isProfileLoading, setIsProfileLoading] = useState(false)
-  const [profileError, setProfileError] = useState<string | null>(null)
-  const router = useRouter()
+// Fetch function for user profile
+async function fetchUserProfile(): Promise<User | null> {
+  const response = await fetch('/api/auth/me')
+  const data = await response.json()
 
-  const { refetch: refetchProfile } = useGetUserProfileControllerHandle({
-    query: {
-      enabled: false,
-      retry: false,
-      refetchOnWindowFocus: false,
-    },
+  if (response.ok && data.success) {
+    return data.user
+  }
+
+  return null
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const router = useRouter()
+  const queryClient = useQueryClient()
+
+  // Use TanStack Query to manage user profile with automatic revalidation
+  const {
+    data: user,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ['user', 'profile'],
+    queryFn: fetchUserProfile,
+    staleTime: 10 * 1000, // Consider data stale after 10 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    refetchInterval: 30 * 1000, // Refetch every 30 seconds
+    refetchIntervalInBackground: true, // Keep refetching even when tab is not focused
+    refetchOnWindowFocus: true, // Also refetch when user returns to window
+    refetchOnMount: true, // Refetch when component mounts
+    retry: false,
+    enabled: true, // Always enabled
   })
 
   const isAuthenticated = !!user
+  const isProfileLoading = isLoading
+  const profileError = error ? 'Failed to load user profile' : null
 
   useEffect(() => {
-    loadUserFromStorage()
-  }, [])
-
-  async function loadUserFromStorage() {
-    setIsProfileLoading(true)
-    setProfileError(null)
-
-    try {
-      const response = await fetch('/api/auth/me')
-      const data = await response.json()
-
-      if (response.ok && data.success) {
-        setUser(data.user)
-        setProfileError(null)
-      } else {
-        setUser(null)
-        setProfileError(null)
-      }
-    } catch (error: unknown) {
-      setUser(null)
-      setProfileError('Failed to load user profile')
-    } finally {
-      setIsLoading(false)
-      setIsProfileLoading(false)
+    if (!isLoading && isInitialLoad) {
+      setIsInitialLoad(false)
     }
-  }
+  }, [isLoading, isInitialLoad])
 
   async function retryProfileLoad() {
-    try {
-      await loadUserFromStorage()
-    } catch (error) {
-      await refetchProfile()
-    }
+    await refetch()
   }
 
   async function signIn({ email, password }: AuthenticateRequest) {
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      })
-      const data = await response.json()
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    })
+    const data = await response.json()
 
-      if (!response.ok || !data.success) {
-        type ErrorWithStatus = Error & { status?: number }
-        const err: ErrorWithStatus = new Error(
-          data.error || 'Authentication failed',
-        )
-        err.status = response.status
-        throw err
-      }
-
-      setUser(data.user)
-
-      await router.push('/problems')
-    } finally {
-      setIsLoading(false)
+    if (!response.ok || !data.success) {
+      type ErrorWithStatus = Error & { status?: number }
+      const err: ErrorWithStatus = new Error(
+        data.error || 'Authentication failed',
+      )
+      err.status = response.status
+      throw err
     }
+
+    // Invalidate and refetch user profile to get fresh data
+    await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
+    await refetch()
+
+    await router.push('/problems')
   }
 
   async function signOut() {
@@ -114,7 +109,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       await fetch('/api/auth/logout', { method: 'POST' })
     } catch {}
 
-    setUser(null)
+    // Clear all queries from cache
+    queryClient.clear()
 
     await router.replace('/login')
 
@@ -160,9 +156,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   return (
     <AuthContext.Provider
       value={{
-        user,
+        user: user ?? null,
         isAuthenticated,
-        isLoading,
+        isLoading: isInitialLoad && isLoading,
         isProfileLoading,
         profileError,
         signIn,

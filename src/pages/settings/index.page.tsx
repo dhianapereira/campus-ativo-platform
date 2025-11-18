@@ -46,9 +46,11 @@ import { AddCategoryModal } from './components/AddCategoryModal'
 import { AddLocationModal } from './components/AddLocationModal'
 import { EditLocationModal } from './components/EditLocationModal'
 import { EditCategoryModal } from './components/EditCategoryModal'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import type { LocationResponse } from '../../../server/client/models/locationResponse'
 import type { CategoryResponse } from '../../../server/client/models/categoryResponse'
+import { ConfirmationModal } from '@/components/confirmation-modal'
 
 type LocationItem = LocationResponse
 type CategoryItem = CategoryResponse
@@ -71,6 +73,7 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 export default function SettingsPage() {
+  const queryClient = useQueryClient()
   const [activeTab, setActiveTab] = useState<'localizacao' | 'categoria'>(
     'localizacao',
   )
@@ -88,6 +91,7 @@ export default function SettingsPage() {
   const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false)
   const [selectedCategoryForEdit, setSelectedCategoryForEdit] =
     useState<CategoryItem | null>(null)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const itemsPerPage = 10
 
   // Debounce do termo de busca para evitar muitas requisições
@@ -169,6 +173,66 @@ export default function SettingsPage() {
     [categoriesData],
   )
 
+  // Mutation para mover localizações para lixeira
+  const deleteLocationsMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const response = await fetch('/api/locations/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ ids }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(
+          errorData.message || 'Falha ao mover localizações para lixeira',
+        )
+      }
+
+      return response.json()
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['locations'] })
+      setSelectedItems([])
+      setShowDeleteConfirmation(false)
+      toast.success(data.message || 'Localizações movidas para a lixeira')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Falha ao mover localizações para lixeira')
+    },
+  })
+
+  // Mutation para mover categorias para lixeira
+  const deleteCategoriesMutation = useMutation({
+    mutationFn: async (ids: string[]) => {
+      const response = await fetch('/api/categories/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ ids }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(
+          errorData.message || 'Falha ao mover categorias para lixeira',
+        )
+      }
+
+      return response.json()
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      setSelectedItems([])
+      setShowDeleteConfirmation(false)
+      toast.success(data.message || 'Categorias movidas para a lixeira')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Falha ao mover categorias para lixeira')
+    },
+  })
+
   const currentData: (LocationItem | CategoryItem)[] = useMemo(() => {
     if (activeTab === 'localizacao') {
       return filteredLocations
@@ -239,7 +303,19 @@ export default function SettingsPage() {
     )
 
   const handleDeleteSelected = () => {
-    setSelectedItems([])
+    if (selectedItems.length === 0) {
+      toast.warning('Selecione pelo menos um item para mover para a lixeira')
+      return
+    }
+    setShowDeleteConfirmation(true)
+  }
+
+  const confirmDelete = () => {
+    if (activeTab === 'localizacao') {
+      deleteLocationsMutation.mutate(selectedItems)
+    } else {
+      deleteCategoriesMutation.mutate(selectedItems)
+    }
   }
 
   const handleEditLocation = (location: LocationItem) => {
@@ -494,8 +570,8 @@ export default function SettingsPage() {
             </FiltersContainer>
           </SearchActionsContainer>
 
-          {/* Desktop Table */}
-          {currentItems.length === 0 ? (
+          {/* Empty State */}
+          {currentItems.length === 0 && (
             <div style={{ padding: '2rem', textAlign: 'center' }}>
               <p>Nenhum resultado encontrado</p>
               <p style={{ color: '#666', fontSize: '0.9em' }}>
@@ -506,7 +582,10 @@ export default function SettingsPage() {
                     : 'Não há categorias cadastradas ainda.'}
               </p>
             </div>
-          ) : (
+          )}
+
+          {/* Desktop Table */}
+          {currentItems.length > 0 && (
             <DesktopTableWrapper>
               <TableWrapper>
                 <Table>
@@ -565,63 +644,53 @@ export default function SettingsPage() {
           )}
 
           {/* Mobile Cards */}
-          <MobileCardsWrapper>
-            {currentItems.length === 0 && (
-              <div style={{ padding: '2rem', textAlign: 'center' }}>
-                <p>Nenhum resultado encontrado</p>
-                <p style={{ color: '#666', fontSize: '0.9em' }}>
-                  {searchTerm
-                    ? 'Tente ajustar sua busca e tente novamente.'
-                    : activeTab === 'localizacao'
-                      ? 'Não há localizações cadastradas ainda.'
-                      : 'Não há categorias cadastradas ainda.'}
-                </p>
-              </div>
-            )}
-            {currentItems.map((item: LocationItem | CategoryItem) => {
-              if (!item.id) return null
-              return (
-                <div key={item.id}>
-                  {activeTab === 'localizacao' ? (
-                    <LocationCard
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleEditLocation(item as LocationItem)}
-                    >
-                      <div>
-                        <CardTitle>
-                          <strong>Nome:</strong> {item.name}
-                        </CardTitle>
-                        <CardInfo>
-                          <strong>Número:</strong> {(item as LocationItem).code}
-                        </CardInfo>
-                        <CardDescription>
-                          <strong>Descrição</strong>
-                          <br />
-                          {item.description}
-                        </CardDescription>
-                      </div>
-                    </LocationCard>
-                  ) : (
-                    <CategoryCard
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleEditCategory(item as CategoryItem)}
-                    >
-                      <div>
-                        <CardTitle>
-                          <strong>Nome:</strong> {item.name}
-                        </CardTitle>
-                        <CardDescription>
-                          <strong>Descrição</strong>
-                          <br />
-                          {item.description}
-                        </CardDescription>
-                      </div>
-                    </CategoryCard>
-                  )}
-                </div>
-              )
-            })}
-          </MobileCardsWrapper>
+          {currentItems.length > 0 && (
+            <MobileCardsWrapper>
+              {currentItems.map((item: LocationItem | CategoryItem) => {
+                if (!item.id) return null
+                return (
+                  <div key={item.id}>
+                    {activeTab === 'localizacao' ? (
+                      <LocationCard
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleEditLocation(item as LocationItem)}
+                      >
+                        <div>
+                          <CardTitle>
+                            <strong>Nome:</strong> {item.name}
+                          </CardTitle>
+                          <CardInfo>
+                            <strong>Número:</strong> {(item as LocationItem).code}
+                          </CardInfo>
+                          <CardDescription>
+                            <strong>Descrição</strong>
+                            <br />
+                            {item.description}
+                          </CardDescription>
+                        </div>
+                      </LocationCard>
+                    ) : (
+                      <CategoryCard
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleEditCategory(item as CategoryItem)}
+                      >
+                        <div>
+                          <CardTitle>
+                            <strong>Nome:</strong> {item.name}
+                          </CardTitle>
+                          <CardDescription>
+                            <strong>Descrição</strong>
+                            <br />
+                            {item.description}
+                          </CardDescription>
+                        </div>
+                      </CategoryCard>
+                    )}
+                  </div>
+                )
+              })}
+            </MobileCardsWrapper>
+          )}
 
           {totalPages > 1 && (
             <PaginationContainer>
@@ -654,6 +723,16 @@ export default function SettingsPage() {
             onClose={handleEditCategoryClose}
             onSuccess={handleEditCategorySuccess}
             category={selectedCategoryForEdit}
+          />
+
+          <ConfirmationModal
+            isOpen={showDeleteConfirmation}
+            onClose={() => setShowDeleteConfirmation(false)}
+            onConfirm={confirmDelete}
+            title={`Mover ${activeTab === 'localizacao' ? 'localizações' : 'categorias'} para a lixeira?`}
+            message={`${selectedItems.length} ${selectedItems.length === 1 ? 'item será movido' : 'itens serão movidos'} para a lixeira. Você poderá restaurá-${selectedItems.length === 1 ? 'lo' : 'los'} posteriormente.`}
+            confirmText="Mover para lixeira"
+            cancelText="Cancelar"
           />
         </MainContainer>
       </PlatformLayout>

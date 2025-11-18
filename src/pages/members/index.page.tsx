@@ -24,6 +24,8 @@ import {
   PaginationDots,
   MainContainer,
   SectionTitle,
+  FiltersContainer,
+  FilterButton,
 } from './styles'
 import PlatformLayout from '@/app/platform/layout'
 import { useAuth } from '@/contexts/auth-context'
@@ -33,13 +35,15 @@ import { EditMemberModal } from './components/EditMemberModal'
 
 export default function MembersPage() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [selectedMember, setSelectedMember] =
     useState<FetchUsersControllerHandle200UsersItem | null>(null)
   const itemsPerPage = 10
 
-  const { hasRoleLevel } = useAuth()
+  const { hasRoleLevel, isLoading: isAuthLoading } = useAuth()
   const router = useRouter()
 
   const handleMemberClick = (
@@ -63,17 +67,31 @@ export default function MembersPage() {
 
   // Redirect to unauthorized page if user doesn't have permission
   useEffect(() => {
-    if (!canLoad) {
+    if (!isAuthLoading && !canLoad) {
       const backTo =
         typeof window !== 'undefined' ? window.location.pathname : '/problems'
       router.replace({ pathname: '/unauthorized', query: { back: backTo } })
     }
-  }, [canLoad, router])
+  }, [canLoad, router, isAuthLoading])
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['users'],
+    queryKey: ['users', searchQuery, statusFilter],
     queryFn: async () => {
-      const response = await fetch('/api/users', {
+      const params = new URLSearchParams()
+
+      if (searchQuery) {
+        params.append('query', searchQuery)
+      }
+
+      if (statusFilter === 'active') {
+        params.append('isActive', 'true')
+      } else if (statusFilter === 'inactive') {
+        params.append('isActive', 'false')
+      }
+
+      const url = `/api/users${params.toString() ? `?${params.toString()}` : ''}`
+
+      const response = await fetch(url, {
         credentials: 'include',
       })
       if (!response.ok) {
@@ -84,7 +102,7 @@ export default function MembersPage() {
       }
       return response.json()
     },
-    enabled: canLoad,
+    enabled: !isAuthLoading && canLoad,
     retry: false,
   })
 
@@ -100,20 +118,10 @@ export default function MembersPage() {
     return []
   }, [data])
 
-  const filteredUsers = usersData.filter(
-    (userData: FetchUsersControllerHandle200UsersItem) => {
-      if (!searchTerm) return true
-      const name = userData.name?.toLowerCase() || ''
-      const position = userData.position?.toLowerCase() || ''
-      const searchLower = searchTerm.toLowerCase()
-      return name.includes(searchLower) || position.includes(searchLower)
-    },
-  )
-
-  const totalItems = filteredUsers.length
+  const totalItems = usersData.length
   const totalPages = Math.ceil(totalItems / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
-  const currentUsers = filteredUsers.slice(
+  const currentUsers = usersData.slice(
     startIndex,
     startIndex + itemsPerPage,
   )
@@ -125,13 +133,21 @@ export default function MembersPage() {
     }
   }, [currentPage, totalPages])
 
-  const handleSearch = (query: string) => {
-    setSearchTerm(query)
+  // Reset to first page when filters change
+  useEffect(() => {
     setCurrentPage(1)
+  }, [searchQuery, statusFilter])
+
+  const handleSearch = () => {
+    setSearchQuery(searchTerm)
   }
 
   const handleInputChange = (value: string) => {
     setSearchTerm(value)
+  }
+
+  const handleStatusFilterChange = (filter: 'all' | 'active' | 'inactive') => {
+    setStatusFilter(filter)
   }
 
   const handlePageChange = (page: number) => {
@@ -206,6 +222,18 @@ export default function MembersPage() {
     return buttons
   }
 
+  if (isAuthLoading) {
+    return (
+      <PlatformLayout>
+        <MainContainer>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
+            Carregando autenticação...
+          </div>
+        </MainContainer>
+      </PlatformLayout>
+    )
+  }
+
   if (!canLoad) {
     return null // Will be redirected by useEffect
   }
@@ -215,7 +243,7 @@ export default function MembersPage() {
       <PlatformLayout>
         <MainContainer>
           <div style={{ padding: '2rem', textAlign: 'center' }}>
-            Carregando...
+            Carregando membros...
           </div>
         </MainContainer>
       </PlatformLayout>
@@ -260,14 +288,14 @@ export default function MembersPage() {
               </SearchIcon>
               <SearchInput
                 type="text"
-                placeholder="Busque pelo nome ou cargo do membro..."
+                placeholder="Busque pelo nome ou email..."
                 value={searchTerm}
                 onChange={(e) => handleInputChange(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch(searchTerm)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
             </SearchInputContainer>
             <SearchButton
-              onClick={() => handleSearch(searchTerm)}
+              onClick={handleSearch}
               type="button"
             >
               Pesquisar
@@ -276,12 +304,33 @@ export default function MembersPage() {
           <SectionTitle>Gerenciamento de membros</SectionTitle>
         </HeaderContainer>
 
+        <FiltersContainer>
+          <FilterButton
+            isActive={statusFilter === 'all'}
+            onClick={() => handleStatusFilterChange('all')}
+          >
+            Todos
+          </FilterButton>
+          <FilterButton
+            isActive={statusFilter === 'active'}
+            onClick={() => handleStatusFilterChange('active')}
+          >
+            Ativos
+          </FilterButton>
+          <FilterButton
+            isActive={statusFilter === 'inactive'}
+            onClick={() => handleStatusFilterChange('inactive')}
+          >
+            Inativos
+          </FilterButton>
+        </FiltersContainer>
+
         {currentUsers.length === 0 ? (
           <div style={{ padding: '2rem', textAlign: 'center' }}>
             <p>Nenhum resultado encontrado</p>
             <p style={{ color: '#666', fontSize: '0.9em' }}>
-              {searchTerm
-                ? 'Tente ajustar sua busca e tente novamente.'
+              {searchQuery || statusFilter !== 'all'
+                ? 'Tente ajustar sua busca ou filtros e tente novamente.'
                 : 'Não há membros cadastrados ainda.'}
             </p>
           </div>

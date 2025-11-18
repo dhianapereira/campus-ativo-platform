@@ -74,6 +74,9 @@ export const ModalCloseButton = styled('button', {
   backgroundColor: 'transparent',
   color: '#6b7280',
   cursor: 'pointer',
+  transition: 'all 0.2s',
+  padding: '0.5rem',
+  flexShrink: 0,
 
   '&:hover': {
     backgroundColor: '#f3f4f6',
@@ -83,6 +86,11 @@ export const ModalCloseButton = styled('button', {
   '&:disabled': {
     cursor: 'not-allowed',
     opacity: 0.5,
+  },
+
+  svg: {
+    width: '24px',
+    height: '24px',
   },
 })
 
