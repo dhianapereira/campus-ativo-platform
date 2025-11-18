@@ -23,6 +23,7 @@ interface ConfirmationModalProps {
   message?: string
   confirmText?: string
   cancelText?: string
+  variant?: 'warning' | 'danger'
 }
 
 export function ConfirmationModal({
@@ -33,6 +34,7 @@ export function ConfirmationModal({
   message = 'Se você sair agora, todas as suas alterações não salvas serão perdidas.',
   confirmText = 'Continuar editando',
   cancelText = 'Descartar',
+  variant = 'warning',
 }: ConfirmationModalProps) {
   if (!isOpen) return null
 
@@ -70,7 +72,9 @@ export function ConfirmationModal({
 
         <ModalFooter>
           <CancelButton onClick={handleCancel}>{cancelText}</CancelButton>
-          <ConfirmButton onClick={handleConfirm}>{confirmText}</ConfirmButton>
+          <ConfirmButton onClick={handleConfirm} variant={variant}>
+            {confirmText}
+          </ConfirmButton>
         </ModalFooter>
       </ModalContent>
     </ModalOverlay>

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   ModalOverlay,
   ModalContent,
@@ -23,33 +23,33 @@ import {
   StatusContainer,
   StatusLabel,
   StatusToggle,
-} from './styles'
-import { X, Trash } from 'phosphor-react'
-import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import type { CategoryResponse } from '../../../../../server/client/models/categoryResponse'
-import { ConfirmationModal } from '@/components/confirmation-modal'
+} from "./styles";
+import { X, Trash, ArrowCounterClockwise } from "phosphor-react";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+import type { CategoryResponse } from "../../../../../server/client/models/categoryResponse";
+import { ConfirmationModal } from "@/components/confirmation-modal";
 
 const categorySchema = z.object({
   name: z
     .string()
-    .min(1, 'Nome é obrigatório')
-    .max(100, 'Nome deve ter no máximo 100 caracteres'),
+    .min(1, "Nome é obrigatório")
+    .max(100, "Nome deve ter no máximo 100 caracteres"),
   description: z
     .string()
-    .max(500, 'Descrição deve ter no máximo 500 caracteres')
+    .max(500, "Descrição deve ter no máximo 500 caracteres")
     .optional(),
-})
+});
 
-type CategoryFormData = z.infer<typeof categorySchema>
+type CategoryFormData = z.infer<typeof categorySchema>;
 
-type CategoryItem = CategoryResponse
+type CategoryItem = CategoryResponse;
 
 interface EditCategoryModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSuccess: () => void
-  category: CategoryItem | null
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  category: CategoryItem | null;
 }
 
 export function EditCategoryModal({
@@ -58,11 +58,13 @@ export function EditCategoryModal({
   onSuccess,
   category,
 }: EditCategoryModalProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isActive, setIsActive] = useState(true)
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-  const queryClient = useQueryClient()
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isActive, setIsActive] = useState(true);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showTrashConfirmationModal, setShowTrashConfirmationModal] =
+    useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -73,103 +75,181 @@ export function EditCategoryModal({
     watch,
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
-  })
+  });
 
   // Watch form changes to detect unsaved changes
-  const watchedFields = watch()
+  const watchedFields = watch();
 
   useEffect(() => {
     if (category) {
-      setValue('name', category.name)
-      setValue('description', category.description ?? '')
-      setIsActive(category.isActive ?? true)
+      setValue("name", category.name);
+      setValue("description", category.description ?? "");
+      setIsActive(category.isActive ?? true);
     }
-  }, [category, setValue])
+  }, [category, setValue]);
 
   // Check for unsaved changes
   useEffect(() => {
     if (!category) {
-      setHasUnsavedChanges(false)
-      return
+      setHasUnsavedChanges(false);
+      return;
     }
 
     const formChanged =
       watchedFields.name !== category.name ||
-      watchedFields.description !== (category.description ?? '') ||
-      isActive !== (category.isActive ?? true)
+      watchedFields.description !== (category.description ?? "") ||
+      isActive !== (category.isActive ?? true);
 
-    setHasUnsavedChanges(formChanged)
-  }, [watchedFields, isActive, category])
+    setHasUnsavedChanges(formChanged);
+  }, [watchedFields, isActive, category]);
 
   const updateCategoryMutation = useMutation({
     mutationFn: async (data: CategoryFormData) => {
-      if (!category?.id) throw new Error('ID da categoria não encontrado')
+      if (!category?.id) throw new Error("ID da categoria não encontrado");
 
       const response = await fetch(`/api/categories/${category.id}`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify({
           name: data.name,
           description: data.description?.trim() || undefined,
           isActive,
         }),
-      })
+      });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao atualizar categoria')
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Falha ao atualizar categoria");
       }
 
-      return response.json()
+      return response.json();
     },
     onSuccess: () => {
-      setIsSubmitting(false)
-      setHasUnsavedChanges(false)
-      reset()
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
-      onSuccess()
-      toast.success('Categoria atualizada com sucesso.')
+      setIsSubmitting(false);
+      setHasUnsavedChanges(false);
+      reset();
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      onSuccess();
+      toast.success("Categoria atualizada com sucesso.");
     },
     onError: () => {
-      setIsSubmitting(false)
-      toast.error('Falha ao atualizar categoria.')
+      setIsSubmitting(false);
+      toast.error("Falha ao atualizar categoria.");
     },
-  })
+  });
 
   const onSubmit = async (data: CategoryFormData) => {
-    if (!category?.id) return
+    if (!category?.id) return;
 
-    setIsSubmitting(true)
-    updateCategoryMutation.mutate(data)
-  }
+    setIsSubmitting(true);
+    updateCategoryMutation.mutate(data);
+  };
 
   const handleClose = () => {
-    if (isSubmitting) return
+    if (isSubmitting) return;
 
     if (hasUnsavedChanges) {
-      setShowConfirmationModal(true)
+      setShowConfirmationModal(true);
     } else {
-      reset()
-      setHasUnsavedChanges(false)
-      onClose()
+      reset();
+      setHasUnsavedChanges(false);
+      onClose();
     }
-  }
+  };
 
   const handleConfirmClose = () => {
-    reset()
-    setHasUnsavedChanges(false)
-    setShowConfirmationModal(false)
-    onClose()
-  }
+    reset();
+    setHasUnsavedChanges(false);
+    setShowConfirmationModal(false);
+    onClose();
+  };
+
+  const restoreCategoryMutation = useMutation({
+    mutationFn: async () => {
+      if (!category?.id) throw new Error("ID da categoria não encontrado");
+
+      const response = await fetch("/api/trash", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          action: "restore",
+          ids: [category.id],
+          type: "category",
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Falha ao restaurar categoria");
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["trash"] });
+      toast.success("Categoria restaurada com sucesso");
+      onSuccess();
+      onClose();
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Falha ao restaurar categoria");
+    },
+  });
+
+  const trashCategoryMutation = useMutation({
+    mutationFn: async () => {
+      if (!category?.id) throw new Error("ID da categoria não encontrado");
+
+      const response = await fetch(`/api/categories/${category.id}/trash`, {
+        method: "PATCH",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || "Falha ao mover categoria para lixeira",
+        );
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["trash"] });
+      toast.success("Categoria movida para lixeira");
+      onSuccess();
+      onClose();
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Falha ao mover para lixeira");
+    },
+  });
 
   const handleDelete = () => {
-    toast.info('Funcionalidade de exclusão em desenvolvimento.')
-  }
+    setShowTrashConfirmationModal(true);
+  };
 
-  if (!isOpen || !category) return null
+  const confirmTrash = () => {
+    trashCategoryMutation.mutate();
+    setShowTrashConfirmationModal(false);
+  };
+
+  const handleRestore = () => {
+    restoreCategoryMutation.mutate();
+  };
+
+  const isDeleted = !!category?.deletedAt;
+  const isDisabled = isSubmitting || isDeleted;
+
+  if (!isOpen || !category) return null;
 
   return (
     <>
@@ -189,8 +269,8 @@ export function EditCategoryModal({
                   <Label htmlFor="name">Nome</Label>
                   <Input
                     id="name"
-                    {...register('name')}
-                    disabled={isSubmitting}
+                    {...register("name")}
+                    disabled={isDisabled}
                   />
                   {errors.name && (
                     <ErrorMessage>{errors.name.message}</ErrorMessage>
@@ -202,7 +282,7 @@ export function EditCategoryModal({
                     type="button"
                     isActive={isActive}
                     onClick={() => setIsActive(!isActive)}
-                    disabled={isSubmitting}
+                    disabled={isDisabled}
                   >
                     <div />
                   </StatusToggle>
@@ -213,9 +293,9 @@ export function EditCategoryModal({
                 <Label htmlFor="description">Descrição</Label>
                 <TextArea
                   id="description"
-                  {...register('description')}
+                  {...register("description")}
                   rows={6}
-                  disabled={isSubmitting}
+                  disabled={isDisabled}
                 />
                 {errors.description && (
                   <ErrorMessage>{errors.description.message}</ErrorMessage>
@@ -226,20 +306,41 @@ export function EditCategoryModal({
 
           <ModalFooter>
             <ButtonGroup>
-              <DeleteButton onClick={handleDelete} disabled={isSubmitting}>
-                <Trash size={20} />
-                <span className="label">Mover para lixeira</span>
-              </DeleteButton>
+              {isDeleted ? (
+                <DeleteButton
+                  onClick={handleRestore}
+                  disabled={isSubmitting || restoreCategoryMutation.isPending}
+                  style={{
+                    backgroundColor: "#00875F",
+                    color: "white",
+                    border: "1px solid #00875F",
+                  }}
+                >
+                  <ArrowCounterClockwise size={20} weight="bold" />
+                  <span className="label">
+                    {restoreCategoryMutation.isPending
+                      ? "Restaurando..."
+                      : "Restaurar da lixeira"}
+                  </span>
+                </DeleteButton>
+              ) : (
+                <DeleteButton onClick={handleDelete} disabled={isSubmitting}>
+                  <Trash size={20} />
+                  <span className="label">Mover para lixeira</span>
+                </DeleteButton>
+              )}
               <div className="action-buttons">
                 <CancelButton onClick={handleClose} disabled={isSubmitting}>
                   Cancelar
                 </CancelButton>
-                <SaveButton
-                  onClick={handleSubmit(onSubmit)}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Salvando...' : 'Salvar'}
-                </SaveButton>
+                {!isDeleted && (
+                  <SaveButton
+                    onClick={handleSubmit(onSubmit)}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? "Salvando..." : "Salvar"}
+                  </SaveButton>
+                )}
               </div>
             </ButtonGroup>
           </ModalFooter>
@@ -255,6 +356,16 @@ export function EditCategoryModal({
         confirmText="Continuar editando"
         cancelText="Descartar"
       />
+
+      <ConfirmationModal
+        isOpen={showTrashConfirmationModal}
+        onClose={() => setShowTrashConfirmationModal(false)}
+        onConfirm={confirmTrash}
+        title="Mover para lixeira?"
+        message="Esta categoria será movida para a lixeira. Você poderá restaurá-la depois se necessário."
+        confirmText="Mover para lixeira"
+        cancelText="Cancelar"
+      />
     </>
-  )
+  );
 }

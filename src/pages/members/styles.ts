@@ -424,3 +424,45 @@ export const PaginationDots = styled('span', {
     padding: '0.25rem',
   },
 })
+
+export const FiltersContainer = styled('div', {
+  display: 'flex',
+  gap: '0.5rem',
+  flexWrap: 'wrap',
+  marginBottom: '1.5rem',
+
+  '@media(max-width: 640px)': {
+    marginBottom: '1rem',
+  },
+})
+
+export const FilterButton = styled('button', {
+  all: 'unset',
+  boxSizing: 'border-box',
+  padding: '0.5rem 1rem',
+  borderRadius: '1.5rem',
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  cursor: 'pointer',
+  transition: 'all 0.2s ease',
+  border: '1px solid #d1d5db',
+
+  variants: {
+    isActive: {
+      true: {
+        backgroundColor: '#00875F',
+        color: 'white',
+        border: '1px solid #00875F',
+      },
+      false: {
+        backgroundColor: 'white',
+        color: '#6b7280',
+        border: '1px solid #d1d5db',
+        '&:hover': {
+          backgroundColor: '#f3f4f6',
+          color: '#374151',
+        },
+      },
+    },
+  },
+})

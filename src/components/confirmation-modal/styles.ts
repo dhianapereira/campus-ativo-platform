@@ -36,6 +36,7 @@ export const ModalHeader = styled('div', {
   position: 'relative',
   marginBottom: '16px',
   textAlign: 'left',
+  paddingRight: '40px',
 })
 
 export const WarningIcon = styled('div', {
@@ -58,8 +59,8 @@ export const ModalTitle = styled('h2', {
 
 export const CloseButton = styled('button', {
   position: 'absolute',
-  top: '12px',
-  right: '12px',
+  top: '16px',
+  right: '16px',
   background: 'transparent',
   border: 'none',
   color: '#9CA3AF',
@@ -67,10 +68,13 @@ export const CloseButton = styled('button', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '6px',
+  padding: '8px',
   borderRadius: '8px',
   transition: 'all 0.2s',
   flexShrink: 0,
+  width: '40px',
+  height: '40px',
+  zIndex: 10,
 
   '&:hover': {
     backgroundColor: '#F3F4F6',
@@ -147,16 +151,11 @@ export const ConfirmButton = styled('button', {
   fontWeight: '600',
   borderRadius: '8px',
   border: 'none',
-  backgroundColor: '#F59E0B',
   color: '#FFFFFF',
   cursor: 'pointer',
   transition: 'all 0.2s',
   minHeight: '52px',
   minWidth: '200px',
-
-  '&:hover': {
-    backgroundColor: '#EA8A07',
-  },
 
   '&:active': {
     transform: 'scale(0.98)',
@@ -167,5 +166,26 @@ export const ConfirmButton = styled('button', {
     padding: '14px 20px',
     fontSize: '16px',
     minHeight: '48px',
+  },
+
+  variants: {
+    variant: {
+      warning: {
+        backgroundColor: '#F59E0B',
+        '&:hover': {
+          backgroundColor: '#EA8A07',
+        },
+      },
+      danger: {
+        backgroundColor: '#DC2626',
+        '&:hover': {
+          backgroundColor: '#B91C1C',
+        },
+      },
+    },
+  },
+
+  defaultVariants: {
+    variant: 'warning',
   },
 })

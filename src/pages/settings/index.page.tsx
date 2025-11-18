@@ -570,8 +570,8 @@ export default function SettingsPage() {
             </FiltersContainer>
           </SearchActionsContainer>
 
-          {/* Desktop Table */}
-          {currentItems.length === 0 ? (
+          {/* Empty State */}
+          {currentItems.length === 0 && (
             <div style={{ padding: '2rem', textAlign: 'center' }}>
               <p>Nenhum resultado encontrado</p>
               <p style={{ color: '#666', fontSize: '0.9em' }}>
@@ -582,7 +582,10 @@ export default function SettingsPage() {
                     : 'Não há categorias cadastradas ainda.'}
               </p>
             </div>
-          ) : (
+          )}
+
+          {/* Desktop Table */}
+          {currentItems.length > 0 && (
             <DesktopTableWrapper>
               <TableWrapper>
                 <Table>
@@ -641,63 +644,53 @@ export default function SettingsPage() {
           )}
 
           {/* Mobile Cards */}
-          <MobileCardsWrapper>
-            {currentItems.length === 0 && (
-              <div style={{ padding: '2rem', textAlign: 'center' }}>
-                <p>Nenhum resultado encontrado</p>
-                <p style={{ color: '#666', fontSize: '0.9em' }}>
-                  {searchTerm
-                    ? 'Tente ajustar sua busca e tente novamente.'
-                    : activeTab === 'localizacao'
-                      ? 'Não há localizações cadastradas ainda.'
-                      : 'Não há categorias cadastradas ainda.'}
-                </p>
-              </div>
-            )}
-            {currentItems.map((item: LocationItem | CategoryItem) => {
-              if (!item.id) return null
-              return (
-                <div key={item.id}>
-                  {activeTab === 'localizacao' ? (
-                    <LocationCard
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleEditLocation(item as LocationItem)}
-                    >
-                      <div>
-                        <CardTitle>
-                          <strong>Nome:</strong> {item.name}
-                        </CardTitle>
-                        <CardInfo>
-                          <strong>Número:</strong> {(item as LocationItem).code}
-                        </CardInfo>
-                        <CardDescription>
-                          <strong>Descrição</strong>
-                          <br />
-                          {item.description}
-                        </CardDescription>
-                      </div>
-                    </LocationCard>
-                  ) : (
-                    <CategoryCard
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleEditCategory(item as CategoryItem)}
-                    >
-                      <div>
-                        <CardTitle>
-                          <strong>Nome:</strong> {item.name}
-                        </CardTitle>
-                        <CardDescription>
-                          <strong>Descrição</strong>
-                          <br />
-                          {item.description}
-                        </CardDescription>
-                      </div>
-                    </CategoryCard>
-                  )}
-                </div>
-              )
-            })}
-          </MobileCardsWrapper>
+          {currentItems.length > 0 && (
+            <MobileCardsWrapper>
+              {currentItems.map((item: LocationItem | CategoryItem) => {
+                if (!item.id) return null
+                return (
+                  <div key={item.id}>
+                    {activeTab === 'localizacao' ? (
+                      <LocationCard
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleEditLocation(item as LocationItem)}
+                      >
+                        <div>
+                          <CardTitle>
+                            <strong>Nome:</strong> {item.name}
+                          </CardTitle>
+                          <CardInfo>
+                            <strong>Número:</strong> {(item as LocationItem).code}
+                          </CardInfo>
+                          <CardDescription>
+                            <strong>Descrição</strong>
+                            <br />
+                            {item.description}
+                          </CardDescription>
+                        </div>
+                      </LocationCard>
+                    ) : (
+                      <CategoryCard
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleEditCategory(item as CategoryItem)}
+                      >
+                        <div>
+                          <CardTitle>
+                            <strong>Nome:</strong> {item.name}
+                          </CardTitle>
+                          <CardDescription>
+                            <strong>Descrição</strong>
+                            <br />
+                            {item.description}
+                          </CardDescription>
+                        </div>
+                      </CategoryCard>
+                    )}
+                  </div>
+                )
+              })}
+            </MobileCardsWrapper>
+          )}
 
           {totalPages > 1 && (
             <PaginationContainer>

@@ -30,6 +30,7 @@ import { X } from 'phosphor-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useAuth } from '@/contexts/auth-context'
+import { useInvalidateUser } from '@/hooks/use-invalidate-user'
 import type {
   FetchUsersControllerHandle200UsersItem,
   ChangeUserRoleControllerHandleBodyRole,
@@ -82,6 +83,7 @@ export function EditMemberModal({
   const [initialPermission, setInitialPermission] = useState<string>('')
   const [initialStatus, setInitialStatus] = useState<boolean>(true)
   const queryClient = useQueryClient()
+  const { invalidateUser } = useInvalidateUser()
 
   const {
     register,
@@ -190,6 +192,11 @@ export function EditMemberModal({
       }
 
       await queryClient.invalidateQueries({ queryKey: ['users'] })
+
+      // Se a role do usuário logado foi alterada, invalidar o cache do perfil
+      if (roleChanged && member?.id === user?.id) {
+        await invalidateUser()
+      }
 
       setIsSubmitting(false)
       setHasUnsavedChanges(false)
@@ -336,7 +343,7 @@ export function EditMemberModal({
                     type="button"
                     isActive={isActive}
                     onClick={() => setIsActive(!isActive)}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !!isSelf}
                   >
                     <StatusIndicator isActive={isActive} />
                   </StatusToggle>

@@ -52,6 +52,10 @@ import { RoleProtectedRoute } from '@/styles'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { ConfirmationModal } from '@/components/confirmation-modal'
+import { EditLocationModal } from '@/pages/settings/components/EditLocationModal'
+import { EditCategoryModal } from '@/pages/settings/components/EditCategoryModal'
+import type { LocationResponse } from '../../../server/client/models/locationResponse'
+import type { CategoryResponse } from '../../../server/client/models/categoryResponse'
 
 // Hook customizado para debounce
 function useDebounce<T>(value: T, delay: number): T {
@@ -84,11 +88,20 @@ export default function TrashPage() {
   const queryClient = useQueryClient()
   const [searchTerm, setSearchTerm] = useState('')
   const [typeFilter, setTypeFilter] = useState<
-    'all' | 'location' | 'category' | 'problem'
+    'all' | 'location' | 'category' | 'problem' | 'member'
+  >('all')
+  const [dateFilter, setDateFilter] = useState<
+    'all' | 'today' | 'last7days' | 'last30days' | 'thisyear'
   >('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [isEditLocationModalOpen, setIsEditLocationModalOpen] = useState(false)
+  const [selectedLocationForEdit, setSelectedLocationForEdit] =
+    useState<LocationResponse | null>(null)
+  const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false)
+  const [selectedCategoryForEdit, setSelectedCategoryForEdit] =
+    useState<CategoryResponse | null>(null)
   const itemsPerPage = 10
 
   // Debounce do termo de busca
@@ -100,14 +113,37 @@ export default function TrashPage() {
     error,
     refetch,
   } = useQuery({
-    queryKey: ['trash', debouncedSearchTerm, currentPage, typeFilter],
+    queryKey: [
+      'trash',
+      debouncedSearchTerm,
+      currentPage,
+      typeFilter,
+      dateFilter,
+    ],
     queryFn: async () => {
       const params = new URLSearchParams()
-      if (debouncedSearchTerm) params.append('query', debouncedSearchTerm)
-      params.append('page', currentPage.toString())
-      if (typeFilter !== 'all') params.append('type', typeFilter)
 
-      const response = await fetch(`/api/trash?${params.toString()}`, {
+      // Always add page
+      params.append('page', currentPage.toString())
+
+      // Add query only if it exists
+      if (debouncedSearchTerm && debouncedSearchTerm.trim() !== '') {
+        params.append('query', debouncedSearchTerm.trim())
+      }
+
+      // Add type only if not 'all'
+      if (typeFilter && typeFilter !== 'all') {
+        params.append('type', typeFilter)
+      }
+
+      // Add date filter only if not 'all'
+      if (dateFilter && dateFilter !== 'all') {
+        params.append('dateFilter', dateFilter)
+      }
+
+      const url = `/api/trash${params.toString() ? `?${params.toString()}` : ''}`
+
+      const response = await fetch(url, {
         credentials: 'include',
       })
 
@@ -192,7 +228,7 @@ export default function TrashPage() {
   const totalItems = trashData?.total || 0
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
-  // Reset para última página se a página atual exceder o total
+  // Reset to last page if current page exceeds total
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(totalPages)
@@ -209,11 +245,18 @@ export default function TrashPage() {
   }
 
   const handleFilterChange = (
-    filter: 'all' | 'location' | 'category' | 'problem',
+    filter: 'all' | 'location' | 'category' | 'problem' | 'member',
   ) => {
     setTypeFilter(filter)
     setCurrentPage(1)
     setSelectedItems([])
+  }
+
+  const handleDateFilterChange = (
+    filter: 'all' | 'today' | 'last7days' | 'last30days' | 'thisyear',
+  ) => {
+    setDateFilter(filter)
+    setCurrentPage(1)
   }
 
   const handleSelectAll = (checked: boolean) => {
@@ -250,6 +293,71 @@ export default function TrashPage() {
 
   const confirmDelete = () => {
     deletePermanentlyMutation.mutate(selectedItems)
+  }
+
+  const handleItemClick = async (item: TrashItem) => {
+    // Fetch complete item details including deleted items
+    if (item.itemType === 'location') {
+      try {
+        const response = await fetch(
+          `/api/locations/${item.id}?includeDeleted=true`,
+          {
+            credentials: 'include',
+          },
+        )
+        if (response.ok) {
+          const location = await response.json()
+          setSelectedLocationForEdit(location)
+          setIsEditLocationModalOpen(true)
+        } else {
+          toast.error('Localização não encontrada')
+        }
+      } catch (error) {
+        console.error('Erro ao carregar localização:', error)
+        toast.error('Falha ao carregar detalhes da localização')
+      }
+    } else if (item.itemType === 'category') {
+      try {
+        const response = await fetch(
+          `/api/categories/${item.id}?includeDeleted=true`,
+          {
+            credentials: 'include',
+          },
+        )
+        if (response.ok) {
+          const category = await response.json()
+          setSelectedCategoryForEdit(category)
+          setIsEditCategoryModalOpen(true)
+        } else {
+          toast.error('Categoria não encontrada')
+        }
+      } catch (error) {
+        console.error('Erro ao carregar categoria:', error)
+        toast.error('Falha ao carregar detalhes da categoria')
+      }
+    }
+  }
+
+  const handleEditLocationSuccess = () => {
+    setIsEditLocationModalOpen(false)
+    setSelectedLocationForEdit(null)
+    queryClient.invalidateQueries({ queryKey: ['trash'] })
+  }
+
+  const handleEditLocationClose = () => {
+    setIsEditLocationModalOpen(false)
+    setSelectedLocationForEdit(null)
+  }
+
+  const handleEditCategorySuccess = () => {
+    setIsEditCategoryModalOpen(false)
+    setSelectedCategoryForEdit(null)
+    queryClient.invalidateQueries({ queryKey: ['trash'] })
+  }
+
+  const handleEditCategoryClose = () => {
+    setIsEditCategoryModalOpen(false)
+    setSelectedCategoryForEdit(null)
   }
 
   const handlePageChange = (page: number) => {
@@ -323,45 +431,6 @@ export default function TrashPage() {
   }
 
   const getTableHeaders = () => {
-    // Quando "todos" os tipos, usamos cabeçalho padrão (Nome, Local, Descrição)
-    if (typeFilter === 'all') {
-      return (
-        <TableRow isHeader>
-          <TableHeader>
-            <Checkbox
-              type="checkbox"
-              checked={
-                selectedItems.length === items.length && items.length > 0
-              }
-              onChange={(e) => handleSelectAll(e.target.checked)}
-            />
-          </TableHeader>
-          <TableHeader>Nome</TableHeader>
-          <TableHeader>Local</TableHeader>
-          <TableHeader>Descrição</TableHeader>
-        </TableRow>
-      )
-    }
-
-    if (typeFilter === 'location') {
-      return (
-        <TableRow isHeader>
-          <TableHeader>
-            <Checkbox
-              type="checkbox"
-              checked={
-                selectedItems.length === items.length && items.length > 0
-              }
-              onChange={(e) => handleSelectAll(e.target.checked)}
-            />
-          </TableHeader>
-          <TableHeader>Nome</TableHeader>
-          <TableHeader>Local</TableHeader>
-          <TableHeader>Descrição</TableHeader>
-        </TableRow>
-      )
-    }
-
     if (typeFilter === 'category') {
       return (
         <TableRow isHeader>
@@ -380,7 +449,21 @@ export default function TrashPage() {
       )
     }
 
-    return null
+    // For 'all', 'location' and 'problem' we show Name, Location, Description
+    return (
+      <TableRow isHeader>
+        <TableHeader>
+          <Checkbox
+            type="checkbox"
+            checked={selectedItems.length === items.length && items.length > 0}
+            onChange={(e) => handleSelectAll(e.target.checked)}
+          />
+        </TableHeader>
+        <TableHeader>Nome</TableHeader>
+        <TableHeader>Local</TableHeader>
+        <TableHeader>Descrição</TableHeader>
+      </TableRow>
+    )
   }
 
   if (error) {
@@ -466,12 +549,17 @@ export default function TrashPage() {
                   }}
                 >
                   <option value="all">Tipo</option>
-                  <option value="location">Localizações</option>
-                  <option value="category">Categorias</option>
-                  <option value="problem">Problemas</option>
+                  <option value="problem">Problema</option>
+                  <option value="category">Categoria</option>
+                  <option value="location">Localização</option>
+                  <option value="member">Membros</option>
                 </select>
 
                 <select
+                  value={dateFilter}
+                  onChange={(e) =>
+                    handleDateFilterChange(e.target.value as typeof dateFilter)
+                  }
                   style={{
                     padding: '0.5rem 2rem 0.5rem 1rem',
                     borderRadius: '8px',
@@ -487,7 +575,11 @@ export default function TrashPage() {
                     backgroundPosition: 'right 0.75rem center',
                   }}
                 >
-                  <option>Modificado</option>
+                  <option value="all">Modificado</option>
+                  <option value="today">Hoje</option>
+                  <option value="last7days">Últimos 7 dias</option>
+                  <option value="last30days">Últimos 30 dias</option>
+                  <option value="thisyear">Este ano (2025)</option>
                 </select>
               </FiltersContainer>
 
@@ -549,8 +641,13 @@ export default function TrashPage() {
                     <thead>{getTableHeaders()}</thead>
                     <tbody>
                       {items.map((item) => (
-                        <TableRow key={item.id} isHeader={false}>
-                          <TableCell>
+                        <TableRow
+                          key={item.id}
+                          isHeader={false}
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleItemClick(item)}
+                        >
+                          <TableCell onClick={(e) => e.stopPropagation()}>
                             <Checkbox
                               type="checkbox"
                               checked={selectedItems.includes(item.id)}
@@ -560,14 +657,16 @@ export default function TrashPage() {
                             />
                           </TableCell>
                           <TableCell>{item.name}</TableCell>
-                          {/* "Local" e "Descrição" adaptados por tipo */}
-                          <TableCell>
-                            {item.itemType === 'location'
-                              ? item.code || '-'
-                              : item.itemType === 'problem'
-                                ? item.local || '-'
-                                : '-'}
-                          </TableCell>
+                          {/* Só mostra coluna "Local" se não for filtro de categorias */}
+                          {typeFilter !== 'category' && (
+                            <TableCell>
+                              {item.itemType === 'location'
+                                ? item.code || '-'
+                                : item.itemType === 'problem'
+                                  ? item.local || '-'
+                                  : '-'}
+                            </TableCell>
+                          )}
                           <TableCell>{item.description || '-'}</TableCell>
                         </TableRow>
                       ))}
@@ -578,7 +677,7 @@ export default function TrashPage() {
 
               <MobileCardsWrapper>
                 {items.map((item) => (
-                  <ItemCard key={item.id} onClick={() => {}}>
+                  <ItemCard key={item.id} onClick={() => handleItemClick(item)}>
                     <Checkbox
                       type="checkbox"
                       checked={selectedItems.includes(item.id)}
@@ -613,6 +712,21 @@ export default function TrashPage() {
           message="Esta ação não pode ser desfeita. Os itens selecionados serão excluídos permanentemente do sistema."
           confirmText="Excluir permanentemente"
           cancelText="Cancelar"
+          variant="danger"
+        />
+
+        <EditLocationModal
+          isOpen={isEditLocationModalOpen}
+          onClose={handleEditLocationClose}
+          onSuccess={handleEditLocationSuccess}
+          location={selectedLocationForEdit}
+        />
+
+        <EditCategoryModal
+          isOpen={isEditCategoryModalOpen}
+          onClose={handleEditCategoryClose}
+          onSuccess={handleEditCategorySuccess}
+          category={selectedCategoryForEdit}
         />
       </PlatformLayout>
     </RoleProtectedRoute>

@@ -4,7 +4,7 @@ export const HeaderContainer = styled('header', {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  padding: '$12 $8 $8',
+  padding: '$6 $8 $4',
 
   '@media(max-width: 820px)': {
     [`> ${Heading}`]: {

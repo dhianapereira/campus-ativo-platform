@@ -10,6 +10,50 @@ import {
   deleteCategoryControllerHandle,
 } from '../../../server/client/categories/categories'
 
+// Função para filtrar itens por data de exclusão
+function filterByDeletedDate(
+  items: Array<{ deletedAt?: string | null }>,
+  dateFilter?: string,
+) {
+  if (!dateFilter || dateFilter === 'all') {
+    return items
+  }
+
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+  return items.filter((item) => {
+    if (!item.deletedAt) return false
+
+    const deletedDate = new Date(item.deletedAt)
+
+    switch (dateFilter) {
+      case 'today': {
+        // Itens deletados hoje
+        return deletedDate >= today
+      }
+      case 'last7days': {
+        // Últimos 7 dias
+        const sevenDaysAgo = new Date(today)
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+        return deletedDate >= sevenDaysAgo
+      }
+      case 'last30days': {
+        // Últimos 30 dias
+        const thirtyDaysAgo = new Date(today)
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+        return deletedDate >= thirtyDaysAgo
+      }
+      case 'thisyear': {
+        // Este ano (2025)
+        return deletedDate.getFullYear() === 2025
+      }
+      default:
+        return true
+    }
+  })
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -22,14 +66,16 @@ export default async function handler(
 
   if (req.method === 'GET') {
     try {
-      const { query, page, type } = req.query
+      const { query, type, dateFilter } = req.query
 
-      const pageNumber =
-        page && typeof page === 'string' ? parseInt(page, 10) : 1
       const searchQuery = query && typeof query === 'string' ? query : undefined
 
       // Tipo pode ser: 'location', 'category', 'problem' ou undefined (todos)
       const itemType = type && typeof type === 'string' ? type : undefined
+
+      // Filtro de data
+      const dateFilterValue =
+        dateFilter && typeof dateFilter === 'string' ? dateFilter : undefined
 
       const results: {
         items: unknown[]
@@ -76,14 +122,24 @@ export default async function handler(
               cat.deletedAt !== null && cat.deletedAt !== undefined,
           ) || []
 
+        // Aplicar filtro de data
+        const filteredLocations = filterByDeletedDate(
+          deletedLocations,
+          dateFilterValue,
+        )
+        const filteredCategories = filterByDeletedDate(
+          deletedCategories,
+          dateFilterValue,
+        )
+
         // Combinar e adicionar tipo
         const allItems = [
-          ...deletedLocations.map((item: unknown) => ({
-            ...item,
+          ...filteredLocations.map((item) => ({
+            ...(item as Record<string, unknown>),
             itemType: 'location',
           })),
-          ...deletedCategories.map((item: unknown) => ({
-            ...item,
+          ...filteredCategories.map((item) => ({
+            ...(item as Record<string, unknown>),
             itemType: 'category',
           })),
         ]
@@ -108,11 +164,15 @@ export default async function handler(
             (loc: { deletedAt?: string | null }) =>
               loc.deletedAt !== null && loc.deletedAt !== undefined,
           ) || []
-        results.items = deletedItems.map((item: unknown) => ({
-          ...item,
+
+        // Aplicar filtro de data
+        const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
+
+        results.items = filteredItems.map((item) => ({
+          ...(item as Record<string, unknown>),
           itemType: 'location',
         }))
-        results.total = deletedItems.length
+        results.total = filteredItems.length
         results.type = 'location'
       } else if (itemType === 'category') {
         const data = await fetchCategoriesControllerHandle(
@@ -132,11 +192,15 @@ export default async function handler(
             (cat: { deletedAt?: string | null }) =>
               cat.deletedAt !== null && cat.deletedAt !== undefined,
           ) || []
-        results.items = deletedItems.map((item: unknown) => ({
-          ...item,
+
+        // Aplicar filtro de data
+        const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
+
+        results.items = filteredItems.map((item) => ({
+          ...(item as Record<string, unknown>),
           itemType: 'category',
         }))
-        results.total = deletedItems.length
+        results.total = filteredItems.length
         results.type = 'category'
       }
 

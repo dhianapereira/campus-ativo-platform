@@ -19,5 +19,5 @@ export const Body = styled('main', {
 })
 
 export const Content = styled('div', {
-  padding: '$8 $3 $3 $8',
+  padding: '$4 $3 $3 $8',
 })
