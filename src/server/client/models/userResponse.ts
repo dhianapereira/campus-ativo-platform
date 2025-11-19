@@ -5,7 +5,7 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import type { UserResponseRole } from './userResponseRole';
+import type { UserResponseRole } from "./userResponseRole";
 
 export interface UserResponse {
   /** ID do usuário */

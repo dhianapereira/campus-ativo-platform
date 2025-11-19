@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   ModalOverlay,
   ModalContent,
@@ -25,49 +25,49 @@ import {
   StatusToggle,
   StatusIndicator,
   BottomFieldsContainer,
-} from './styles'
-import { X } from 'phosphor-react'
-import { useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import { useAuth } from '@/contexts/auth-context'
-import { useInvalidateUser } from '@/hooks/use-invalidate-user'
+} from "./styles";
+import { X } from "phosphor-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useAuth } from "@/contexts/auth-context";
+import { useInvalidateUser } from "@/hooks/use-invalidate-user";
 import type {
   FetchUsersControllerHandle200UsersItem,
   ChangeUserRoleControllerHandleBodyRole,
-} from '../../../../server/client/models'
-import { ConfirmationModal } from '@/components/confirmation-modal'
+} from "../../../../server/client/models";
+import { ConfirmationModal } from "@/components/confirmation-modal";
 
 const memberSchema = z.object({
   name: z
     .string()
-    .min(1, 'Nome é obrigatório')
-    .max(100, 'Nome deve ter no máximo 100 caracteres'),
+    .min(1, "Nome é obrigatório")
+    .max(100, "Nome deve ter no máximo 100 caracteres"),
   email: z
     .string()
-    .min(1, 'Email é obrigatório')
-    .email('Email deve ser válido'),
+    .min(1, "Email é obrigatório")
+    .email("Email deve ser válido"),
   position: z
     .string()
-    .min(1, 'Cargo é obrigatório')
-    .max(100, 'Cargo deve ter no máximo 100 caracteres'),
+    .min(1, "Cargo é obrigatório")
+    .max(100, "Cargo deve ter no máximo 100 caracteres"),
   permissions: z.string(),
-})
+});
 
-type MemberFormData = z.infer<typeof memberSchema>
+type MemberFormData = z.infer<typeof memberSchema>;
 
 interface EditMemberModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSuccess: () => void
-  member: FetchUsersControllerHandle200UsersItem | null
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+  member: FetchUsersControllerHandle200UsersItem | null;
 }
 
 const permissionOptions = [
-  { value: 'REPORTER', label: 'Relator' },
-  { value: 'MANAGER', label: 'Gerente' },
-  { value: 'DIRECTOR', label: 'Diretor' },
-  { value: 'ADMIN', label: 'Administrador' },
-]
+  { value: "REPORTER", label: "Relator" },
+  { value: "MANAGER", label: "Gerente" },
+  { value: "DIRECTOR", label: "Diretor" },
+  { value: "ADMIN", label: "Administrador" },
+];
 
 export function EditMemberModal({
   isOpen,
@@ -75,15 +75,15 @@ export function EditMemberModal({
   onSuccess,
   member,
 }: EditMemberModalProps) {
-  const { user, canManageUserRole } = useAuth()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isActive, setIsActive] = useState(true)
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
-  const [initialPermission, setInitialPermission] = useState<string>('')
-  const [initialStatus, setInitialStatus] = useState<boolean>(true)
-  const queryClient = useQueryClient()
-  const { invalidateUser } = useInvalidateUser()
+  const { user, canManageUserRole } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isActive, setIsActive] = useState(true);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [initialPermission, setInitialPermission] = useState<string>("");
+  const [initialStatus, setInitialStatus] = useState<boolean>(true);
+  const queryClient = useQueryClient();
+  const { invalidateUser } = useInvalidateUser();
 
   const {
     register,
@@ -93,176 +93,176 @@ export function EditMemberModal({
     watch,
   } = useForm<MemberFormData>({
     resolver: zodResolver(memberSchema),
-  })
+  });
 
-  const watchedFields = watch()
+  const watchedFields = watch();
 
   useEffect(() => {
     if (isOpen && member) {
-      const memberRole = (member.role as string) || 'REPORTER'
-      const memberStatus = member.isActive ?? true
+      const memberRole = (member.role as string) || "REPORTER";
+      const memberStatus = member.isActive ?? true;
 
       reset({
-        name: member.name || '',
-        email: member.email || '',
-        position: member.position || '',
+        name: member.name || "",
+        email: member.email || "",
+        position: member.position || "",
         permissions: memberRole,
-      })
+      });
 
-      setInitialPermission(memberRole)
-      setInitialStatus(memberStatus)
-      setIsActive(memberStatus)
+      setInitialPermission(memberRole);
+      setInitialStatus(memberStatus);
+      setIsActive(memberStatus);
     }
-  }, [isOpen, member, reset])
+  }, [isOpen, member, reset]);
 
   useEffect(() => {
     if (!member) {
-      setHasUnsavedChanges(false)
-      return
+      setHasUnsavedChanges(false);
+      return;
     }
 
-    const permissionChanged = watchedFields.permissions !== initialPermission
-    const statusChanged = isActive !== initialStatus
+    const permissionChanged = watchedFields.permissions !== initialPermission;
+    const statusChanged = isActive !== initialStatus;
 
-    setHasUnsavedChanges(permissionChanged || statusChanged)
+    setHasUnsavedChanges(permissionChanged || statusChanged);
   }, [
     watchedFields.permissions,
     isActive,
     initialPermission,
     initialStatus,
     member,
-  ])
+  ]);
 
   const onSubmit = async (data: MemberFormData) => {
-    if (!member?.id) return
+    if (!member?.id) return;
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
 
     try {
-      const roleChanged = data.permissions !== initialPermission
-      const statusChanged = isActive !== initialStatus
+      const roleChanged = data.permissions !== initialPermission;
+      const statusChanged = isActive !== initialStatus;
 
-      const updates: Promise<Response>[] = []
+      const updates: Promise<Response>[] = [];
 
       if (roleChanged) {
         updates.push(
           fetch(`/api/users/${member.id}/role`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({
               role: data.permissions as ChangeUserRoleControllerHandleBodyRole,
             }),
           }),
-        )
+        );
       }
 
       if (statusChanged) {
         updates.push(
           fetch(`/api/users/${member.id}/status`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({
               isActive,
             }),
           }),
-        )
+        );
       }
 
       if (updates.length === 0) {
-        setIsSubmitting(false)
-        toast.info('Nenhuma alteração foi realizada.')
-        return
+        setIsSubmitting(false);
+        toast.info("Nenhuma alteração foi realizada.");
+        return;
       }
 
-      const responses = await Promise.all(updates)
+      const responses = await Promise.all(updates);
 
-      const allSuccessful = responses.every((response) => response.ok)
+      const allSuccessful = responses.every((response) => response.ok);
 
       if (!allSuccessful) {
-        const firstError = responses.find((response) => !response.ok)
+        const firstError = responses.find((response) => !response.ok);
         if (firstError) {
-          const errorData = await firstError.json().catch(() => ({}))
-          throw new Error(errorData.message || 'Falha ao atualizar usuário')
+          const errorData = await firstError.json().catch(() => ({}));
+          throw new Error(errorData.message || "Falha ao atualizar usuário");
         }
       }
 
-      await queryClient.invalidateQueries({ queryKey: ['users'] })
+      await queryClient.invalidateQueries({ queryKey: ["users"] });
 
       if (roleChanged && member?.id === user?.id) {
-        await invalidateUser()
+        await invalidateUser();
       }
 
-      setIsSubmitting(false)
-      setHasUnsavedChanges(false)
-      reset()
-      onSuccess()
+      setIsSubmitting(false);
+      setHasUnsavedChanges(false);
+      reset();
+      onSuccess();
 
       if (roleChanged && statusChanged) {
-        toast.success('Permissão e status atualizados com sucesso.')
+        toast.success("Permissão e status atualizados com sucesso.");
       } else if (roleChanged) {
-        toast.success('Permissão atualizada com sucesso.')
+        toast.success("Permissão atualizada com sucesso.");
       } else {
-        toast.success('Status atualizado com sucesso.')
+        toast.success("Status atualizado com sucesso.");
       }
     } catch (error) {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
       const errorMessage =
-        error instanceof Error ? error.message : 'Falha ao atualizar usuário'
-      toast.error(errorMessage)
+        error instanceof Error ? error.message : "Falha ao atualizar usuário";
+      toast.error(errorMessage);
     }
-  }
+  };
 
   const handleClose = () => {
-    if (isSubmitting) return
+    if (isSubmitting) return;
 
     if (hasUnsavedChanges) {
-      setShowConfirmationModal(true)
+      setShowConfirmationModal(true);
     } else {
-      reset()
-      setHasUnsavedChanges(false)
-      onClose()
+      reset();
+      setHasUnsavedChanges(false);
+      onClose();
     }
-  }
+  };
 
   const handleConfirmClose = () => {
-    reset()
-    setHasUnsavedChanges(false)
-    setShowConfirmationModal(false)
-    onClose()
-  }
+    reset();
+    setHasUnsavedChanges(false);
+    setShowConfirmationModal(false);
+    onClose();
+  };
 
-  if (!isOpen || !member) return null
+  if (!isOpen || !member) return null;
 
-  const isSelf = user?.id && member?.id && user.id === member.id
+  const isSelf = user?.id && member?.id && user.id === member.id;
   const visiblePermissionOptions = permissionOptions.filter((opt) =>
     canManageUserRole(opt.value as ChangeUserRoleControllerHandleBodyRole),
-  )
+  );
 
   // Always ensure the current member's role is visible in the dropdown
   const finalPermissionOptions = (() => {
-    if (!member?.role) return visiblePermissionOptions
+    if (!member?.role) return visiblePermissionOptions;
 
     // Check if current role is already in visible options
     const hasCurrentRole = visiblePermissionOptions.some(
       (opt) => opt.value === member.role,
-    )
+    );
 
     if (hasCurrentRole) {
-      return visiblePermissionOptions
+      return visiblePermissionOptions;
     }
 
     // Add current role to options
     const currentRoleOption = permissionOptions.find(
       (opt) => opt.value === member.role,
-    )
+    );
     if (currentRoleOption) {
-      return [...visiblePermissionOptions, currentRoleOption]
+      return [...visiblePermissionOptions, currentRoleOption];
     }
 
-    return visiblePermissionOptions
-  })()
+    return visiblePermissionOptions;
+  })();
 
   return (
     <>
@@ -280,7 +280,7 @@ export function EditMemberModal({
               <div className="form-row">
                 <FormField className="name-field">
                   <Label htmlFor="name">Nome</Label>
-                  <Input id="name" {...register('name')} disabled={true} />
+                  <Input id="name" {...register("name")} disabled={true} />
                   {errors.name && (
                     <ErrorMessage>{errors.name.message}</ErrorMessage>
                   )}
@@ -292,7 +292,7 @@ export function EditMemberModal({
                 <Input
                   id="email"
                   type="email"
-                  {...register('email')}
+                  {...register("email")}
                   disabled={true}
                 />
                 {errors.email && (
@@ -304,7 +304,7 @@ export function EditMemberModal({
                 <Label htmlFor="position">Cargo</Label>
                 <Input
                   id="position"
-                  {...register('position')}
+                  {...register("position")}
                   disabled={true}
                 />
                 {errors.position && (
@@ -318,7 +318,7 @@ export function EditMemberModal({
                   <SelectContainer>
                     <Select
                       id="permissions"
-                      {...register('permissions')}
+                      {...register("permissions")}
                       disabled={isSubmitting || !!isSelf}
                     >
                       {finalPermissionOptions.map((option) => (
@@ -357,7 +357,7 @@ export function EditMemberModal({
                 onClick={handleSubmit(onSubmit)}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Salvando...' : 'Salvar'}
+                {isSubmitting ? "Salvando..." : "Salvar"}
               </SubmitButton>
             </ButtonGroup>
           </ModalFooter>
@@ -374,5 +374,5 @@ export function EditMemberModal({
         cancelText="Descartar"
       />
     </>
-  )
+  );
 }

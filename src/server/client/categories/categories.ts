@@ -5,10 +5,7 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -21,427 +18,644 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   CreateCategoryRequest,
   EditCategoryRequest,
   FetchCategoriesControllerHandle200,
-  FetchCategoriesControllerHandleParams
-} from '.././models';
+  FetchCategoriesControllerHandleParams,
+} from ".././models";
 
-import { axiosInstance } from '../../axios';
-import type { ErrorType , BodyType } from '../../axios';
-
+import { axiosInstance } from "../../axios";
+import type { ErrorType, BodyType } from "../../axios";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-
 
 /**
  * Retorna uma lista paginada de categorias de problemas disponíveis no sistema
  * @summary Buscar categorias
  */
 export const fetchCategoriesControllerHandle = (
-    params?: FetchCategoriesControllerHandleParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params?: FetchCategoriesControllerHandleParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<FetchCategoriesControllerHandle200>(
-      {url: `/categories`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<FetchCategoriesControllerHandle200>(
+    { url: `/categories`, method: "GET", params, signal },
+    options,
+  );
+};
 
-export const getFetchCategoriesControllerHandleQueryKey = (params?: FetchCategoriesControllerHandleParams,) => {
-    return [`/categories`, ...(params ? [params]: [])] as const;
-    }
-
-    
-export const getFetchCategoriesControllerHandleQueryOptions = <TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError = ErrorType<null>>(params?: FetchCategoriesControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const getFetchCategoriesControllerHandleQueryKey = (
+  params?: FetchCategoriesControllerHandleParams,
 ) => {
+  return [`/categories`, ...(params ? [params] : [])] as const;
+};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+export const getFetchCategoriesControllerHandleQueryOptions = <
+  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params?: FetchCategoriesControllerHandleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getFetchCategoriesControllerHandleQueryKey(params);
+  const queryKey =
+    queryOptions?.queryKey ??
+    getFetchCategoriesControllerHandleQueryKey(params);
 
-  
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>
+  > = ({ signal }) =>
+    fetchCategoriesControllerHandle(params, requestOptions, signal);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>> = ({ signal }) => fetchCategoriesControllerHandle(params, requestOptions, signal);
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type FetchCategoriesControllerHandleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>
+>;
+export type FetchCategoriesControllerHandleQueryError = ErrorType<null>;
 
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type FetchCategoriesControllerHandleQueryResult = NonNullable<Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>>
-export type FetchCategoriesControllerHandleQueryError = ErrorType<null>
-
-
-export function useFetchCategoriesControllerHandle<TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError = ErrorType<null>>(
- params: undefined |  FetchCategoriesControllerHandleParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError, TData>> & Pick<
+export function useFetchCategoriesControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params: undefined | FetchCategoriesControllerHandleParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useFetchCategoriesControllerHandle<TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError = ErrorType<null>>(
- params?: FetchCategoriesControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFetchCategoriesControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params?: FetchCategoriesControllerHandleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useFetchCategoriesControllerHandle<TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError = ErrorType<null>>(
- params?: FetchCategoriesControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFetchCategoriesControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params?: FetchCategoriesControllerHandleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Buscar categorias
  */
 
-export function useFetchCategoriesControllerHandle<TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError = ErrorType<null>>(
- params?: FetchCategoriesControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useFetchCategoriesControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params?: FetchCategoriesControllerHandleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFetchCategoriesControllerHandleQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getFetchCategoriesControllerHandleQueryOptions(params,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * Cria uma nova categoria de problema (requer role MANAGER+)
  * @summary Criar categoria
  */
 export const createCategoryControllerHandle = (
-    createCategoryRequest: BodyType<CreateCategoryRequest>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  createCategoryRequest: BodyType<CreateCategoryRequest>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/categories`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: createCategoryRequest, signal
+  return axiosInstance<null>(
+    {
+      url: `/categories`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createCategoryRequest,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getCreateCategoryControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createCategoryControllerHandle>>,
+    TError,
+    { data: BodyType<CreateCategoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createCategoryControllerHandle>>,
+  TError,
+  { data: BodyType<CreateCategoryRequest> },
+  TContext
+> => {
+  const mutationKey = ["createCategoryControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getCreateCategoryControllerHandleMutationOptions = <TError = ErrorType<null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCategoryControllerHandle>>, TError,{data: BodyType<CreateCategoryRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof createCategoryControllerHandle>>, TError,{data: BodyType<CreateCategoryRequest>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createCategoryControllerHandle>>,
+    { data: BodyType<CreateCategoryRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['createCategoryControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return createCategoryControllerHandle(data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type CreateCategoryControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createCategoryControllerHandle>>
+>;
+export type CreateCategoryControllerHandleMutationBody =
+  BodyType<CreateCategoryRequest>;
+export type CreateCategoryControllerHandleMutationError = ErrorType<
+  null | null | null
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createCategoryControllerHandle>>, {data: BodyType<CreateCategoryRequest>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createCategoryControllerHandle(data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateCategoryControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof createCategoryControllerHandle>>>
-    export type CreateCategoryControllerHandleMutationBody = BodyType<CreateCategoryRequest>
-    export type CreateCategoryControllerHandleMutationError = ErrorType<null | null | null>
-
-    /**
+/**
  * @summary Criar categoria
  */
-export const useCreateCategoryControllerHandle = <TError = ErrorType<null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createCategoryControllerHandle>>, TError,{data: BodyType<CreateCategoryRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createCategoryControllerHandle>>,
-        TError,
-        {data: BodyType<CreateCategoryRequest>},
-        TContext
-      > => {
+export const useCreateCategoryControllerHandle = <
+  TError = ErrorType<null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createCategoryControllerHandle>>,
+      TError,
+      { data: BodyType<CreateCategoryRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createCategoryControllerHandle>>,
+  TError,
+  { data: BodyType<CreateCategoryRequest> },
+  TContext
+> => {
+  const mutationOptions =
+    getCreateCategoryControllerHandleMutationOptions(options);
 
-      const mutationOptions = getCreateCategoryControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Edita uma categoria existente (requer role MANAGER+)
  * @summary Editar categoria
  */
 export const editCategoryControllerHandle = (
-    id: string,
-    editCategoryRequest: BodyType<EditCategoryRequest>,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/categories/${id}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: editCategoryRequest
+  id: string,
+  editCategoryRequest: BodyType<EditCategoryRequest>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    {
+      url: `/categories/${id}`,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      data: editCategoryRequest,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getEditCategoryControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+    TError,
+    { id: string; data: BodyType<EditCategoryRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<EditCategoryRequest> },
+  TContext
+> => {
+  const mutationKey = ["editCategoryControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getEditCategoryControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editCategoryControllerHandle>>, TError,{id: string;data: BodyType<EditCategoryRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof editCategoryControllerHandle>>, TError,{id: string;data: BodyType<EditCategoryRequest>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+    { id: string; data: BodyType<EditCategoryRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-const mutationKey = ['editCategoryControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return editCategoryControllerHandle(id, data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type EditCategoryControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof editCategoryControllerHandle>>
+>;
+export type EditCategoryControllerHandleMutationBody =
+  BodyType<EditCategoryRequest>;
+export type EditCategoryControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editCategoryControllerHandle>>, {id: string;data: BodyType<EditCategoryRequest>}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  editCategoryControllerHandle(id,data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EditCategoryControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof editCategoryControllerHandle>>>
-    export type EditCategoryControllerHandleMutationBody = BodyType<EditCategoryRequest>
-    export type EditCategoryControllerHandleMutationError = ErrorType<null | null | null | null>
-
-    /**
+/**
  * @summary Editar categoria
  */
-export const useEditCategoryControllerHandle = <TError = ErrorType<null | null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editCategoryControllerHandle>>, TError,{id: string;data: BodyType<EditCategoryRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof editCategoryControllerHandle>>,
-        TError,
-        {id: string;data: BodyType<EditCategoryRequest>},
-        TContext
-      > => {
+export const useEditCategoryControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+      TError,
+      { id: string; data: BodyType<EditCategoryRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof editCategoryControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<EditCategoryRequest> },
+  TContext
+> => {
+  const mutationOptions =
+    getEditCategoryControllerHandleMutationOptions(options);
 
-      const mutationOptions = getEditCategoryControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Deleta permanentemente uma categoria do sistema (requer role MANAGER+)
  * @summary Deletar categoria
  */
 export const deleteCategoryControllerHandle = (
-    id: string,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/categories/${id}`, method: 'DELETE'
-    },
-      options);
-    }
-  
+  id: string,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    { url: `/categories/${id}`, method: "DELETE" },
+    options,
+  );
+};
 
+export const getDeleteCategoryControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deleteCategoryControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getDeleteCategoryControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCategoryControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteCategoryControllerHandle>>, TError,{id: string}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-const mutationKey = ['deleteCategoryControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return deleteCategoryControllerHandle(id, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type DeleteCategoryControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteCategoryControllerHandle>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteCategoryControllerHandle>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+export type DeleteCategoryControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
 
-          return  deleteCategoryControllerHandle(id,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteCategoryControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof deleteCategoryControllerHandle>>>
-    
-    export type DeleteCategoryControllerHandleMutationError = ErrorType<null | null | null | null>
-
-    /**
+/**
  * @summary Deletar categoria
  */
-export const useDeleteCategoryControllerHandle = <TError = ErrorType<null | null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteCategoryControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
+export const useDeleteCategoryControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions =
+    getDeleteCategoryControllerHandleMutationOptions(options);
 
-      const mutationOptions = getDeleteCategoryControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Move uma categoria para a lixeira (soft delete, requer role MANAGER+)
  * @summary Mover categoria para lixeira
  */
 export const trashCategoryControllerHandle = (
-    id: string,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/categories/${id}/trash`, method: 'PATCH'
-    },
-      options);
-    }
-  
+  id: string,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    { url: `/categories/${id}/trash`, method: "PATCH" },
+    options,
+  );
+};
 
+export const getTrashCategoryControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["trashCategoryControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getTrashCategoryControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof trashCategoryControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof trashCategoryControllerHandle>>, TError,{id: string}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-const mutationKey = ['trashCategoryControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return trashCategoryControllerHandle(id, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type TrashCategoryControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof trashCategoryControllerHandle>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof trashCategoryControllerHandle>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+export type TrashCategoryControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
 
-          return  trashCategoryControllerHandle(id,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type TrashCategoryControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof trashCategoryControllerHandle>>>
-    
-    export type TrashCategoryControllerHandleMutationError = ErrorType<null | null | null | null>
-
-    /**
+/**
  * @summary Mover categoria para lixeira
  */
-export const useTrashCategoryControllerHandle = <TError = ErrorType<null | null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof trashCategoryControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
+export const useTrashCategoryControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof trashCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions =
+    getTrashCategoryControllerHandleMutationOptions(options);
 
-      const mutationOptions = getTrashCategoryControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Restaura uma categoria que estava na lixeira (requer role MANAGER+)
  * @summary Restaurar categoria da lixeira
  */
 export const restoreCategoryControllerHandle = (
-    id: string,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/categories/${id}/restore`, method: 'PATCH'
-    },
-      options);
-    }
-  
+  id: string,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    { url: `/categories/${id}/restore`, method: "PATCH" },
+    options,
+  );
+};
 
+export const getRestoreCategoryControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["restoreCategoryControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getRestoreCategoryControllerHandleMutationOptions = <TError = ErrorType<null | null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restoreCategoryControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof restoreCategoryControllerHandle>>, TError,{id: string}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-const mutationKey = ['restoreCategoryControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return restoreCategoryControllerHandle(id, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type RestoreCategoryControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof restoreCategoryControllerHandle>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof restoreCategoryControllerHandle>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+export type RestoreCategoryControllerHandleMutationError = ErrorType<
+  null | null | null | null
+>;
 
-          return  restoreCategoryControllerHandle(id,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type RestoreCategoryControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof restoreCategoryControllerHandle>>>
-    
-    export type RestoreCategoryControllerHandleMutationError = ErrorType<null | null | null | null>
-
-    /**
+/**
  * @summary Restaurar categoria da lixeira
  */
-export const useRestoreCategoryControllerHandle = <TError = ErrorType<null | null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof restoreCategoryControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
+export const useRestoreCategoryControllerHandle = <
+  TError = ErrorType<null | null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof restoreCategoryControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions =
+    getRestoreCategoryControllerHandleMutationOptions(options);
 
-      const mutationOptions = getRestoreCategoryControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
+  return useMutation(mutationOptions, queryClient);
+};

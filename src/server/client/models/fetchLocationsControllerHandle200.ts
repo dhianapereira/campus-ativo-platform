@@ -5,7 +5,7 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import type { LocationResponse } from './locationResponse';
+import type { LocationResponse } from "./locationResponse";
 
 export type FetchLocationsControllerHandle200 = {
   locations?: LocationResponse[];

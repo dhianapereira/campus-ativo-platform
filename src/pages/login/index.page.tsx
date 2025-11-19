@@ -1,27 +1,27 @@
-import { Button, Heading, Text, TextInput } from '@/styles'
-import PasswordIcon from './components/PasswordIcon'
+import { Button, Heading, Text, TextInput } from "@/styles";
+import PasswordIcon from "./components/PasswordIcon";
 import {
   PageWrapper,
   Container,
   Form,
   FormError,
   IllustrationContainer,
-} from './styles'
-import { useState, useEffect } from 'react'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { LoginFormData } from '@/@types/form.d'
-import { loginFormSchema } from '@/validators/login-form'
-import Image from 'next/image'
-import illustrationLogin from '../../assets/illustration-login.png'
-import ifalLogo from '../../assets/ifal-logo.png'
-import { useAuth } from '@/contexts/auth-context'
-import { useRouter } from 'next/router'
-import Link from 'next/link'
+} from "./styles";
+import { useState, useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { LoginFormData } from "@/@types/form.d";
+import { loginFormSchema } from "@/validators/login-form";
+import Image from "next/image";
+import illustrationLogin from "../../assets/illustration-login.png";
+import ifalLogo from "../../assets/ifal-logo.png";
+import { useAuth } from "@/contexts/auth-context";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function Login() {
-  const { signIn, isAuthenticated, isLoading } = useAuth()
-  const router = useRouter()
+  const { signIn, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -30,54 +30,54 @@ export default function Login() {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
-  })
+  });
 
-  const email = watch('email')
-  const password = watch('password')
+  const email = watch("email");
+  const password = watch("password");
 
   const isFormValid =
-    email && password && email.trim() !== '' && password.trim() !== ''
+    email && password && email.trim() !== "" && password.trim() !== "";
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.push('/problems')
+      router.push("/problems");
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, isLoading, router]);
 
   async function handleLogin(data: LoginFormData) {
     try {
       await signIn({
         email: data.email,
         password: data.password,
-      })
+      });
     } catch (error: unknown) {
       if (error instanceof Error) {
-        const status = (error as Error & { status?: number }).status
+        const status = (error as Error & { status?: number }).status;
         if (status === 400 || status === 401) {
-          setError('password', {
-            type: 'manual',
-            message: 'E-mail ou senha incorretos',
-          })
+          setError("password", {
+            type: "manual",
+            message: "E-mail ou senha incorretos",
+          });
         } else {
-          setError('password', {
-            type: 'manual',
+          setError("password", {
+            type: "manual",
             message:
-              error.message || 'Erro interno do servidor. Tente novamente.',
-          })
+              error.message || "Erro interno do servidor. Tente novamente.",
+          });
         }
       } else {
-        setError('password', {
-          type: 'manual',
-          message: 'Erro interno do servidor. Tente novamente.',
-        })
+        setError("password", {
+          type: "manual",
+          message: "Erro interno do servidor. Tente novamente.",
+        });
       }
     }
   }
 
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible)
-  }
+    setIsPasswordVisible(!isPasswordVisible);
+  };
 
   return (
     <PageWrapper>
@@ -109,7 +109,7 @@ export default function Login() {
             <Text size="md">E-mail</Text>
             <TextInput
               type="email"
-              {...register('email')}
+              {...register("email")}
               aria-label="Digite seu e-mail"
               tabIndex={0}
             />
@@ -120,8 +120,8 @@ export default function Login() {
           <label>
             <Text size="md">Senha</Text>
             <TextInput
-              {...register('password')}
-              type={isPasswordVisible ? 'text' : 'password'}
+              {...register("password")}
+              type={isPasswordVisible ? "text" : "password"}
               suffix={
                 <PasswordIcon
                   isVisible={isPasswordVisible}
@@ -142,13 +142,13 @@ export default function Login() {
             tabIndex={0}
             aria-label="Entrar na plataforma"
           >
-            {isSubmitting ? 'Entrando...' : 'Entrar'}
+            {isSubmitting ? "Entrando..." : "Entrar"}
           </Button>
-          <Text size="sm" style={{ textAlign: 'center', marginTop: '8px' }}>
-            Não possui uma conta?{' '}
+          <Text size="sm" style={{ textAlign: "center", marginTop: "8px" }}>
+            Não possui uma conta?{" "}
             <Link
               href="/register"
-              style={{ color: '#00875F', fontWeight: 'bold' }}
+              style={{ color: "#00875F", fontWeight: "bold" }}
             >
               Criar conta
             </Link>
@@ -156,5 +156,5 @@ export default function Login() {
         </Form>
       </Container>
     </PageWrapper>
-  )
+  );
 }

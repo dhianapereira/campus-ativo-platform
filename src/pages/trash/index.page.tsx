@@ -1,13 +1,13 @@
-import { useMemo, useState, useEffect } from 'react'
-import Image from 'next/image'
+import { useMemo, useState, useEffect } from "react";
+import Image from "next/image";
 import {
   MagnifyingGlass,
   Trash,
   ArrowCounterClockwise,
   ArrowLeft,
   ArrowRight,
-} from 'phosphor-react'
-import noTrashImage from '@/assets/no-trash.svg'
+} from "phosphor-react";
+import noTrashImage from "@/assets/no-trash.svg";
 import {
   MainContainer,
   HeaderContainer,
@@ -45,64 +45,64 @@ import {
   ErrorStateTitle,
   ErrorStateMessage,
   RetryButton,
-} from './styles'
-import PlatformLayout from '@/app/platform/layout'
-import { RoleProtectedRoute } from '@/styles'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { toast } from 'sonner'
-import { ConfirmationModal } from '@/components/confirmation-modal'
-import { EditLocationModal } from '@/pages/settings/components/EditLocationModal'
-import { EditCategoryModal } from '@/pages/settings/components/EditCategoryModal'
-import type { LocationResponse } from '../../server/client/models/locationResponse'
-import type { CategoryResponse } from '../../server/client/models/categoryResponse'
+} from "./styles";
+import PlatformLayout from "@/app/platform/layout";
+import { RoleProtectedRoute } from "@/styles";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { ConfirmationModal } from "@/components/confirmation-modal";
+import { EditLocationModal } from "@/pages/settings/components/EditLocationModal";
+import { EditCategoryModal } from "@/pages/settings/components/EditCategoryModal";
+import type { LocationResponse } from "../../server/client/models/locationResponse";
+import type { CategoryResponse } from "../../server/client/models/categoryResponse";
 
 function useDebounce<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedValue(value)
-    }, delay)
+      setDebouncedValue(value);
+    }, delay);
 
     return () => {
-      clearTimeout(handler)
-    }
-  }, [value, delay])
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
 
-  return debouncedValue
+  return debouncedValue;
 }
 
 interface TrashItem {
-  id: string
-  name: string
-  itemType: 'location' | 'category' | 'problem'
-  code?: string
-  description?: string
-  local?: string
-  deletedAt?: string
+  id: string;
+  name: string;
+  itemType: "location" | "category" | "problem";
+  code?: string;
+  description?: string;
+  local?: string;
+  deletedAt?: string;
 }
 
 export default function TrashPage() {
-  const queryClient = useQueryClient()
-  const [searchTerm, setSearchTerm] = useState('')
+  const queryClient = useQueryClient();
+  const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<
-    'all' | 'location' | 'category' | 'problem'
-  >('all')
+    "all" | "location" | "category" | "problem"
+  >("all");
   const [dateFilter, setDateFilter] = useState<
-    'all' | 'today' | 'last7days' | 'last30days' | 'thisyear'
-  >('all')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const [isEditLocationModalOpen, setIsEditLocationModalOpen] = useState(false)
+    "all" | "today" | "last7days" | "last30days" | "thisyear"
+  >("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [isEditLocationModalOpen, setIsEditLocationModalOpen] = useState(false);
   const [selectedLocationForEdit, setSelectedLocationForEdit] =
-    useState<LocationResponse | null>(null)
-  const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false)
+    useState<LocationResponse | null>(null);
+  const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
   const [selectedCategoryForEdit, setSelectedCategoryForEdit] =
-    useState<CategoryResponse | null>(null)
-  const itemsPerPage = 10
+    useState<CategoryResponse | null>(null);
+  const itemsPerPage = 10;
 
-  const debouncedSearchTerm = useDebounce(searchTerm, 500)
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const {
     data: trashData,
@@ -111,254 +111,254 @@ export default function TrashPage() {
     refetch,
   } = useQuery({
     queryKey: [
-      'trash',
+      "trash",
       debouncedSearchTerm,
       currentPage,
       typeFilter,
       dateFilter,
     ],
     queryFn: async () => {
-      const params = new URLSearchParams()
+      const params = new URLSearchParams();
 
-      params.append('page', currentPage.toString())
+      params.append("page", currentPage.toString());
 
-      if (debouncedSearchTerm && debouncedSearchTerm.trim() !== '') {
-        params.append('query', debouncedSearchTerm.trim())
+      if (debouncedSearchTerm && debouncedSearchTerm.trim() !== "") {
+        params.append("query", debouncedSearchTerm.trim());
       }
 
-      if (typeFilter && typeFilter !== 'all') {
-        params.append('type', typeFilter)
+      if (typeFilter && typeFilter !== "all") {
+        params.append("type", typeFilter);
       }
 
-      if (dateFilter && dateFilter !== 'all') {
-        params.append('dateFilter', dateFilter)
+      if (dateFilter && dateFilter !== "all") {
+        params.append("dateFilter", dateFilter);
       }
 
-      const url = `/api/trash${params.toString() ? `?${params.toString()}` : ''}`
+      const url = `/api/trash${params.toString() ? `?${params.toString()}` : ""}`;
 
       const response = await fetch(url, {
-        credentials: 'include',
-      })
+        credentials: "include",
+      });
 
       if (!response.ok) {
-        throw new Error('Falha ao buscar itens da lixeira')
+        throw new Error("Falha ao buscar itens da lixeira");
       }
 
-      return response.json()
+      return response.json();
     },
     retry: false,
-  })
+  });
 
   const restoreMutation = useMutation({
     mutationFn: async (ids: string[]) => {
-      const response = await fetch('/api/trash', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+      const response = await fetch("/api/trash", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
-          action: 'restore',
+          action: "restore",
           ids,
           type:
-            typeFilter !== 'all' ? typeFilter : trashData?.items[0]?.itemType,
+            typeFilter !== "all" ? typeFilter : trashData?.items[0]?.itemType,
         }),
-      })
+      });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao restaurar itens')
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Falha ao restaurar itens");
       }
 
-      return response.json()
+      return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
-      setSelectedItems([])
-      toast.success('Itens restaurados com sucesso')
+      queryClient.invalidateQueries({ queryKey: ["trash"] });
+      setSelectedItems([]);
+      toast.success("Itens restaurados com sucesso");
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao restaurar itens')
+      toast.error(error.message || "Falha ao restaurar itens");
     },
-  })
+  });
 
   const deletePermanentlyMutation = useMutation({
     mutationFn: async (ids: string[]) => {
-      const response = await fetch('/api/trash', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+      const response = await fetch("/api/trash", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
-          action: 'delete',
+          action: "delete",
           ids,
           type:
-            typeFilter !== 'all' ? typeFilter : trashData?.items[0]?.itemType,
+            typeFilter !== "all" ? typeFilter : trashData?.items[0]?.itemType,
         }),
-      })
+      });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          errorData.message || 'Falha ao excluir itens permanentemente',
-        )
+          errorData.message || "Falha ao excluir itens permanentemente",
+        );
       }
 
-      return response.json()
+      return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
-      setSelectedItems([])
-      setShowDeleteConfirmation(false)
-      toast.success('Itens excluídos permanentemente')
+      queryClient.invalidateQueries({ queryKey: ["trash"] });
+      setSelectedItems([]);
+      setShowDeleteConfirmation(false);
+      toast.success("Itens excluídos permanentemente");
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao excluir itens')
+      toast.error(error.message || "Falha ao excluir itens");
     },
-  })
+  });
 
   const items: TrashItem[] = useMemo(() => {
-    return trashData?.items || []
-  }, [trashData])
+    return trashData?.items || [];
+  }, [trashData]);
 
-  const totalItems = trashData?.total || 0
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const totalItems = trashData?.total || 0;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
-      setCurrentPage(totalPages)
+      setCurrentPage(totalPages);
     }
-  }, [currentPage, totalPages])
+  }, [currentPage, totalPages]);
 
   const handleSearch = (query: string) => {
-    setSearchTerm(query)
-    setCurrentPage(1)
-  }
+    setSearchTerm(query);
+    setCurrentPage(1);
+  };
 
   const handleInputChange = (value: string) => {
-    setSearchTerm(value)
-  }
+    setSearchTerm(value);
+  };
 
   const handleFilterChange = (
-    filter: 'all' | 'location' | 'category' | 'problem',
+    filter: "all" | "location" | "category" | "problem",
   ) => {
-    setTypeFilter(filter)
-    setCurrentPage(1)
-    setSelectedItems([])
-  }
+    setTypeFilter(filter);
+    setCurrentPage(1);
+    setSelectedItems([]);
+  };
 
   const handleDateFilterChange = (
-    filter: 'all' | 'today' | 'last7days' | 'last30days' | 'thisyear',
+    filter: "all" | "today" | "last7days" | "last30days" | "thisyear",
   ) => {
-    setDateFilter(filter)
-    setCurrentPage(1)
-  }
+    setDateFilter(filter);
+    setCurrentPage(1);
+  };
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedItems(items.map((item) => item.id))
+      setSelectedItems(items.map((item) => item.id));
     } else {
-      setSelectedItems([])
+      setSelectedItems([]);
     }
-  }
+  };
 
   const handleSelectItem = (id: string, checked: boolean) => {
     if (checked) {
-      setSelectedItems([...selectedItems, id])
+      setSelectedItems([...selectedItems, id]);
     } else {
-      setSelectedItems(selectedItems.filter((itemId) => itemId !== id))
+      setSelectedItems(selectedItems.filter((itemId) => itemId !== id));
     }
-  }
+  };
 
   const handleRestore = () => {
     if (selectedItems.length === 0) {
-      toast.warning('Selecione pelo menos um item para restaurar')
-      return
+      toast.warning("Selecione pelo menos um item para restaurar");
+      return;
     }
-    restoreMutation.mutate(selectedItems)
-  }
+    restoreMutation.mutate(selectedItems);
+  };
 
   const handleDeletePermanently = () => {
     if (selectedItems.length === 0) {
-      toast.warning('Selecione pelo menos um item para excluir')
-      return
+      toast.warning("Selecione pelo menos um item para excluir");
+      return;
     }
-    setShowDeleteConfirmation(true)
-  }
+    setShowDeleteConfirmation(true);
+  };
 
   const confirmDelete = () => {
-    deletePermanentlyMutation.mutate(selectedItems)
-  }
+    deletePermanentlyMutation.mutate(selectedItems);
+  };
 
   const handleItemClick = async (item: TrashItem) => {
-    if (item.itemType === 'location') {
+    if (item.itemType === "location") {
       try {
         const response = await fetch(
           `/api/locations/${item.id}?includeDeleted=true`,
           {
-            credentials: 'include',
+            credentials: "include",
           },
-        )
+        );
         if (response.ok) {
-          const location = await response.json()
-          setSelectedLocationForEdit(location)
-          setIsEditLocationModalOpen(true)
+          const location = await response.json();
+          setSelectedLocationForEdit(location);
+          setIsEditLocationModalOpen(true);
         } else {
-          toast.error('Localização não encontrada')
+          toast.error("Localização não encontrada");
         }
       } catch (error) {
-        console.error('Erro ao carregar localização:', error)
-        toast.error('Falha ao carregar detalhes da localização')
+        console.error("Erro ao carregar localização:", error);
+        toast.error("Falha ao carregar detalhes da localização");
       }
-    } else if (item.itemType === 'category') {
+    } else if (item.itemType === "category") {
       try {
         const response = await fetch(
           `/api/categories/${item.id}?includeDeleted=true`,
           {
-            credentials: 'include',
+            credentials: "include",
           },
-        )
+        );
         if (response.ok) {
-          const category = await response.json()
-          setSelectedCategoryForEdit(category)
-          setIsEditCategoryModalOpen(true)
+          const category = await response.json();
+          setSelectedCategoryForEdit(category);
+          setIsEditCategoryModalOpen(true);
         } else {
-          toast.error('Categoria não encontrada')
+          toast.error("Categoria não encontrada");
         }
       } catch (error) {
-        console.error('Erro ao carregar categoria:', error)
-        toast.error('Falha ao carregar detalhes da categoria')
+        console.error("Erro ao carregar categoria:", error);
+        toast.error("Falha ao carregar detalhes da categoria");
       }
     }
-  }
+  };
 
   const handleEditLocationSuccess = () => {
-    setIsEditLocationModalOpen(false)
-    setSelectedLocationForEdit(null)
-    queryClient.invalidateQueries({ queryKey: ['trash'] })
-  }
+    setIsEditLocationModalOpen(false);
+    setSelectedLocationForEdit(null);
+    queryClient.invalidateQueries({ queryKey: ["trash"] });
+  };
 
   const handleEditLocationClose = () => {
-    setIsEditLocationModalOpen(false)
-    setSelectedLocationForEdit(null)
-  }
+    setIsEditLocationModalOpen(false);
+    setSelectedLocationForEdit(null);
+  };
 
   const handleEditCategorySuccess = () => {
-    setIsEditCategoryModalOpen(false)
-    setSelectedCategoryForEdit(null)
-    queryClient.invalidateQueries({ queryKey: ['trash'] })
-  }
+    setIsEditCategoryModalOpen(false);
+    setSelectedCategoryForEdit(null);
+    queryClient.invalidateQueries({ queryKey: ["trash"] });
+  };
 
   const handleEditCategoryClose = () => {
-    setIsEditCategoryModalOpen(false)
-    setSelectedCategoryForEdit(null)
-  }
+    setIsEditCategoryModalOpen(false);
+    setSelectedCategoryForEdit(null);
+  };
 
   const handlePageChange = (page: number) => {
-    if (totalPages === 0) return
-    const next = Math.max(1, Math.min(page, totalPages))
-    setCurrentPage(next)
-  }
+    if (totalPages === 0) return;
+    const next = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(next);
+  };
 
   const renderPaginationButtons = () => {
-    const buttons: React.ReactNode[] = []
+    const buttons: React.ReactNode[] = [];
 
     const addPageButton = (page: number) =>
       buttons.push(
@@ -370,7 +370,7 @@ export default function TrashPage() {
         >
           {page}
         </PaginationButton>,
-      )
+      );
 
     if (currentPage > 1) {
       buttons.push(
@@ -383,25 +383,25 @@ export default function TrashPage() {
           <ArrowLeft size={22} weight="bold" />
           Anterior
         </PaginationButton>,
-      )
+      );
     }
 
     if (totalPages <= 7) {
-      for (let p = 1; p <= totalPages; p++) addPageButton(p)
+      for (let p = 1; p <= totalPages; p++) addPageButton(p);
     } else {
-      const left = Math.max(2, currentPage - 1)
-      const right = Math.min(totalPages - 1, currentPage + 1)
-      addPageButton(1)
+      const left = Math.max(2, currentPage - 1);
+      const right = Math.min(totalPages - 1, currentPage + 1);
+      addPageButton(1);
 
       if (left > 2)
-        buttons.push(<PaginationDots key="dots-left">...</PaginationDots>)
+        buttons.push(<PaginationDots key="dots-left">...</PaginationDots>);
 
-      for (let p = left; p <= right; p++) addPageButton(p)
+      for (let p = left; p <= right; p++) addPageButton(p);
 
       if (right < totalPages - 1)
-        buttons.push(<PaginationDots key="dots-right">...</PaginationDots>)
+        buttons.push(<PaginationDots key="dots-right">...</PaginationDots>);
 
-      addPageButton(totalPages)
+      addPageButton(totalPages);
     }
 
     if (currentPage < totalPages) {
@@ -415,14 +415,14 @@ export default function TrashPage() {
           Próximo
           <ArrowRight size={22} weight="bold" />
         </PaginationButton>,
-      )
+      );
     }
 
-    return buttons
-  }
+    return buttons;
+  };
 
   const getTableHeaders = () => {
-    if (typeFilter === 'category') {
+    if (typeFilter === "category") {
       return (
         <TableRow isHeader>
           <TableHeader>
@@ -437,7 +437,7 @@ export default function TrashPage() {
           <TableHeader>Nome</TableHeader>
           <TableHeader>Descrição</TableHeader>
         </TableRow>
-      )
+      );
     }
 
     return (
@@ -453,8 +453,8 @@ export default function TrashPage() {
         <TableHeader>Local</TableHeader>
         <TableHeader>Descrição</TableHeader>
       </TableRow>
-    )
-  }
+    );
+  };
 
   if (error) {
     return (
@@ -481,7 +481,7 @@ export default function TrashPage() {
           </MainContainer>
         </PlatformLayout>
       </RoleProtectedRoute>
-    )
+    );
   }
 
   return (
@@ -504,7 +504,7 @@ export default function TrashPage() {
                   value={searchTerm}
                   onChange={(e) => handleInputChange(e.target.value)}
                   onKeyDown={(e) =>
-                    e.key === 'Enter' && handleSearch(searchTerm)
+                    e.key === "Enter" && handleSearch(searchTerm)
                   }
                 />
               </SearchInputContainer>
@@ -518,18 +518,18 @@ export default function TrashPage() {
                     handleFilterChange(e.target.value as typeof typeFilter)
                   }
                   style={{
-                    padding: '0.5rem 2rem 0.5rem 1rem',
-                    borderRadius: '8px',
-                    fontSize: '0.875rem',
+                    padding: "0.5rem 2rem 0.5rem 1rem",
+                    borderRadius: "8px",
+                    fontSize: "0.875rem",
                     fontWeight: 500,
-                    border: '1px solid #d1d5db',
-                    backgroundColor: 'white',
-                    color: '#374151',
-                    cursor: 'pointer',
-                    appearance: 'none',
+                    border: "1px solid #d1d5db",
+                    backgroundColor: "white",
+                    color: "#374151",
+                    cursor: "pointer",
+                    appearance: "none",
                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right 0.75rem center',
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 0.75rem center",
                   }}
                 >
                   <option value="all">Tipo</option>
@@ -544,18 +544,18 @@ export default function TrashPage() {
                     handleDateFilterChange(e.target.value as typeof dateFilter)
                   }
                   style={{
-                    padding: '0.5rem 2rem 0.5rem 1rem',
-                    borderRadius: '8px',
-                    fontSize: '0.875rem',
+                    padding: "0.5rem 2rem 0.5rem 1rem",
+                    borderRadius: "8px",
+                    fontSize: "0.875rem",
                     fontWeight: 500,
-                    border: '1px solid #d1d5db',
-                    backgroundColor: 'white',
-                    color: '#374151',
-                    cursor: 'pointer',
-                    appearance: 'none',
+                    border: "1px solid #d1d5db",
+                    backgroundColor: "white",
+                    color: "#374151",
+                    cursor: "pointer",
+                    appearance: "none",
                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right 0.75rem center',
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "right 0.75rem center",
                   }}
                 >
                   <option value="all">Modificado</option>
@@ -578,8 +578,8 @@ export default function TrashPage() {
           </SearchActionsContainer>
 
           <ItemsCount>
-            {totalItems}{' '}
-            {totalItems === 1 ? 'item na lixeira' : 'itens na lixeira'}
+            {totalItems}{" "}
+            {totalItems === 1 ? "item na lixeira" : "itens na lixeira"}
           </ItemsCount>
 
           {selectedItems.length > 0 && (
@@ -601,7 +601,7 @@ export default function TrashPage() {
           )}
 
           {isLoading ? (
-            <div style={{ padding: '2rem', textAlign: 'center' }}>
+            <div style={{ padding: "2rem", textAlign: "center" }}>
               Carregando...
             </div>
           ) : items.length === 0 ? (
@@ -627,7 +627,7 @@ export default function TrashPage() {
                         <TableRow
                           key={item.id}
                           isHeader={false}
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: "pointer" }}
                           onClick={() => handleItemClick(item)}
                         >
                           <TableCell onClick={(e) => e.stopPropagation()}>
@@ -640,16 +640,16 @@ export default function TrashPage() {
                             />
                           </TableCell>
                           <TableCell>{item.name}</TableCell>
-                          {typeFilter !== 'category' && (
+                          {typeFilter !== "category" && (
                             <TableCell>
-                              {item.itemType === 'location'
-                                ? item.code || '-'
-                                : item.itemType === 'problem'
-                                  ? item.local || '-'
-                                  : '-'}
+                              {item.itemType === "location"
+                                ? item.code || "-"
+                                : item.itemType === "problem"
+                                  ? item.local || "-"
+                                  : "-"}
                             </TableCell>
                           )}
-                          <TableCell>{item.description || '-'}</TableCell>
+                          <TableCell>{item.description || "-"}</TableCell>
                         </TableRow>
                       ))}
                     </tbody>
@@ -664,8 +664,8 @@ export default function TrashPage() {
                       type="checkbox"
                       checked={selectedItems.includes(item.id)}
                       onChange={(e) => {
-                        e.stopPropagation()
-                        handleSelectItem(item.id, e.target.checked)
+                        e.stopPropagation();
+                        handleSelectItem(item.id, e.target.checked);
                       }}
                     />
                     <CardTitle>{item.name}</CardTitle>
@@ -712,5 +712,5 @@ export default function TrashPage() {
         />
       </PlatformLayout>
     </RoleProtectedRoute>
-  )
+  );
 }

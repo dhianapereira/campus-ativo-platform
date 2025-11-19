@@ -1,10 +1,10 @@
-import { ComponentProps, useId } from 'react'
-import { RadioContainer, RadioInput, RadioLabel } from './styles'
+import { ComponentProps, useId } from "react";
+import { RadioContainer, RadioInput, RadioLabel } from "./styles";
 
 export interface RadioButtonProps extends ComponentProps<typeof RadioInput> {
-  label: string
-  isActive?: boolean
-  hasError?: boolean
+  label: string;
+  isActive?: boolean;
+  hasError?: boolean;
 }
 
 export const RadioButton = ({
@@ -13,7 +13,7 @@ export const RadioButton = ({
   hasError,
   ...props
 }: RadioButtonProps) => {
-  const id = useId()
+  const id = useId();
 
   return (
     <RadioContainer>
@@ -26,7 +26,7 @@ export const RadioButton = ({
       />
       <RadioLabel htmlFor={id}>{label}</RadioLabel>
     </RadioContainer>
-  )
-}
+  );
+};
 
-RadioButton.displayName = 'RadioButton'
+RadioButton.displayName = "RadioButton";

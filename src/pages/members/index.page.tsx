@@ -1,6 +1,6 @@
-import { useMemo, useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
-import { MagnifyingGlass, ArrowRight, ArrowLeft } from 'phosphor-react'
+import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import { MagnifyingGlass, ArrowRight, ArrowLeft } from "phosphor-react";
 import {
   HeaderContainer,
   SearchContainer,
@@ -25,137 +25,136 @@ import {
   SectionTitle,
   FiltersContainer,
   FilterButton,
-} from './styles'
-import PlatformLayout from '@/app/platform/layout'
-import { useAuth } from '@/contexts/auth-context'
-import { useQuery } from '@tanstack/react-query'
-import type { FetchUsersControllerHandle200UsersItem } from '../../server/client/models'
-import { EditMemberModal } from './components/EditMemberModal'
+} from "./styles";
+import PlatformLayout from "@/app/platform/layout";
+import { useAuth } from "@/contexts/auth-context";
+import { useQuery } from "@tanstack/react-query";
+import type { FetchUsersControllerHandle200UsersItem } from "../../server/client/models";
+import { EditMemberModal } from "./components/EditMemberModal";
 
 export default function MembersPage() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "inactive"
+  >("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] =
-    useState<FetchUsersControllerHandle200UsersItem | null>(null)
-  const itemsPerPage = 10
+    useState<FetchUsersControllerHandle200UsersItem | null>(null);
+  const itemsPerPage = 10;
 
-  const { hasRoleLevel, isLoading: isAuthLoading } = useAuth()
-  const router = useRouter()
+  const { hasRoleLevel, isLoading: isAuthLoading } = useAuth();
+  const router = useRouter();
 
   const handleMemberClick = (
     member: FetchUsersControllerHandle200UsersItem,
   ) => {
-    setSelectedMember(member)
-    setIsEditModalOpen(true)
-  }
+    setSelectedMember(member);
+    setIsEditModalOpen(true);
+  };
 
   const handleCloseModal = () => {
-    setIsEditModalOpen(false)
-    setSelectedMember(null)
-  }
+    setIsEditModalOpen(false);
+    setSelectedMember(null);
+  };
 
   const handleModalSuccess = () => {
-    setIsEditModalOpen(false)
-    setSelectedMember(null)
-  }
+    setIsEditModalOpen(false);
+    setSelectedMember(null);
+  };
 
-  const canLoad = hasRoleLevel(3)
+  const canLoad = hasRoleLevel(3);
 
   useEffect(() => {
     if (!isAuthLoading && !canLoad) {
       const backTo =
-        typeof window !== 'undefined' ? window.location.pathname : '/problems'
-      router.replace({ pathname: '/unauthorized', query: { back: backTo } })
+        typeof window !== "undefined" ? window.location.pathname : "/problems";
+      router.replace({ pathname: "/unauthorized", query: { back: backTo } });
     }
-  }, [canLoad, router, isAuthLoading])
+  }, [canLoad, router, isAuthLoading]);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['users', searchQuery, statusFilter],
+    queryKey: ["users", searchQuery, statusFilter],
     queryFn: async () => {
-      const params = new URLSearchParams()
+      const params = new URLSearchParams();
 
       if (searchQuery) {
-        params.append('query', searchQuery)
+        params.append("query", searchQuery);
       }
 
-      if (statusFilter === 'active') {
-        params.append('isActive', 'true')
-      } else if (statusFilter === 'inactive') {
-        params.append('isActive', 'false')
+      if (statusFilter === "active") {
+        params.append("isActive", "true");
+      } else if (statusFilter === "inactive") {
+        params.append("isActive", "false");
       }
 
-      const url = `/api/users${params.toString() ? `?${params.toString()}` : ''}`
+      const url = `/api/users${params.toString() ? `?${params.toString()}` : ""}`;
 
       const response = await fetch(url, {
-        credentials: 'include',
-      })
+        credentials: "include",
+      });
       if (!response.ok) {
-        const text = await response.text().catch(() => '')
+        const text = await response.text().catch(() => "");
         throw new Error(
           `Falha ao buscar usuários: ${response.status} ${response.statusText} ${text}`,
-        )
+        );
       }
-      return response.json()
+      return response.json();
     },
     enabled: !isAuthLoading && canLoad,
     retry: false,
-  })
+  });
 
   const usersData: FetchUsersControllerHandle200UsersItem[] = useMemo(() => {
-    if (!data) return []
+    if (!data) return [];
     if (Array.isArray(data)) {
-      return data as FetchUsersControllerHandle200UsersItem[]
+      return data as FetchUsersControllerHandle200UsersItem[];
     }
-    const maybeObj = data as unknown as { users?: unknown }
+    const maybeObj = data as unknown as { users?: unknown };
     if (Array.isArray(maybeObj.users)) {
-      return maybeObj.users as FetchUsersControllerHandle200UsersItem[]
+      return maybeObj.users as FetchUsersControllerHandle200UsersItem[];
     }
-    return []
-  }, [data])
+    return [];
+  }, [data]);
 
-  const totalItems = usersData.length
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const currentUsers = usersData.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  )
+  const totalItems = usersData.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentUsers = usersData.slice(startIndex, startIndex + itemsPerPage);
 
   // Reset to last page if current page exceeds total pages
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
-      setCurrentPage(totalPages)
+      setCurrentPage(totalPages);
     }
-  }, [currentPage, totalPages])
+  }, [currentPage, totalPages]);
 
   // Reset to first page when filters change
   useEffect(() => {
-    setCurrentPage(1)
-  }, [searchQuery, statusFilter])
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
 
   const handleSearch = () => {
-    setSearchQuery(searchTerm)
-  }
+    setSearchQuery(searchTerm);
+  };
 
   const handleInputChange = (value: string) => {
-    setSearchTerm(value)
-  }
+    setSearchTerm(value);
+  };
 
-  const handleStatusFilterChange = (filter: 'all' | 'active' | 'inactive') => {
-    setStatusFilter(filter)
-  }
+  const handleStatusFilterChange = (filter: "all" | "active" | "inactive") => {
+    setStatusFilter(filter);
+  };
 
   const handlePageChange = (page: number) => {
-    if (totalPages === 0) return
-    const next = Math.max(1, Math.min(page, totalPages))
-    setCurrentPage(next)
-  }
+    if (totalPages === 0) return;
+    const next = Math.max(1, Math.min(page, totalPages));
+    setCurrentPage(next);
+  };
 
   const renderPaginationButtons = () => {
-    const buttons: React.ReactNode[] = []
+    const buttons: React.ReactNode[] = [];
 
     const addPageButton = (page: number) =>
       buttons.push(
@@ -167,7 +166,7 @@ export default function MembersPage() {
         >
           {page}
         </PaginationButton>,
-      )
+      );
 
     // Only show Previous if not on first page
     if (currentPage > 1) {
@@ -181,25 +180,25 @@ export default function MembersPage() {
           <ArrowLeft size={22} weight="bold" />
           Anterior
         </PaginationButton>,
-      )
+      );
     }
 
     if (totalPages <= 7) {
-      for (let p = 1; p <= totalPages; p++) addPageButton(p)
+      for (let p = 1; p <= totalPages; p++) addPageButton(p);
     } else {
-      const left = Math.max(2, currentPage - 1)
-      const right = Math.min(totalPages - 1, currentPage + 1)
-      addPageButton(1)
+      const left = Math.max(2, currentPage - 1);
+      const right = Math.min(totalPages - 1, currentPage + 1);
+      addPageButton(1);
 
       if (left > 2)
-        buttons.push(<PaginationDots key="dots-left">...</PaginationDots>)
+        buttons.push(<PaginationDots key="dots-left">...</PaginationDots>);
 
-      for (let p = left; p <= right; p++) addPageButton(p)
+      for (let p = left; p <= right; p++) addPageButton(p);
 
       if (right < totalPages - 1)
-        buttons.push(<PaginationDots key="dots-right">...</PaginationDots>)
+        buttons.push(<PaginationDots key="dots-right">...</PaginationDots>);
 
-      addPageButton(totalPages)
+      addPageButton(totalPages);
     }
 
     // Only show Next if not on last page
@@ -214,57 +213,57 @@ export default function MembersPage() {
           Próximo
           <ArrowRight size={22} weight="bold" />
         </PaginationButton>,
-      )
+      );
     }
 
-    return buttons
-  }
+    return buttons;
+  };
 
   if (isAuthLoading) {
     return (
       <PlatformLayout>
         <MainContainer>
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <div style={{ padding: "2rem", textAlign: "center" }}>
             Carregando autenticação...
           </div>
         </MainContainer>
       </PlatformLayout>
-    )
+    );
   }
 
   if (!canLoad) {
-    return null // Will be redirected by useEffect
+    return null; // Will be redirected by useEffect
   }
 
   if (isLoading) {
     return (
       <PlatformLayout>
         <MainContainer>
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <div style={{ padding: "2rem", textAlign: "center" }}>
             Carregando membros...
           </div>
         </MainContainer>
       </PlatformLayout>
-    )
+    );
   }
 
   if (error) {
     return (
       <PlatformLayout>
         <MainContainer>
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <div style={{ padding: "2rem", textAlign: "center" }}>
             <p>Não foi possível buscar as informações no momento.</p>
             <p>Por favor, tente novamente mais tarde.</p>
             <button
               onClick={() => refetch()}
               style={{
-                marginTop: '1rem',
-                padding: '0.5rem 1rem',
-                backgroundColor: '#2d5a3d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
+                marginTop: "1rem",
+                padding: "0.5rem 1rem",
+                backgroundColor: "#2d5a3d",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
               }}
             >
               Recarregar
@@ -272,7 +271,7 @@ export default function MembersPage() {
           </div>
         </MainContainer>
       </PlatformLayout>
-    )
+    );
   }
 
   return (
@@ -289,7 +288,7 @@ export default function MembersPage() {
                 placeholder="Busque pelo nome ou email..."
                 value={searchTerm}
                 onChange={(e) => handleInputChange(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
             </SearchInputContainer>
           </SearchContainer>
@@ -298,32 +297,32 @@ export default function MembersPage() {
 
         <FiltersContainer>
           <FilterButton
-            isActive={statusFilter === 'all'}
-            onClick={() => handleStatusFilterChange('all')}
+            isActive={statusFilter === "all"}
+            onClick={() => handleStatusFilterChange("all")}
           >
             Todos
           </FilterButton>
           <FilterButton
-            isActive={statusFilter === 'active'}
-            onClick={() => handleStatusFilterChange('active')}
+            isActive={statusFilter === "active"}
+            onClick={() => handleStatusFilterChange("active")}
           >
             Ativos
           </FilterButton>
           <FilterButton
-            isActive={statusFilter === 'inactive'}
-            onClick={() => handleStatusFilterChange('inactive')}
+            isActive={statusFilter === "inactive"}
+            onClick={() => handleStatusFilterChange("inactive")}
           >
             Inativos
           </FilterButton>
         </FiltersContainer>
 
         {currentUsers.length === 0 ? (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <div style={{ padding: "2rem", textAlign: "center" }}>
             <p>Nenhum resultado encontrado</p>
-            <p style={{ color: '#666', fontSize: '0.9em' }}>
-              {searchQuery || statusFilter !== 'all'
-                ? 'Tente ajustar sua busca ou filtros e tente novamente.'
-                : 'Não há membros cadastrados ainda.'}
+            <p style={{ color: "#666", fontSize: "0.9em" }}>
+              {searchQuery || statusFilter !== "all"
+                ? "Tente ajustar sua busca ou filtros e tente novamente."
+                : "Não há membros cadastrados ainda."}
             </p>
           </div>
         ) : (
@@ -346,13 +345,13 @@ export default function MembersPage() {
                         onClick={() => handleMemberClick(userData)}
                       >
                         <TableCell>
-                          {userData.name || 'Não informado'}
+                          {userData.name || "Não informado"}
                         </TableCell>
                         <TableCell>
-                          {userData.email || 'Não informado'}
+                          {userData.email || "Não informado"}
                         </TableCell>
                         <TableCell>
-                          {userData.position || 'Não informado'}
+                          {userData.position || "Não informado"}
                         </TableCell>
                       </TableRow>
                     ),
@@ -372,14 +371,14 @@ export default function MembersPage() {
                   onClick={() => handleMemberClick(userData)}
                 >
                   <MemberCardName>
-                    {userData.name || 'Não informado'}
+                    {userData.name || "Não informado"}
                   </MemberCardName>
                   <MemberCardEmail>
-                    {userData.email || 'Não informado'}
+                    {userData.email || "Não informado"}
                   </MemberCardEmail>
                   <MemberCardPosition>
-                    <span className="label">Cargo:</span>{' '}
-                    {userData.position || 'Não informado'}
+                    <span className="label">Cargo:</span>{" "}
+                    {userData.position || "Não informado"}
                   </MemberCardPosition>
                 </MemberCard>
               ),
@@ -399,5 +398,5 @@ export default function MembersPage() {
         member={selectedMember}
       />
     </PlatformLayout>
-  )
+  );
 }

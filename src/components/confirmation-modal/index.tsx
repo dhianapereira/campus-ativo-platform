@@ -10,41 +10,41 @@ import {
   ModalFooter,
   CancelButton,
   ConfirmButton,
-} from './styles'
-import { X } from 'phosphor-react'
-import Image from 'next/image'
-import alertIcon from '@/assets/alert-icon.svg'
+} from "./styles";
+import { X } from "phosphor-react";
+import Image from "next/image";
+import alertIcon from "@/assets/alert-icon.svg";
 
 interface ConfirmationModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onConfirm: () => void
-  title?: string
-  message?: string
-  confirmText?: string
-  cancelText?: string
-  variant?: 'warning' | 'danger'
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title?: string;
+  message?: string;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: "warning" | "danger";
 }
 
 export function ConfirmationModal({
   isOpen,
   onClose,
   onConfirm,
-  title = 'Descartar alterações?',
-  message = 'Se você sair agora, todas as suas alterações não salvas serão perdidas.',
-  confirmText = 'Continuar editando',
-  cancelText = 'Descartar',
-  variant = 'warning',
+  title = "Descartar alterações?",
+  message = "Se você sair agora, todas as suas alterações não salvas serão perdidas.",
+  confirmText = "Continuar editando",
+  cancelText = "Descartar",
+  variant = "warning",
 }: ConfirmationModalProps) {
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const handleConfirm = () => {
-    onConfirm()
-  }
+    onConfirm();
+  };
 
   const handleCancel = () => {
-    onClose()
-  }
+    onClose();
+  };
 
   return (
     <ModalOverlay onClick={handleCancel}>
@@ -78,5 +78,5 @@ export function ConfirmationModal({
         </ModalFooter>
       </ModalContent>
     </ModalOverlay>
-  )
+  );
 }

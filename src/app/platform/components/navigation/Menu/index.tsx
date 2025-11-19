@@ -1,21 +1,21 @@
-import React, { useState } from 'react'
-import { MenuContainer, MenuOptions } from './styles'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-import { LinkButton } from '@/styles'
-import { createMenuOptions } from '../menu-options'
-import { LogoutConfirmationModal } from '../../LogoutModal'
-import { useAuth } from '@/contexts/auth-context'
-import whiteIfalLogo from '@/assets/white-ifal-logo.png'
+import React, { useState } from "react";
+import { MenuContainer, MenuOptions } from "./styles";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { LinkButton } from "@/styles";
+import { createMenuOptions } from "../menu-options";
+import { LogoutConfirmationModal } from "../../LogoutModal";
+import { useAuth } from "@/contexts/auth-context";
+import whiteIfalLogo from "@/assets/white-ifal-logo.png";
 
 interface MenuProps {
-  onLogoutClick: () => Promise<void>
+  onLogoutClick: () => Promise<void>;
 }
 
 export default function Menu({ onLogoutClick }: MenuProps) {
-  const router = useRouter()
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
-  const { canAccessUserManagement, canAccessSettings } = useAuth()
+  const router = useRouter();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const { canAccessUserManagement, canAccessSettings } = useAuth();
 
   const menuOptions = createMenuOptions({
     router,
@@ -23,18 +23,18 @@ export default function Menu({ onLogoutClick }: MenuProps) {
     openLogoutModal: () => setIsLogoutModalOpen(true),
     canAccessUserManagement: canAccessUserManagement(),
     canAccessSettings: canAccessSettings(),
-  })
+  });
 
   const handleLogoutConfirm = async () => {
     try {
-      await onLogoutClick()
-      setIsLogoutModalOpen(false)
+      await onLogoutClick();
+      setIsLogoutModalOpen(false);
     } catch (error) {}
-  }
+  };
 
   const handleLogoutCancel = () => {
-    setIsLogoutModalOpen(false)
-  }
+    setIsLogoutModalOpen(false);
+  };
 
   return (
     <>
@@ -70,5 +70,5 @@ export default function Menu({ onLogoutClick }: MenuProps) {
         description="Tem certeza que deseja sair da plataforma? Você precisará fazer login novamente para acessar o sistema."
       />
     </>
-  )
+  );
 }

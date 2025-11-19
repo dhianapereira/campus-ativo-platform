@@ -1,25 +1,28 @@
-import React, { useState } from 'react'
-import { Container, Title, ErrorMessage } from './styles'
-import { RadioButton } from '../RadioButton'
+import React, { useState } from "react";
+import { Container, Title, ErrorMessage } from "./styles";
+import { RadioButton } from "../RadioButton";
 
 export interface RadioGroupOption {
-  id: string
-  label: string
-  isActive?: boolean
-  disabled?: boolean
+  id: string;
+  label: string;
+  isActive?: boolean;
+  disabled?: boolean;
 }
 
 export interface RadioGroupProps {
-  title: string
-  name: string
-  options: RadioGroupOption[]
-  value?: string
-  defaultValue?: string
-  onChange?: (value: string, event: React.ChangeEvent<HTMLInputElement>) => void
-  hasError?: boolean
-  errorMessage?: string
-  disabled?: boolean
-  orientation?: 'horizontal' | 'vertical'
+  title: string;
+  name: string;
+  options: RadioGroupOption[];
+  value?: string;
+  defaultValue?: string;
+  onChange?: (
+    value: string,
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => void;
+  hasError?: boolean;
+  errorMessage?: string;
+  disabled?: boolean;
+  orientation?: "horizontal" | "vertical";
 }
 
 export const RadioGroup = ({
@@ -32,22 +35,22 @@ export const RadioGroup = ({
   hasError,
   errorMessage,
   disabled,
-  orientation = 'horizontal',
+  orientation = "horizontal",
 }: RadioGroupProps) => {
-  const [internalValue, setInternalValue] = useState(defaultValue || '')
+  const [internalValue, setInternalValue] = useState(defaultValue || "");
 
-  const isControlled = controlledValue !== undefined
-  const currentValue = isControlled ? controlledValue : internalValue
+  const isControlled = controlledValue !== undefined;
+  const currentValue = isControlled ? controlledValue : internalValue;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value
+    const newValue = event.target.value;
 
     if (!isControlled) {
-      setInternalValue(newValue)
+      setInternalValue(newValue);
     }
 
-    onChange?.(newValue, event)
-  }
+    onChange?.(newValue, event);
+  };
 
   return (
     <>
@@ -68,7 +71,7 @@ export const RadioGroup = ({
       </Container>
       {hasError && errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
     </>
-  )
-}
+  );
+};
 
-RadioGroup.displayName = 'RadioGroup'
+RadioGroup.displayName = "RadioGroup";

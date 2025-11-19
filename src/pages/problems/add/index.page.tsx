@@ -1,12 +1,12 @@
-import { Container, Body, Header, Input, Title } from './styles'
-import { ArrowLeft } from 'phosphor-react'
-import { Button, Text, TextArea, TextInput } from '@/styles'
-import { ProblemFormData } from '@/@types/form.d'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { problemFormSchema } from '@/validators/problem-form'
-import ImageUpload from '../components/ImageUpload'
-import { ProtectedRoute } from '@/styles/components/routes/ProtectedRoute'
+import { Container, Body, Header, Input, Title } from "./styles";
+import { ArrowLeft } from "phosphor-react";
+import { Button, Text, TextArea, TextInput } from "@/styles";
+import { ProblemFormData } from "@/@types/form.d";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { problemFormSchema } from "@/validators/problem-form";
+import ImageUpload from "../components/ImageUpload";
+import { ProtectedRoute } from "@/styles/components/routes/ProtectedRoute";
 
 export default function AddProblem() {
   const {
@@ -16,22 +16,22 @@ export default function AddProblem() {
     formState: { errors, isSubmitting },
   } = useForm<ProblemFormData>({
     resolver: zodResolver(problemFormSchema),
-  })
+  });
 
-  const title = watch('title')
-  const location = watch('location')
-  const description = watch('description')
+  const title = watch("title");
+  const location = watch("location");
+  const description = watch("description");
 
   const isFormValid =
     title &&
     location &&
     description &&
-    title.trim() !== '' &&
-    location.trim() !== '' &&
-    description.trim() !== ''
+    title.trim() !== "" &&
+    location.trim() !== "" &&
+    description.trim() !== "";
 
   async function handleRegisterProblem(data: ProblemFormData) {
-    console.log(data)
+    console.log(data);
   }
 
   return (
@@ -56,7 +56,7 @@ export default function AddProblem() {
             <Text size="md">Título</Text>
             <TextInput
               placeholder="Descreva brevemente o problema"
-              {...register('title')}
+              {...register("title")}
               aria-label="Título do problema"
               tabIndex={0}
             />
@@ -71,7 +71,7 @@ export default function AddProblem() {
             <Text size="md">Local</Text>
             <TextInput
               placeholder="Informe o local do problema (ex: sala 101, bloco A)"
-              {...register('location')}
+              {...register("location")}
               aria-label="Local do problema"
               tabIndex={0}
             />
@@ -86,14 +86,14 @@ export default function AddProblem() {
             <Text size="md">Descrição</Text>
             <TextArea
               placeholder="Detalhe o problema com o máximo de informações possível"
-              {...register('description')}
+              {...register("description")}
               aria-label="Descrição do problema"
               tabIndex={0}
               css={{
-                width: '100%',
-                minHeight: '120px',
-                resize: 'vertical',
-                boxSizing: 'border-box',
+                width: "100%",
+                minHeight: "120px",
+                resize: "vertical",
+                boxSizing: "border-box",
               }}
             />
             {errors.description && (
@@ -117,5 +117,5 @@ export default function AddProblem() {
         </Body>
       </Container>
     </ProtectedRoute>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import {
   Container,
   Label,
@@ -6,31 +6,31 @@ import {
   Select,
   Icon,
   ErrorMessage,
-} from './styles'
-import { CaretDown } from 'phosphor-react'
+} from "./styles";
+import { CaretDown } from "phosphor-react";
 
 export interface DropdownItem {
-  value: string
-  name: string
-  disabled?: boolean
+  value: string;
+  name: string;
+  disabled?: boolean;
 }
 
 export interface DropdownProps {
-  id: string
-  label: string
-  hint: string
-  itemSelected?: string | null
-  items: DropdownItem[]
+  id: string;
+  label: string;
+  hint: string;
+  itemSelected?: string | null;
+  items: DropdownItem[];
   onChange?: (
     value: string,
     event: React.ChangeEvent<HTMLSelectElement>,
-  ) => void
-  hasError?: boolean
-  errorMessage?: string
-  disabled?: boolean
-  required?: boolean
-  className?: string
-  style?: React.CSSProperties
+  ) => void;
+  hasError?: boolean;
+  errorMessage?: string;
+  disabled?: boolean;
+  required?: boolean;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 export const Dropdown = ({
@@ -48,9 +48,9 @@ export const Dropdown = ({
   style,
 }: DropdownProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value
-    onChange?.(value, event)
-  }
+    const value = event.target.value;
+    onChange?.(value, event);
+  };
 
   return (
     <Container>
@@ -62,7 +62,7 @@ export const Dropdown = ({
       <SelectWrapper>
         <Select
           id={id}
-          value={itemSelected || ''}
+          value={itemSelected || ""}
           onChange={handleChange}
           hasError={hasError}
           disabled={disabled}
@@ -95,7 +95,7 @@ export const Dropdown = ({
         <ErrorMessage id={`${id}-error`}>{errorMessage}</ErrorMessage>
       )}
     </Container>
-  )
-}
+  );
+};
 
-Dropdown.displayName = 'Dropdown'
+Dropdown.displayName = "Dropdown";

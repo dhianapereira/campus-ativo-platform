@@ -5,7 +5,7 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import type { ProblemResponse } from './problemResponse';
+import type { ProblemResponse } from "./problemResponse";
 
 export type GetProblemBySlugControllerHandle200 = {
   problem?: ProblemResponse;

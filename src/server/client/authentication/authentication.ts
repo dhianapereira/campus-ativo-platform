@@ -5,221 +5,293 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useMutation
-} from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 import type {
   MutationFunction,
   QueryClient,
   UseMutationOptions,
-  UseMutationResult
-} from '@tanstack/react-query';
+  UseMutationResult,
+} from "@tanstack/react-query";
 
 import type {
   AuthenticateRequest,
   AuthenticateResponse,
-  CreateAccountRequest
-} from '.././models';
+  CreateAccountRequest,
+} from ".././models";
 
-import { axiosInstance } from '../../axios';
-import type { ErrorType , BodyType } from '../../axios';
-
+import { axiosInstance } from "../../axios";
+import type { ErrorType, BodyType } from "../../axios";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-
 
 /**
  * Cria uma nova conta de usuário no sistema
  * @summary Criar conta
  */
 export const createAccountControllerHandle = (
-    createAccountRequest: BodyType<CreateAccountRequest>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  createAccountRequest: BodyType<CreateAccountRequest>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/accounts`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: createAccountRequest, signal
+  return axiosInstance<null>(
+    {
+      url: `/accounts`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createAccountRequest,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getCreateAccountControllerHandleMutationOptions = <
+  TError = ErrorType<null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createAccountControllerHandle>>,
+    TError,
+    { data: BodyType<CreateAccountRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createAccountControllerHandle>>,
+  TError,
+  { data: BodyType<CreateAccountRequest> },
+  TContext
+> => {
+  const mutationKey = ["createAccountControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getCreateAccountControllerHandleMutationOptions = <TError = ErrorType<null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAccountControllerHandle>>, TError,{data: BodyType<CreateAccountRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof createAccountControllerHandle>>, TError,{data: BodyType<CreateAccountRequest>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createAccountControllerHandle>>,
+    { data: BodyType<CreateAccountRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['createAccountControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return createAccountControllerHandle(data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type CreateAccountControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createAccountControllerHandle>>
+>;
+export type CreateAccountControllerHandleMutationBody =
+  BodyType<CreateAccountRequest>;
+export type CreateAccountControllerHandleMutationError = ErrorType<null | null>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createAccountControllerHandle>>, {data: BodyType<CreateAccountRequest>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createAccountControllerHandle(data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateAccountControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof createAccountControllerHandle>>>
-    export type CreateAccountControllerHandleMutationBody = BodyType<CreateAccountRequest>
-    export type CreateAccountControllerHandleMutationError = ErrorType<null | null>
-
-    /**
+/**
  * @summary Criar conta
  */
-export const useCreateAccountControllerHandle = <TError = ErrorType<null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createAccountControllerHandle>>, TError,{data: BodyType<CreateAccountRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createAccountControllerHandle>>,
-        TError,
-        {data: BodyType<CreateAccountRequest>},
-        TContext
-      > => {
+export const useCreateAccountControllerHandle = <
+  TError = ErrorType<null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createAccountControllerHandle>>,
+      TError,
+      { data: BodyType<CreateAccountRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createAccountControllerHandle>>,
+  TError,
+  { data: BodyType<CreateAccountRequest> },
+  TContext
+> => {
+  const mutationOptions =
+    getCreateAccountControllerHandleMutationOptions(options);
 
-      const mutationOptions = getCreateAccountControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Autentica um usuário e retorna um token JWT
  * @summary Autenticar usuário
  */
 export const authenticateControllerHandle = (
-    authenticateRequest: BodyType<AuthenticateRequest>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  authenticateRequest: BodyType<AuthenticateRequest>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<AuthenticateResponse>(
-      {url: `/sessions`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: authenticateRequest, signal
+  return axiosInstance<AuthenticateResponse>(
+    {
+      url: `/sessions`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: authenticateRequest,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getAuthenticateControllerHandleMutationOptions = <
+  TError = ErrorType<null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof authenticateControllerHandle>>,
+    TError,
+    { data: BodyType<AuthenticateRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof authenticateControllerHandle>>,
+  TError,
+  { data: BodyType<AuthenticateRequest> },
+  TContext
+> => {
+  const mutationKey = ["authenticateControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getAuthenticateControllerHandleMutationOptions = <TError = ErrorType<null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof authenticateControllerHandle>>, TError,{data: BodyType<AuthenticateRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof authenticateControllerHandle>>, TError,{data: BodyType<AuthenticateRequest>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof authenticateControllerHandle>>,
+    { data: BodyType<AuthenticateRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['authenticateControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return authenticateControllerHandle(data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type AuthenticateControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof authenticateControllerHandle>>
+>;
+export type AuthenticateControllerHandleMutationBody =
+  BodyType<AuthenticateRequest>;
+export type AuthenticateControllerHandleMutationError = ErrorType<null | null>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof authenticateControllerHandle>>, {data: BodyType<AuthenticateRequest>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  authenticateControllerHandle(data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type AuthenticateControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof authenticateControllerHandle>>>
-    export type AuthenticateControllerHandleMutationBody = BodyType<AuthenticateRequest>
-    export type AuthenticateControllerHandleMutationError = ErrorType<null | null>
-
-    /**
+/**
  * @summary Autenticar usuário
  */
-export const useAuthenticateControllerHandle = <TError = ErrorType<null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof authenticateControllerHandle>>, TError,{data: BodyType<AuthenticateRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof authenticateControllerHandle>>,
-        TError,
-        {data: BodyType<AuthenticateRequest>},
-        TContext
-      > => {
+export const useAuthenticateControllerHandle = <
+  TError = ErrorType<null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof authenticateControllerHandle>>,
+      TError,
+      { data: BodyType<AuthenticateRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof authenticateControllerHandle>>,
+  TError,
+  { data: BodyType<AuthenticateRequest> },
+  TContext
+> => {
+  const mutationOptions =
+    getAuthenticateControllerHandleMutationOptions(options);
 
-      const mutationOptions = getAuthenticateControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Realiza logout do usuário (token deve ser removido no cliente)
  * @summary Logout do usuário
  */
 export const logoutControllerHandle = (
-    
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/sessions/logout`, method: 'POST', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<null>(
+    { url: `/sessions/logout`, method: "POST", signal },
+    options,
+  );
+};
 
+export const getLogoutControllerHandleMutationOptions = <
+  TError = ErrorType<null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof logoutControllerHandle>>,
+    TError,
+    void,
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof logoutControllerHandle>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ["logoutControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getLogoutControllerHandleMutationOptions = <TError = ErrorType<null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof logoutControllerHandle>>, TError,void, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof logoutControllerHandle>>, TError,void, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof logoutControllerHandle>>,
+    void
+  > = () => {
+    return logoutControllerHandle(requestOptions);
+  };
 
-const mutationKey = ['logoutControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
-      
+export type LogoutControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof logoutControllerHandle>>
+>;
 
+export type LogoutControllerHandleMutationError = ErrorType<null>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof logoutControllerHandle>>, void> = () => {
-          
-
-          return  logoutControllerHandle(requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type LogoutControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof logoutControllerHandle>>>
-    
-    export type LogoutControllerHandleMutationError = ErrorType<null>
-
-    /**
+/**
  * @summary Logout do usuário
  */
-export const useLogoutControllerHandle = <TError = ErrorType<null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof logoutControllerHandle>>, TError,void, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof logoutControllerHandle>>,
-        TError,
-        void,
-        TContext
-      > => {
+export const useLogoutControllerHandle = <
+  TError = ErrorType<null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof logoutControllerHandle>>,
+      TError,
+      void,
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof logoutControllerHandle>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getLogoutControllerHandleMutationOptions(options);
 
-      const mutationOptions = getLogoutControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
+  return useMutation(mutationOptions, queryClient);
+};

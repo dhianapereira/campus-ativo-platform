@@ -5,7 +5,7 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import type { FetchUsersControllerHandle200UsersItemRole } from './fetchUsersControllerHandle200UsersItemRole';
+import type { FetchUsersControllerHandle200UsersItemRole } from "./fetchUsersControllerHandle200UsersItemRole";
 
 export type FetchUsersControllerHandle200UsersItem = {
   id?: string;

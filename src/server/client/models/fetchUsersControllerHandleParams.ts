@@ -7,12 +7,12 @@
  */
 
 export type FetchUsersControllerHandleParams = {
-/**
- * Termo de busca para filtrar usuários por nome ou email
- */
-query?: string;
-/**
- * Filtrar usuários por status (true para ativos, false para inativos)
- */
-isActive?: boolean;
+  /**
+   * Termo de busca para filtrar usuários por nome ou email
+   */
+  query?: string;
+  /**
+   * Filtrar usuários por status (true para ativos, false para inativos)
+   */
+  isActive?: boolean;
 };

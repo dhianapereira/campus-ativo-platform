@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { DrawerIcon, HeaderContainer, Info, UserInfoContainer } from './styles'
-import { IProps } from './index.d'
-import { List } from 'phosphor-react'
-import Drawer from '../navigation/Drawer'
-import { truncateUserName } from '@/utils/truncate-name'
-import { useAuth } from '@/contexts/auth-context'
-import { Text, Avatar, Heading } from '@/styles'
-import { useRouter } from 'next/router'
+import React, { useState } from "react";
+import { DrawerIcon, HeaderContainer, Info, UserInfoContainer } from "./styles";
+import { IProps } from "./index.d";
+import { List } from "phosphor-react";
+import Drawer from "../navigation/Drawer";
+import { truncateUserName } from "@/utils/truncate-name";
+import { useAuth } from "@/contexts/auth-context";
+import { Text, Avatar, Heading } from "@/styles";
+import { useRouter } from "next/router";
 
 export default function Header({
   src,
@@ -15,47 +15,47 @@ export default function Header({
   position,
   showLoadingState = false,
 }: IProps) {
-  const { signOut, profileError, retryProfileLoad } = useAuth()
-  const router = useRouter()
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const { signOut, profileError, retryProfileLoad } = useAuth();
+  const router = useRouter();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const openDrawer = () => {
-    setIsDrawerOpen(true)
-  }
+    setIsDrawerOpen(true);
+  };
 
   const closeDrawer = () => {
-    setIsDrawerOpen(false)
-  }
+    setIsDrawerOpen(false);
+  };
 
   const handleLogout = async () => {
-    await signOut()
-  }
+    await signOut();
+  };
 
   const handleRetryProfile = async () => {
-    await retryProfileLoad()
-  }
+    await retryProfileLoad();
+  };
 
   const handleProfileClick = () => {
     if (!showError) {
-      router.push('/profile')
+      router.push("/profile");
     }
-  }
+  };
 
   const displayName = showLoadingState
-    ? 'Carregando...'
-    : truncateUserName(name)
+    ? "Carregando..."
+    : truncateUserName(name);
   const displayPosition = showLoadingState
-    ? 'Carregando...'
-    : truncateUserName(position)
+    ? "Carregando..."
+    : truncateUserName(position);
 
-  const showError = profileError && !showLoadingState
+  const showError = profileError && !showLoadingState;
 
   return (
     <HeaderContainer>
       <Heading>Campus Ativo</Heading>
       <UserInfoContainer
         onClick={handleProfileClick}
-        style={{ cursor: showError ? 'default' : 'pointer' }}
+        style={{ cursor: showError ? "default" : "pointer" }}
       >
         <Avatar src={src} alt={alt} />
         <Info>
@@ -64,18 +64,18 @@ export default function Header({
             size="md"
             title={showError ? profileError : name}
           >
-            {showError ? 'Erro ao carregar' : displayName}
+            {showError ? "Erro ao carregar" : displayName}
           </Text>
           <Text
             className="position"
             size="sm"
             title={
-              showError ? 'Clique no menu para tentar novamente' : position
+              showError ? "Clique no menu para tentar novamente" : position
             }
             onClick={showError ? handleRetryProfile : undefined}
-            style={{ cursor: showError ? 'pointer' : 'default' }}
+            style={{ cursor: showError ? "pointer" : "default" }}
           >
-            {showError ? 'Tentar novamente' : displayPosition}
+            {showError ? "Tentar novamente" : displayPosition}
           </Text>
         </Info>
       </UserInfoContainer>
@@ -97,5 +97,5 @@ export default function Header({
         )}
       </DrawerIcon>
     </HeaderContainer>
-  )
+  );
 }

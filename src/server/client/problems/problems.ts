@@ -5,10 +5,7 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -21,392 +18,639 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   CreateProblemRequest,
   EditProblemRequest,
   FetchProblemsControllerHandle200,
   FetchProblemsControllerHandleParams,
-  GetProblemBySlugControllerHandle200
-} from '.././models';
+  GetProblemBySlugControllerHandle200,
+} from ".././models";
 
-import { axiosInstance } from '../../axios';
-import type { ErrorType , BodyType } from '../../axios';
-
+import { axiosInstance } from "../../axios";
+import type { ErrorType, BodyType } from "../../axios";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-
 
 /**
  * Cria um novo problema de infraestrutura
  * @summary Criar problema
  */
 export const createProblemControllerHandle = (
-    createProblemRequest: BodyType<CreateProblemRequest>,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  createProblemRequest: BodyType<CreateProblemRequest>,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/problems`, method: 'POST',
-      headers: {'Content-Type': 'application/json', },
-      data: createProblemRequest, signal
+  return axiosInstance<null>(
+    {
+      url: `/problems`,
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      data: createProblemRequest,
+      signal,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getCreateProblemControllerHandleMutationOptions = <
+  TError = ErrorType<null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof createProblemControllerHandle>>,
+    TError,
+    { data: BodyType<CreateProblemRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof createProblemControllerHandle>>,
+  TError,
+  { data: BodyType<CreateProblemRequest> },
+  TContext
+> => {
+  const mutationKey = ["createProblemControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getCreateProblemControllerHandleMutationOptions = <TError = ErrorType<null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProblemControllerHandle>>, TError,{data: BodyType<CreateProblemRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof createProblemControllerHandle>>, TError,{data: BodyType<CreateProblemRequest>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof createProblemControllerHandle>>,
+    { data: BodyType<CreateProblemRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
 
-const mutationKey = ['createProblemControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return createProblemControllerHandle(data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type CreateProblemControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createProblemControllerHandle>>
+>;
+export type CreateProblemControllerHandleMutationBody =
+  BodyType<CreateProblemRequest>;
+export type CreateProblemControllerHandleMutationError = ErrorType<null | null>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createProblemControllerHandle>>, {data: BodyType<CreateProblemRequest>}> = (props) => {
-          const {data} = props ?? {};
-
-          return  createProblemControllerHandle(data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CreateProblemControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof createProblemControllerHandle>>>
-    export type CreateProblemControllerHandleMutationBody = BodyType<CreateProblemRequest>
-    export type CreateProblemControllerHandleMutationError = ErrorType<null | null>
-
-    /**
+/**
  * @summary Criar problema
  */
-export const useCreateProblemControllerHandle = <TError = ErrorType<null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProblemControllerHandle>>, TError,{data: BodyType<CreateProblemRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createProblemControllerHandle>>,
-        TError,
-        {data: BodyType<CreateProblemRequest>},
-        TContext
-      > => {
+export const useCreateProblemControllerHandle = <
+  TError = ErrorType<null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof createProblemControllerHandle>>,
+      TError,
+      { data: BodyType<CreateProblemRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof createProblemControllerHandle>>,
+  TError,
+  { data: BodyType<CreateProblemRequest> },
+  TContext
+> => {
+  const mutationOptions =
+    getCreateProblemControllerHandleMutationOptions(options);
 
-      const mutationOptions = getCreateProblemControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Retorna uma lista paginada de problemas reportados no sistema com informações de localização
  * @summary Buscar problemas
  */
 export const fetchProblemsControllerHandle = (
-    params?: FetchProblemsControllerHandleParams,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  params?: FetchProblemsControllerHandleParams,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<FetchProblemsControllerHandle200>(
-      {url: `/problems`, method: 'GET',
-        params, signal
-    },
-      options);
-    }
-  
+  return axiosInstance<FetchProblemsControllerHandle200>(
+    { url: `/problems`, method: "GET", params, signal },
+    options,
+  );
+};
 
-export const getFetchProblemsControllerHandleQueryKey = (params?: FetchProblemsControllerHandleParams,) => {
-    return [`/problems`, ...(params ? [params]: [])] as const;
-    }
-
-    
-export const getFetchProblemsControllerHandleQueryOptions = <TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError = ErrorType<null>>(params?: FetchProblemsControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const getFetchProblemsControllerHandleQueryKey = (
+  params?: FetchProblemsControllerHandleParams,
 ) => {
+  return [`/problems`, ...(params ? [params] : [])] as const;
+};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+export const getFetchProblemsControllerHandleQueryOptions = <
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params?: FetchProblemsControllerHandleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getFetchProblemsControllerHandleQueryKey(params);
+  const queryKey =
+    queryOptions?.queryKey ?? getFetchProblemsControllerHandleQueryKey(params);
 
-  
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
+  > = ({ signal }) =>
+    fetchProblemsControllerHandle(params, requestOptions, signal);
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof fetchProblemsControllerHandle>>> = ({ signal }) => fetchProblemsControllerHandle(params, requestOptions, signal);
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-      
+export type FetchProblemsControllerHandleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
+>;
+export type FetchProblemsControllerHandleQueryError = ErrorType<null>;
 
-      
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type FetchProblemsControllerHandleQueryResult = NonNullable<Awaited<ReturnType<typeof fetchProblemsControllerHandle>>>
-export type FetchProblemsControllerHandleQueryError = ErrorType<null>
-
-
-export function useFetchProblemsControllerHandle<TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError = ErrorType<null>>(
- params: undefined |  FetchProblemsControllerHandleParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError, TData>> & Pick<
+export function useFetchProblemsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params: undefined | FetchProblemsControllerHandleParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useFetchProblemsControllerHandle<TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError = ErrorType<null>>(
- params?: FetchProblemsControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFetchProblemsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params?: FetchProblemsControllerHandleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useFetchProblemsControllerHandle<TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError = ErrorType<null>>(
- params?: FetchProblemsControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFetchProblemsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params?: FetchProblemsControllerHandleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Buscar problemas
  */
 
-export function useFetchProblemsControllerHandle<TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError = ErrorType<null>>(
- params?: FetchProblemsControllerHandleParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof fetchProblemsControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useFetchProblemsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+  TError = ErrorType<null>,
+>(
+  params?: FetchProblemsControllerHandleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFetchProblemsControllerHandleQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getFetchProblemsControllerHandleQueryOptions(params,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * Retorna um problema específico pelo seu slug
  * @summary Buscar problema por slug
  */
 export const getProblemBySlugControllerHandle = (
-    slug: string,
- options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+  slug: string,
+  options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
-      
-      
-      return axiosInstance<GetProblemBySlugControllerHandle200>(
-      {url: `/problems/${slug}`, method: 'GET', signal
-    },
-      options);
-    }
-  
+  return axiosInstance<GetProblemBySlugControllerHandle200>(
+    { url: `/problems/${slug}`, method: "GET", signal },
+    options,
+  );
+};
 
-export const getGetProblemBySlugControllerHandleQueryKey = (slug?: string,) => {
-    return [`/problems/${slug}`] as const;
-    }
+export const getGetProblemBySlugControllerHandleQueryKey = (slug?: string) => {
+  return [`/problems/${slug}`] as const;
+};
 
-    
-export const getGetProblemBySlugControllerHandleQueryOptions = <TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError = ErrorType<null | null>>(slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
+export const getGetProblemBySlugControllerHandleQueryOptions = <
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+  TError = ErrorType<null | null>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
 ) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getGetProblemBySlugControllerHandleQueryKey(slug);
 
-  const queryKey =  queryOptions?.queryKey ?? getGetProblemBySlugControllerHandleQueryKey(slug);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>
+  > = ({ signal }) =>
+    getProblemBySlugControllerHandle(slug, requestOptions, signal);
 
-  
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!slug,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>> = ({ signal }) => getProblemBySlugControllerHandle(slug, requestOptions, signal);
+export type GetProblemBySlugControllerHandleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>
+>;
+export type GetProblemBySlugControllerHandleQueryError = ErrorType<null | null>;
 
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(slug), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetProblemBySlugControllerHandleQueryResult = NonNullable<Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>>
-export type GetProblemBySlugControllerHandleQueryError = ErrorType<null | null>
-
-
-export function useGetProblemBySlugControllerHandle<TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError = ErrorType<null | null>>(
- slug: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError, TData>> & Pick<
+export function useGetProblemBySlugControllerHandle<
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+  TError = ErrorType<null | null>,
+>(
+  slug: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProblemBySlugControllerHandle<TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError = ErrorType<null | null>>(
- slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetProblemBySlugControllerHandle<
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+  TError = ErrorType<null | null>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
           TError,
           Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProblemBySlugControllerHandle<TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError = ErrorType<null | null>>(
- slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useGetProblemBySlugControllerHandle<
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+  TError = ErrorType<null | null>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Buscar problema por slug
  */
 
-export function useGetProblemBySlugControllerHandle<TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError = ErrorType<null | null>>(
- slug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>, TError, TData>>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useGetProblemBySlugControllerHandle<
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+  TError = ErrorType<null | null>,
+>(
+  slug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getGetProblemBySlugControllerHandleQueryOptions(
+    slug,
+    options,
+  );
 
-  const queryOptions = getGetProblemBySlugControllerHandleQueryOptions(slug,options)
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
-  const query = useQuery(queryOptions , queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
+  query.queryKey = queryOptions.queryKey;
 
   return query;
 }
-
-
 
 /**
  * Edita um problema existente. Apenas o criador do problema pode editá-lo.
  * @summary Editar problema
  */
 export const editProblemControllerHandle = (
-    id: string,
-    editProblemRequest: BodyType<EditProblemRequest>,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/problems/${id}`, method: 'PUT',
-      headers: {'Content-Type': 'application/json', },
-      data: editProblemRequest
+  id: string,
+  editProblemRequest: BodyType<EditProblemRequest>,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    {
+      url: `/problems/${id}`,
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      data: editProblemRequest,
     },
-      options);
-    }
-  
+    options,
+  );
+};
 
+export const getEditProblemControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof editProblemControllerHandle>>,
+    TError,
+    { id: string; data: BodyType<EditProblemRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof editProblemControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<EditProblemRequest> },
+  TContext
+> => {
+  const mutationKey = ["editProblemControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getEditProblemControllerHandleMutationOptions = <TError = ErrorType<null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editProblemControllerHandle>>, TError,{id: string;data: BodyType<EditProblemRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof editProblemControllerHandle>>, TError,{id: string;data: BodyType<EditProblemRequest>}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof editProblemControllerHandle>>,
+    { id: string; data: BodyType<EditProblemRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-const mutationKey = ['editProblemControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return editProblemControllerHandle(id, data, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type EditProblemControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof editProblemControllerHandle>>
+>;
+export type EditProblemControllerHandleMutationBody =
+  BodyType<EditProblemRequest>;
+export type EditProblemControllerHandleMutationError = ErrorType<
+  null | null | null
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof editProblemControllerHandle>>, {id: string;data: BodyType<EditProblemRequest>}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  editProblemControllerHandle(id,data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type EditProblemControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof editProblemControllerHandle>>>
-    export type EditProblemControllerHandleMutationBody = BodyType<EditProblemRequest>
-    export type EditProblemControllerHandleMutationError = ErrorType<null | null | null>
-
-    /**
+/**
  * @summary Editar problema
  */
-export const useEditProblemControllerHandle = <TError = ErrorType<null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof editProblemControllerHandle>>, TError,{id: string;data: BodyType<EditProblemRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof editProblemControllerHandle>>,
-        TError,
-        {id: string;data: BodyType<EditProblemRequest>},
-        TContext
-      > => {
+export const useEditProblemControllerHandle = <
+  TError = ErrorType<null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof editProblemControllerHandle>>,
+      TError,
+      { id: string; data: BodyType<EditProblemRequest> },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof editProblemControllerHandle>>,
+  TError,
+  { id: string; data: BodyType<EditProblemRequest> },
+  TContext
+> => {
+  const mutationOptions =
+    getEditProblemControllerHandleMutationOptions(options);
 
-      const mutationOptions = getEditProblemControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    /**
+  return useMutation(mutationOptions, queryClient);
+};
+/**
  * Deleta um problema do sistema. Apenas o criador do problema pode deletá-lo.
  * @summary Deletar problema
  */
 export const deleteProblemControllerHandle = (
-    id: string,
- options?: SecondParameter<typeof axiosInstance>,) => {
-      
-      
-      return axiosInstance<null>(
-      {url: `/problems/${id}`, method: 'DELETE'
-    },
-      options);
-    }
-  
+  id: string,
+  options?: SecondParameter<typeof axiosInstance>,
+) => {
+  return axiosInstance<null>(
+    { url: `/problems/${id}`, method: "DELETE" },
+    options,
+  );
+};
 
+export const getDeleteProblemControllerHandleMutationOptions = <
+  TError = ErrorType<null | null | null>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  request?: SecondParameter<typeof axiosInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["deleteProblemControllerHandle"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
 
-export const getDeleteProblemControllerHandleMutationOptions = <TError = ErrorType<null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProblemControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof deleteProblemControllerHandle>>, TError,{id: string}, TContext> => {
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-const mutationKey = ['deleteProblemControllerHandle'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+    return deleteProblemControllerHandle(id, requestOptions);
+  };
 
-      
+  return { mutationFn, ...mutationOptions };
+};
 
+export type DeleteProblemControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteProblemControllerHandle>>
+>;
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProblemControllerHandle>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+export type DeleteProblemControllerHandleMutationError = ErrorType<
+  null | null | null
+>;
 
-          return  deleteProblemControllerHandle(id,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteProblemControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProblemControllerHandle>>>
-    
-    export type DeleteProblemControllerHandleMutationError = ErrorType<null | null | null>
-
-    /**
+/**
  * @summary Deletar problema
  */
-export const useDeleteProblemControllerHandle = <TError = ErrorType<null | null | null>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProblemControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
+export const useDeleteProblemControllerHandle = <
+  TError = ErrorType<null | null | null>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    request?: SecondParameter<typeof axiosInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationOptions =
+    getDeleteProblemControllerHandleMutationOptions(options);
 
-      const mutationOptions = getDeleteProblemControllerHandleMutationOptions(options);
-
-      return useMutation(mutationOptions , queryClient);
-    }
-    
+  return useMutation(mutationOptions, queryClient);
+};

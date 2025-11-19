@@ -1,4 +1,4 @@
 export interface IProps {
-  isVisible: boolean
-  onTap?: MouseEventHandler
+  isVisible: boolean;
+  onTap?: MouseEventHandler;
 }

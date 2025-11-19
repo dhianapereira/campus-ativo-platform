@@ -1,22 +1,23 @@
-import { ReactNode } from 'react'
-import Header from './components/Header'
-import Menu from './components/navigation/Menu'
-import { Container, Body, Content } from './styles'
-import { ProtectedRoute } from '@/styles'
-import { useAuth } from '@/contexts/auth-context'
+import { ReactNode } from "react";
+import Header from "./components/Header";
+import Menu from "./components/navigation/Menu";
+import { Container, Body, Content } from "./styles";
+import { ProtectedRoute } from "@/styles";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function PlatformLayout({ children }: { children: ReactNode }) {
-  const { user, signOut, isLoading, isProfileLoading, profileError } = useAuth()
+  const { user, signOut, isLoading, isProfileLoading, profileError } =
+    useAuth();
 
   const handleLogout = async () => {
-    await signOut()
-  }
+    await signOut();
+  };
 
   const showLoadingState =
-    isLoading || isProfileLoading || (!user && !profileError)
+    isLoading || isProfileLoading || (!user && !profileError);
 
-  const userName = user?.name || 'Usuário'
-  const userPosition = user?.position || 'Não informado'
+  const userName = user?.name || "Usuário";
+  const userPosition = user?.position || "Não informado";
 
   return (
     <ProtectedRoute>
@@ -33,5 +34,5 @@ export default function PlatformLayout({ children }: { children: ReactNode }) {
         </Body>
       </Container>
     </ProtectedRoute>
-  )
+  );
 }

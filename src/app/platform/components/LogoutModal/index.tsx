@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import {
   DialogOverlay,
   DialogContent,
@@ -8,44 +8,44 @@ import {
   ButtonGroup,
   ConfirmButton,
   CancelButton,
-} from './styles'
-import { X, SignOut } from 'phosphor-react'
+} from "./styles";
+import { X, SignOut } from "phosphor-react";
 
 export interface LogoutConfirmationModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onConfirm: () => Promise<void>
-  title?: string
-  description?: string
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
+  title?: string;
+  description?: string;
 }
 
 export const LogoutConfirmationModal = ({
   isOpen,
   onClose,
   onConfirm,
-  title = 'Sair da Plataforma',
-  description = 'Tem certeza que deseja sair da plataforma? Você precisará fazer login novamente para acessar o sistema.',
+  title = "Sair da Plataforma",
+  description = "Tem certeza que deseja sair da plataforma? Você precisará fazer login novamente para acessar o sistema.",
 }: LogoutConfirmationModalProps) => {
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleConfirm = async () => {
-    setIsLoggingOut(true)
+    setIsLoggingOut(true);
     try {
-      await onConfirm()
-      onClose()
+      await onConfirm();
+      onClose();
     } catch (error) {
     } finally {
-      setIsLoggingOut(false)
+      setIsLoggingOut(false);
     }
-  }
+  };
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <DialogOverlay onClick={onClose}>
       <DialogContent
         onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: '400px' }}
+        style={{ maxWidth: "400px" }}
       >
         <CloseButton onClick={onClose}>
           <X size={20} />
@@ -53,10 +53,10 @@ export const LogoutConfirmationModal = ({
 
         <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            marginBottom: '16px',
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            marginBottom: "16px",
           }}
         >
           <SignOut size={24} weight="bold" color="#ef4444" />
@@ -65,7 +65,7 @@ export const LogoutConfirmationModal = ({
 
         <DialogDescription>{description}</DialogDescription>
 
-        <ButtonGroup style={{ marginTop: '24px' }}>
+        <ButtonGroup style={{ marginTop: "24px" }}>
           <CancelButton onClick={onClose} disabled={isLoggingOut}>
             Cancelar
           </CancelButton>
@@ -73,16 +73,16 @@ export const LogoutConfirmationModal = ({
             onClick={handleConfirm}
             disabled={isLoggingOut}
             style={{
-              backgroundColor: '#ef4444',
-              borderColor: '#ef4444',
+              backgroundColor: "#ef4444",
+              borderColor: "#ef4444",
             }}
           >
-            {isLoggingOut ? 'Saindo...' : 'Sair'}
+            {isLoggingOut ? "Saindo..." : "Sair"}
           </ConfirmButton>
         </ButtonGroup>
       </DialogContent>
     </DialogOverlay>
-  )
-}
+  );
+};
 
-LogoutConfirmationModal.displayName = 'LogoutConfirmationModal'
+LogoutConfirmationModal.displayName = "LogoutConfirmationModal";

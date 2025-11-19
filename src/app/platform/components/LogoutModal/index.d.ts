@@ -1,8 +1,8 @@
-import { ReactNode } from 'react'
+import { ReactNode } from "react";
 
 export interface IOption {
-  id: string
-  name: string
-  icon: ReactNode
-  onClick: () => void
+  id: string;
+  name: string;
+  icon: ReactNode;
+  onClick: () => void;
 }

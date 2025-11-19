@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Body,
@@ -7,55 +7,55 @@ import {
   ImageContainer,
   InfoContainer,
   EditButton,
-} from './styles'
-import { ArrowLeft, NotePencil } from 'phosphor-react'
-import { useRouter } from 'next/router'
-import { IProps } from './index.d'
-import { Button, Text } from '@/styles'
-import { Actions } from './components/Actions'
-import { Status } from '@/data/static/status-data'
-import { ImageError } from '@/app/platform/components/ImageError'
-import { NoImage } from '@/app/platform/components/NoImage'
-import { ProtectedRoute } from '@/styles/components/routes/ProtectedRoute'
+} from "./styles";
+import { ArrowLeft, NotePencil } from "phosphor-react";
+import { useRouter } from "next/router";
+import { IProps } from "./index.d";
+import { Button, Text } from "@/styles";
+import { Actions } from "./components/Actions";
+import { Status } from "@/data/static/status-data";
+import { ImageError } from "@/app/platform/components/ImageError";
+import { NoImage } from "@/app/platform/components/NoImage";
+import { ProtectedRoute } from "@/styles/components/routes/ProtectedRoute";
 
 export default function ProblemDetails() {
-  const router = useRouter()
-  const { id } = router.query
+  const router = useRouter();
+  const { id } = router.query;
 
-  const [problemData, setProblemData] = useState<IProps | null>(null)
-  const [imageError, setImageError] = useState(false)
+  const [problemData, setProblemData] = useState<IProps | null>(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     async function fetchProblemData() {
       if (id) {
         const response = {
           id,
-          title: 'Ar-condicionado',
-          location: 'Sala 05232',
+          title: "Ar-condicionado",
+          location: "Sala 05232",
           description:
-            'Problemas no ar-condicionado foram identificados na sala 05232. Verificar com urgência.',
+            "Problemas no ar-condicionado foram identificados na sala 05232. Verificar com urgência.",
           imageUrl:
-            'https://imgs.search.brave.com/XR7WZESq-wVfAbqa2Yno-_e1JWAGEyfpnWId1P3oH9s/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9maWxl/cy50ZWNub2Jsb2cu/bmV0L3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIyLzAzL2NvbmRl/bnNhZG9yLWFjLTEt/NzAweDUyNS5qcGc',
-          reporter: 'email@email.com',
-          createdAt: '14 de Março de 2024',
-          updatedAt: '14 de Março de 2024 as 15h41min',
-          status: 'toAnalysis',
+            "https://imgs.search.brave.com/XR7WZESq-wVfAbqa2Yno-_e1JWAGEyfpnWId1P3oH9s/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9maWxl/cy50ZWNub2Jsb2cu/bmV0L3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIyLzAzL2NvbmRl/bnNhZG9yLWFjLTEt/NzAweDUyNS5qcGc",
+          reporter: "email@email.com",
+          createdAt: "14 de Março de 2024",
+          updatedAt: "14 de Março de 2024 as 15h41min",
+          status: "toAnalysis",
           category: null,
           maintenanceType: null,
-        }
-        setProblemData(response)
+        };
+        setProblemData(response);
       }
     }
 
-    fetchProblemData()
-  }, [id])
+    fetchProblemData();
+  }, [id]);
 
   if (!problemData) {
-    return <p>Carregando...</p>
+    return <p>Carregando...</p>;
   }
 
   async function goToEditPage() {
-    await router.push(`/problems/${id}/edit`)
+    await router.push(`/problems/${id}/edit`);
   }
 
   return (
@@ -162,5 +162,5 @@ export default function ProblemDetails() {
         </Body>
       </Container>
     </ProtectedRoute>
-  )
+  );
 }

@@ -1,20 +1,20 @@
-import React from 'react'
-import { Image } from 'phosphor-react'
+import React from "react";
+import { Image } from "phosphor-react";
 import {
   ErrorContainer,
   ErrorIcon,
   ErrorTitle,
   ErrorDescription,
-} from './styles'
+} from "./styles";
 
 export interface ImageErrorProps {
-  title?: string
-  description?: string
+  title?: string;
+  description?: string;
 }
 
 export const ImageError = ({
-  title = 'Erro ao carregar imagem',
-  description = 'Não foi possível carregar a imagem. Verifique a conexão ou tente novamente mais tarde.',
+  title = "Erro ao carregar imagem",
+  description = "Não foi possível carregar a imagem. Verifique a conexão ou tente novamente mais tarde.",
 }: ImageErrorProps) => {
   return (
     <ErrorContainer>
@@ -26,7 +26,7 @@ export const ImageError = ({
         <ErrorDescription>{description}</ErrorDescription>
       </div>
     </ErrorContainer>
-  )
-}
+  );
+};
 
-ImageError.displayName = 'ImageError'
+ImageError.displayName = "ImageError";

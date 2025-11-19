@@ -5,7 +5,7 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
-import type { CategoryResponse } from './categoryResponse';
+import type { CategoryResponse } from "./categoryResponse";
 
 export type FetchCategoriesControllerHandle200 = {
   categories?: CategoryResponse[];

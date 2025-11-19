@@ -1,8 +1,8 @@
-import { StatusBadge } from '@/styles'
-import { IProps } from './index.d'
-import { Container, Description, Location, Title } from './styles'
-import { ReactElement } from 'react'
-import { useRouter } from 'next/router'
+import { StatusBadge } from "@/styles";
+import { IProps } from "./index.d";
+import { Container, Description, Location, Title } from "./styles";
+import { ReactElement } from "react";
+import { useRouter } from "next/router";
 
 export default function ProblemCard({
   id,
@@ -11,10 +11,10 @@ export default function ProblemCard({
   description,
   badgeId,
 }: IProps) {
-  const router = useRouter()
+  const router = useRouter();
 
   async function goToDetails() {
-    await router.push(`/problems/${id}/`)
+    await router.push(`/problems/${id}/`);
   }
 
   return (
@@ -29,12 +29,12 @@ export default function ProblemCard({
       <Description size="sm">{description}</Description>
       {badges[badgeId]}
     </Container>
-  )
+  );
 }
 
 type BadgeMapProps = {
-  [key: string]: ReactElement
-}
+  [key: string]: ReactElement;
+};
 
 const badges: BadgeMapProps = {
   toAnalysis: <StatusBadge variant="toAnalysis">Para análise</StatusBadge>,
@@ -43,4 +43,4 @@ const badges: BadgeMapProps = {
   rejected: <StatusBadge variant="rejected">Recusado</StatusBadge>,
   inProgress: <StatusBadge variant="inProgress">Em andamento</StatusBadge>,
   finished: <StatusBadge variant="finished">Concluído</StatusBadge>,
-}
+};

@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --fix",
+    "lint": "eslint . --fix",
     "generate:api": "orval --config ./orval.config.ts"
   },
   "dependencies": {
@@ -28,12 +28,16 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@rocketseat/eslint-config": "^2.2.2",
     "@types/node": "^20.19.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "@typescript-eslint/eslint-plugin": "^8.47.0",
+    "@typescript-eslint/parser": "^8.47.0",
+    "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "typescript": "^5"
   }
 }

@@ -1,50 +1,50 @@
-import React, { useState } from 'react'
-import { MagnifyingGlass } from 'phosphor-react'
+import React, { useState } from "react";
+import { MagnifyingGlass } from "phosphor-react";
 import {
   SearchContainer,
   SearchInputContainer,
   SearchIcon,
   SearchInput,
-} from './styles'
+} from "./styles";
 
 export interface SearchBarProps {
-  placeholder?: string
-  onSearch?: (query: string) => void
-  onInputChange?: (value: string) => void
-  onFilter?: () => void
-  value?: string
-  buttonText?: string
-  filterText?: string
+  placeholder?: string;
+  onSearch?: (query: string) => void;
+  onInputChange?: (value: string) => void;
+  onFilter?: () => void;
+  value?: string;
+  buttonText?: string;
+  filterText?: string;
 }
 
 export const SearchBar = ({
-  placeholder = 'Busque pelo título ou local do problema...',
+  placeholder = "Busque pelo título ou local do problema...",
   onSearch,
   onInputChange,
   value: controlledValue,
 }: SearchBarProps) => {
-  const [internalValue, setInternalValue] = useState('')
+  const [internalValue, setInternalValue] = useState("");
 
   const inputValue =
-    controlledValue !== undefined ? controlledValue : internalValue
+    controlledValue !== undefined ? controlledValue : internalValue;
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value
+    const newValue = event.target.value;
     if (controlledValue === undefined) {
-      setInternalValue(newValue)
+      setInternalValue(newValue);
     }
-    onInputChange?.(newValue)
-  }
+    onInputChange?.(newValue);
+  };
 
   const handleSearch = () => {
-    onSearch?.(inputValue)
-  }
+    onSearch?.(inputValue);
+  };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      handleSearch()
+    if (event.key === "Enter") {
+      handleSearch();
     }
-  }
+  };
 
   return (
     <SearchContainer>
@@ -62,7 +62,7 @@ export const SearchBar = ({
         />
       </SearchInputContainer>
     </SearchContainer>
-  )
-}
+  );
+};
 
-SearchBar.displayName = 'SearchBar'
+SearchBar.displayName = "SearchBar";

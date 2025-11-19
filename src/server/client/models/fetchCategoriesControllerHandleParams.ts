@@ -7,20 +7,20 @@
  */
 
 export type FetchCategoriesControllerHandleParams = {
-/**
- * Número da página (começa em 1)
- */
-page?: number;
-/**
- * Incluir categorias deletadas (na lixeira)
- */
-includeDeleted?: boolean;
-/**
- * Filtrar por status ativo/inativo
- */
-isActive?: boolean;
-/**
- * Busca por nome ou descrição
- */
-query?: string;
+  /**
+   * Número da página (começa em 1)
+   */
+  page?: number;
+  /**
+   * Incluir categorias deletadas (na lixeira)
+   */
+  includeDeleted?: boolean;
+  /**
+   * Filtrar por status ativo/inativo
+   */
+  isActive?: boolean;
+  /**
+   * Busca por nome ou descrição
+   */
+  query?: string;
 };

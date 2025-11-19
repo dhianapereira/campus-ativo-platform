@@ -7,12 +7,12 @@
  */
 
 export type FetchProblemsControllerHandleParams = {
-/**
- * Número da página (começa em 1)
- */
-page?: number;
-/**
- * Termo de busca para filtrar problemas por título ou descrição
- */
-query?: string;
+  /**
+   * Número da página (começa em 1)
+   */
+  page?: number;
+  /**
+   * Termo de busca para filtrar problemas por título ou descrição
+   */
+  query?: string;
 };
