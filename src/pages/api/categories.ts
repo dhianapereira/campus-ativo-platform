@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { fetchCategoriesControllerHandle } from '../../../server/client/fetch-categories/fetch-categories'
-import { AXIOS_INSTANCE } from '../../../server/axios'
+import { fetchCategoriesControllerHandle } from '../../server/client/fetch-categories/fetch-categories'
+import { AXIOS_INSTANCE } from '../../server/axios'
 
 export default async function handler(
   req: NextApiRequest,

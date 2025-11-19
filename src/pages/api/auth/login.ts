@@ -3,9 +3,9 @@ import { serialize } from 'cookie'
 import {
   AuthenticateRequest,
   UserResponse,
-} from '../../../../server/client/models'
-import { authenticateControllerHandle } from '../../../../server/client/authentication/authentication'
-import { getUserProfileControllerHandle } from '../../../../server/client/user-profile/user-profile'
+} from '../../../server/client/models'
+import { authenticateControllerHandle } from '../../../server/client/authentication/authentication'
+import { getUserProfileControllerHandle } from '../../../server/client/user-profile/user-profile'
 
 interface LoginResponse {
   success: boolean

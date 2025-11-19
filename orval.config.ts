@@ -3,7 +3,7 @@ import { defineConfig } from "orval";
 export default defineConfig({
   ifalbackend: {
     input: {
-      target: "./server/openapi.json",
+      target: "./src/server/openapi.json",
     },
     output: {
       client: "react-query",
@@ -12,11 +12,11 @@ export default defineConfig({
       override: {
         mutator: {
           name: "axiosInstance",
-          path: "./server/axios.ts",
+          path: "./src/server/axios.ts",
         },
       },
-      schemas: "./server/client/models",
-      target: "./server/client",
+      schemas: "./src/server/client/models",
+      target: "./src/server/client",
     },
   },
 });

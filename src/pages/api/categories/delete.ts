@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { trashCategoryControllerHandle } from '../../../../server/client/categories/categories'
+import { trashCategoryControllerHandle } from '../../../server/client/categories/categories'
 
 export default async function handler(
   req: NextApiRequest,

@@ -3,12 +3,12 @@ import {
   fetchLocationsControllerHandle,
   restoreLocationControllerHandle,
   deleteLocationControllerHandle,
-} from '../../../server/client/locations/locations'
+} from '../../server/client/locations/locations'
 import {
   fetchCategoriesControllerHandle,
   restoreCategoryControllerHandle,
   deleteCategoryControllerHandle,
-} from '../../../server/client/categories/categories'
+} from '../../server/client/categories/categories'
 
 function filterByDeletedDate(
   items: Array<{ deletedAt?: string | null }>,

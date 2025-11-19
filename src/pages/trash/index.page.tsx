@@ -53,8 +53,8 @@ import { toast } from 'sonner'
 import { ConfirmationModal } from '@/components/confirmation-modal'
 import { EditLocationModal } from '@/pages/settings/components/EditLocationModal'
 import { EditCategoryModal } from '@/pages/settings/components/EditCategoryModal'
-import type { LocationResponse } from '../../../server/client/models/locationResponse'
-import type { CategoryResponse } from '../../../server/client/models/categoryResponse'
+import type { LocationResponse } from '../../server/client/models/locationResponse'
+import type { CategoryResponse } from '../../server/client/models/categoryResponse'
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)

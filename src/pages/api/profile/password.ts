@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { changeUserPasswordControllerHandle } from '../../../../server/client/user-profile/user-profile'
+import { changeUserPasswordControllerHandle } from '../../../server/client/user-profile/user-profile'
 
 export default async function handler(
   req: NextApiRequest,

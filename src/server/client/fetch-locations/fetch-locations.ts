@@ -18,7 +18,7 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { FetchLocationsControllerHandleParams } from ".././models";
+import type { FetchLocationsControllerHandleParams } from "../models";
 
 import { axiosInstance } from "../../axios";
 import type { ErrorType } from "../../axios";

@@ -29,7 +29,7 @@ import {
 import PlatformLayout from '@/app/platform/layout'
 import { useAuth } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
-import type { FetchUsersControllerHandle200UsersItem } from '../../../server/client/models'
+import type { FetchUsersControllerHandle200UsersItem } from '../../server/client/models'
 import { EditMemberModal } from './components/EditMemberModal'
 
 export default function MembersPage() {

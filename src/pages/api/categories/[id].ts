@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   editCategoryControllerHandle,
   fetchCategoriesControllerHandle,
-} from '../../../../server/client/categories/categories'
+} from '../../../server/client/categories/categories'
 
 export default async function handler(
   req: NextApiRequest,

@@ -27,7 +27,7 @@ import {
 import { X, Trash, ArrowCounterClockwise } from "phosphor-react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { CategoryResponse } from "../../../../../server/client/models/categoryResponse";
+import type { CategoryResponse } from "../../../../server/client/models/categoryResponse";
 import { ConfirmationModal } from "@/components/confirmation-modal";
 
 const categorySchema = z.object({

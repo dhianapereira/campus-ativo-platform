@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { deleteUserAccountControllerHandle } from '../../../../server/client/user-profile/user-profile'
+import { deleteUserAccountControllerHandle } from '../../../server/client/user-profile/user-profile'
 
 export default async function handler(
   req: NextApiRequest,
