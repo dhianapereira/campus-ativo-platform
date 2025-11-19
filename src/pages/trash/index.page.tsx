@@ -86,7 +86,7 @@ export default function TrashPage() {
   const queryClient = useQueryClient()
   const [searchTerm, setSearchTerm] = useState('')
   const [typeFilter, setTypeFilter] = useState<
-    'all' | 'location' | 'category' | 'problem' | 'member'
+    'all' | 'location' | 'category' | 'problem'
   >('all')
   const [dateFilter, setDateFilter] = useState<
     'all' | 'today' | 'last7days' | 'last30days' | 'thisyear'
@@ -237,7 +237,7 @@ export default function TrashPage() {
   }
 
   const handleFilterChange = (
-    filter: 'all' | 'location' | 'category' | 'problem' | 'member',
+    filter: 'all' | 'location' | 'category' | 'problem',
   ) => {
     setTypeFilter(filter)
     setCurrentPage(1)
@@ -536,7 +536,6 @@ export default function TrashPage() {
                   <option value="problem">Problema</option>
                   <option value="category">Categoria</option>
                   <option value="location">Localização</option>
-                  <option value="member">Membros</option>
                 </select>
 
                 <select
@@ -641,7 +640,6 @@ export default function TrashPage() {
                             />
                           </TableCell>
                           <TableCell>{item.name}</TableCell>
-                          {/* Só mostra coluna "Local" se não for filtro de categorias */}
                           {typeFilter !== 'category' && (
                             <TableCell>
                               {item.itemType === 'location'

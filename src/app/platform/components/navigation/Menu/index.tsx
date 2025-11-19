@@ -62,7 +62,6 @@ export default function Menu({ onLogoutClick }: MenuProps) {
         </MenuOptions>
       </MenuContainer>
 
-      {/* Modal de confirmação de logout */}
       <LogoutConfirmationModal
         isOpen={isLogoutModalOpen}
         onClose={handleLogoutCancel}

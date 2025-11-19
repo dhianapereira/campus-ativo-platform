@@ -558,7 +558,6 @@ export default function SettingsPage() {
             </FiltersContainer>
           </SearchActionsContainer>
 
-          {/* Empty State */}
           {currentItems.length === 0 && (
             <div style={{ padding: '2rem', textAlign: 'center' }}>
               <p>Nenhum resultado encontrado</p>
@@ -572,7 +571,6 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {/* Desktop Table */}
           {currentItems.length > 0 && (
             <DesktopTableWrapper>
               <TableWrapper>
@@ -631,7 +629,6 @@ export default function SettingsPage() {
             </DesktopTableWrapper>
           )}
 
-          {/* Mobile Cards */}
           {currentItems.length > 0 && (
             <MobileCardsWrapper>
               {currentItems.map((item: LocationItem | CategoryItem) => {
@@ -686,7 +683,6 @@ export default function SettingsPage() {
             </PaginationContainer>
           )}
 
-          {/* Modals */}
           <AddCategoryModal
             isOpen={isAddCategoryModalOpen}
             onClose={() => setIsAddCategoryModalOpen(false)}

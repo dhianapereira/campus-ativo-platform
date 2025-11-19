@@ -253,7 +253,6 @@ export default function ProfilePage() {
         </HeaderContainer>
 
         <SectionsContainer>
-          {/* Profile Information Section */}
           <Section>
             <SectionHeader>
               <SectionTitle>
@@ -336,7 +335,6 @@ export default function ProfilePage() {
             </Form>
           </Section>
 
-          {/* Change Password Section */}
           <Section>
             <SectionHeader>
               <SectionTitle>
@@ -432,7 +430,6 @@ export default function ProfilePage() {
             </Form>
           </Section>
 
-          {/* Delete Account Section */}
           <Section>
             <SectionHeader>
               <SectionTitle>
@@ -470,7 +467,6 @@ export default function ProfilePage() {
         </SectionsContainer>
       </MainContainer>
 
-      {/* Confirmation Modals */}
       <ConfirmationModal
         isOpen={showProfileDiscardConfirmation}
         onClose={() => setShowProfileDiscardConfirmation(false)}
