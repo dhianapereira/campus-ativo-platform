@@ -77,7 +77,7 @@ export const LogoutConfirmationModal = ({
               borderColor: '#ef4444',
             }}
           >
-            {isLoggingOut ? 'Saindo...' : 'Sair da Plataforma'}
+            {isLoggingOut ? 'Saindo...' : 'Sair'}
           </ConfirmButton>
         </ButtonGroup>
       </DialogContent>
