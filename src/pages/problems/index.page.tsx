@@ -30,7 +30,6 @@ export default function Problems() {
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
 
-  // Fetch problems from Next.js API route
   const { data, isLoading, error } = useQuery({
     queryKey: ['problems', page, searchValue],
     queryFn: async () => {

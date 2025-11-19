@@ -37,23 +37,19 @@ export default function ProfilePage() {
     signOut,
   } = useAuth();
 
-  // Profile form state
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
   const [hasProfileChanges, setHasProfileChanges] = useState(false);
 
-  // Password form state
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  // Modals state
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showProfileDiscardConfirmation, setShowProfileDiscardConfirmation] =
     useState(false);
 
-  // Set initial form values when profile loads
   useEffect(() => {
     if (user) {
       setName(user.name);
@@ -61,7 +57,6 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  // Check for profile changes
   useEffect(() => {
     if (user) {
       const changed = name !== user.name || position !== user.position;
@@ -69,13 +64,11 @@ export default function ProfilePage() {
     }
   }, [name, position, user]);
 
-  // Check if password form has any input
   const hasPasswordInput =
     oldPassword.trim() !== "" ||
     newPassword.trim() !== "" ||
     confirmPassword.trim() !== "";
 
-  // Update profile mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (data: { name: string; position: string }) => {
       const response = await fetch("/api/profile", {
@@ -97,7 +90,6 @@ export default function ProfilePage() {
       return response.json();
     },
     onSuccess: async (data) => {
-      // Usar os dados retornados pela API para atualizar imediatamente
       if (data?.user) {
         setName(data.user.name);
         setPosition(data.user.position);
@@ -111,7 +103,6 @@ export default function ProfilePage() {
     },
   });
 
-  // Change password mutation
   const changePasswordMutation = useMutation({
     mutationFn: async (data: { oldPassword: string; newPassword: string }) => {
       const response = await fetch("/api/profile/password", {
@@ -144,7 +135,6 @@ export default function ProfilePage() {
     },
   });
 
-  // Delete account mutation
   const deleteAccountMutation = useMutation({
     mutationFn: async () => {
       const response = await fetch("/api/profile/delete", {

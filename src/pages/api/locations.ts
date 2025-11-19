@@ -16,10 +16,8 @@ export default async function handler(
 
   if (req.method === 'GET') {
     try {
-      // Extrai os parâmetros da query
       const { query, isActive, page, includeDeleted } = req.query
 
-      // Monta o objeto de parâmetros
       const params: {
         query?: string
         isActive?: boolean

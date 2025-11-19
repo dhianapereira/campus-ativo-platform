@@ -40,12 +40,10 @@ export default async function handler(
       },
     });
 
-    // Extract profile data from nested structure (same as login)
     const profileData: UserResponse =
       (userProfile as { profile?: UserResponse })?.profile ||
       (userProfile as UserResponse);
 
-    // Extract role from JWT token payload (fallback only)
     let roleFromToken = null;
     try {
       const tokenPayload = JSON.parse(
@@ -58,7 +56,8 @@ export default async function handler(
       id: profileData.id,
       name: profileData.name,
       email: profileData.email,
-      // IMPORTANTE: Priorizar a role do perfil (sempre atualizada) ao invés do token (estático)
+      // IMPORTANT: Prioritize the profile role (always up-to-date) 
+      // instead of the token (static).
       role: profileData.role || roleFromToken,
       position: profileData.position || "Não informado",
     };
@@ -68,7 +67,6 @@ export default async function handler(
       user: userData,
     });
   } catch (error: unknown) {
-    // Check if it's an authentication error
     const axiosError = error as {
       response?: { status?: number; data?: { message?: string } };
     };

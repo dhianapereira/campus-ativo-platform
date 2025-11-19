@@ -11,7 +11,7 @@ export interface TruncateNameOptions {
  * @param name - Full user name
  * @param options - Configuration options
  * @returns Truncated name with suffix if necessary
- */
+*/
 export const truncateName = (
   name: string,
   options: TruncateNameOptions = {},

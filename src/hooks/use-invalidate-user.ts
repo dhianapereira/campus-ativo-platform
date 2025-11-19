@@ -1,8 +1,8 @@
 import { useQueryClient } from '@tanstack/react-query'
 
 /**
- * Hook para invalidar o cache do usuário
- * Útil quando dados do usuário são modificados (ex: role, perfil)
+* Hook to invalidate user cache.
+* Useful when user data is modified (e.g., role, profile)
  */
 export function useInvalidateUser() {
   const queryClient = useQueryClient()

@@ -77,7 +77,6 @@ export function EditCategoryModal({
     resolver: zodResolver(categorySchema),
   });
 
-  // Watch form changes to detect unsaved changes
   const watchedFields = watch();
 
   useEffect(() => {
@@ -88,7 +87,6 @@ export function EditCategoryModal({
     }
   }, [category, setValue]);
 
-  // Check for unsaved changes
   useEffect(() => {
     if (!category) {
       setHasUnsavedChanges(false);

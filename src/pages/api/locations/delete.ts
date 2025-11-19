@@ -24,7 +24,6 @@ export default async function handler(
         .json({ message: 'IDs das localizações são obrigatórios' })
     }
 
-    // Move each location to trash (soft delete)
     const trashPromises = ids.map((id: string) =>
       trashLocationControllerHandle(id, {
         headers: {

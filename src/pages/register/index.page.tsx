@@ -73,7 +73,6 @@ export default function Register() {
         return
       }
 
-      // Redirecionar para o login após cadastro bem-sucedido
       router.push('/login?registered=true')
     } catch (error: unknown) {
       setError('confirmPassword', {

@@ -46,10 +46,8 @@ export default function App({ Component, pageProps }: AppProps) {
               return failureCount < 1
             },
             onError: (error: unknown) => {
-              // Handle authentication errors globally
               const errorStatus = (error as { status?: number })?.status
               if (errorStatus === 401) {
-                // Redirect to login or refresh auth
                 if (typeof window !== 'undefined') {
                   window.location.href = '/login'
                 }

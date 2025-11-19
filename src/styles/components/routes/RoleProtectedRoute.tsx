@@ -36,8 +36,6 @@ const LoadingText = styled('p', {
   margin: 0,
 })
 
-// dedicated unauthorized page is used instead of inline UI
-
 interface RoleProtectedRouteProps {
   children: ReactNode
   requiredRole?: string

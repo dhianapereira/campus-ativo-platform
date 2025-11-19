@@ -31,7 +31,6 @@ AXIOS_INSTANCE.interceptors.request.use(
 
 // Function to translate axios error messages
 function translateAxiosError(error: AxiosError): string {
-  // Default axios messages
   if (error.message.includes('Network Error')) {
     return 'Erro de conexão. Verifique sua internet.';
   }

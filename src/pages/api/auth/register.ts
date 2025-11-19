@@ -49,7 +49,6 @@ export default async function handler(
 
     let message = backendError || 'Erro interno do servidor'
 
-    // Customizar mensagens de erro baseadas no status
     if (status === 400) {
       message = 'Dados inválidos ou domínio de email não permitido'
     } else if (status === 409) {

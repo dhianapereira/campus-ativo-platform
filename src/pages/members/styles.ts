@@ -56,10 +56,10 @@ export const SearchContainer = styled('div', {
   display: 'flex',
   flexDirection: 'row',
   width: '100%',
-  maxWidth: '640px', // largura reduzida em desktop
+  maxWidth: '640px',
   gap: 0,
   '@media(max-width: 768px)': {
-    maxWidth: '100%', // mobile ocupa toda a largura
+    maxWidth: '100%',
   },
 })
 

@@ -12,6 +12,6 @@ export const globalStyles = globalCss({
     color: '$gray',
     '-webkit-font-smoothing': 'antialiased',
     overflow: 'hidden',
-    fontFamily: '$default', // garante mesma fonte em todas as telas
+    fontFamily: '$default',
   },
 })

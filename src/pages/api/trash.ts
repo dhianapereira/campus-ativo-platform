@@ -10,7 +10,6 @@ import {
   deleteCategoryControllerHandle,
 } from '../../../server/client/categories/categories'
 
-// Função para filtrar itens por data de exclusão
 function filterByDeletedDate(
   items: Array<{ deletedAt?: string | null }>,
   dateFilter?: string,
@@ -29,23 +28,19 @@ function filterByDeletedDate(
 
     switch (dateFilter) {
       case 'today': {
-        // Itens deletados hoje
         return deletedDate >= today
       }
       case 'last7days': {
-        // Últimos 7 dias
         const sevenDaysAgo = new Date(today)
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
         return deletedDate >= sevenDaysAgo
       }
       case 'last30days': {
-        // Últimos 30 dias
         const thirtyDaysAgo = new Date(today)
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
         return deletedDate >= thirtyDaysAgo
       }
       case 'thisyear': {
-        // Este ano (2025)
         return deletedDate.getFullYear() === 2025
       }
       default:
@@ -70,10 +65,8 @@ export default async function handler(
 
       const searchQuery = query && typeof query === 'string' ? query : undefined
 
-      // Tipo pode ser: 'location', 'category', 'problem' ou undefined (todos)
       const itemType = type && typeof type === 'string' ? type : undefined
 
-      // Filtro de data
       const dateFilterValue =
         dateFilter && typeof dateFilter === 'string' ? dateFilter : undefined
 
@@ -83,7 +76,6 @@ export default async function handler(
         type?: string
       } = { items: [], total: 0 }
 
-      // Se não houver filtro de tipo, buscar de todos
       if (!itemType || itemType === 'all') {
         const [locationsData, categoriesData] = await Promise.all([
           fetchLocationsControllerHandle(
@@ -110,7 +102,6 @@ export default async function handler(
           ),
         ])
 
-        // Filtrar apenas itens deletados
         const deletedLocations =
           locationsData?.locations?.filter(
             (loc: { deletedAt?: string | null }) =>
@@ -122,7 +113,6 @@ export default async function handler(
               cat.deletedAt !== null && cat.deletedAt !== undefined,
           ) || []
 
-        // Aplicar filtro de data
         const filteredLocations = filterByDeletedDate(
           deletedLocations,
           dateFilterValue,
@@ -132,7 +122,6 @@ export default async function handler(
           dateFilterValue,
         )
 
-        // Combinar e adicionar tipo
         const allItems = [
           ...filteredLocations.map((item) => ({
             ...(item as Record<string, unknown>),
@@ -165,7 +154,6 @@ export default async function handler(
               loc.deletedAt !== null && loc.deletedAt !== undefined,
           ) || []
 
-        // Aplicar filtro de data
         const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
 
         results.items = filteredItems.map((item) => ({
@@ -193,7 +181,6 @@ export default async function handler(
               cat.deletedAt !== null && cat.deletedAt !== undefined,
           ) || []
 
-        // Aplicar filtro de data
         const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
 
         results.items = filteredItems.map((item) => ({
@@ -220,7 +207,6 @@ export default async function handler(
       return res.status(500).json({ message: 'Internal server error' })
     }
   } else if (req.method === 'POST') {
-    // Restaurar ou deletar permanentemente
     try {
       const { action, ids, type } = req.body
 
@@ -229,7 +215,6 @@ export default async function handler(
       }
 
       if (action === 'restore') {
-        // Restaurar itens
         const promises = ids.map((id: string) => {
           if (type === 'location') {
             return restoreLocationControllerHandle(id, {
@@ -252,7 +237,6 @@ export default async function handler(
           .status(200)
           .json({ message: 'Itens restaurados com sucesso' })
       } else if (action === 'delete') {
-        // Deletar permanentemente
         const promises = ids.map((id: string) => {
           if (type === 'location') {
             return deleteLocationControllerHandle(id, {

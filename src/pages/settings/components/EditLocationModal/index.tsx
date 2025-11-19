@@ -81,7 +81,6 @@ export function EditLocationModal({
     resolver: zodResolver(locationSchema),
   });
 
-  // Watch form changes to detect unsaved changes
   const watchedFields = watch();
 
   useEffect(() => {
@@ -93,7 +92,6 @@ export function EditLocationModal({
     }
   }, [location, setValue]);
 
-  // Check for unsaved changes
   useEffect(() => {
     if (!location) {
       setHasUnsavedChanges(false);

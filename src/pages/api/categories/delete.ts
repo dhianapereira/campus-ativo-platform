@@ -23,8 +23,7 @@ export default async function handler(
         .status(400)
         .json({ message: 'IDs das categorias são obrigatórios' })
     }
-
-    // Move each category to trash (soft delete)
+    
     const trashPromises = ids.map((id: string) =>
       trashCategoryControllerHandle(id, {
         headers: {

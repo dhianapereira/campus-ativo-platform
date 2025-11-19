@@ -54,7 +54,6 @@ import { ConfirmationModal } from '@/components/confirmation-modal'
 type LocationItem = LocationResponse
 type CategoryItem = CategoryResponse
 
-// Hook customizado para debounce
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
@@ -93,10 +92,8 @@ export default function SettingsPage() {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const itemsPerPage = 10
 
-  // Debounce do termo de busca para evitar muitas requisições
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
-  // Usa useQuery com fetch para as API routes do Next.js
   const {
     data: locationsData,
     isLoading: locationsLoading,
@@ -126,7 +123,7 @@ export default function SettingsPage() {
     },
     retry: false,
     placeholderData: (previousData) => previousData,
-    staleTime: 30000, // 30 segundos - considera os dados como "frescos" por 30s
+    staleTime: 30000, // 30 seconds
   })
 
   const {
@@ -158,10 +155,10 @@ export default function SettingsPage() {
     },
     retry: false,
     placeholderData: (previousData) => previousData,
-    staleTime: 30000, // 30 segundos - considera os dados como "frescos" por 30s
+    staleTime: 30000, // 30 seconds
   })
 
-  // Memoiza os dados filtrados para evitar recálculos desnecessários
+  // Store the filtered data to avoid unnecessary recalculations.
   const filteredLocations = useMemo(
     () => (locationsData?.locations || []).filter((item) => item.id),
     [locationsData],
@@ -172,7 +169,6 @@ export default function SettingsPage() {
     [categoriesData],
   )
 
-  // Mutation para mover localizações para lixeira
   const deleteLocationsMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const response = await fetch('/api/locations/delete', {
@@ -202,7 +198,6 @@ export default function SettingsPage() {
     },
   })
 
-  // Mutation para mover categorias para lixeira
   const deleteCategoriesMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const response = await fetch('/api/categories/delete', {
@@ -355,7 +350,6 @@ export default function SettingsPage() {
     }
   }
 
-  // Reset to last page if current page exceeds total pages
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(totalPages)
@@ -383,7 +377,6 @@ export default function SettingsPage() {
         </PaginationButton>,
       )
 
-    // Only show Previous if not on first page
     if (currentPage > 1) {
       buttons.push(
         <PaginationButton
@@ -416,7 +409,6 @@ export default function SettingsPage() {
       addPageButton(totalPages)
     }
 
-    // Only show Next if not on last page
     if (currentPage < totalPages) {
       buttons.push(
         <PaginationButton

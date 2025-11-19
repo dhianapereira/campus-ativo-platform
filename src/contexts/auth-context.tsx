@@ -28,7 +28,6 @@ interface AuthProviderProps {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
-// Fetch function for user profile
 async function fetchUserProfile(): Promise<User | null> {
   const response = await fetch('/api/auth/me')
   const data = await response.json()
@@ -57,11 +56,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     staleTime: 10 * 1000, // Consider data stale after 10 seconds
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
     refetchInterval: 30 * 1000, // Refetch every 30 seconds
-    refetchIntervalInBackground: true, // Keep refetching even when tab is not focused
-    refetchOnWindowFocus: true, // Also refetch when user returns to window
-    refetchOnMount: true, // Refetch when component mounts
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
     retry: false,
-    enabled: true, // Always enabled
+    enabled: true,
   })
 
   const isAuthenticated = !!user
@@ -97,7 +96,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       throw err
     }
 
-    // Invalidate and refetch user profile to get fresh data
     await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
     await refetch()
 
@@ -109,7 +107,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       await fetch('/api/auth/logout', { method: 'POST' })
     } catch {}
 
-    // Clear all queries from cache
     queryClient.clear()
 
     await router.replace('/login')

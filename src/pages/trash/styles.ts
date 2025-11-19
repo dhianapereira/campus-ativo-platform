@@ -57,8 +57,6 @@ export const FiltersAndActionRow = styled('div', {
   justifyContent: 'space-between',
 })
 
-// SearchAndFiltersRow already defined below with the updated Settings-like layout
-
 export const FiltersContainer = styled('div', {
   display: 'flex',
   gap: '0.5rem',

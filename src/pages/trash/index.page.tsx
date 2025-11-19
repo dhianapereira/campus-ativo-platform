@@ -56,7 +56,6 @@ import { EditCategoryModal } from '@/pages/settings/components/EditCategoryModal
 import type { LocationResponse } from '../../../server/client/models/locationResponse'
 import type { CategoryResponse } from '../../../server/client/models/categoryResponse'
 
-// Hook customizado para debounce
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
@@ -103,7 +102,6 @@ export default function TrashPage() {
     useState<CategoryResponse | null>(null)
   const itemsPerPage = 10
 
-  // Debounce do termo de busca
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
   const {
@@ -122,20 +120,16 @@ export default function TrashPage() {
     queryFn: async () => {
       const params = new URLSearchParams()
 
-      // Always add page
       params.append('page', currentPage.toString())
 
-      // Add query only if it exists
       if (debouncedSearchTerm && debouncedSearchTerm.trim() !== '') {
         params.append('query', debouncedSearchTerm.trim())
       }
 
-      // Add type only if not 'all'
       if (typeFilter && typeFilter !== 'all') {
         params.append('type', typeFilter)
       }
 
-      // Add date filter only if not 'all'
       if (dateFilter && dateFilter !== 'all') {
         params.append('dateFilter', dateFilter)
       }
@@ -227,7 +221,6 @@ export default function TrashPage() {
   const totalItems = trashData?.total || 0
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
-  // Reset to last page if current page exceeds total
   useEffect(() => {
     if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(totalPages)
@@ -295,7 +288,6 @@ export default function TrashPage() {
   }
 
   const handleItemClick = async (item: TrashItem) => {
-    // Fetch complete item details including deleted items
     if (item.itemType === 'location') {
       try {
         const response = await fetch(
@@ -448,7 +440,6 @@ export default function TrashPage() {
       )
     }
 
-    // For 'all', 'location' and 'problem' we show Name, Location, Description
     return (
       <TableRow isHeader>
         <TableHeader>

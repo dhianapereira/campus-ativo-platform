@@ -7,7 +7,7 @@ import { styled } from '@/styles'
 
 const PageContainer = styled('div', {
   position: 'relative',
-  minHeight: 'calc(100vh - 80px)', // Account for header height
+  minHeight: 'calc(100vh - 80px)',
   backgroundColor: '#FFFFFF',
 })
 

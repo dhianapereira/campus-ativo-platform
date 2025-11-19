@@ -35,7 +35,6 @@ export default async function handler(
         },
       )
 
-      // Find the specific location by ID
       const location = result.locations?.find((loc) => loc.id === id)
 
       if (!location) {

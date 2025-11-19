@@ -35,7 +35,7 @@ export const Select = styled('select', {
   height: '100%',
   appearance: 'none',
   padding: '$4',
-  paddingRight: '$12', // Espaço para o ícone
+  paddingRight: '$12',
   backgroundColor: '$white',
   color: '$darkGray',
   fontFamily: '$default',
@@ -68,7 +68,6 @@ export const Select = styled('select', {
     },
   },
 
-  // Placeholder (option disabled)
   '&:invalid': {
     color: '$lightGray',
   },

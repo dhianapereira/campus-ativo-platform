@@ -99,7 +99,6 @@ export function AddLocationModal({
 
   const onSubmit = async (data: LocationFormData) => {
     setIsSubmitting(true)
-    // Normalize optional fields: send undefined when empty
     const payload = {
       name: data.name,
       number: data.number?.trim() ? data.number : undefined,

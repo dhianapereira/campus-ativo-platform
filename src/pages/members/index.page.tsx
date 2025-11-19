@@ -64,7 +64,6 @@ export default function MembersPage() {
 
   const canLoad = hasRoleLevel(3)
 
-  // Redirect to unauthorized page if user doesn't have permission
   useEffect(() => {
     if (!isAuthLoading && !canLoad) {
       const backTo =

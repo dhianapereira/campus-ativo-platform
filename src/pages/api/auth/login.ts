@@ -45,23 +45,20 @@ export default async function handler(
       },
     })
 
-    // Extract profile data from nested structure
     const profileData: UserResponse =
       (userProfile as { profile?: UserResponse })?.profile ||
       (userProfile as UserResponse)
 
-    // Set secure httpOnly cookie
     const cookie = serialize('auth-token', access_token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax', // More permissive for dev
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
-      domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost', // Explicit domain for dev
+      domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost',
     })
     res.setHeader('Set-Cookie', cookie)
 
-    // Extract role from JWT token payload (visible in logs: "role":"ADMIN")
     let roleFromToken = null
     try {
       const tokenPayload = JSON.parse(
@@ -74,9 +71,9 @@ export default async function handler(
       user: {
         id: profileData.id,
         name: profileData.name,
-        email, // Use the email from login request
-        role: roleFromToken || profileData.role, // Keep role for authorization
-        position: profileData.position || 'Não informado', // Position for display
+        email,
+        role: roleFromToken || profileData.role,
+        position: profileData.position || 'Não informado',
       },
     })
   } catch (error: unknown) {

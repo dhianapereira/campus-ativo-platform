@@ -97,7 +97,6 @@ export function EditMemberModal({
 
   const watchedFields = watch()
 
-  // Sync form with the selected member whenever the modal opens or member changes
   useEffect(() => {
     if (isOpen && member) {
       const memberRole = (member.role as string) || 'REPORTER'
@@ -116,7 +115,6 @@ export function EditMemberModal({
     }
   }, [isOpen, member, reset])
 
-  // Check for unsaved changes
   useEffect(() => {
     if (!member) {
       setHasUnsavedChanges(false)
@@ -180,7 +178,6 @@ export function EditMemberModal({
 
       const responses = await Promise.all(updates)
 
-      // Check if all requests were successful
       const allSuccessful = responses.every((response) => response.ok)
 
       if (!allSuccessful) {
@@ -193,7 +190,6 @@ export function EditMemberModal({
 
       await queryClient.invalidateQueries({ queryKey: ['users'] })
 
-      // Se a role do usuário logado foi alterada, invalidar o cache do perfil
       if (roleChanged && member?.id === user?.id) {
         await invalidateUser()
       }

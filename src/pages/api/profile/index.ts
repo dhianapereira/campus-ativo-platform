@@ -16,7 +16,6 @@ export default async function handler(
 
   try {
     if (req.method === 'GET') {
-      // Get user profile
       const result = await getUserProfileControllerHandle({
         headers: {
           Authorization: `Bearer ${authToken}`,

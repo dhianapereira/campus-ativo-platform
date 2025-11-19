@@ -49,8 +49,6 @@ export const ModalHeader = styled('div', {
   },
 })
 
-// Removed HeaderRight; status lives inside the form row for desktop and mobile
-
 export const ModalTitle = styled('h2', {
   fontSize: '1.5rem',
   fontWeight: 600,

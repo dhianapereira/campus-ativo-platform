@@ -1,9 +1,11 @@
 import { Status } from '@/data/static/status-data'
 import { z } from 'zod'
 
-/// This list contains the statuses required to carry out
-/// certain actions, such as filling in the notes field
-/// and the maintenance type field
+/**
+* This list contains the statuses required to carry out
+* certain actions, such as filling in the notes field
+* and the maintenance type field.
+*/
 const requiredStatus = [Status.Accepted, Status.InProgress, Status.Finished]
 
 export const actionsFormSchema = z

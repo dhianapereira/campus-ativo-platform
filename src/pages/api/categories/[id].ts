@@ -34,8 +34,7 @@ export default async function handler(
           },
         },
       )
-
-      // Find the specific category by ID
+      
       const category = result.categories?.find((cat) => cat.id === id)
 
       if (!category) {
