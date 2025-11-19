@@ -20,7 +20,6 @@ import {
   SearchInputContainer,
   SearchIcon,
   SearchInput,
-  SearchButton,
   ActionsContainer,
   ActionButton,
   DesktopTableWrapper,
@@ -522,9 +521,6 @@ export default function SettingsPage() {
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   />
                 </SearchInputContainer>
-                <SearchButton onClick={handleSearch} type="button">
-                  Pesquisar
-                </SearchButton>
                 <ActionButton variant="mobile-add" onClick={handleAddNew}>
                   <Plus size={16} />
                 </ActionButton>

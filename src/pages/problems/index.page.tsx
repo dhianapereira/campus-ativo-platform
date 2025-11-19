@@ -128,7 +128,6 @@ export default function Problems() {
               onSearch={handleSearch}
               onInputChange={handleInputChange}
               placeholder="Busque pelo título ou local do problema..."
-              buttonText="Pesquisar"
             />
             <ControlsContainer>
               <FilterGroup>

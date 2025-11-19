@@ -7,7 +7,6 @@ import {
   SearchInputContainer,
   SearchIcon,
   SearchInput,
-  SearchButton,
   TableWrapper,
   Table,
   TableHeader,
@@ -294,12 +293,6 @@ export default function MembersPage() {
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
             </SearchInputContainer>
-            <SearchButton
-              onClick={handleSearch}
-              type="button"
-            >
-              Pesquisar
-            </SearchButton>
           </SearchContainer>
           <SectionTitle>Gerenciamento de membros</SectionTitle>
         </HeaderContainer>

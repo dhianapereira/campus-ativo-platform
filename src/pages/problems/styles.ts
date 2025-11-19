@@ -219,31 +219,15 @@ export const ResponsiveSearchBar = styled(SearchBar, {
     width: '100%',
   },
 
-  '& button': {
-    fontSize: '$4',
-    padding: '$3 $4',
-    whiteSpace: 'nowrap',
-  },
-
   '@media(max-width: 640px)': {
     '& input': {
       fontSize: '$3',
       padding: '$2',
     },
-
-    '& button': {
-      fontSize: '$3',
-      padding: '$2 $3',
-    },
   },
 
   '@media(max-width: 480px)': {
     '& input': {
-      fontSize: '$2',
-      padding: '$1 $2',
-    },
-
-    '& button': {
       fontSize: '$2',
       padding: '$1 $2',
     },

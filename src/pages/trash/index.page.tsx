@@ -19,7 +19,6 @@ import {
   SearchInputContainer,
   SearchIcon,
   SearchInput,
-  SearchButton,
   ActionsContainer,
   ActionButton,
   DesktopTableWrapper,
@@ -518,12 +517,6 @@ export default function TrashPage() {
                   }
                 />
               </SearchInputContainer>
-              <SearchButton
-                onClick={() => handleSearch(searchTerm)}
-                type="button"
-              >
-                Pesquisar
-              </SearchButton>
             </SearchContainer>
 
             <FiltersAndActionRow>

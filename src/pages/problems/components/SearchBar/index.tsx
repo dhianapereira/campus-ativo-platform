@@ -5,8 +5,6 @@ import {
   SearchInputContainer,
   SearchIcon,
   SearchInput,
-  SearchButton,
-  ButtonsContainer,
 } from './styles'
 
 export interface SearchBarProps {
@@ -24,7 +22,6 @@ export const SearchBar = ({
   onSearch,
   onInputChange,
   value: controlledValue,
-  buttonText = 'Pesquisar',
 }: SearchBarProps) => {
   const [internalValue, setInternalValue] = useState('')
 
@@ -64,16 +61,6 @@ export const SearchBar = ({
           aria-label="Campo de pesquisa"
         />
       </SearchInputContainer>
-
-      <ButtonsContainer>
-        <SearchButton
-          onClick={handleSearch}
-          aria-label="Executar pesquisa"
-          type="button"
-        >
-          {buttonText}
-        </SearchButton>
-      </ButtonsContainer>
     </SearchContainer>
   )
 }

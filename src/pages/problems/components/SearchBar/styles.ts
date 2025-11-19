@@ -14,17 +14,13 @@ export const SearchInputContainer = styled('div', {
   position: 'relative',
 
   backgroundColor: '#ffffff',
-  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
   border: '1px solid #e9ecef',
   transition: 'all 0.2s ease',
   maxWidth: '33.5rem',
-  borderRadius: '$md 0 0 $md',
-  borderRight: 'none',
-
+  borderRadius: '$md',
+  
   '&:focus-within': {
     borderColor: '#4a9960',
-    boxShadow: '0 0 0 2px rgba(74, 153, 96, 0.1)',
-    borderRight: 'none',
   },
 })
 
@@ -51,41 +47,6 @@ export const SearchInput = styled('input', {
   '&::placeholder': {
     color: '#6c757d',
     fontWeight: '$normal',
-  },
-})
-
-export const ButtonsContainer = styled('div', {
-  display: 'flex',
-  alignItems: 'center',
-})
-
-export const SearchButton = styled('button', {
-  all: 'unset',
-  boxSizing: 'border-box',
-  fontFamily: '$default',
-  fontSize: '$md',
-  fontWeight: '$medium',
-  color: '#ffffff',
-  backgroundColor: '#00875F',
-  padding: '$3 $6',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '48px',
-  transition: 'all 0.2s ease',
-
-  borderRadius: '0 $md $md 0',
-
-  '&:hover': {
-    backgroundColor: '#5A9B6D',
-  },
-
-  '&:focus': {
-    outline: '2px solid #4a9960',
-    outlineOffset: '2px',
-    position: 'relative',
-    zIndex: 1,
   },
 })
 

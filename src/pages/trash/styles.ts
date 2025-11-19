@@ -138,12 +138,10 @@ export const SearchInputContainer = styled('div', {
   border: '1px solid #e2e8f0',
   transition: 'all 0.2s ease',
   maxWidth: '100%',
-  borderRadius: '8px 0 0 8px',
-  borderRight: 'none',
+  borderRadius: '$md',
 
   '&:focus-within': {
     borderColor: '#4a9960',
-    borderRight: 'none',
   },
 
   '@media(max-width: 640px)': {
@@ -184,45 +182,6 @@ export const SearchInput = styled('input', {
     fontSize: '$3',
     height: '48px',
     padding: '$2',
-  },
-})
-
-export const SearchButton = styled('button', {
-  all: 'unset',
-  boxSizing: 'border-box',
-  fontFamily: 'inherit',
-  fontSize: '$4',
-  fontWeight: 500,
-  color: '#ffffff',
-  backgroundColor: '#00875F',
-  padding: '$3 $4',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '46px',
-  transition: 'all 0.2s ease',
-  borderRadius: '0 8px 8px 0',
-  border: '1px solid #00875F',
-  borderLeft: 'none',
-
-  '&:hover': {
-    backgroundColor: '#5A9B6D',
-  },
-
-  '&:focus': {
-    outline: '2px solid #4a9960',
-    outlineOffset: '2px',
-    position: 'relative',
-    zIndex: 1,
-  },
-
-  '@media(max-width: 640px)': {
-    fontSize: '0.875rem',
-    height: '48px',
-    padding: '0 1.5rem',
-    minWidth: '120px',
-    flex: '0 0 auto',
   },
 })
 
