@@ -2,7 +2,7 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  WarningIcon,
+  ModalIcon,
   ModalTitle,
   CloseButton,
   ModalBody,
@@ -13,7 +13,8 @@ import {
 } from "./styles";
 import { X } from "phosphor-react";
 import Image from "next/image";
-import alertIcon from "@/assets/alert-icon.svg";
+import warningIcon from "@/assets/warning-icon.svg";
+import dangerIcon from "@/assets/danger-icon.svg";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -54,15 +55,15 @@ export function ConfirmationModal({
         </CloseButton>
 
         <ModalHeader>
-          <WarningIcon>
+          <ModalIcon>
             <Image
-              src={alertIcon}
+              src={variant === "warning" ? warningIcon : dangerIcon}
               alt="Alerta"
-              width={24}
-              height={24}
+              width={32}
+              height={32}
               priority
             />
-          </WarningIcon>
+          </ModalIcon>
           <ModalTitle>{title}</ModalTitle>
         </ModalHeader>
 

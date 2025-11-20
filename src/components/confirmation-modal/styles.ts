@@ -39,8 +39,7 @@ export const ModalHeader = styled("div", {
   paddingRight: "40px",
 });
 
-export const WarningIcon = styled("div", {
-  color: "#F59E0B",
+export const ModalIcon = styled("div", {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
