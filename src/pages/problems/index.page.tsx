@@ -59,12 +59,23 @@ export default function Problems() {
     { id: Status.Finished, label: "Concluído", checked: false },
   ];
 
-  // Transform API data to match current component structure
-  const problems = useMemo(() => {
+  type ProblemItem = {
+    id: string;
+    slug: string;
+    title: string;
+    location: string;
+    description: string;
+    badgeId: string;
+  };
+
+  // Transform API data to match current component structure.
+  // Link to detail uses slug (backend GET problem expects slug).
+  const problems = useMemo<ProblemItem[]>(() => {
     if (!data?.problems) return [];
 
     return data.problems.map((problem: any) => ({
       id: problem.id || problem.slug || "",
+      slug: problem.slug || problem.id || "",
       title: problem.title || "",
       location: problem.locationName || "Localização excluída",
       description: problem.excerpt || problem.description || "",
@@ -186,7 +197,7 @@ export default function Problems() {
 
         {!isLoading && !error && filteredProblems.length > 0 && (
           <GridView>
-            {filteredProblems.map((problem) => (
+            {filteredProblems.map((problem: ProblemItem) => (
               <ProblemCard key={problem.id} {...problem} />
             ))}
           </GridView>

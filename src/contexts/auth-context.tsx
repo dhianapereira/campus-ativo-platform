@@ -99,7 +99,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await queryClient.invalidateQueries({ queryKey: ["user", "profile"] });
     await refetch();
 
-    await router.push("/problems");
+    await router.push("/");
   }
 
   async function signOut() {

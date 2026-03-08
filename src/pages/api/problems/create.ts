@@ -16,20 +16,35 @@ export default async function handler(
   }
 
   try {
-    const { title, description, categoryId, locationId } = req.body;
+    const { title, description, categoryId, locationId, attachmentIds } = req.body;
 
     if (!title || !description || !categoryId || !locationId) {
       return res
         .status(400)
-        .json({ message: "Todos os campos são obrigatórios" });
+        .json({ message: "Todos os campos são obrigatórios." });
+    }
+
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
+
+    if (trimmedTitle.length > 100) {
+      return res
+        .status(400)
+        .json({ message: "O título não pode passar de 100 caracteres." });
+    }
+    if (trimmedDescription.length > 500) {
+      return res
+        .status(400)
+        .json({ message: "A descrição não pode passar de 500 caracteres." });
     }
 
     const result = await createProblemControllerHandle(
       {
-        title: title.trim(),
-        description: description.trim(),
+        title: trimmedTitle,
+        description: trimmedDescription,
         categoryId,
         locationId,
+        attachmentIds: attachmentIds || undefined,
       },
       {
         headers: {
@@ -41,10 +56,17 @@ export default async function handler(
     return res
       .status(201)
       .json({ message: "Problema cadastrado com sucesso", data: result });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Erro ao cadastrar problema:", error);
-    return res.status(error.status || 500).json({
-      message: error.message || "Erro ao cadastrar problema",
-    });
+    const axiosError = error as {
+      response?: { status?: number; data?: { message?: string } };
+      message?: string;
+    };
+    const status = axiosError.response?.status ?? 500;
+    const message =
+      axiosError.response?.data?.message ??
+      axiosError.message ??
+      "Erro ao cadastrar problema";
+    return res.status(status).json({ message });
   }
 }

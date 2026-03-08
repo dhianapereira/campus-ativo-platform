@@ -52,7 +52,7 @@ export const ModalHeader = styled("div", {
 export const ModalTitle = styled("h2", {
   fontSize: "1.5rem",
   fontWeight: 600,
-  color: "#111827",
+  color: "$darkGray",
   margin: 0,
 
   "@media (max-width: 48rem)": {
@@ -70,7 +70,7 @@ export const ModalCloseButton = styled("button", {
   borderRadius: "0.5rem",
   border: "none",
   backgroundColor: "transparent",
-  color: "#6b7280",
+  color: "$lightGray",
   cursor: "pointer",
   transition: "all 0.2s",
   padding: "0.5rem",
@@ -140,7 +140,7 @@ export const FormField = styled("div", {
 export const Label = styled("label", {
   fontSize: "1rem",
   fontWeight: 500,
-  color: "#111827",
+  color: "$darkGray",
 });
 
 export const Input = styled("input", {
@@ -148,7 +148,7 @@ export const Input = styled("input", {
   border: "1px solid #d1d5db",
   borderRadius: "6px",
   fontSize: "1rem",
-  color: "#111827",
+  color: "$darkGray",
   backgroundColor: "white",
 
   "&:focus": {
@@ -159,7 +159,7 @@ export const Input = styled("input", {
 
   "&:disabled": {
     backgroundColor: "#f9fafb",
-    color: "#6b7280",
+    color: "$lightGray",
     cursor: "not-allowed",
   },
 
@@ -171,7 +171,7 @@ export const Input = styled("input", {
     padding: "1rem",
     fontSize: "1rem",
     borderRadius: "0.5rem",
-    border: "1px solid #e5e7eb",
+    border: "1px solid rgba(0, 0, 0, 0.07)",
   },
 });
 
@@ -180,7 +180,7 @@ export const TextArea = styled("textarea", {
   border: "1px solid #d1d5db",
   borderRadius: "6px",
   fontSize: "1rem",
-  color: "#111827",
+  color: "$darkGray",
   backgroundColor: "white",
   resize: "vertical",
   minHeight: "160px",
@@ -194,7 +194,7 @@ export const TextArea = styled("textarea", {
 
   "&:disabled": {
     backgroundColor: "#f9fafb",
-    color: "#6b7280",
+    color: "$lightGray",
     cursor: "not-allowed",
   },
 
@@ -206,7 +206,7 @@ export const TextArea = styled("textarea", {
     padding: "1rem",
     fontSize: "1rem",
     borderRadius: "0.5rem",
-    border: "1px solid #e5e7eb",
+    border: "1px solid rgba(0, 0, 0, 0.07)",
     minHeight: "4.5rem",
     maxHeight: "4.5rem",
     height: "4.5rem",
@@ -238,7 +238,7 @@ export const StatusContainer = styled("div", {
 export const StatusLabel = styled("span", {
   fontSize: "1rem",
   fontWeight: 500,
-  color: "#111827",
+  color: "$darkGray",
 });
 
 export const StatusToggle = styled("button", {
@@ -336,7 +336,7 @@ export const DeleteButton = styled("button", {
   color: "#dc2626",
   border: "1px solid #dc2626",
   padding: "0.875rem 1.25rem",
-  borderRadius: "8px",
+  borderRadius: "$card",
   fontSize: "0.875rem",
   fontWeight: 500,
   cursor: "pointer",
@@ -385,7 +385,7 @@ export const CancelButton = styled("button", {
   color: "#374151",
   border: "1px solid #d1d5db",
   padding: "0.875rem 2rem",
-  borderRadius: "8px",
+  borderRadius: "$card",
   fontSize: "0.875rem",
   fontWeight: 500,
   cursor: "pointer",
@@ -416,7 +416,7 @@ export const SaveButton = styled("button", {
   color: "white",
   border: "1px solid #00875F",
   padding: "0.875rem 2rem",
-  borderRadius: "8px",
+  borderRadius: "$card",
   fontSize: "0.875rem",
   fontWeight: 500,
   cursor: "pointer",

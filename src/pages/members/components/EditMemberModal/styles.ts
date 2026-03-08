@@ -37,7 +37,7 @@ export const ModalHeader = styled("div", {
 export const ModalTitle = styled("h2", {
   fontSize: "1.5rem",
   fontWeight: 600,
-  color: "#111827",
+  color: "$darkGray",
   margin: 0,
 });
 
@@ -50,7 +50,7 @@ export const ModalCloseButton = styled("button", {
   borderRadius: "0.5rem",
   border: "none",
   backgroundColor: "transparent",
-  color: "#6b7280",
+  color: "$lightGray",
   cursor: "pointer",
   transition: "color 0.2s",
 
@@ -117,7 +117,7 @@ export const FormField = styled("div", {
 export const Label = styled("label", {
   fontSize: "1rem",
   fontWeight: 500,
-  color: "#111827",
+  color: "$darkGray",
 });
 
 export const Input = styled("input", {
@@ -137,8 +137,8 @@ export const Input = styled("input", {
 
   "&:disabled": {
     backgroundColor: "#f9fafb",
-    color: "#6b7280",
-    border: "1px solid #e5e7eb",
+    color: "$lightGray",
+    border: "1px solid rgba(0, 0, 0, 0.07)",
     cursor: "not-allowed",
   },
 });
@@ -156,7 +156,7 @@ export const SelectContainer = styled("div", {
     height: 0,
     borderLeft: "0.25rem solid transparent",
     borderRight: "0.25rem solid transparent",
-    borderTop: "0.25rem solid #6b7280",
+    borderTop: "0.25rem solid $lightGray",
     pointerEvents: "none",
   },
 });
@@ -180,8 +180,8 @@ export const Select = styled("select", {
 
   "&:disabled": {
     backgroundColor: "#f9fafb",
-    color: "#6b7280",
-    border: "1px solid #e5e7eb",
+    color: "$lightGray",
+    border: "1px solid rgba(0, 0, 0, 0.07)",
     cursor: "not-allowed",
   },
 });
@@ -225,7 +225,7 @@ export const StatusContainer = styled("div", {
 export const StatusLabel = styled("span", {
   fontSize: "1rem",
   fontWeight: 500,
-  color: "#111827",
+  color: "$darkGray",
 });
 
 export const StatusToggle = styled("button", {

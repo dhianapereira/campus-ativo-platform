@@ -38,7 +38,7 @@ export const HeaderContainer = styled("div", {
 
 export const SectionTitle = styled("h2", {
   margin: 0,
-  color: "#111827",
+  color: "$darkGray",
   fontWeight: 700,
   lineHeight: 1.3,
   fontSize: "1.5rem",
@@ -184,7 +184,7 @@ export const MemberCardName = styled("h3", {
   fontSize: "1.25rem",
   lineHeight: 1.3,
   fontWeight: 700,
-  color: "#111827",
+  color: "$darkGray",
 });
 
 export const MemberCardEmail = styled("p", {
@@ -201,7 +201,7 @@ export const MemberCardPosition = styled("p", {
   fontSize: "1.05rem",
   lineHeight: 1.4,
   fontWeight: 500,
-  color: "#111827",
+  color: "$darkGray",
   display: "flex",
   flexWrap: "wrap",
   gap: "0.5ch",
@@ -243,7 +243,7 @@ export const SearchBar = styled("div", {
 
 export const TableRow = styled("tr", {
   background: "#FFFFFF",
-  borderBottom: "1px solid #e5e7eb",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.07)",
   transition: "background-color 0.2s ease",
 
   variants: {
@@ -310,7 +310,7 @@ export const PaginationButton = styled("button", {
   variants: {
     variant: {
       text: {
-        color: "#6b7280",
+        color: "$lightGray",
         backgroundColor: "transparent",
 
         "&:hover:not(:disabled)": {
@@ -334,7 +334,7 @@ export const PaginationButton = styled("button", {
         borderRadius: 0,
         gap: "0.5rem",
         "&:hover:not(:disabled)": {
-          color: "#111827",
+          color: "$darkGray",
         },
         "&:disabled": {
           opacity: 0.35,
@@ -411,7 +411,7 @@ export const FilterButton = styled("button", {
       },
       false: {
         backgroundColor: "white",
-        color: "#6b7280",
+        color: "$lightGray",
         border: "1px solid #d1d5db",
         "&:hover": {
           backgroundColor: "#f3f4f6",

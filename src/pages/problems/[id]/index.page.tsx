@@ -8,54 +8,149 @@ import {
   InfoContainer,
   EditButton,
 } from "./styles";
-import { ArrowLeft, NotePencil } from "phosphor-react";
+import { ArrowLeft, NotePencil, Trash } from "phosphor-react";
 import { useRouter } from "next/router";
-import { IProps } from "./index.d";
+import { IProps, BACKEND_STATUS_TO_FRONTEND } from "./index.d";
 import { Button, Text } from "@/styles";
 import { Actions } from "./components/Actions";
 import { Status } from "@/data/static/status-data";
 import { ImageError } from "@/app/platform/components/ImageError";
 import { NoImage } from "@/app/platform/components/NoImage";
 import { ProtectedRoute } from "@/styles/components/routes/ProtectedRoute";
+import { useAuth } from "@/contexts/auth-context";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+const STATUS_TO_ANALYSIS_BACKEND = "TO_ANALYSIS";
+
+function formatDateTime(isoString?: string | null): string {
+  if (!isoString) return "—";
+  try {
+    const d = new Date(isoString);
+    return d.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+      ...(d.getHours() || d.getMinutes()
+        ? {
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        : {}),
+    });
+  } catch {
+    return isoString;
+  }
+}
 
 export default function ProblemDetails() {
   const router = useRouter();
   const { id } = router.query;
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const [problemData, setProblemData] = useState<IProps | null>(null);
   const [imageError, setImageError] = useState(false);
 
-  useEffect(() => {
-    async function fetchProblemData() {
-      if (id) {
-        const response = {
-          id,
-          title: "Ar-condicionado",
-          location: "Sala 05232",
-          description:
-            "Problemas no ar-condicionado foram identificados na sala 05232. Verificar com urgência.",
-          imageUrl:
-            "https://imgs.search.brave.com/XR7WZESq-wVfAbqa2Yno-_e1JWAGEyfpnWId1P3oH9s/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9maWxl/cy50ZWNub2Jsb2cu/bmV0L3dwLWNvbnRl/bnQvdXBsb2Fkcy8y/MDIyLzAzL2NvbmRl/bnNhZG9yLWFjLTEt/NzAweDUyNS5qcGc",
-          reporter: "email@email.com",
-          createdAt: "14 de Março de 2024",
-          updatedAt: "14 de Março de 2024 as 15h41min",
-          status: "toAnalysis",
-          category: null,
-          maintenanceType: null,
-        };
-        setProblemData(response);
+  const { data: apiResponse, isLoading, error } = useQuery({
+    queryKey: ["problem", id],
+    queryFn: async () => {
+      const res = await fetch(`/api/problems/${id}`, { credentials: "include" });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Falha ao carregar problema");
       }
-    }
+      return res.json();
+    },
+    enabled: !!id && typeof id === "string",
+  });
 
-    fetchProblemData();
-  }, [id]);
+  const problem = apiResponse?.problem;
 
-  if (!problemData) {
-    return <p>Carregando...</p>;
+  useEffect(() => {
+    if (!problem) return;
+    const firstAttachment = problem.attachments?.[0];
+    setProblemData({
+      title: problem.title,
+      location: problem.location?.name ?? problem.locationId ?? "—",
+      description: problem.description,
+      status: BACKEND_STATUS_TO_FRONTEND[problem.status] ?? problem.status,
+      category: problem.maintenanceType ?? null,
+      maintenanceType: problem.maintenanceType ?? null,
+      imageUrl: firstAttachment?.url ?? null,
+      reporter: problem.reporterName ?? (problem.reporterId ?? "—"),
+      createdAt: formatDateTime(problem.createdAt),
+      updatedAt: problem.updatedAt ? formatDateTime(problem.updatedAt) : null,
+    });
+  }, [problem]);
+
+  const moveToTrashMutation = useMutation({
+    mutationFn: async () => {
+      if (!problem?.id) throw new Error("Problema não encontrado");
+      const res = await fetch(`/api/problems/${problem.id}/trash`, {
+        method: "PATCH",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Falha ao mover para a lixeira");
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["problems"] });
+      toast.success("Problema movido para a lixeira.");
+      router.push("/problems");
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Falha ao mover para a lixeira");
+    },
+  });
+
+  const isReporter = user?.id && problem?.reporterId && user.id === problem.reporterId;
+  const isStatusToAnalysis = problem?.status === STATUS_TO_ANALYSIS_BACKEND;
+  const canMoveToTrash = isReporter && isStatusToAnalysis;
+  const canEdit = isStatusToAnalysis;
+
+  if (isLoading || (id && !problem && !error)) {
+    return (
+      <ProtectedRoute>
+        <Container>
+          <div style={{ padding: "2rem", textAlign: "center" }}>
+            Carregando...
+          </div>
+        </Container>
+      </ProtectedRoute>
+    );
+  }
+
+  if (error || !problemData) {
+    return (
+      <ProtectedRoute>
+        <Container>
+          <div style={{ padding: "2rem", textAlign: "center" }}>
+            <p>
+              {error instanceof Error ? error.message : "Problema não encontrado."}
+            </p>
+            <Button
+              variant="secondary"
+              onClick={() => router.push("/problems")}
+              style={{ marginTop: "1rem" }}
+            >
+              Voltar
+            </Button>
+          </div>
+        </Container>
+      </ProtectedRoute>
+    );
   }
 
   async function goToEditPage() {
     await router.push(`/problems/${id}/edit`);
+  }
+
+  function handleMoveToTrash() {
+    if (!canMoveToTrash) return;
+    moveToTrashMutation.mutate();
   }
 
   return (
@@ -76,31 +171,58 @@ export default function ProblemDetails() {
               {problemData.title}
             </Title>
           </div>
-          {problemData.status === Status.ToAnalysis && (
-            <>
-              <Button
-                className="desktop"
-                variant="secondary"
-                onClick={goToEditPage}
-                aria-label="Editar problema"
-                tabIndex={0}
-              >
-                <>
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+            {canMoveToTrash && (
+              <>
+                <Button
+                  className="desktop"
+                  variant="secondary"
+                  onClick={handleMoveToTrash}
+                  disabled={moveToTrashMutation.isPending}
+                  aria-label="Mover para a lixeira"
+                  tabIndex={0}
+                  css={{ color: "#b91c1c", borderColor: "#b91c1c" }}
+                >
+                  <Trash weight="bold" size={24} />
+                  Mover para lixeira
+                </Button>
+                <EditButton
+                  className="mobile"
+                  onClick={handleMoveToTrash}
+                  disabled={moveToTrashMutation.isPending}
+                  aria-label="Mover para a lixeira"
+                  tabIndex={0}
+                  role="button"
+                  style={{ color: "#b91c1c", borderColor: "#b91c1c" }}
+                >
+                  <Trash weight="bold" size={24} />
+                </EditButton>
+              </>
+            )}
+            {canEdit && (
+              <>
+                <Button
+                  className="desktop"
+                  variant="secondary"
+                  onClick={goToEditPage}
+                  aria-label="Editar problema"
+                  tabIndex={0}
+                >
                   <NotePencil weight="bold" size={24} />
                   Editar
-                </>
-              </Button>
-              <EditButton
-                className="mobile"
-                onClick={goToEditPage}
-                aria-label="Editar problema"
-                tabIndex={0}
-                role="button"
-              >
-                <NotePencil weight="bold" size={24} />
-              </EditButton>
-            </>
-          )}
+                </Button>
+                <EditButton
+                  className="mobile"
+                  onClick={goToEditPage}
+                  aria-label="Editar problema"
+                  tabIndex={0}
+                  role="button"
+                >
+                  <NotePencil weight="bold" size={24} />
+                </EditButton>
+              </>
+            )}
+          </div>
         </Header>
         <Body>
           {!problemData.imageUrl ? (

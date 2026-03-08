@@ -1,4 +1,5 @@
 import {
+  ChartLineUp,
   Warning,
   SignOut,
   ArrowClockwise,
@@ -29,6 +30,15 @@ export const createMenuOptions = ({
   canAccessSettings = false,
 }: MenuOptionsConfig): IOption[] => {
   const options: IOption[] = [
+    {
+      id: "dashboard",
+      name: "Dashboard",
+      icon: <ChartLineUp weight="bold" />,
+      onClick: () => {
+        router.push("/home");
+        onClose?.();
+      },
+    },
     {
       id: "problems",
       name: "Problemas",
@@ -88,7 +98,7 @@ export const createMenuOptions = ({
 
   options.push({
     id: "logout",
-    name: "Sair da plataforma",
+    name: "Sair do sistema",
     icon: <SignOut weight="bold" />,
     onClick: () => {
       if (openLogoutModal) {
@@ -101,4 +111,13 @@ export const createMenuOptions = ({
   });
 
   return options;
+};
+
+/** Path associado a cada item do menu (para estado ativo) */
+export const MENU_OPTION_PATHS: Record<string, string> = {
+  dashboard: "/home",
+  problems: "/problems",
+  members: "/members",
+  settings: "/settings",
+  trash: "/trash",
 };

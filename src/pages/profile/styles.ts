@@ -18,7 +18,7 @@ export const HeaderContainer = styled("div", {
 export const PageTitle = styled("h1", {
   fontSize: "1.875rem",
   fontWeight: 700,
-  color: "#1f2937",
+  color: "$darkGray",
   marginBottom: "0.5rem",
 
   "@media(max-width: 768px)": {
@@ -28,7 +28,7 @@ export const PageTitle = styled("h1", {
 
 export const PageSubtitle = styled("p", {
   fontSize: "1rem",
-  color: "#6b7280",
+  color: "$lightGray",
 });
 
 export const SectionsContainer = styled("div", {
@@ -51,19 +51,19 @@ export const Section = styled("div", {
 export const SectionHeader = styled("div", {
   marginBottom: "1.5rem",
   paddingBottom: "1rem",
-  borderBottom: "1px solid #e5e7eb",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.07)",
 });
 
 export const SectionTitle = styled("h2", {
   fontSize: "1.25rem",
   fontWeight: 600,
-  color: "#1f2937",
+  color: "$darkGray",
   marginBottom: "0.25rem",
 });
 
 export const SectionDescription = styled("p", {
   fontSize: "0.875rem",
-  color: "#6b7280",
+  color: "$lightGray",
 });
 
 export const Form = styled("form", {
@@ -88,10 +88,10 @@ export const Input = styled("input", {
   width: "100%",
   padding: "0.625rem 0.875rem",
   fontSize: "0.875rem",
-  color: "#1f2937",
+  color: "$darkGray",
   backgroundColor: "white",
   border: "1px solid #d1d5db",
-  borderRadius: "8px",
+  borderRadius: "$card",
   outline: "none",
   transition: "border-color 0.2s",
 
@@ -139,7 +139,7 @@ export const Button = styled("button", {
   justifyContent: "center",
   gap: "0.5rem",
   padding: "0.625rem 1.25rem",
-  borderRadius: "8px",
+  borderRadius: "$card",
   fontSize: "0.875rem",
   fontWeight: 600,
   cursor: "pointer",
@@ -197,7 +197,7 @@ export const DangerZone = styled("div", {
   padding: "1rem",
   backgroundColor: "#fef2f2",
   border: "1px solid #fecaca",
-  borderRadius: "8px",
+  borderRadius: "$card",
 });
 
 export const DangerText = styled("p", {
@@ -211,7 +211,7 @@ export const InfoBox = styled("div", {
   padding: "1rem",
   backgroundColor: "#f0fdf4",
   border: "1px solid #bbf7d0",
-  borderRadius: "8px",
+  borderRadius: "$card",
   marginBottom: "1rem",
 });
 

@@ -48,13 +48,27 @@ import {
 } from "./styles";
 import PlatformLayout from "@/app/platform/layout";
 import { RoleProtectedRoute } from "@/styles";
+import { useAuth } from "@/contexts/auth-context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ConfirmationModal } from "@/components/confirmation-modal";
 import { EditLocationModal } from "@/pages/settings/components/EditLocationModal";
 import { EditCategoryModal } from "@/pages/settings/components/EditCategoryModal";
+import { ViewProblemModal } from "./components/ViewProblemModal";
 import type { LocationResponse } from "../../server/client/models/locationResponse";
 import type { CategoryResponse } from "../../server/client/models/categoryResponse";
+
+interface ProblemData {
+  id: string;
+  title: string;
+  description?: string;
+  locationName?: string;
+  categoryName?: string;
+  authorId?: string;
+  authorName?: string;
+  createdAt?: string;
+  deletedAt?: string;
+}
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -84,6 +98,8 @@ interface TrashItem {
 
 export default function TrashPage() {
   const queryClient = useQueryClient();
+  const { hasRoleLevel } = useAuth();
+  const canSeeLocationsAndCategories = hasRoleLevel(2);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<
     "all" | "location" | "category" | "problem"
@@ -100,6 +116,9 @@ export default function TrashPage() {
   const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
   const [selectedCategoryForEdit, setSelectedCategoryForEdit] =
     useState<CategoryResponse | null>(null);
+  const [isViewProblemModalOpen, setIsViewProblemModalOpen] = useState(false);
+  const [selectedProblemForView, setSelectedProblemForView] =
+    useState<ProblemData | null>(null);
   const itemsPerPage = 10;
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -326,6 +345,18 @@ export default function TrashPage() {
         console.error("Erro ao carregar categoria:", error);
         toast.error("Falha ao carregar detalhes da categoria");
       }
+    } else if (item.itemType === "problem") {
+      const problemData: ProblemData = {
+        id: item.id,
+        title: item.name,
+        description: item.description,
+        locationName: item.local,
+        authorId: (item as TrashItem & { reporterId?: string }).reporterId,
+        createdAt: (item as TrashItem & { createdAt?: string }).createdAt,
+        deletedAt: item.deletedAt,
+      };
+      setSelectedProblemForView(problemData);
+      setIsViewProblemModalOpen(true);
     }
   };
 
@@ -349,6 +380,17 @@ export default function TrashPage() {
   const handleEditCategoryClose = () => {
     setIsEditCategoryModalOpen(false);
     setSelectedCategoryForEdit(null);
+  };
+
+  const handleViewProblemSuccess = () => {
+    setIsViewProblemModalOpen(false);
+    setSelectedProblemForView(null);
+    queryClient.invalidateQueries({ queryKey: ["trash"] });
+  };
+
+  const handleViewProblemClose = () => {
+    setIsViewProblemModalOpen(false);
+    setSelectedProblemForView(null);
   };
 
   const handlePageChange = (page: number) => {
@@ -458,7 +500,7 @@ export default function TrashPage() {
 
   if (error) {
     return (
-      <RoleProtectedRoute requiredLevel={2}>
+      <RoleProtectedRoute requiredLevel={1}>
         <PlatformLayout>
           <MainContainer>
             <HeaderContainer>
@@ -485,7 +527,7 @@ export default function TrashPage() {
   }
 
   return (
-    <RoleProtectedRoute requiredLevel={2}>
+    <RoleProtectedRoute requiredLevel={1}>
       <PlatformLayout>
         <MainContainer>
           <HeaderContainer>
@@ -534,8 +576,12 @@ export default function TrashPage() {
                 >
                   <option value="all">Tipo</option>
                   <option value="problem">Problema</option>
-                  <option value="category">Categoria</option>
-                  <option value="location">Localização</option>
+                  {canSeeLocationsAndCategories && (
+                    <>
+                      <option value="category">Categoria</option>
+                      <option value="location">Localização</option>
+                    </>
+                  )}
                 </select>
 
                 <select
@@ -709,6 +755,13 @@ export default function TrashPage() {
           onClose={handleEditCategoryClose}
           onSuccess={handleEditCategorySuccess}
           category={selectedCategoryForEdit}
+        />
+
+        <ViewProblemModal
+          isOpen={isViewProblemModalOpen}
+          onClose={handleViewProblemClose}
+          onSuccess={handleViewProblemSuccess}
+          problem={selectedProblemForView}
         />
       </PlatformLayout>
     </RoleProtectedRoute>

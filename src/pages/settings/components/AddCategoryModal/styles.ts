@@ -52,7 +52,7 @@ export const ModalHeader = styled("div", {
 export const ModalTitle = styled("h2", {
   fontSize: "1.5rem",
   fontWeight: 600,
-  color: "#111827",
+  color: "$darkGray",
   margin: 0,
 
   "@media (max-width: 48rem)": {
@@ -70,7 +70,7 @@ export const ModalCloseButton = styled("button", {
   borderRadius: "0.5rem",
   border: "none",
   backgroundColor: "transparent",
-  color: "#6b7280",
+  color: "$lightGray",
   cursor: "pointer",
   transition: "all 0.2s",
   padding: "0.5rem",
@@ -128,7 +128,7 @@ export const FormField = styled("div", {
 export const Label = styled("label", {
   fontSize: "1rem",
   fontWeight: 500,
-  color: "#111827",
+  color: "$darkGray",
 });
 
 export const Input = styled("input", {
@@ -138,7 +138,7 @@ export const Input = styled("input", {
   fontSize: "1rem",
   transition: "border-color 0.2s",
   backgroundColor: "white",
-  color: "#111827",
+  color: "$darkGray",
 
   "&:focus": {
     outline: "none",
@@ -152,7 +152,7 @@ export const Input = styled("input", {
 
   "&:disabled": {
     backgroundColor: "#f9fafb",
-    color: "#6b7280",
+    color: "$lightGray",
     cursor: "not-allowed",
   },
 });
@@ -164,7 +164,7 @@ export const TextArea = styled("textarea", {
   fontSize: "1rem",
   transition: "border-color 0.2s",
   backgroundColor: "white",
-  color: "#111827",
+  color: "$darkGray",
   fontFamily: "inherit",
   resize: "vertical",
   minHeight: "120px",
@@ -181,7 +181,7 @@ export const TextArea = styled("textarea", {
 
   "&:disabled": {
     backgroundColor: "#f9fafb",
-    color: "#6b7280",
+    color: "$lightGray",
     cursor: "not-allowed",
   },
 
@@ -189,7 +189,7 @@ export const TextArea = styled("textarea", {
     padding: "1rem",
     fontSize: "1rem",
     borderRadius: "0.5rem",
-    border: "1px solid #e5e7eb",
+    border: "1px solid rgba(0, 0, 0, 0.07)",
     minHeight: "4.5rem",
     maxHeight: "4.5rem",
     height: "4.5rem",
@@ -217,7 +217,7 @@ export const ButtonGroup = styled("div", {
 export const CancelButton = styled("button", {
   padding: "0.875rem 2rem",
   border: "1px solid #d1d5db",
-  borderRadius: "8px",
+  borderRadius: "$card",
   backgroundColor: "white",
   color: "#374151",
   fontSize: "0.875rem",
@@ -252,7 +252,7 @@ export const CancelButton = styled("button", {
 export const SubmitButton = styled("button", {
   padding: "0.875rem 2rem",
   border: "1px solid #00875F",
-  borderRadius: "8px",
+  borderRadius: "$card",
   backgroundColor: "#00875F",
   color: "white",
   fontSize: "0.875rem",

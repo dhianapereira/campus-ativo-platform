@@ -105,6 +105,7 @@ export default function ImageUpload({
       <UploadArea hasError={!!error} hasImage={!!selectedFile}>
         {selectedFile && previewUrl ? (
           <ImagePreview>
+            <img src={previewUrl} alt="Preview da imagem" />
             <RemoveButton onClick={handleRemoveImage} type="button">
               ×
             </RemoveButton>

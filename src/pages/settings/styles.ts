@@ -56,7 +56,7 @@ export const Tab = styled("button", {
       },
       false: {
         backgroundColor: "white",
-        color: "#6b7280",
+        color: "$lightGray",
         border: "1px solid #d1d5db",
         "&:hover": {
           backgroundColor: "#f3f4f6",
@@ -70,7 +70,7 @@ export const Tab = styled("button", {
 export const PageTitle = styled("h1", {
   fontSize: "2rem",
   fontWeight: 600,
-  color: "#111827",
+  color: "$darkGray",
   margin: "0 0 1.5rem 0",
 
   "@media(max-width: 640px)": {
@@ -125,7 +125,7 @@ export const FilterButton = styled("button", {
       },
       false: {
         backgroundColor: "white",
-        color: "#6b7280",
+        color: "$lightGray",
         border: "1px solid #d1d5db",
         "&:hover": {
           backgroundColor: "#f3f4f6",
@@ -266,7 +266,7 @@ export const ActionButton = styled("button", {
         color: "white",
         border: "1px solid #00875F",
         borderLeft: "1px solid #00875F",
-        borderRadius: "8px",
+        borderRadius: "$card",
         padding: "0",
         minWidth: "48px",
         width: "48px",
@@ -350,7 +350,7 @@ export const TableHeader = styled("th", {
 
 export const TableRow = styled("tr", {
   background: "#FFFFFF",
-  borderBottom: "1px solid #e5e7eb",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.07)",
   transition: "background-color 0.2s ease",
 
   variants: {
@@ -458,10 +458,10 @@ export const CardTitle = styled("h3", {
   fontSize: "0.875rem",
   lineHeight: 1.4,
   fontWeight: 400,
-  color: "#111827",
+  color: "$darkGray",
   "& strong": {
     fontWeight: 700,
-    color: "#111827",
+    color: "$darkGray",
   },
 });
 
@@ -478,10 +478,10 @@ export const CardDescription = styled("div", {
   fontSize: "0.875rem",
   lineHeight: 1.5,
   fontWeight: 400,
-  color: "#111827",
+  color: "$darkGray",
 
   "& strong": {
-    color: "#111827",
+    color: "$darkGray",
     fontWeight: 700,
   },
 });
@@ -530,7 +530,7 @@ export const PaginationButton = styled("button", {
         gap: "0.5rem",
 
         "&:hover:not(:disabled)": {
-          color: "#111827",
+          color: "$darkGray",
         },
 
         "&:disabled": {

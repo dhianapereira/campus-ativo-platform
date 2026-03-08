@@ -16,8 +16,13 @@ export const Body = styled("main", {
   width: "100vw",
   height: "100vh",
   overflow: "auto",
+  backgroundColor: "$greenishWhite",
 });
 
 export const Content = styled("div", {
-  padding: "$4 $3 $3 $4",
+  padding: "$8 $4 $4 $4",
+
+  "@media(max-width: 640px)": {
+    padding: "32px $2 $4 $2",
+  },
 });

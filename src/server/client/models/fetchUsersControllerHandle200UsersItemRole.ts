@@ -6,12 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type FetchUsersControllerHandle200UsersItemRole =
-  (typeof FetchUsersControllerHandle200UsersItemRole)[keyof typeof FetchUsersControllerHandle200UsersItemRole];
+export type FetchUsersControllerHandle200UsersItemRole = typeof FetchUsersControllerHandle200UsersItemRole[keyof typeof FetchUsersControllerHandle200UsersItemRole];
 
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 export const FetchUsersControllerHandle200UsersItemRole = {
-  REPORTER: "REPORTER",
-  MANAGER: "MANAGER",
-  DIRECTOR: "DIRECTOR",
-  ADMIN: "ADMIN",
+  REPORTER: 'REPORTER',
+  MANAGER: 'MANAGER',
+  DIRECTOR: 'DIRECTOR',
+  ADMIN: 'ADMIN',
 } as const;

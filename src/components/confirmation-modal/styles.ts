@@ -51,7 +51,7 @@ export const ModalIcon = styled("div", {
 export const ModalTitle = styled("h2", {
   fontSize: "22px",
   fontWeight: "700",
-  color: "#1F2937",
+  color: "$darkGray",
   margin: 0,
   lineHeight: "1.2",
 });
@@ -68,7 +68,7 @@ export const CloseButton = styled("button", {
   alignItems: "center",
   justifyContent: "center",
   padding: "8px",
-  borderRadius: "8px",
+  borderRadius: "$card",
   transition: "all 0.2s",
   flexShrink: 0,
   width: "40px",
@@ -77,7 +77,7 @@ export const CloseButton = styled("button", {
 
   "&:hover": {
     backgroundColor: "#F3F4F6",
-    color: "#1F2937",
+    color: "$darkGray",
   },
 
   "&:active": {
@@ -98,7 +98,7 @@ export const ModalBody = styled("div", {
 
 export const ModalMessage = styled("p", {
   fontSize: "16px",
-  color: "#6B7280",
+  color: "$lightGray",
   lineHeight: "1.6",
   margin: 0,
 });
@@ -118,7 +118,7 @@ export const CancelButton = styled("button", {
   padding: "14px 24px",
   fontSize: "16px",
   fontWeight: "600",
-  borderRadius: "8px",
+  borderRadius: "$card",
   border: "1.5px solid #D1D5DB",
   backgroundColor: "#FFFFFF",
   color: "#374151",
@@ -148,7 +148,7 @@ export const ConfirmButton = styled("button", {
   padding: "14px 24px",
   fontSize: "16px",
   fontWeight: "600",
-  borderRadius: "8px",
+  borderRadius: "$card",
   border: "none",
   color: "#FFFFFF",
   cursor: "pointer",

@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 
 export default function ProblemCard({
   id,
+  slug,
   title,
   location,
   description,
@@ -14,7 +15,7 @@ export default function ProblemCard({
   const router = useRouter();
 
   async function goToDetails() {
-    await router.push(`/problems/${id}/`);
+    await router.push(`/problems/${slug}/`);
   }
 
   return (
