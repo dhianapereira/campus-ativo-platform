@@ -15,4 +15,6 @@ export interface CreateProblemRequest {
   categoryId: string;
   /** ID da localização onde ocorreu o problema */
   locationId: string;
+  /** IDs dos anexos (retornados pelo upload) */
+  attachmentIds?: string[];
 }

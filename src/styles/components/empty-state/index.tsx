@@ -32,8 +32,9 @@ const Card = styled("div", {
   width: "min(560px, 86vw)",
   margin: "0 auto",
   marginTop: "18vh",
-  backgroundColor: "#FFFFFF",
-  borderRadius: "8px",
+  backgroundColor: "$white",
+  border: "1px solid rgba(0, 0, 0, 0.07)",
+  borderRadius: "$card",
   boxShadow:
     "0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05)",
   padding: "40px",
@@ -43,14 +44,13 @@ const Card = styled("div", {
     width: "min(540px, 90vw)",
     padding: "32px",
     marginTop: "24vh",
-    borderRadius: "10px",
   },
 });
 
 const Title = styled("h2", {
   fontSize: "28px",
   fontWeight: 700,
-  color: "#44403C",
+  color: "$gray",
   margin: 0,
   marginTop: "8px",
   marginBottom: "16px",
@@ -64,7 +64,7 @@ const Title = styled("h2", {
 const Message = styled("p", {
   fontSize: "18px",
   fontWeight: 500,
-  color: "#4B5563",
+  color: "$lightGray",
   margin: 0,
   lineHeight: 1.6,
   maxWidth: "460px",
@@ -82,16 +82,16 @@ const Message = styled("p", {
 const ActionButton = styled("button", {
   appearance: "none",
   border: "none",
-  borderRadius: "8px",
+  borderRadius: "$card",
   padding: "10px 22px",
-  backgroundColor: "#00875F",
-  color: "#FFFFFF",
+  backgroundColor: "$green",
+  color: "$white",
   fontSize: "16px",
   fontWeight: 700,
   cursor: "pointer",
 
   "&:hover": {
-    backgroundColor: "#0A6A50",
+    backgroundColor: "$lightGreen",
   },
 
   "@media (max-width: 820px)": {

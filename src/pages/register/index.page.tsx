@@ -68,16 +68,18 @@ export default function Register() {
       if (!response.ok || !result.success) {
         setError("confirmPassword", {
           type: "manual",
-          message: result.error || "Erro ao criar conta. Tente novamente.",
+          message:
+            "Não foi possível completar o cadastro. Verifique suas informações.",
         });
         return;
       }
 
-      router.push("/login?registered=true");
+      router.push("/register/pending");
     } catch (error: unknown) {
       setError("confirmPassword", {
         type: "manual",
-        message: "Erro ao criar conta. Tente novamente.",
+        message:
+          "Não foi possível completar o cadastro. Verifique suas informações.",
       });
     }
   }

@@ -4,7 +4,9 @@ export const Container = styled("div", {
   display: "flex",
   flexDirection: "column",
   width: "100%",
-  height: "100%",
+  height: "100vh",
+  overflowY: "auto",
+  overflowX: "hidden",
   backgroundColor: "$greenishWhite",
 });
 
@@ -29,14 +31,12 @@ export const Body = styled("form", {
   display: "flex",
   flexDirection: "column",
   padding: "$6",
-  justifyContent: "center",
+  paddingBottom: "$8",
+  justifyContent: "flex-start",
   alignItems: "center",
   gap: "$6",
   width: "100%",
-  overflowY: "auto",
-  flexGrow: 1,
   alignSelf: "center",
-  minHeight: "70vh",
   maxWidth: "600px",
 
   "> *": {

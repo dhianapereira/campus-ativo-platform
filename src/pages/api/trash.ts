@@ -9,6 +9,13 @@ import {
   restoreCategoryControllerHandle,
   deleteCategoryControllerHandle,
 } from "../../server/client/categories/categories";
+import {
+  fetchProblemsControllerHandle,
+  restoreProblemControllerHandle,
+  deleteProblemControllerHandle,
+} from "../../server/client/problems/problems";
+import { getUserProfileControllerHandle } from "../../server/client/user-profile/user-profile";
+import { getRoleLevel } from "../../utils/role-mapping";
 
 function filterByDeletedDate(
   items: Array<{ deletedAt?: string | null }>,
@@ -71,6 +78,26 @@ export default async function handler(
       const dateFilterValue =
         dateFilter && typeof dateFilter === "string" ? dateFilter : undefined;
 
+      let currentUserId: string | null = null;
+      let roleLevel = 0;
+      try {
+        const profile = await getUserProfileControllerHandle({
+          headers: { Authorization: `Bearer ${authToken}` },
+        });
+        currentUserId = profile?.id ?? null;
+        roleLevel = profile?.role ? getRoleLevel(profile.role) : 0;
+      } catch {
+        // continua sem filtrar por usuário em caso de erro no perfil
+      }
+
+      const isReporter = roleLevel === 1;
+      const onlyOwnProblems = (problems: Array<Record<string, unknown>>) =>
+        currentUserId
+          ? problems.filter(
+              (p) => (p.reporterId as string) === currentUserId,
+            )
+          : problems;
+
       const results: {
         items: unknown[];
         total: number;
@@ -78,28 +105,26 @@ export default async function handler(
       } = { items: [], total: 0 };
 
       if (!itemType || itemType === "all") {
-        const [locationsData, categoriesData] = await Promise.all([
-          fetchLocationsControllerHandle(
-            {
-              includeDeleted: true,
-              query: searchQuery,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            },
-          ),
-          fetchCategoriesControllerHandle(
-            {
-              includeDeleted: true,
-              query: searchQuery,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            },
+        const fetchPayload = {
+          headers: { Authorization: `Bearer ${authToken}` },
+        };
+
+        const [locationsData, categoriesData, problemsData] = await Promise.all([
+          isReporter
+            ? Promise.resolve({ locations: [] })
+            : fetchLocationsControllerHandle(
+                { includeDeleted: true, query: searchQuery },
+                fetchPayload,
+              ),
+          isReporter
+            ? Promise.resolve({ categories: [] })
+            : fetchCategoriesControllerHandle(
+                { includeDeleted: true, query: searchQuery },
+                fetchPayload,
+              ),
+          fetchProblemsControllerHandle(
+            { includeDeleted: true, query: searchQuery },
+            fetchPayload,
           ),
         ]);
 
@@ -113,6 +138,12 @@ export default async function handler(
             (cat: { deletedAt?: string | null }) =>
               cat.deletedAt !== null && cat.deletedAt !== undefined,
           ) || [];
+        const deletedProblemsRaw =
+          (problemsData?.problems as unknown as Array<Record<string, unknown>>)?.filter(
+            (prob) =>
+              prob.deletedAt !== null && prob.deletedAt !== undefined,
+          ) || [];
+        const deletedProblems = onlyOwnProblems(deletedProblemsRaw);
 
         const filteredLocations = filterByDeletedDate(
           deletedLocations,
@@ -120,6 +151,10 @@ export default async function handler(
         );
         const filteredCategories = filterByDeletedDate(
           deletedCategories,
+          dateFilterValue,
+        );
+        const filteredProblems = filterByDeletedDate(
+          deletedProblems as Array<{ deletedAt?: string | null }>,
           dateFilterValue,
         );
 
@@ -132,42 +167,96 @@ export default async function handler(
             ...(item as Record<string, unknown>),
             itemType: "category",
           })),
+          ...filteredProblems.map((item) => {
+            const prob = item as Record<string, unknown> & {
+              location?: { name?: string };
+            };
+            return {
+              ...prob,
+              itemType: "problem",
+              name: prob.title,
+              local: prob.location?.name ?? prob.locationName,
+              description: prob.excerpt || prob.description,
+            };
+          }),
         ];
 
         results.items = allItems;
         results.total = allItems.length;
       } else if (itemType === "location") {
-        const data = await fetchLocationsControllerHandle(
-          {
-            includeDeleted: true,
-            query: searchQuery,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
+        if (isReporter) {
+          results.items = [];
+          results.total = 0;
+          results.type = "location";
+        } else {
+          const data = await fetchLocationsControllerHandle(
+            {
+              includeDeleted: true,
+              query: searchQuery,
             },
-          },
-        );
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            },
+          );
 
-        const deletedItems =
-          data?.locations?.filter(
-            (loc: { deletedAt?: string | null }) =>
-              loc.deletedAt !== null && loc.deletedAt !== undefined,
-          ) || [];
+          const deletedItems =
+            data?.locations?.filter(
+              (loc: { deletedAt?: string | null }) =>
+                loc.deletedAt !== null && loc.deletedAt !== undefined,
+            ) || [];
 
-        const filteredItems = filterByDeletedDate(
-          deletedItems,
-          dateFilterValue,
-        );
+          const filteredItems = filterByDeletedDate(
+            deletedItems,
+            dateFilterValue,
+          );
 
-        results.items = filteredItems.map((item) => ({
-          ...(item as Record<string, unknown>),
-          itemType: "location",
-        }));
-        results.total = filteredItems.length;
-        results.type = "location";
+          results.items = filteredItems.map((item) => ({
+            ...(item as Record<string, unknown>),
+            itemType: "location",
+          }));
+          results.total = filteredItems.length;
+          results.type = "location";
+        }
       } else if (itemType === "category") {
-        const data = await fetchCategoriesControllerHandle(
+        if (isReporter) {
+          results.items = [];
+          results.total = 0;
+          results.type = "category";
+        } else {
+          const data = await fetchCategoriesControllerHandle(
+            {
+              includeDeleted: true,
+              query: searchQuery,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            },
+          );
+
+          const deletedItems =
+            data?.categories?.filter(
+              (cat: { deletedAt?: string | null }) =>
+                cat.deletedAt !== null && cat.deletedAt !== undefined,
+            ) || [];
+
+          const filteredItems = filterByDeletedDate(
+            deletedItems,
+            dateFilterValue,
+          );
+
+          results.items = filteredItems.map((item) => ({
+            ...(item as Record<string, unknown>),
+            itemType: "category",
+          }));
+          results.total = filteredItems.length;
+          results.type = "category";
+        }
+      } else if (itemType === "problem") {
+        const data = await fetchProblemsControllerHandle(
           {
             includeDeleted: true,
             query: searchQuery,
@@ -179,23 +268,32 @@ export default async function handler(
           },
         );
 
-        const deletedItems =
-          data?.categories?.filter(
-            (cat: { deletedAt?: string | null }) =>
-              cat.deletedAt !== null && cat.deletedAt !== undefined,
+        const deletedItemsRaw =
+          (data?.problems as unknown as Array<Record<string, unknown>>)?.filter(
+            (prob) =>
+              prob.deletedAt !== null && prob.deletedAt !== undefined,
           ) || [];
+        const deletedItems = onlyOwnProblems(deletedItemsRaw);
 
         const filteredItems = filterByDeletedDate(
-          deletedItems,
+          deletedItems as Array<{ deletedAt?: string | null }>,
           dateFilterValue,
         );
 
-        results.items = filteredItems.map((item) => ({
-          ...(item as Record<string, unknown>),
-          itemType: "category",
-        }));
+        results.items = filteredItems.map((item) => {
+          const prob = item as Record<string, unknown> & {
+            location?: { name?: string };
+          };
+          return {
+            ...prob,
+            itemType: "problem",
+            name: prob.title,
+            local: prob.location?.name ?? prob.locationName,
+            description: prob.excerpt || prob.description,
+          };
+        });
         results.total = filteredItems.length;
-        results.type = "category";
+        results.type = "problem";
       }
 
       return res.status(200).json(results);
@@ -235,6 +333,12 @@ export default async function handler(
                 Authorization: `Bearer ${authToken}`,
               },
             });
+          } else if (type === "problem") {
+            return restoreProblemControllerHandle(id, {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            });
           }
           return Promise.resolve();
         });
@@ -253,6 +357,12 @@ export default async function handler(
             });
           } else if (type === "category") {
             return deleteCategoryControllerHandle(id, {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            });
+          } else if (type === "problem") {
+            return deleteProblemControllerHandle(id, {
               headers: {
                 Authorization: `Bearer ${authToken}`,
               },

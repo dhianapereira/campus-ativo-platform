@@ -1,9 +1,18 @@
 import React, { useState } from "react";
-import { MenuContainer, MenuOptions } from "./styles";
+import {
+  MenuContainer,
+  LogoWrapper,
+  MenuNav,
+  MenuItem,
+  MenuFooter,
+  LogoutButton,
+} from "./styles";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { LinkButton } from "@/styles";
-import { createMenuOptions } from "../menu-options";
+import {
+  createMenuOptions,
+  MENU_OPTION_PATHS,
+} from "../menu-options";
 import { LogoutConfirmationModal } from "../../LogoutModal";
 import { useAuth } from "@/contexts/auth-context";
 import whiteIfalLogo from "@/assets/white-ifal-logo.png";
@@ -14,6 +23,7 @@ interface MenuProps {
 
 export default function Menu({ onLogoutClick }: MenuProps) {
   const router = useRouter();
+  const pathname = router.pathname;
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const { canAccessUserManagement, canAccessSettings } = useAuth();
 
@@ -24,6 +34,9 @@ export default function Menu({ onLogoutClick }: MenuProps) {
     canAccessUserManagement: canAccessUserManagement(),
     canAccessSettings: canAccessSettings(),
   });
+
+  const logoutOption = menuOptions.find((o) => o.id === "logout");
+  const navOptions = menuOptions.filter((o) => o.id !== "logout");
 
   const handleLogoutConfirm = async () => {
     try {
@@ -39,27 +52,48 @@ export default function Menu({ onLogoutClick }: MenuProps) {
   return (
     <>
       <MenuContainer role="navigation" aria-label="Menu principal">
-        <Image
-          src={whiteIfalLogo}
-          height={68}
-          width={193}
-          quality={100}
-          alt="Logo do Instituto Federal de Alagoas."
-        />
-        <MenuOptions>
-          {menuOptions.map((option) => (
-            <LinkButton
-              key={option.id}
-              variant="white"
-              onClick={option.onClick}
-              aria-label={`Ir para ${option.name}`}
-              tabIndex={0}
+        <LogoWrapper>
+          <Image
+            src={whiteIfalLogo}
+            height={68}
+            width={193}
+            quality={100}
+            alt="Logo do Instituto Federal de Alagoas."
+          />
+        </LogoWrapper>
+
+        <MenuNav>
+          {navOptions.map((option) => {
+            const path = MENU_OPTION_PATHS[option.id];
+            const isActive = path ? pathname === path : false;
+            return (
+              <MenuItem
+                key={option.id}
+                type="button"
+                active={isActive}
+                onClick={option.onClick}
+                aria-label={`Ir para ${option.name}`}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {option.icon}
+                {option.name}
+              </MenuItem>
+            );
+          })}
+        </MenuNav>
+
+        <MenuFooter>
+          {logoutOption && (
+            <LogoutButton
+              type="button"
+              onClick={logoutOption.onClick}
+              aria-label="Sair do sistema"
             >
-              {option.icon}
-              {option.name}
-            </LinkButton>
-          ))}
-        </MenuOptions>
+              {logoutOption.icon}
+              {logoutOption.name}
+            </LogoutButton>
+          )}
+        </MenuFooter>
       </MenuContainer>
 
       <LogoutConfirmationModal

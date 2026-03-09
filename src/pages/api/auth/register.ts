@@ -51,12 +51,13 @@ export default async function handler(
       err?.response?.data?.message ||
       err?.message;
 
+    const genericMessage =
+      "Não foi possível completar o cadastro. Verifique suas informações.";
     let message = backendError || "Erro interno do servidor";
 
-    if (status === 400) {
-      message = "Dados inválidos ou domínio de email não permitido";
-    } else if (status === 409) {
-      message = "Este e-mail já está cadastrado no sistema";
+    // Não revelar detalhes (ex.: e-mail já cadastrado) por segurança
+    if (status === 400 || status === 409) {
+      message = genericMessage;
     }
 
     return res.status(status).json({

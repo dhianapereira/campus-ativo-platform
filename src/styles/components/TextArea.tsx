@@ -1,4 +1,4 @@
-import { ComponentProps, useState } from "react";
+import { ComponentProps } from "react";
 import { styled } from "@/styles/stitches";
 
 const TextAreaStyled = styled("textarea", {
@@ -59,8 +59,9 @@ export const TextArea = ({
   showCounter,
   ...props
 }: TextAreaProps) => {
-  const [value, setValue] = useState(props.value || "");
-  const currentLength = value.toString().length;
+  const isControlled = "value" in props;
+  const displayValue = isControlled ? (props.value as string) ?? "" : undefined;
+  const currentLength = (displayValue ?? "").toString().length;
 
   return (
     <div>
@@ -68,12 +69,13 @@ export const TextArea = ({
         hasError={hasError}
         isAutocomplete={isAutocomplete}
         maxLength={maxLength}
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-          props.onChange?.(e);
-        }}
         {...props}
+        {...(isControlled
+          ? {
+              value: displayValue,
+              onChange: props.onChange,
+            }
+          : {})}
       />
       {showCounter && maxLength && (
         <TextAreaCounter>

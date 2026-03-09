@@ -1,0 +1,6 @@
+<svg width="922" height="700" viewBox="0 0 922 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Elipse externa maior -->
+  <ellipse cx="461" cy="350" rx="420" ry="320" stroke="#D5EEDC" stroke-width="2" fill="none"/>
+  <!-- Elipse interna menor -->
+  <ellipse cx="461" cy="350" rx="340" ry="260" stroke="#D5EEDC" stroke-width="2" fill="none"/>
+</svg>

@@ -16,7 +16,22 @@ export default async function handler(
       console.error("[API /users] No auth token found in cookies");
       return res.status(401).json({ message: "Unauthorized - No token" });
     }
-    const result = await fetchUsersControllerHandle(undefined, {
+
+    const query = typeof req.query.query === "string" ? req.query.query : undefined;
+    const isActiveParam = req.query.isActive;
+    const isActive =
+      isActiveParam === "true"
+        ? true
+        : isActiveParam === "false"
+          ? false
+          : undefined;
+
+    const params =
+      query !== undefined || isActive !== undefined
+        ? { query, isActive }
+        : undefined;
+
+    const result = await fetchUsersControllerHandle(params, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },

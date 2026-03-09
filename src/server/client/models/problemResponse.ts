@@ -5,14 +5,52 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
+import type { ProblemResponseReporterId } from './problemResponseReporterId';
+import type { ProblemResponseLocationId } from './problemResponseLocationId';
+import type { ProblemResponseStatus } from './problemResponseStatus';
+import type { ProblemResponseMaintenanceType } from './problemResponseMaintenanceType';
+import type { ProblemResponseDeletedAt } from './problemResponseDeletedAt';
+import type { AttachmentInfo } from './attachmentInfo';
 
 export interface ProblemResponse {
+  /** ID do problema */
   id: string;
-  title: string;
-  description: string;
-  slug: string;
+  /**
+   * ID do autor do problema
+   * @nullable
+   */
+  reporterId?: ProblemResponseReporterId;
+  /** ID da categoria do problema */
   categoryId: string;
-  locationId: string;
-  authorId: string;
+  /**
+   * ID da localização do problema
+   * @nullable
+   */
+  locationId?: ProblemResponseLocationId;
+  /** Título do problema */
+  title: string;
+  /** Descrição do problema */
+  description: string;
+  /** Slug do problema */
+  slug: string;
+  /** Trecho da descrição do problema (primeiros 120 caracteres) */
+  excerpt: string;
+  /** Status do problema */
+  status: ProblemResponseStatus;
+  /**
+   * Tipo de manutenção
+   * @nullable
+   */
+  maintenanceType?: ProblemResponseMaintenanceType;
+  /** Data de criação */
   createdAt: string;
+  /** Data de atualização */
+  updatedAt?: string;
+  /**
+   * Data de exclusão (null se não deletado)
+   * @nullable
+   */
+  deletedAt?: ProblemResponseDeletedAt;
+  /** Anexos do problema */
+  attachments?: AttachmentInfo[];
 }

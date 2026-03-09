@@ -34,7 +34,7 @@ export const HeaderContainer = styled("div", {
 export const PageTitle = styled("h1", {
   fontSize: "2rem",
   fontWeight: 600,
-  color: "#111827",
+  color: "$darkGray",
   margin: "0 0 1.5rem 0",
 
   "@media(max-width: 640px)": {
@@ -84,7 +84,7 @@ export const FilterButton = styled("button", {
       },
       false: {
         backgroundColor: "white",
-        color: "#6b7280",
+        color: "$lightGray",
         border: "1px solid #d1d5db",
         "&:hover": {
           backgroundColor: "#f3f4f6",
@@ -203,7 +203,7 @@ export const ActionButton = styled("button", {
   justifyContent: "center",
   gap: "0.5rem",
   padding: "0.625rem 1.25rem",
-  borderRadius: "8px",
+  borderRadius: "$card",
   fontSize: "0.875rem",
   fontWeight: 600,
   cursor: "pointer",
@@ -219,7 +219,7 @@ export const ActionButton = styled("button", {
     padding: "0.625rem",
     minWidth: "44px",
     minHeight: "44px",
-    borderRadius: "8px",
+    borderRadius: "$card",
 
     "& svg": {
       margin: 0,
@@ -261,14 +261,14 @@ export const ActionButton = styled("button", {
 
 export const ItemsCount = styled("p", {
   fontSize: "0.875rem",
-  color: "#6b7280",
+  color: "$lightGray",
   marginBottom: "1rem",
 });
 
 export const SelectedCount = styled("p", {
   fontSize: "0.875rem",
   fontWeight: 600,
-  color: "#111827",
+  color: "$darkGray",
   marginBottom: "1rem",
 });
 
@@ -328,7 +328,7 @@ export const TableHeader = styled("th", {
 
 export const TableRow = styled("tr", {
   background: "#FFFFFF",
-  borderBottom: "1px solid #e5e7eb",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.07)",
   transition: "background-color 0.2s ease",
 
   variants: {
@@ -416,14 +416,14 @@ export const ItemCard = styled("div", {
 export const CardTitle = styled("h3", {
   fontSize: "1rem",
   fontWeight: 600,
-  color: "#111827",
+  color: "$darkGray",
   marginBottom: "0.5rem",
   paddingRight: "2rem",
 });
 
 export const CardInfo = styled("p", {
   fontSize: "0.875rem",
-  color: "#6b7280",
+  color: "$lightGray",
   marginBottom: "0.25rem",
 });
 
@@ -493,7 +493,7 @@ export const PaginationButton = styled("button", {
         gap: "0.5rem",
 
         "&:hover:not(:disabled)": {
-          color: "#111827",
+          color: "$darkGray",
         },
 
         "&:disabled": {
@@ -566,7 +566,7 @@ export const EmptyStateTitle = styled("h3", {
 
 export const EmptyStateMessage = styled("p", {
   fontSize: "0.875rem",
-  color: "#6b7280",
+  color: "$lightGray",
   maxWidth: "400px",
 });
 
@@ -593,7 +593,7 @@ export const ErrorStateTitle = styled("h3", {
 
 export const ErrorStateMessage = styled("p", {
   fontSize: "0.875rem",
-  color: "#6b7280",
+  color: "$lightGray",
   maxWidth: "400px",
   marginBottom: "1.5rem",
 });
