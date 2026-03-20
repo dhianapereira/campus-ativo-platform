@@ -6,7 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UploadAttachmentControllerHandleBody = {
-  /** Arquivo de imagem (JPEG, PNG, GIF, WEBP) */
-  file?: Blob;
+export type SyncGoogleSheetControllerHandle200 = {
+  imported?: number;
+  skipped?: number;
+  errors?: string[];
 };

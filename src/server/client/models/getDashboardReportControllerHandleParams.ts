@@ -6,7 +6,13 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type UploadAttachmentControllerHandleBody = {
-  /** Arquivo de imagem (JPEG, PNG, GIF, WEBP) */
-  file?: Blob;
+export type GetDashboardReportControllerHandleParams = {
+/**
+ * Data inicial do período (ISO 8601)
+ */
+startDate: string;
+/**
+ * Data final do período (ISO 8601)
+ */
+endDate: string;
 };

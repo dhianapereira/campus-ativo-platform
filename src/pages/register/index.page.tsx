@@ -69,6 +69,7 @@ export default function Register() {
         setError("confirmPassword", {
           type: "manual",
           message:
+            result.error ||
             "Não foi possível completar o cadastro. Verifique suas informações.",
         });
         return;

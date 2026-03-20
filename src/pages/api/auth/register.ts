@@ -39,9 +39,10 @@ export default async function handler(
     });
   } catch (error: unknown) {
     const err = error as {
+      code?: string;
       response?: {
         status?: number;
-        data?: { error?: string; message?: string };
+        data?: { error?: string; message?: string; errors?: unknown };
       };
       message?: string;
     };
@@ -59,6 +60,13 @@ export default async function handler(
     if (status === 400 || status === 409) {
       message = genericMessage;
     }
+
+    console.error("Erro no proxy de cadastro", {
+      status,
+      code: err?.code,
+      message: err?.message,
+      backendData: err?.response?.data,
+    });
 
     return res.status(status).json({
       success: false,
