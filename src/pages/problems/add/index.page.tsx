@@ -156,16 +156,16 @@ export default function AddProblem() {
         }),
       })
 
-      const errorData = await response.json().catch(() => ({}))
+      const responseData = await response.json().catch(() => ({}))
 
       if (!response.ok) {
         const message =
-          errorData.message ||
+          responseData.message ||
           'Falha ao cadastrar problema. Verifique os dados.'
         throw new Error(message)
       }
 
-      return response.json()
+      return responseData
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['problems'] })
