@@ -9,10 +9,7 @@ import {
 } from "./styles";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import {
-  createMenuOptions,
-  MENU_OPTION_PATHS,
-} from "../menu-options";
+import { createMenuOptions, MENU_OPTION_PATHS } from "../menu-options";
 import { LogoutConfirmationModal } from "../../LogoutModal";
 import { useAuth } from "@/contexts/auth-context";
 import whiteIfalLogo from "@/assets/white-ifal-logo.png";

@@ -10,10 +10,10 @@ import {
 } from "./styles";
 import { ArrowLeft, NotePencil, Trash } from "phosphor-react";
 import { useRouter } from "next/router";
-import { IProps, BACKEND_STATUS_TO_FRONTEND } from "./index.d";
+import type { ProblemDetailsProps } from "./types";
 import { Button, Text } from "@/styles";
 import { Actions } from "./components/Actions";
-import { Status } from "@/data/static/status-data";
+import { BACKEND_STATUS_TO_FRONTEND, Status } from "@/data/static/status-data";
 import { ImageError } from "@/app/platform/components/ImageError";
 import { NoImage } from "@/app/platform/components/NoImage";
 import { ProtectedRoute } from "@/styles/components/routes/ProtectedRoute";
@@ -49,13 +49,21 @@ export default function ProblemDetails() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
-  const [problemData, setProblemData] = useState<IProps | null>(null);
+  const [problemData, setProblemData] = useState<ProblemDetailsProps | null>(
+    null,
+  );
   const [imageError, setImageError] = useState(false);
 
-  const { data: apiResponse, isLoading, error } = useQuery({
+  const {
+    data: apiResponse,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["problem", id],
     queryFn: async () => {
-      const res = await fetch(`/api/problems/${id}`, { credentials: "include" });
+      const res = await fetch(`/api/problems/${id}`, {
+        credentials: "include",
+      });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(err.message || "Falha ao carregar problema");
@@ -78,7 +86,7 @@ export default function ProblemDetails() {
       category: problem.maintenanceType ?? null,
       maintenanceType: problem.maintenanceType ?? null,
       imageUrl: firstAttachment?.url ?? null,
-      reporter: problem.reporterName ?? (problem.reporterId ?? "—"),
+      reporter: problem.reporterName ?? problem.reporterId ?? "—",
       createdAt: formatDateTime(problem.createdAt),
       updatedAt: problem.updatedAt ? formatDateTime(problem.updatedAt) : null,
     });
@@ -106,7 +114,8 @@ export default function ProblemDetails() {
     },
   });
 
-  const isReporter = user?.id && problem?.reporterId && user.id === problem.reporterId;
+  const isReporter =
+    user?.id && problem?.reporterId && user.id === problem.reporterId;
   const isStatusToAnalysis = problem?.status === STATUS_TO_ANALYSIS_BACKEND;
   const canMoveToTrash = isReporter && isStatusToAnalysis;
   const canEdit = isStatusToAnalysis;
@@ -129,7 +138,9 @@ export default function ProblemDetails() {
         <Container>
           <div style={{ padding: "2rem", textAlign: "center" }}>
             <p>
-              {error instanceof Error ? error.message : "Problema não encontrado."}
+              {error instanceof Error
+                ? error.message
+                : "Problema não encontrado."}
             </p>
             <Button
               variant="secondary"
@@ -171,7 +182,9 @@ export default function ProblemDetails() {
               {problemData.title}
             </Title>
           </div>
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+          <div
+            style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}
+          >
             {canMoveToTrash && (
               <>
                 <Button

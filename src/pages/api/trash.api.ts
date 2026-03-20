@@ -93,9 +93,7 @@ export default async function handler(
       const isReporter = roleLevel === 1;
       const onlyOwnProblems = (problems: Array<Record<string, unknown>>) =>
         currentUserId
-          ? problems.filter(
-              (p) => (p.reporterId as string) === currentUserId,
-            )
+          ? problems.filter((p) => (p.reporterId as string) === currentUserId)
           : problems;
 
       const results: {
@@ -109,24 +107,26 @@ export default async function handler(
           headers: { Authorization: `Bearer ${authToken}` },
         };
 
-        const [locationsData, categoriesData, problemsData] = await Promise.all([
-          isReporter
-            ? Promise.resolve({ locations: [] })
-            : fetchLocationsControllerHandle(
-                { includeDeleted: true, query: searchQuery },
-                fetchPayload,
-              ),
-          isReporter
-            ? Promise.resolve({ categories: [] })
-            : fetchCategoriesControllerHandle(
-                { includeDeleted: true, query: searchQuery },
-                fetchPayload,
-              ),
-          fetchProblemsControllerHandle(
-            { includeDeleted: true, query: searchQuery },
-            fetchPayload,
-          ),
-        ]);
+        const [locationsData, categoriesData, problemsData] = await Promise.all(
+          [
+            isReporter
+              ? Promise.resolve({ locations: [] })
+              : fetchLocationsControllerHandle(
+                  { includeDeleted: true, query: searchQuery },
+                  fetchPayload,
+                ),
+            isReporter
+              ? Promise.resolve({ categories: [] })
+              : fetchCategoriesControllerHandle(
+                  { includeDeleted: true, query: searchQuery },
+                  fetchPayload,
+                ),
+            fetchProblemsControllerHandle(
+              { includeDeleted: true, query: searchQuery },
+              fetchPayload,
+            ),
+          ],
+        );
 
         const deletedLocations =
           locationsData?.locations?.filter(
@@ -139,9 +139,10 @@ export default async function handler(
               cat.deletedAt !== null && cat.deletedAt !== undefined,
           ) || [];
         const deletedProblemsRaw =
-          (problemsData?.problems as unknown as Array<Record<string, unknown>>)?.filter(
-            (prob) =>
-              prob.deletedAt !== null && prob.deletedAt !== undefined,
+          (
+            problemsData?.problems as unknown as Array<Record<string, unknown>>
+          )?.filter(
+            (prob) => prob.deletedAt !== null && prob.deletedAt !== undefined,
           ) || [];
         const deletedProblems = onlyOwnProblems(deletedProblemsRaw);
 
@@ -270,8 +271,7 @@ export default async function handler(
 
         const deletedItemsRaw =
           (data?.problems as unknown as Array<Record<string, unknown>>)?.filter(
-            (prob) =>
-              prob.deletedAt !== null && prob.deletedAt !== undefined,
+            (prob) => prob.deletedAt !== null && prob.deletedAt !== undefined,
           ) || [];
         const deletedItems = onlyOwnProblems(deletedItemsRaw);
 

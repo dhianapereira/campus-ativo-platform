@@ -17,7 +17,8 @@ export default async function handler(
       return res.status(401).json({ message: "Unauthorized - No token" });
     }
 
-    const query = typeof req.query.query === "string" ? req.query.query : undefined;
+    const query =
+      typeof req.query.query === "string" ? req.query.query : undefined;
     const isActiveParam = req.query.isActive;
     const isActive =
       isActiveParam === "true"

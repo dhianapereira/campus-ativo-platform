@@ -1,25 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { DashboardReportData } from "@/@types/dashboard";
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3333";
-
-export type DashboardReportData = {
-  period: { startDate: string; endDate: string };
-  totalProblems: number;
-  byStatus: { status: string; label: string; count: number }[];
-  byCategory: { categoryId: string; name: string; count: number }[];
-  byLocation: { locationId: string | null; name: string; count: number }[];
-  byMaintenanceType: { type: string | null; label: string; count: number }[];
-  problems: {
-    title: string;
-    description: string;
-    location: string;
-    createdAt: string;
-    status: string;
-    category: string;
-    maintenanceType: string;
-  }[];
-};
 
 export default async function handler(
   req: NextApiRequest,

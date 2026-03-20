@@ -3,7 +3,7 @@ const nextConfig = {
   images: {
     remotePatterns: [{ hostname: "imgs.search.brave.com" }],
   },
-  pageExtensions: ["page.tsx", "ts", "tsx"],
+  pageExtensions: ["page.tsx", "api.ts"],
   async headers() {
     return [
       {

@@ -16,7 +16,8 @@ export default async function handler(
   }
 
   try {
-    const { title, description, categoryId, locationId, attachmentIds } = req.body;
+    const { title, description, categoryId, locationId, attachmentIds } =
+      req.body;
 
     if (!title || !description || !categoryId || !locationId) {
       return res

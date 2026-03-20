@@ -1,6 +1,6 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-import type { DashboardReportData } from "@/pages/api/dashboard/report";
+import type { DashboardReportData } from "@/@types/dashboard";
 
 function formatDate(iso: string): string {
   try {
@@ -52,7 +52,9 @@ export function generateReportPdf(data: DashboardReportData): void {
     headStyles: { fillColor: [0, 135, 95] },
     margin: { left: 14 },
   });
-  y = ((doc as unknown) as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
+  y =
+    (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
+      .finalY + 10;
 
   // 2. Por categoria
   if (y > 250) {
@@ -70,7 +72,9 @@ export function generateReportPdf(data: DashboardReportData): void {
     headStyles: { fillColor: [0, 135, 95] },
     margin: { left: 14 },
   });
-  y = ((doc as unknown) as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
+  y =
+    (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
+      .finalY + 10;
 
   // 3. Por localização
   if (y > 250) {
@@ -88,7 +92,9 @@ export function generateReportPdf(data: DashboardReportData): void {
     headStyles: { fillColor: [0, 135, 95] },
     margin: { left: 14 },
   });
-  y = ((doc as unknown) as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 10;
+  y =
+    (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
+      .finalY + 10;
 
   // 4. Por tipo de manutenção
   if (y > 250) {
@@ -106,7 +112,9 @@ export function generateReportPdf(data: DashboardReportData): void {
     headStyles: { fillColor: [0, 135, 95] },
     margin: { left: 14 },
   });
-  y = ((doc as unknown) as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 12;
+  y =
+    (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
+      .finalY + 12;
 
   // 5. Lista de problemas
   doc.setFontSize(12);
@@ -115,7 +123,8 @@ export function generateReportPdf(data: DashboardReportData): void {
 
   const problemRows = data.problems.map((p) => [
     p.title,
-    (p.description || "-").slice(0, 40) + (p.description && p.description.length > 40 ? "..." : ""),
+    (p.description || "-").slice(0, 40) +
+      (p.description && p.description.length > 40 ? "..." : ""),
     p.location || "-",
     formatDate(p.createdAt),
     p.status,
@@ -126,15 +135,7 @@ export function generateReportPdf(data: DashboardReportData): void {
   autoTable(doc, {
     startY: y,
     head: [
-      [
-        "Título",
-        "Descrição",
-        "Local",
-        "Data",
-        "Status",
-        "Categoria",
-        "Tipo manut.",
-      ],
+      ["Título", "Descrição", "Local", "Data", "Status", "Categoria", "Tipo"],
     ],
     body: problemRows,
     theme: "grid",

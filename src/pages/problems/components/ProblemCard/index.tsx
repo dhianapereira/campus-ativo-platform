@@ -1,5 +1,5 @@
 import { StatusBadge } from "@/styles";
-import { IProps } from "./index.d";
+import type { ProblemCardProps } from "./types";
 import { Container, Description, Location, Title } from "./styles";
 import { ReactElement } from "react";
 import { useRouter } from "next/router";
@@ -11,7 +11,7 @@ export default function ProblemCard({
   location,
   description,
   badgeId,
-}: IProps) {
+}: ProblemCardProps) {
   const router = useRouter();
 
   async function goToDetails() {

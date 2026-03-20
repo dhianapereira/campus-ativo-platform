@@ -1,7 +1,7 @@
 import { Eye, EyeSlash } from "phosphor-react";
-import { IProps } from "./index.d";
+import type { PasswordIconProps } from "./types";
 
-export default function PasswordIcon({ isVisible, onTap }: IProps) {
+export default function PasswordIcon({ isVisible, onTap }: PasswordIconProps) {
   const IconComponent = isVisible ? EyeSlash : Eye;
 
   return <IconComponent style={{ cursor: "pointer" }} onClick={onTap} />;

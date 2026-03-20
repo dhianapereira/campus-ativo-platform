@@ -60,7 +60,9 @@ export const TextArea = ({
   ...props
 }: TextAreaProps) => {
   const isControlled = "value" in props;
-  const displayValue = isControlled ? (props.value as string) ?? "" : undefined;
+  const displayValue = isControlled
+    ? ((props.value as string) ?? "")
+    : undefined;
   const currentLength = (displayValue ?? "").toString().length;
 
   return (

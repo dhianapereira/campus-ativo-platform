@@ -15,7 +15,7 @@ import {
   SubmitButton,
 } from "./styles";
 import { X } from "phosphor-react";
-import type { DashboardReportData } from "@/pages/api/dashboard/report";
+import type { DashboardReportData } from "@/@types/dashboard";
 import { generateReportPdf } from "@/utils/generate-report-pdf";
 
 function getPeriodDates(days: number): { start: string; end: string } {
@@ -112,7 +112,12 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
   if (!isOpen) return null;
 
   return (
-    <Overlay onClick={handleOverlayClick} role="dialog" aria-modal="true" aria-labelledby="report-modal-title">
+    <Overlay
+      onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="report-modal-title"
+    >
       <Content onClick={(e) => e.stopPropagation()}>
         <CloseButton
           type="button"

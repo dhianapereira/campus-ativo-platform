@@ -136,10 +136,10 @@ export default function RegisterPendingPage() {
             />
             <Title>Cadastro realizado com sucesso!</Title>
             <Message>
-              Seu cadastro foi realizado com sucesso. Para acessar a
-              plataforma, é necessária uma autorização prévia. Assim que essa
-              autorização for concedida, você receberá uma notificação por
-              e-mail e poderá acessar normalmente.
+              Seu cadastro foi realizado com sucesso. Para acessar a plataforma,
+              é necessária uma autorização prévia. Assim que essa autorização
+              for concedida, você receberá uma notificação por e-mail e poderá
+              acessar normalmente.
             </Message>
             <BackLink href="/login">Voltar para o login</BackLink>
           </Card>

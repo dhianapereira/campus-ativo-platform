@@ -6,7 +6,7 @@ import {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const authToken = req.cookies["auth-token"];
 
@@ -60,13 +60,14 @@ export default async function handler(
         {
           title,
           description,
-          attachmentIds: attachmentIds !== undefined ? attachmentIds : undefined,
+          attachmentIds:
+            attachmentIds !== undefined ? attachmentIds : undefined,
         },
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
-        }
+        },
       );
 
       return res.status(200).json({ message: "Problema editado com sucesso" });

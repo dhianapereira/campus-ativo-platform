@@ -10,7 +10,7 @@ import {
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { RegisterFormData } from "@/@types/form.d";
+import { RegisterFormData } from "@/@types/form";
 import { registerFormSchema } from "@/validators/register-form";
 import Image from "next/image";
 import illustrationLogin from "../../assets/illustration-login.png";

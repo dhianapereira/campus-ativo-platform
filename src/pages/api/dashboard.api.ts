@@ -1,23 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { DashboardMetrics } from "@/@types/dashboard";
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3333";
-
-export type DashboardMetrics = {
-  toAnalysisCount: number;
-  inAnalysisCount: number;
-  inProgressCount: number;
-  totalProblems: number;
-  recentProblems: number;
-  top3Locations: { name: string; count: number }[];
-  top3Categories: { name: string; count: number }[];
-  maintenanceByMonth: {
-    month: string;
-    label: string;
-    preventive: number;
-    corrective: number;
-  }[];
-};
 
 export default async function handler(
   req: NextApiRequest,
@@ -41,9 +26,10 @@ export default async function handler(
 
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
-      return res
-        .status(response.status)
-        .json({ message: (err as { message?: string }).message || "Erro ao carregar dashboard" });
+      return res.status(response.status).json({
+        message:
+          (err as { message?: string }).message || "Erro ao carregar dashboard",
+      });
     }
 
     const data = (await response.json()) as DashboardMetrics;

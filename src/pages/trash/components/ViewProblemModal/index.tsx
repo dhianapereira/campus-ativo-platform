@@ -113,15 +113,20 @@ export function ViewProblemModal({
         </ModalHeader>
 
         <ModalBody>
-          <p style={{ margin: "0 0 1rem", fontSize: "0.875rem", color: "#7C7C8A" }}>
-            Visualização somente. Não é possível editar; apenas restaurar (se você for o autor).
+          <p
+            style={{
+              margin: "0 0 1rem",
+              fontSize: "0.875rem",
+              color: "#7C7C8A",
+            }}
+          >
+            Visualização somente. Não é possível editar; apenas restaurar (se
+            você for o autor).
           </p>
           {!isAuthor && problem.authorId && (
             <WarningMessage>
               <Warning size={20} weight="fill" />
-              <span>
-                Apenas quem cadastrou este problema pode restaurá-lo.
-              </span>
+              <span>Apenas quem cadastrou este problema pode restaurá-lo.</span>
             </WarningMessage>
           )}
 

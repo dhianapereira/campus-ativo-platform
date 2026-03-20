@@ -45,7 +45,8 @@ export default function EditProblem() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [permissionError, setPermissionError] = useState<string | null>(null);
 
-  const [currentAttachment, setCurrentAttachment] = useState<AttachmentInfo | null>(null);
+  const [currentAttachment, setCurrentAttachment] =
+    useState<AttachmentInfo | null>(null);
   const [newAttachmentId, setNewAttachmentId] = useState<string | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -83,12 +84,12 @@ export default function EditProblem() {
 
         if (!isAuthor) {
           setPermissionError(
-            "Você não tem permissão para editar este problema."
+            "Você não tem permissão para editar este problema.",
           );
           setHasPermission(false);
         } else if (!canEdit) {
           setPermissionError(
-            "Este problema não pode ser editado pois não está mais em análise."
+            "Este problema não pode ser editado pois não está mais em análise.",
           );
           setHasPermission(false);
         } else {
@@ -168,7 +169,9 @@ export default function EditProblem() {
       toast.success("Imagem enviada com sucesso!");
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Falha ao fazer upload da imagem";
+        error instanceof Error
+          ? error.message
+          : "Falha ao fazer upload da imagem";
       setUploadError(errorMessage);
       toast.error(errorMessage);
       setNewAttachmentId(null);
@@ -222,7 +225,7 @@ export default function EditProblem() {
         if (response.status === 400) {
           throw new Error(
             errorData.message ||
-              "Não foi possível editar o problema. Verifique se ele ainda está em análise."
+              "Não foi possível editar o problema. Verifique se ele ainda está em análise.",
           );
         }
 
@@ -450,7 +453,9 @@ export default function EditProblem() {
             aria-label="Salvar edição do problema"
             tabIndex={0}
           >
-            {editProblemMutation.isPending ? "Salvando..." : "Salvar alterações"}
+            {editProblemMutation.isPending
+              ? "Salvando..."
+              : "Salvar alterações"}
           </Button>
         </Body>
       </Container>

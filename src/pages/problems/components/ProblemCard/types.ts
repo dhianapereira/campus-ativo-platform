@@ -1,6 +1,5 @@
-export interface IProps {
+export interface ProblemCardProps {
   id: string;
-  /** Slug for detail URL; backend GET problem uses slug */
   slug: string;
   title: string;
   location: string;

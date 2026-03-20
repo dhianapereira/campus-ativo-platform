@@ -160,7 +160,8 @@ export default function AddProblem() {
 
       if (!response.ok) {
         const message =
-          errorData.message || "Falha ao cadastrar problema. Verifique os dados.";
+          errorData.message ||
+          "Falha ao cadastrar problema. Verifique os dados.";
         throw new Error(message);
       }
 
@@ -328,7 +329,11 @@ export default function AddProblem() {
           </Input>
 
           {errors.root?.message && (
-            <Text className="error-message" size="sm" style={{ color: "#dc2626" }}>
+            <Text
+              className="error-message"
+              size="sm"
+              style={{ color: "#dc2626" }}
+            >
               {errors.root.message}
             </Text>
           )}

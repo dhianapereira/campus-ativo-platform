@@ -9,7 +9,7 @@ import {
   RadioGroup,
 } from "@/styles";
 import { Column, Container, Form, Input, Section } from "./styles";
-import { IProps } from "./index.d";
+import type { ProblemActionsProps } from "./types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { actionsFormSchema } from "@/validators/actions-form";
 import { ActionsFormData } from "@/@types/form";
@@ -21,7 +21,7 @@ export function Actions({
   initialStatus,
   initialCategory,
   initialMaintenanceType,
-}: IProps) {
+}: ProblemActionsProps) {
   const {
     register,
     handleSubmit,

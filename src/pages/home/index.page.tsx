@@ -33,7 +33,7 @@ import {
 } from "./styles";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { DashboardMetrics } from "../api/dashboard";
+import type { DashboardMetrics } from "@/@types/dashboard";
 import { DashboardShimmer } from "@/app/platform/components/DashboardShimmer";
 import { Button } from "@/styles";
 import { colors } from "@/styles/tokens";
@@ -60,7 +60,14 @@ function DashboardContent({
     <>
       <DashboardHeader>
         <DashboardTitle>Dashboard</DashboardTitle>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.75rem",
+            flexWrap: "wrap",
+          }}
+        >
           <FilterSelect
             aria-label="Filtrar por período"
             defaultValue="30"
@@ -73,7 +80,11 @@ function DashboardContent({
             type="button"
             variant="primary"
             onClick={onOpenReportModal}
-            style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
           >
             <FileText size={18} weight="bold" />
             Gerar relatório
@@ -201,20 +212,17 @@ function DashboardContent({
 }
 
 export default function Home() {
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-    isRefetching,
-  } = useQuery({
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+  const { data, isLoading, error, refetch, isRefetching } = useQuery({
     queryKey: ["dashboard"],
     queryFn: async () => {
       const res = await fetch("/api/dashboard", { credentials: "include" });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         throw new Error(
-          (err as { message?: string }).message || "Falha ao carregar o dashboard",
+          (err as { message?: string }).message ||
+            "Falha ao carregar o dashboard",
         );
       }
       return res.json() as Promise<DashboardMetrics>;
@@ -261,8 +269,6 @@ export default function Home() {
       </PlatformLayout>
     );
   }
-
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   return (
     <PlatformLayout>
