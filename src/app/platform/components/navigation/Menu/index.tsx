@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import {
   MenuContainer,
   LogoWrapper,
@@ -6,23 +6,23 @@ import {
   MenuItem,
   MenuFooter,
   LogoutButton,
-} from "./styles";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { createMenuOptions, MENU_OPTION_PATHS } from "../menu-options";
-import { LogoutConfirmationModal } from "../../LogoutModal";
-import { useAuth } from "@/contexts/auth-context";
-import whiteIfalLogo from "@/assets/white-ifal-logo.png";
+} from './styles'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { createMenuOptions, MENU_OPTION_PATHS } from '../menu-options'
+import { LogoutConfirmationModal } from '../../LogoutModal'
+import { useAuth } from '@/contexts/auth-context'
+import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 
 interface MenuProps {
-  onLogoutClick: () => Promise<void>;
+  onLogoutClick: () => Promise<void>
 }
 
 export default function Menu({ onLogoutClick }: MenuProps) {
-  const router = useRouter();
-  const pathname = router.pathname;
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const { canAccessUserManagement, canAccessSettings } = useAuth();
+  const router = useRouter()
+  const pathname = router.pathname
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+  const { canAccessUserManagement, canAccessSettings } = useAuth()
 
   const menuOptions = createMenuOptions({
     router,
@@ -30,21 +30,21 @@ export default function Menu({ onLogoutClick }: MenuProps) {
     openLogoutModal: () => setIsLogoutModalOpen(true),
     canAccessUserManagement: canAccessUserManagement(),
     canAccessSettings: canAccessSettings(),
-  });
+  })
 
-  const logoutOption = menuOptions.find((o) => o.id === "logout");
-  const navOptions = menuOptions.filter((o) => o.id !== "logout");
+  const logoutOption = menuOptions.find((o) => o.id === 'logout')
+  const navOptions = menuOptions.filter((o) => o.id !== 'logout')
 
   const handleLogoutConfirm = async () => {
     try {
-      await onLogoutClick();
-      setIsLogoutModalOpen(false);
-    } catch (error) {}
-  };
+      await onLogoutClick()
+      setIsLogoutModalOpen(false)
+    } catch (_error) {}
+  }
 
   const handleLogoutCancel = () => {
-    setIsLogoutModalOpen(false);
-  };
+    setIsLogoutModalOpen(false)
+  }
 
   return (
     <>
@@ -61,8 +61,8 @@ export default function Menu({ onLogoutClick }: MenuProps) {
 
         <MenuNav>
           {navOptions.map((option) => {
-            const path = MENU_OPTION_PATHS[option.id];
-            const isActive = path ? pathname === path : false;
+            const path = MENU_OPTION_PATHS[option.id]
+            const isActive = path ? pathname === path : false
             return (
               <MenuItem
                 key={option.id}
@@ -70,12 +70,12 @@ export default function Menu({ onLogoutClick }: MenuProps) {
                 active={isActive}
                 onClick={option.onClick}
                 aria-label={`Ir para ${option.name}`}
-                aria-current={isActive ? "page" : undefined}
+                aria-current={isActive ? 'page' : undefined}
               >
                 {option.icon}
                 {option.name}
               </MenuItem>
-            );
+            )
           })}
         </MenuNav>
 
@@ -101,5 +101,5 @@ export default function Menu({ onLogoutClick }: MenuProps) {
         description="Tem certeza que deseja sair da plataforma? Você precisará fazer login novamente para acessar o sistema."
       />
     </>
-  );
+  )
 }

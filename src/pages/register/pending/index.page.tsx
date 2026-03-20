@@ -1,111 +1,111 @@
-import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
-import { styled } from "@/styles";
-import ifalLogo from "@/assets/ifal-logo.png";
-import illustrationLogin from "@/assets/illustration-login.png";
+import Head from 'next/head'
+import Image from 'next/image'
+import Link from 'next/link'
+import { styled } from '@/styles'
+import ifalLogo from '@/assets/ifal-logo.png'
+import illustrationLogin from '@/assets/illustration-login.png'
 
-const PageWrapper = styled("div", {
-  width: "100vw",
-  minHeight: "100vh",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  backgroundColor: "$greenishWhite",
-  padding: "$4",
-});
+const PageWrapper = styled('div', {
+  width: '100vw',
+  minHeight: '100vh',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '$greenishWhite',
+  padding: '$4',
+})
 
-const Container = styled("main", {
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
+const Container = styled('main', {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
   maxWidth: 1200,
-  width: "100%",
-  gap: "$8",
+  width: '100%',
+  gap: '$8',
 
-  "@media(max-width: 820px)": {
-    flexDirection: "column",
+  '@media(max-width: 820px)': {
+    flexDirection: 'column',
   },
-});
+})
 
-const IllustrationContainer = styled("div", {
+const IllustrationContainer = styled('div', {
   flex: 1,
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 
-  "@media(max-width: 820px)": {
-    display: "none",
+  '@media(max-width: 820px)': {
+    display: 'none',
   },
 
-  "@media(max-width: 1024px)": {
+  '@media(max-width: 1024px)': {
     img: {
-      width: "100%",
-      height: "auto",
+      width: '100%',
+      height: 'auto',
     },
   },
-});
+})
 
-const Card = styled("div", {
+const Card = styled('div', {
   flex: 1,
-  backgroundColor: "$white",
-  border: "1px solid rgba(0, 0, 0, 0.07)",
-  borderRadius: "$card",
+  backgroundColor: '$white',
+  border: '1px solid rgba(0, 0, 0, 0.07)',
+  borderRadius: '$card',
   boxShadow:
-    "0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05)",
-  padding: "40px",
-  textAlign: "center",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  gap: "$4",
+    '0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05)',
+  padding: '40px',
+  textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '$4',
 
-  "@media (max-width: 820px)": {
-    padding: "32px",
+  '@media (max-width: 820px)': {
+    padding: '32px',
   },
-});
+})
 
-const Title = styled("h1", {
-  fontSize: "28px",
+const Title = styled('h1', {
+  fontSize: '28px',
   fontWeight: 700,
-  color: "$gray",
+  color: '$gray',
   margin: 0,
 
-  "@media (max-width: 820px)": {
-    fontSize: "24px",
+  '@media (max-width: 820px)': {
+    fontSize: '24px',
   },
-});
+})
 
-const Message = styled("p", {
-  fontSize: "16px",
+const Message = styled('p', {
+  fontSize: '16px',
   fontWeight: 500,
-  color: "$lightGray",
+  color: '$lightGray',
   margin: 0,
   lineHeight: 1.6,
-  maxWidth: "440px",
+  maxWidth: '440px',
 
-  "@media (max-width: 820px)": {
-    fontSize: "15px",
+  '@media (max-width: 820px)': {
+    fontSize: '15px',
   },
-});
+})
 
 const BackLink = styled(Link, {
-  appearance: "none",
-  border: "none",
-  borderRadius: "$card",
-  padding: "12px 24px",
-  backgroundColor: "$green",
-  color: "$white",
-  fontSize: "16px",
+  appearance: 'none',
+  border: 'none',
+  borderRadius: '$card',
+  padding: '12px 24px',
+  backgroundColor: '$green',
+  color: '$white',
+  fontSize: '16px',
   fontWeight: 700,
-  cursor: "pointer",
-  textDecoration: "none",
-  marginTop: "$2",
+  cursor: 'pointer',
+  textDecoration: 'none',
+  marginTop: '$2',
 
-  "&:hover": {
-    backgroundColor: "$lightGreen",
+  '&:hover': {
+    backgroundColor: '$lightGreen',
   },
-});
+})
 
 export default function RegisterPendingPage() {
   return (
@@ -146,5 +146,5 @@ export default function RegisterPendingPage() {
         </Container>
       </PageWrapper>
     </>
-  );
+  )
 }

@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import {
   ModalOverlay,
   ModalContent,
@@ -19,28 +19,28 @@ import {
   ButtonGroup,
   CancelButton,
   SubmitButton,
-} from "./styles";
-import { X } from "phosphor-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+} from './styles'
+import { X } from 'phosphor-react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 const categorySchema = z.object({
   name: z
     .string()
-    .min(1, "Nome é obrigatório")
-    .max(100, "Nome deve ter no máximo 100 caracteres"),
+    .min(1, 'Nome é obrigatório')
+    .max(100, 'Nome deve ter no máximo 100 caracteres'),
   description: z
     .string()
-    .max(500, "Descrição deve ter no máximo 500 caracteres")
+    .max(500, 'Descrição deve ter no máximo 500 caracteres')
     .optional(),
-});
+})
 
-type CategoryFormData = z.infer<typeof categorySchema>;
+type CategoryFormData = z.infer<typeof categorySchema>
 
 interface AddCategoryModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
+  isOpen: boolean
+  onClose: () => void
+  onSuccess: () => void
 }
 
 export function AddCategoryModal({
@@ -48,8 +48,8 @@ export function AddCategoryModal({
   onClose,
   onSuccess,
 }: AddCategoryModalProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const queryClient = useQueryClient()
 
   const {
     register,
@@ -58,59 +58,59 @@ export function AddCategoryModal({
     reset,
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
-  });
+  })
 
   const createCategoryMutation = useMutation({
     mutationFn: async (data: { name: string; description?: string }) => {
-      const response = await fetch("/api/categories", {
-        method: "POST",
+      const response = await fetch('/api/categories', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify(data),
-      });
+      })
 
       if (!response.ok) {
-        const text = await response.text().catch(() => "");
+        const text = await response.text().catch(() => '')
         throw new Error(
           `Falha ao criar categoria: ${response.status} ${response.statusText} ${text}`,
-        );
+        )
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: () => {
-      setIsSubmitting(false);
-      reset();
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      onSuccess();
-      toast.success("Categoria criada com sucesso.");
+      setIsSubmitting(false)
+      reset()
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      onSuccess()
+      toast.success('Categoria criada com sucesso.')
     },
     onError: (error) => {
-      console.error("Failed to create category:", error);
-      setIsSubmitting(false);
-      toast.error("Falha ao criar categoria.");
+      console.error('Failed to create category:', error)
+      setIsSubmitting(false)
+      toast.error('Falha ao criar categoria.')
     },
-  });
+  })
 
   const onSubmit = async (data: CategoryFormData) => {
-    setIsSubmitting(true);
-    const payload: { name: string; description?: string } = { name: data.name };
-    if (data.description && data.description.trim() !== "") {
-      payload.description = data.description.trim();
+    setIsSubmitting(true)
+    const payload: { name: string; description?: string } = { name: data.name }
+    if (data.description && data.description.trim() !== '') {
+      payload.description = data.description.trim()
     }
-    createCategoryMutation.mutate(payload);
-  };
+    createCategoryMutation.mutate(payload)
+  }
 
   const handleClose = () => {
     if (!isSubmitting) {
-      reset();
-      onClose();
+      reset()
+      onClose()
     }
-  };
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <ModalOverlay onClick={handleClose}>
@@ -128,7 +128,7 @@ export function AddCategoryModal({
               <Label htmlFor="name">Nome</Label>
               <Input
                 id="name"
-                {...register("name")}
+                {...register('name')}
                 placeholder="Insira o nome da categoria..."
                 disabled={isSubmitting}
               />
@@ -141,7 +141,7 @@ export function AddCategoryModal({
               <Label htmlFor="description">Descrição</Label>
               <TextArea
                 id="description"
-                {...register("description")}
+                {...register('description')}
                 placeholder="Detalhe a categoria brevemente..."
                 rows={6}
                 disabled={isSubmitting}
@@ -162,11 +162,11 @@ export function AddCategoryModal({
               onClick={handleSubmit(onSubmit)}
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Adicionando..." : "Adicionar"}
+              {isSubmitting ? 'Adicionando...' : 'Adicionar'}
             </SubmitButton>
           </ButtonGroup>
         </ModalFooter>
       </ModalContent>
     </ModalOverlay>
-  );
+  )
 }

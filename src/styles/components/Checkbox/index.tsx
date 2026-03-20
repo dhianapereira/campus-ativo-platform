@@ -1,9 +1,9 @@
-import { CheckboxIndicator } from "@radix-ui/react-checkbox";
-import { CheckboxContainer } from "./styles";
-import { Check } from "phosphor-react";
-import { ComponentProps } from "react";
+import { CheckboxIndicator } from '@radix-ui/react-checkbox'
+import { CheckboxContainer } from './styles'
+import { Check } from 'phosphor-react'
+import { ComponentProps } from 'react'
 
-export type CheckboxProps = ComponentProps<typeof CheckboxContainer>;
+export type CheckboxProps = ComponentProps<typeof CheckboxContainer>
 
 export function Checkbox(props: CheckboxProps) {
   return (
@@ -12,7 +12,7 @@ export function Checkbox(props: CheckboxProps) {
         <Check weight="bold" />
       </CheckboxIndicator>
     </CheckboxContainer>
-  );
+  )
 }
 
-Checkbox.displayName = "Checkbox";
+Checkbox.displayName = 'Checkbox'

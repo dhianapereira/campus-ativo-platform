@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import { CloseButton, DrawerContainer, DrawerOptions, Overlay } from "./styles";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import { LinkButton } from "@/styles";
-import { createMenuOptions } from "../menu-options";
-import { LogoutConfirmationModal } from "../../LogoutModal";
-import { IProps } from "./index.d";
-import whiteIfalLogo from "@/assets/white-ifal-logo.png";
-import { X } from "phosphor-react";
-import { useAuth } from "@/contexts/auth-context";
+import React, { useState } from 'react'
+import { CloseButton, DrawerContainer, DrawerOptions, Overlay } from './styles'
+import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { LinkButton } from '@/styles'
+import { createMenuOptions } from '../menu-options'
+import { LogoutConfirmationModal } from '../../LogoutModal'
+import { IProps } from './index.d'
+import whiteIfalLogo from '@/assets/white-ifal-logo.png'
+import { X } from 'phosphor-react'
+import { useAuth } from '@/contexts/auth-context'
 
 interface DrawerProps extends IProps {
-  onLogoutClick: () => Promise<void>;
+  onLogoutClick: () => Promise<void>
 }
 
 export default function Drawer({
@@ -19,9 +19,9 @@ export default function Drawer({
   onLogoutClick,
   onRetryProfile,
 }: DrawerProps) {
-  const router = useRouter();
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const { canAccessUserManagement, canAccessSettings } = useAuth();
+  const router = useRouter()
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
+  const { canAccessUserManagement, canAccessSettings } = useAuth()
 
   const menuOptions = createMenuOptions({
     router,
@@ -31,17 +31,17 @@ export default function Drawer({
     onRetryProfile,
     canAccessUserManagement: canAccessUserManagement(),
     canAccessSettings: canAccessSettings(),
-  });
+  })
 
   const handleLogoutConfirm = async () => {
-    await onLogoutClick();
-    setIsLogoutModalOpen(false);
-    onClose();
-  };
+    await onLogoutClick()
+    setIsLogoutModalOpen(false)
+    onClose()
+  }
 
   const handleLogoutCancel = () => {
-    setIsLogoutModalOpen(false);
-  };
+    setIsLogoutModalOpen(false)
+  }
 
   return (
     <>
@@ -85,5 +85,5 @@ export default function Drawer({
         description="Tem certeza que deseja sair da plataforma? Você precisará fazer login novamente para acessar o sistema."
       />
     </>
-  );
+  )
 }

@@ -1,13 +1,13 @@
-import { ComponentProps, ElementRef, forwardRef } from "react";
-import { Input, Suffix, TextInputContainer, CharCounter } from "./styles";
+import { ComponentProps, ElementRef, forwardRef } from 'react'
+import { Input, Suffix, TextInputContainer, CharCounter } from './styles'
 
 export interface TextInputProps extends ComponentProps<typeof Input> {
-  suffix?: JSX.Element;
-  hasError?: boolean;
-  isAutocomplete?: boolean;
-  maxLength?: number;
-  showCounter?: boolean;
-  value?: string;
+  suffix?: JSX.Element
+  hasError?: boolean
+  isAutocomplete?: boolean
+  maxLength?: number
+  showCounter?: boolean
+  value?: string
 }
 
 export const TextInput = forwardRef<ElementRef<typeof Input>, TextInputProps>(
@@ -23,7 +23,7 @@ export const TextInput = forwardRef<ElementRef<typeof Input>, TextInputProps>(
     },
     ref,
   ) => {
-    const currentLength = value?.length || 0;
+    const currentLength = value?.length || 0
 
     return (
       <div>
@@ -37,8 +37,8 @@ export const TextInput = forwardRef<ElementRef<typeof Input>, TextInputProps>(
           </CharCounter>
         )}
       </div>
-    );
+    )
   },
-);
+)
 
-TextInput.displayName = "TextInput";
+TextInput.displayName = 'TextInput'

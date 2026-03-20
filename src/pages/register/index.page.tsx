@@ -1,40 +1,39 @@
-import { Button, Heading, Text, TextInput } from "@/styles";
-import PasswordIcon from "../login/components/PasswordIcon";
+import { Button, Heading, Text, TextInput } from '@/styles'
+import PasswordIcon from '../login/components/PasswordIcon'
 import {
   PageWrapper,
   Container,
   Form,
   FormError,
   IllustrationContainer,
-} from "./styles";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { RegisterFormData } from "@/@types/form";
-import { registerFormSchema } from "@/validators/register-form";
-import Image from "next/image";
-import illustrationLogin from "../../assets/illustration-login.png";
-import ifalLogo from "../../assets/ifal-logo.png";
-import { useRouter } from "next/router";
-import Link from "next/link";
+} from './styles'
+import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, useWatch } from 'react-hook-form'
+import { RegisterFormData } from '@/@types/form'
+import { registerFormSchema } from '@/validators/register-form'
+import Image from 'next/image'
+import illustrationLogin from '../../assets/illustration-login.png'
+import ifalLogo from '../../assets/ifal-logo.png'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 export default function Register() {
-  const router = useRouter();
+  const router = useRouter()
   const {
     register,
     handleSubmit,
-    watch,
     setError,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
-  });
+  })
 
-  const name = watch("name");
-  const position = watch("position");
-  const email = watch("email");
-  const password = watch("password");
-  const confirmPassword = watch("confirmPassword");
+  const [name, position, email, password, confirmPassword] = useWatch({
+    control,
+    name: ['name', 'position', 'email', 'password', 'confirmPassword'],
+  })
 
   const isFormValid =
     name &&
@@ -42,18 +41,18 @@ export default function Register() {
     email &&
     password &&
     confirmPassword &&
-    name.trim() !== "" &&
-    position.trim() !== "" &&
-    email.trim() !== "" &&
-    password.trim() !== "" &&
-    confirmPassword.trim() !== "";
+    name.trim() !== '' &&
+    position.trim() !== '' &&
+    email.trim() !== '' &&
+    password.trim() !== '' &&
+    confirmPassword.trim() !== ''
 
   async function handleRegister(data: RegisterFormData) {
     try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           name: data.name,
@@ -61,41 +60,41 @@ export default function Register() {
           email: data.email,
           password: data.password,
         }),
-      });
+      })
 
-      const result = await response.json();
+      const result = await response.json()
 
       if (!response.ok || !result.success) {
-        setError("confirmPassword", {
-          type: "manual",
+        setError('confirmPassword', {
+          type: 'manual',
           message:
             result.error ||
-            "Não foi possível completar o cadastro. Verifique suas informações.",
-        });
-        return;
+            'Não foi possível completar o cadastro. Verifique suas informações.',
+        })
+        return
       }
 
-      router.push("/register/pending");
-    } catch (error: unknown) {
-      setError("confirmPassword", {
-        type: "manual",
+      router.push('/register/pending')
+    } catch (_error: unknown) {
+      setError('confirmPassword', {
+        type: 'manual',
         message:
-          "Não foi possível completar o cadastro. Verifique suas informações.",
-      });
+          'Não foi possível completar o cadastro. Verifique suas informações.',
+      })
     }
   }
 
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
-    useState(false);
+    useState(false)
 
   const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
+    setIsPasswordVisible(!isPasswordVisible)
+  }
 
   const toggleConfirmPasswordVisibility = () => {
-    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
-  };
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
+  }
 
   return (
     <PageWrapper>
@@ -127,7 +126,7 @@ export default function Register() {
             <Text size="md">Nome Completo</Text>
             <TextInput
               type="text"
-              {...register("name")}
+              {...register('name')}
               aria-label="Digite seu nome completo"
               tabIndex={0}
             />
@@ -139,7 +138,7 @@ export default function Register() {
             <Text size="md">Cargo</Text>
             <TextInput
               type="text"
-              {...register("position")}
+              {...register('position')}
               aria-label="Digite seu cargo"
               tabIndex={0}
             />
@@ -151,7 +150,7 @@ export default function Register() {
             <Text size="md">E-mail</Text>
             <TextInput
               type="email"
-              {...register("email")}
+              {...register('email')}
               aria-label="Digite seu e-mail institucional"
               tabIndex={0}
             />
@@ -162,8 +161,8 @@ export default function Register() {
           <label>
             <Text size="md">Senha</Text>
             <TextInput
-              {...register("password")}
-              type={isPasswordVisible ? "text" : "password"}
+              {...register('password')}
+              type={isPasswordVisible ? 'text' : 'password'}
               suffix={
                 <PasswordIcon
                   isVisible={isPasswordVisible}
@@ -181,8 +180,8 @@ export default function Register() {
           <label>
             <Text size="md">Confirmar Senha</Text>
             <TextInput
-              {...register("confirmPassword")}
-              type={isConfirmPasswordVisible ? "text" : "password"}
+              {...register('confirmPassword')}
+              type={isConfirmPasswordVisible ? 'text' : 'password'}
               suffix={
                 <PasswordIcon
                   isVisible={isConfirmPasswordVisible}
@@ -203,13 +202,13 @@ export default function Register() {
             tabIndex={0}
             aria-label="Criar conta"
           >
-            {isSubmitting ? "Criando conta..." : "Criar Conta"}
+            {isSubmitting ? 'Criando conta...' : 'Criar Conta'}
           </Button>
-          <Text size="sm" style={{ textAlign: "center", marginTop: "8px" }}>
-            Já possui uma conta?{" "}
+          <Text size="sm" style={{ textAlign: 'center', marginTop: '8px' }}>
+            Já possui uma conta?{' '}
             <Link
               href="/login"
-              style={{ color: "#00875F", fontWeight: "bold" }}
+              style={{ color: '#00875F', fontWeight: 'bold' }}
             >
               Fazer login
             </Link>
@@ -217,5 +216,5 @@ export default function Register() {
         </Form>
       </Container>
     </PageWrapper>
-  );
+  )
 }

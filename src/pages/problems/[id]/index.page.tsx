@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useMemo, useState } from 'react'
 import {
   Container,
   Body,
@@ -7,161 +7,160 @@ import {
   ImageContainer,
   InfoContainer,
   EditButton,
-} from "./styles";
-import { ArrowLeft, NotePencil, Trash } from "phosphor-react";
-import { useRouter } from "next/router";
-import type { ProblemDetailsProps } from "./types";
-import { Button, Text } from "@/styles";
-import { Actions } from "./components/Actions";
-import { BACKEND_STATUS_TO_FRONTEND, Status } from "@/data/static/status-data";
-import { ImageError } from "@/app/platform/components/ImageError";
-import { NoImage } from "@/app/platform/components/NoImage";
-import { ProtectedRoute } from "@/styles/components/routes/ProtectedRoute";
-import { useAuth } from "@/contexts/auth-context";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+} from './styles'
+import { ArrowLeft, NotePencil, Trash } from 'phosphor-react'
+import { useRouter } from 'next/router'
+import type { ProblemDetailsProps } from './types'
+import { Button, Text } from '@/styles'
+import { Actions } from './components/Actions'
+import { BACKEND_STATUS_TO_FRONTEND } from '@/data/static/status-data'
+import { ImageError } from '@/app/platform/components/ImageError'
+import { NoImage } from '@/app/platform/components/NoImage'
+import { ProtectedRoute } from '@/styles/components/routes/ProtectedRoute'
+import { useAuth } from '@/contexts/auth-context'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
-const STATUS_TO_ANALYSIS_BACKEND = "TO_ANALYSIS";
+const STATUS_TO_ANALYSIS_BACKEND = 'TO_ANALYSIS'
 
 function formatDateTime(isoString?: string | null): string {
-  if (!isoString) return "—";
+  if (!isoString) return '—'
   try {
-    const d = new Date(isoString);
-    return d.toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
+    const d = new Date(isoString)
+    return d.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
       ...(d.getHours() || d.getMinutes()
         ? {
-            hour: "2-digit",
-            minute: "2-digit",
+            hour: '2-digit',
+            minute: '2-digit',
           }
         : {}),
-    });
+    })
   } catch {
-    return isoString;
+    return isoString
   }
 }
 
 export default function ProblemDetails() {
-  const router = useRouter();
-  const { id } = router.query;
-  const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const router = useRouter()
+  const { id } = router.query
+  const queryClient = useQueryClient()
+  const { user } = useAuth()
 
-  const [problemData, setProblemData] = useState<ProblemDetailsProps | null>(
-    null,
-  );
-  const [imageError, setImageError] = useState(false);
+  const [imageError, setImageError] = useState(false)
 
   const {
     data: apiResponse,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["problem", id],
+    queryKey: ['problem', id],
     queryFn: async () => {
       const res = await fetch(`/api/problems/${id}`, {
-        credentials: "include",
-      });
+        credentials: 'include',
+      })
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Falha ao carregar problema");
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.message || 'Falha ao carregar problema')
       }
-      return res.json();
+      return res.json()
     },
-    enabled: !!id && typeof id === "string",
-  });
+    enabled: !!id && typeof id === 'string',
+  })
 
-  const problem = apiResponse?.problem;
+  const problem = apiResponse?.problem
 
-  useEffect(() => {
-    if (!problem) return;
-    const firstAttachment = problem.attachments?.[0];
-    setProblemData({
+  const problemData = useMemo<ProblemDetailsProps | null>(() => {
+    if (!problem) return null
+
+    const firstAttachment = problem.attachments?.[0]
+
+    return {
       title: problem.title,
-      location: problem.location?.name ?? problem.locationId ?? "—",
+      location: problem.location?.name ?? problem.locationId ?? '—',
       description: problem.description,
       status: BACKEND_STATUS_TO_FRONTEND[problem.status] ?? problem.status,
       category: problem.maintenanceType ?? null,
       maintenanceType: problem.maintenanceType ?? null,
       imageUrl: firstAttachment?.url ?? null,
-      reporter: problem.reporterName ?? problem.reporterId ?? "—",
+      reporter: problem.reporterName ?? problem.reporterId ?? '—',
       createdAt: formatDateTime(problem.createdAt),
       updatedAt: problem.updatedAt ? formatDateTime(problem.updatedAt) : null,
-    });
-  }, [problem]);
+    }
+  }, [problem])
 
   const moveToTrashMutation = useMutation({
     mutationFn: async () => {
-      if (!problem?.id) throw new Error("Problema não encontrado");
+      if (!problem?.id) throw new Error('Problema não encontrado')
       const res = await fetch(`/api/problems/${problem.id}/trash`, {
-        method: "PATCH",
-        credentials: "include",
-      });
+        method: 'PATCH',
+        credentials: 'include',
+      })
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || "Falha ao mover para a lixeira");
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.message || 'Falha ao mover para a lixeira')
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["problems"] });
-      toast.success("Problema movido para a lixeira.");
-      router.push("/problems");
+      queryClient.invalidateQueries({ queryKey: ['problems'] })
+      toast.success('Problema movido para a lixeira.')
+      router.push('/problems')
     },
     onError: (err: Error) => {
-      toast.error(err.message || "Falha ao mover para a lixeira");
+      toast.error(err.message || 'Falha ao mover para a lixeira')
     },
-  });
+  })
 
   const isReporter =
-    user?.id && problem?.reporterId && user.id === problem.reporterId;
-  const isStatusToAnalysis = problem?.status === STATUS_TO_ANALYSIS_BACKEND;
-  const canMoveToTrash = isReporter && isStatusToAnalysis;
-  const canEdit = isStatusToAnalysis;
+    user?.id && problem?.reporterId && user.id === problem.reporterId
+  const isStatusToAnalysis = problem?.status === STATUS_TO_ANALYSIS_BACKEND
+  const canMoveToTrash = isReporter && isStatusToAnalysis
+  const canEdit = isStatusToAnalysis
 
   if (isLoading || (id && !problem && !error)) {
     return (
       <ProtectedRoute>
         <Container>
-          <div style={{ padding: "2rem", textAlign: "center" }}>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
             Carregando...
           </div>
         </Container>
       </ProtectedRoute>
-    );
+    )
   }
 
   if (error || !problemData) {
     return (
       <ProtectedRoute>
         <Container>
-          <div style={{ padding: "2rem", textAlign: "center" }}>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
             <p>
               {error instanceof Error
                 ? error.message
-                : "Problema não encontrado."}
+                : 'Problema não encontrado.'}
             </p>
             <Button
               variant="secondary"
-              onClick={() => router.push("/problems")}
-              style={{ marginTop: "1rem" }}
+              onClick={() => router.push('/problems')}
+              style={{ marginTop: '1rem' }}
             >
               Voltar
             </Button>
           </div>
         </Container>
       </ProtectedRoute>
-    );
+    )
   }
 
   async function goToEditPage() {
-    await router.push(`/problems/${id}/edit`);
+    await router.push(`/problems/${id}/edit`)
   }
 
   function handleMoveToTrash() {
-    if (!canMoveToTrash) return;
-    moveToTrashMutation.mutate();
+    if (!canMoveToTrash) return
+    moveToTrashMutation.mutate()
   }
 
   return (
@@ -183,7 +182,7 @@ export default function ProblemDetails() {
             </Title>
           </div>
           <div
-            style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}
+            style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}
           >
             {canMoveToTrash && (
               <>
@@ -194,7 +193,7 @@ export default function ProblemDetails() {
                   disabled={moveToTrashMutation.isPending}
                   aria-label="Mover para a lixeira"
                   tabIndex={0}
-                  css={{ color: "#b91c1c", borderColor: "#b91c1c" }}
+                  css={{ color: '#b91c1c', borderColor: '#b91c1c' }}
                 >
                   <Trash weight="bold" size={24} />
                   Mover para lixeira
@@ -206,7 +205,7 @@ export default function ProblemDetails() {
                   aria-label="Mover para a lixeira"
                   tabIndex={0}
                   role="button"
-                  style={{ color: "#b91c1c", borderColor: "#b91c1c" }}
+                  style={{ color: '#b91c1c', borderColor: '#b91c1c' }}
                 >
                   <Trash weight="bold" size={24} />
                 </EditButton>
@@ -297,5 +296,5 @@ export default function ProblemDetails() {
         </Body>
       </Container>
     </ProtectedRoute>
-  );
+  )
 }

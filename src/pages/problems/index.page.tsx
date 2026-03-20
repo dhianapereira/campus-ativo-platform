@@ -1,4 +1,4 @@
-import PlatformLayout from "@/app/platform/layout";
+import PlatformLayout from '@/app/platform/layout'
 import {
   GridView,
   HeaderContainer,
@@ -12,125 +12,125 @@ import {
   MainContainer,
   EmptyStateContainer,
   EmptyStateImage,
-} from "./styles";
-import ProblemCard from "./components/ProblemCard";
-import { FilterButton } from "./components/FilterButton";
-import { FilterDialog, FilterOption, Text } from "@/styles";
-import { useRouter } from "next/router";
-import { useState, useMemo } from "react";
-import { Status } from "@/data/static/status-data";
-import { useQuery } from "@tanstack/react-query";
-import NoProblemSvg from "@/assets/no-problem.svg";
-import Image from "next/image";
+} from './styles'
+import ProblemCard from './components/ProblemCard'
+import { FilterButton } from './components/FilterButton'
+import { FilterDialog, FilterOption, Text } from '@/styles'
+import { useRouter } from 'next/router'
+import { useState, useMemo } from 'react'
+import { Status } from '@/data/static/status-data'
+import { useQuery } from '@tanstack/react-query'
+import NoProblemSvg from '@/assets/no-problem.svg'
+import Image from 'next/image'
 
 export default function Problems() {
-  const router = useRouter();
-  const [searchValue, setSearchValue] = useState("");
-  const [page, setPage] = useState(1);
-  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<FilterOption[]>([]);
+  const router = useRouter()
+  const [searchValue, setSearchValue] = useState('')
+  const [page, setPage] = useState(1)
+  const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
+  const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["problems", page, searchValue],
+    queryKey: ['problems', page, searchValue],
     queryFn: async () => {
-      const params = new URLSearchParams();
-      if (page) params.append("page", page.toString());
-      if (searchValue) params.append("query", searchValue);
+      const params = new URLSearchParams()
+      if (page) params.append('page', page.toString())
+      if (searchValue) params.append('query', searchValue)
 
       const response = await fetch(`/api/problems?${params.toString()}`, {
-        credentials: "include",
-      });
+        credentials: 'include',
+      })
 
       if (!response.ok) {
-        throw new Error("Falha ao buscar problemas");
+        throw new Error('Falha ao buscar problemas')
       }
 
-      return response.json();
+      return response.json()
     },
     retry: false,
-  });
+  })
 
   const filterOptions: FilterOption[] = [
-    { id: Status.ToAnalysis, label: "Para análise", checked: false },
-    { id: Status.InAnalysis, label: "Em análise", checked: false },
-    { id: Status.Accepted, label: "Aceito", checked: false },
-    { id: Status.Rejected, label: "Recusado", checked: false },
-    { id: Status.InProgress, label: "Em andamento", checked: false },
-    { id: Status.Finished, label: "Concluído", checked: false },
-  ];
+    { id: Status.ToAnalysis, label: 'Para análise', checked: false },
+    { id: Status.InAnalysis, label: 'Em análise', checked: false },
+    { id: Status.Accepted, label: 'Aceito', checked: false },
+    { id: Status.Rejected, label: 'Recusado', checked: false },
+    { id: Status.InProgress, label: 'Em andamento', checked: false },
+    { id: Status.Finished, label: 'Concluído', checked: false },
+  ]
 
   type ProblemItem = {
-    id: string;
-    slug: string;
-    title: string;
-    location: string;
-    description: string;
-    badgeId: string;
-  };
+    id: string
+    slug: string
+    title: string
+    location: string
+    description: string
+    badgeId: string
+  }
 
   // Transform API data to match current component structure.
   // Link to detail uses slug (backend GET problem expects slug).
   const problems = useMemo<ProblemItem[]>(() => {
-    if (!data?.problems) return [];
+    if (!data?.problems) return []
 
     return data.problems.map((problem: any) => ({
-      id: problem.id || problem.slug || "",
-      slug: problem.slug || problem.id || "",
-      title: problem.title || "",
-      location: problem.locationName || "Localização excluída",
-      description: problem.excerpt || problem.description || "",
+      id: problem.id || problem.slug || '',
+      slug: problem.slug || problem.id || '',
+      title: problem.title || '',
+      location: problem.locationName || 'Localização excluída',
+      description: problem.excerpt || problem.description || '',
       badgeId: problem.status || Status.ToAnalysis,
-    }));
-  }, [data]);
+    }))
+  }, [data])
 
   // Apply status filters on client side
   const filteredProblems = useMemo(() => {
     const activeFilterIds = activeFilters
       .filter((f) => f.checked)
-      .map((f) => f.id);
+      .map((f) => f.id)
 
     if (activeFilterIds.length === 0) {
-      return problems;
+      return problems
     }
 
     return problems.filter((problem) =>
       activeFilterIds.includes(problem.badgeId),
-    );
-  }, [problems, activeFilters]);
+    )
+  }, [problems, activeFilters])
 
   async function goToAddProblem() {
-    await router.push("/problems/add");
+    await router.push('/problems/add')
   }
 
   const handleSearch = (query: string) => {
-    setSearchValue(query);
-    setPage(1); // Reset to first page on new search
-  };
+    setSearchValue(query)
+    setPage(1) // Reset to first page on new search
+  }
 
   const handleInputChange = (value: string) => {
-    setSearchValue(value);
-  };
+    setSearchValue(value)
+  }
 
   const handleFilterApply = (filters: FilterOption[]) => {
-    setActiveFilters(filters);
-  };
+    setActiveFilters(filters)
+  }
 
   const openFilterDialog = () => {
-    setIsFilterDialogOpen(true);
-  };
+    setIsFilterDialogOpen(true)
+  }
 
   const closeFilterDialog = () => {
-    setIsFilterDialogOpen(false);
-  };
+    setIsFilterDialogOpen(false)
+  }
 
   const getActiveFiltersCount = () => {
-    return activeFilters.filter((f) => f.checked).length;
-  };
+    return activeFilters.filter((f) => f.checked).length
+  }
 
   const currentFilterOptions = filterOptions.map((option) => {
-    const activeFilter = activeFilters.find((f) => f.id === option.id);
-    return activeFilter || option;
-  });
+    const activeFilter = activeFilters.find((f) => f.id === option.id)
+    return activeFilter || option
+  })
 
   return (
     <PlatformLayout>
@@ -170,13 +170,13 @@ export default function Problems() {
         </ResultsCounter>
 
         {isLoading && (
-          <div style={{ padding: "2rem", textAlign: "center" }}>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
             <Text>Carregando problemas...</Text>
           </div>
         )}
 
         {error && (
-          <div style={{ padding: "2rem", textAlign: "center" }}>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
             <Text>Erro ao carregar problemas. Tente novamente mais tarde.</Text>
           </div>
         )}
@@ -213,5 +213,5 @@ export default function Problems() {
         description="Selecione os status para refinar sua busca"
       />
     </PlatformLayout>
-  );
+  )
 }

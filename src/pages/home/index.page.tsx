@@ -1,4 +1,4 @@
-import PlatformLayout from "@/app/platform/layout";
+import PlatformLayout from '@/app/platform/layout'
 import {
   MainContainer,
   DashboardHeader,
@@ -30,31 +30,31 @@ import {
   ErrorState,
   ErrorTitle,
   ErrorMessage,
-} from "./styles";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import type { DashboardMetrics } from "@/@types/dashboard";
-import { DashboardShimmer } from "@/app/platform/components/DashboardShimmer";
-import { Button } from "@/styles";
-import { colors } from "@/styles/tokens";
-import { FileText, MagnifyingGlass, Gear } from "phosphor-react";
-import { ReportModal } from "@/app/platform/components/ReportModal";
+} from './styles'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import type { DashboardMetrics } from '@/@types/dashboard'
+import { DashboardShimmer } from '@/app/platform/components/DashboardShimmer'
+import { Button } from '@/styles'
+import { colors } from '@/styles/tokens'
+import { FileText, MagnifyingGlass, Gear } from 'phosphor-react'
+import { ReportModal } from '@/app/platform/components/ReportModal'
 
 const EMPTY_TOP_MESSAGE =
-  "Não há dados suficientes ainda para exibir esta lista.";
+  'Não há dados suficientes ainda para exibir esta lista.'
 
 function DashboardContent({
   data,
   onOpenReportModal,
 }: {
-  data: DashboardMetrics;
-  onOpenReportModal: () => void;
+  data: DashboardMetrics
+  onOpenReportModal: () => void
 }) {
   const maxBar =
     Math.max(
       ...data.maintenanceByMonth.flatMap((m) => [m.preventive, m.corrective]),
       1,
-    ) || 1;
+    ) || 1
 
   return (
     <>
@@ -62,10 +62,10 @@ function DashboardContent({
         <DashboardTitle>Dashboard</DashboardTitle>
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            flexWrap: "wrap",
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            flexWrap: 'wrap',
           }}
         >
           <FilterSelect
@@ -81,9 +81,9 @@ function DashboardContent({
             variant="primary"
             onClick={onOpenReportModal}
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5rem",
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
             }}
           >
             <FileText size={18} weight="bold" />
@@ -208,27 +208,27 @@ function DashboardContent({
         </ChartWrapper>
       </ChartCard>
     </>
-  );
+  )
 }
 
 export default function Home() {
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false)
 
   const { data, isLoading, error, refetch, isRefetching } = useQuery({
-    queryKey: ["dashboard"],
+    queryKey: ['dashboard'],
     queryFn: async () => {
-      const res = await fetch("/api/dashboard", { credentials: "include" });
+      const res = await fetch('/api/dashboard', { credentials: 'include' })
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
+        const err = await res.json().catch(() => ({}))
         throw new Error(
           (err as { message?: string }).message ||
-            "Falha ao carregar o dashboard",
-        );
+            'Falha ao carregar o dashboard',
+        )
       }
-      return res.json() as Promise<DashboardMetrics>;
+      return res.json() as Promise<DashboardMetrics>
     },
     retry: 1,
-  });
+  })
 
   if (error) {
     return (
@@ -242,19 +242,19 @@ export default function Home() {
             <ErrorMessage>
               {error instanceof Error
                 ? error.message
-                : "Não foi possível carregar os dados. Tente novamente mais tarde."}
+                : 'Não foi possível carregar os dados. Tente novamente mais tarde.'}
             </ErrorMessage>
             <Button
               variant="primary"
               onClick={() => refetch()}
               disabled={isRefetching}
             >
-              {isRefetching ? "Carregando..." : "Tentar novamente"}
+              {isRefetching ? 'Carregando...' : 'Tentar novamente'}
             </Button>
           </ErrorState>
         </MainContainer>
       </PlatformLayout>
-    );
+    )
   }
 
   if (isLoading || !data) {
@@ -267,7 +267,7 @@ export default function Home() {
           <DashboardShimmer />
         </MainContainer>
       </PlatformLayout>
-    );
+    )
   }
 
   return (
@@ -283,5 +283,5 @@ export default function Home() {
         />
       </MainContainer>
     </PlatformLayout>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
-import { Button, Text } from "@/styles";
-import { Image as ImageIcon } from "phosphor-react";
+import React, { useState, useRef } from 'react'
+import { Button, Text } from '@/styles'
+import { Image as ImageIcon } from 'phosphor-react'
 import {
   UploadContainer,
   UploadArea,
@@ -13,98 +13,99 @@ import {
   ImagePreview,
   RemoveButton,
   ContentWrapper,
-} from "./styles";
+} from './styles'
 
 export interface ImageUploadProps {
-  onImageSelect?: (file: File | null) => void;
-  maxSizeKB?: number;
-  acceptedTypes?: string[];
-  placeholder?: string;
-  buttonText?: string;
-  errorMessage?: string;
-  showPreview?: boolean;
-  disabled?: boolean;
+  onImageSelect?: (file: File | null) => void
+  maxSizeKB?: number
+  acceptedTypes?: string[]
+  placeholder?: string
+  buttonText?: string
+  errorMessage?: string
+  showPreview?: boolean
+  disabled?: boolean
 }
 
 export default function ImageUpload({
   onImageSelect,
   maxSizeKB = 100,
-  acceptedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"],
+  acceptedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
   placeholder = `Faça o upload de uma imagem com tamanho inferior a ${maxSizeKB}KB.`,
-  buttonText = "Escolher Imagem",
+  buttonText = 'Escolher Imagem',
   errorMessage,
   showPreview = true,
   disabled = false,
 }: ImageUploadProps) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [error, setError] = useState<string>("");
-  const [previewUrl, setPreviewUrl] = useState<string>("");
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [error, setError] = useState<string>('')
+  const [previewUrl, setPreviewUrl] = useState<string>('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0]
 
     if (!file) {
-      clearSelection();
-      return;
+      clearSelection()
+      return
     }
 
     if (!acceptedTypes.includes(file.type)) {
-      setError("Tipo de arquivo não suportado. Use JPEG, PNG, GIF ou WebP.");
-      clearSelection();
-      return;
+      setError('Tipo de arquivo não suportado. Use JPEG, PNG, GIF ou WebP.')
+      clearSelection()
+      return
     }
 
-    const fileSizeKB = file.size / 1024;
+    const fileSizeKB = file.size / 1024
     if (fileSizeKB > maxSizeKB) {
-      setError(`Arquivo muito grande. Tamanho máximo: ${maxSizeKB}KB`);
-      clearSelection();
-      return;
+      setError(`Arquivo muito grande. Tamanho máximo: ${maxSizeKB}KB`)
+      clearSelection()
+      return
     }
 
-    setError("");
-    setSelectedFile(file);
-    onImageSelect?.(file);
+    setError('')
+    setSelectedFile(file)
+    onImageSelect?.(file)
 
     if (showPreview) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (e) => {
-        setPreviewUrl(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+        setPreviewUrl(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   const clearSelection = () => {
-    setSelectedFile(null);
-    setPreviewUrl("");
-    setError("");
-    onImageSelect?.(null);
+    setSelectedFile(null)
+    setPreviewUrl('')
+    setError('')
+    onImageSelect?.(null)
 
     if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+      fileInputRef.current.value = ''
     }
-  };
+  }
 
   const handleButtonClick = () => {
-    if (disabled) return;
-    fileInputRef.current?.click();
-  };
+    if (disabled) return
+    fileInputRef.current?.click()
+  }
 
   const handleRemoveImage = () => {
-    clearSelection();
-  };
+    clearSelection()
+  }
 
   const formatFileSize = (bytes: number): string => {
-    const kb = bytes / 1024;
-    return `${kb.toFixed(1)}KB`;
-  };
+    const kb = bytes / 1024
+    return `${kb.toFixed(1)}KB`
+  }
 
   return (
     <UploadContainer>
       <UploadArea hasError={!!error} hasImage={!!selectedFile}>
         {selectedFile && previewUrl ? (
           <ImagePreview>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={previewUrl} alt="Preview da imagem" />
             <RemoveButton onClick={handleRemoveImage} type="button">
               ×
@@ -118,9 +119,9 @@ export default function ImageUpload({
       </UploadArea>
 
       <ContentWrapper>
-        {" "}
+        {' '}
         <InfoText>
-          <Text size="sm" style={{ color: "#6B7280", fontStyle: "italic" }}>
+          <Text size="sm" style={{ color: '#6B7280', fontStyle: 'italic' }}>
             {placeholder}
           </Text>
         </InfoText>
@@ -130,11 +131,11 @@ export default function ImageUpload({
             onClick={handleButtonClick}
             disabled={disabled}
             style={{
-              borderColor: "#059669",
-              color: "#00875F",
-              backgroundColor: "transparent",
-              border: "1.5px solid #00875F",
-              borderRadius: "4px",
+              borderColor: '#059669',
+              color: '#00875F',
+              backgroundColor: 'transparent',
+              border: '1.5px solid #00875F',
+              borderRadius: '4px',
             }}
           >
             {buttonText}
@@ -142,11 +143,11 @@ export default function ImageUpload({
 
           <StatusText>
             {selectedFile ? (
-              <Text size="sm" style={{ color: "#059669" }}>
+              <Text size="sm" style={{ color: '#059669' }}>
                 {selectedFile.name} ({formatFileSize(selectedFile.size)})
               </Text>
             ) : (
-              <Text size="sm" style={{ color: "#6B7280" }}>
+              <Text size="sm" style={{ color: '#6B7280' }}>
                 Nenhuma imagem escolhida
               </Text>
             )}
@@ -154,7 +155,7 @@ export default function ImageUpload({
         </UploadControls>
         {(error || errorMessage) && (
           <ErrorText>
-            <Text size="sm" style={{ color: "#DC2626" }}>
+            <Text size="sm" style={{ color: '#DC2626' }}>
               {error || errorMessage}
             </Text>
           </ErrorText>
@@ -164,10 +165,10 @@ export default function ImageUpload({
       <HiddenInput
         ref={fileInputRef}
         type="file"
-        accept={acceptedTypes.join(",")}
+        accept={acceptedTypes.join(',')}
         onChange={handleFileSelect}
         disabled={disabled}
       />
     </UploadContainer>
-  );
+  )
 }

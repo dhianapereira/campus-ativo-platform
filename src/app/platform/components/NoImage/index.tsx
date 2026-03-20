@@ -1,20 +1,20 @@
-import React from "react";
-import { ImageSquare } from "phosphor-react";
+import React from 'react'
+import { ImageSquare } from 'phosphor-react'
 import {
   NoImageContainer,
   NoImageIcon,
   NoImageTitle,
   NoImageDescription,
-} from "./styles";
+} from './styles'
 
 export interface NoImageProps {
-  title?: string;
-  description?: string;
+  title?: string
+  description?: string
 }
 
 export const NoImage = ({
-  title = "Nenhuma imagem disponível",
-  description = "Não há imagem para exibir neste momento.",
+  title = 'Nenhuma imagem disponível',
+  description = 'Não há imagem para exibir neste momento.',
 }: NoImageProps) => {
   return (
     <NoImageContainer>
@@ -26,7 +26,7 @@ export const NoImage = ({
         <NoImageDescription>{description}</NoImageDescription>
       </div>
     </NoImageContainer>
-  );
-};
+  )
+}
 
-NoImage.displayName = "NoImage";
+NoImage.displayName = 'NoImage'

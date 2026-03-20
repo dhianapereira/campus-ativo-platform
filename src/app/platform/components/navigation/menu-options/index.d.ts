@@ -1,8 +1,8 @@
-import { ReactElement } from "react";
+import { ReactElement } from 'react'
 
 export interface IOption {
-  id: string;
-  name: string;
-  icon: ReactElement;
-  onClick: () => void;
+  id: string
+  name: string
+  icon: ReactElement
+  onClick: () => void
 }

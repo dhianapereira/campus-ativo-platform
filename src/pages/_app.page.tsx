@@ -1,11 +1,11 @@
-import { globalStyles } from "@/styles/tokens/global";
-import type { AppProps } from "next/app";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "sonner";
-import { AuthProvider } from "@/contexts/auth-context";
-import { useState } from "react";
+import { globalStyles } from '@/styles/tokens/global'
+import type { AppProps } from 'next/app'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Toaster } from 'sonner'
+import { AuthProvider } from '@/contexts/auth-context'
+import { useState } from 'react'
 
-globalStyles();
+globalStyles()
 
 export default function App({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(
@@ -15,12 +15,12 @@ export default function App({ Component, pageProps }: AppProps) {
           queries: {
             retry: (failureCount, error: unknown) => {
               // Don't retry on authentication errors
-              const errorStatus = (error as { status?: number })?.status;
+              const errorStatus = (error as { status?: number })?.status
               if (errorStatus === 401 || errorStatus === 403) {
-                return false;
+                return false
               }
               // Retry up to 2 times for other errors
-              return failureCount < 2;
+              return failureCount < 2
             },
             refetchOnWindowFocus: false,
             staleTime: 5 * 60 * 1000, // 5 minutes
@@ -29,9 +29,9 @@ export default function App({ Component, pageProps }: AppProps) {
           mutations: {
             retry: (failureCount, error: unknown) => {
               // Don't retry authentication/authorization errors
-              const errorStatus = (error as { status?: number })?.status;
+              const errorStatus = (error as { status?: number })?.status
               if (errorStatus === 401 || errorStatus === 403) {
-                return false;
+                return false
               }
               // Don't retry client errors (4xx) except for rate limiting
               if (
@@ -40,23 +40,23 @@ export default function App({ Component, pageProps }: AppProps) {
                 errorStatus < 500 &&
                 errorStatus !== 429
               ) {
-                return false;
+                return false
               }
               // Retry up to 1 time for server errors
-              return failureCount < 1;
+              return failureCount < 1
             },
             onError: (error: unknown) => {
-              const errorStatus = (error as { status?: number })?.status;
+              const errorStatus = (error as { status?: number })?.status
               if (errorStatus === 401) {
-                if (typeof window !== "undefined") {
-                  window.location.href = "/login";
+                if (typeof window !== 'undefined') {
+                  window.location.href = '/login'
                 }
               }
             },
           },
         },
       }),
-  );
+  )
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -65,5 +65,5 @@ export default function App({ Component, pageProps }: AppProps) {
         <Toaster richColors position="top-center" />
       </AuthProvider>
     </QueryClientProvider>
-  );
+  )
 }

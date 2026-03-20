@@ -1,4 +1,4 @@
 export interface IProps {
-  onClose: () => void;
-  onRetryProfile?: () => void;
+  onClose: () => void
+  onRetryProfile?: () => void
 }

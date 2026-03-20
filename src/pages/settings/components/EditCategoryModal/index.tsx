@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import {
   ModalOverlay,
   ModalContent,
@@ -23,33 +23,33 @@ import {
   StatusContainer,
   StatusLabel,
   StatusToggle,
-} from "./styles";
-import { X, Trash, ArrowCounterClockwise } from "phosphor-react";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { CategoryResponse } from "../../../../server/client/models/categoryResponse";
-import { ConfirmationModal } from "@/components/confirmation-modal";
+} from './styles'
+import { X, Trash, ArrowCounterClockwise } from 'phosphor-react'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import type { CategoryResponse } from '../../../../server/client/models/categoryResponse'
+import { ConfirmationModal } from '@/components/confirmation-modal'
 
 const categorySchema = z.object({
   name: z
     .string()
-    .min(1, "Nome é obrigatório")
-    .max(100, "Nome deve ter no máximo 100 caracteres"),
+    .min(1, 'Nome é obrigatório')
+    .max(100, 'Nome deve ter no máximo 100 caracteres'),
   description: z
     .string()
-    .max(500, "Descrição deve ter no máximo 500 caracteres")
+    .max(500, 'Descrição deve ter no máximo 500 caracteres')
     .optional(),
-});
+})
 
-type CategoryFormData = z.infer<typeof categorySchema>;
+type CategoryFormData = z.infer<typeof categorySchema>
 
-type CategoryItem = CategoryResponse;
+type CategoryItem = CategoryResponse
 
 interface EditCategoryModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
-  category: CategoryItem | null;
+  isOpen: boolean
+  onClose: () => void
+  onSuccess: () => void
+  category: CategoryItem | null
 }
 
 export function EditCategoryModal({
@@ -58,196 +58,192 @@ export function EditCategoryModal({
   onSuccess,
   category,
 }: EditCategoryModalProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isActive, setIsActive] = useState(true);
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  if (!isOpen || !category) return null
+
+  return (
+    <EditCategoryModalContent
+      key={`${category.id}:${category.updatedAt ?? ''}:${category.deletedAt ?? ''}`}
+      category={category}
+      onClose={onClose}
+      onSuccess={onSuccess}
+    />
+  )
+}
+
+function EditCategoryModalContent({
+  category,
+  onClose,
+  onSuccess,
+}: {
+  category: CategoryItem
+  onClose: () => void
+  onSuccess: () => void
+}) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isActive, setIsActive] = useState(category.isActive ?? true)
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [showTrashConfirmationModal, setShowTrashConfirmationModal] =
-    useState(false);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const queryClient = useQueryClient();
+    useState(false)
+  const queryClient = useQueryClient()
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-    setValue,
-    watch,
+    control,
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categorySchema),
-  });
+    defaultValues: {
+      name: category.name,
+      description: category.description ?? '',
+    },
+  })
 
-  const watchedFields = watch();
-
-  useEffect(() => {
-    if (category) {
-      setValue("name", category.name);
-      setValue("description", category.description ?? "");
-      setIsActive(category.isActive ?? true);
-    }
-  }, [category, setValue]);
-
-  useEffect(() => {
-    if (!category) {
-      setHasUnsavedChanges(false);
-      return;
-    }
-
-    const formChanged =
-      watchedFields.name !== category.name ||
-      watchedFields.description !== (category.description ?? "") ||
-      isActive !== (category.isActive ?? true);
-
-    setHasUnsavedChanges(formChanged);
-  }, [watchedFields, isActive, category]);
+  const watchedFields = useWatch({ control })
+  const hasUnsavedChanges =
+    watchedFields.name !== category.name ||
+    watchedFields.description !== (category.description ?? '') ||
+    isActive !== (category.isActive ?? true)
 
   const updateCategoryMutation = useMutation({
     mutationFn: async (data: CategoryFormData) => {
-      if (!category?.id) throw new Error("ID da categoria não encontrado");
+      if (!category?.id) throw new Error('ID da categoria não encontrado')
 
       const response = await fetch(`/api/categories/${category.id}`, {
-        method: "PATCH",
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify({
           name: data.name,
           description: data.description?.trim() || undefined,
           isActive,
         }),
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Falha ao atualizar categoria");
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Falha ao atualizar categoria')
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: () => {
-      setIsSubmitting(false);
-      setHasUnsavedChanges(false);
-      reset();
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      onSuccess();
-      toast.success("Categoria atualizada com sucesso.");
+      setIsSubmitting(false)
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      onSuccess()
+      toast.success('Categoria atualizada com sucesso.')
     },
     onError: () => {
-      setIsSubmitting(false);
-      toast.error("Falha ao atualizar categoria.");
+      setIsSubmitting(false)
+      toast.error('Falha ao atualizar categoria.')
     },
-  });
+  })
 
   const onSubmit = async (data: CategoryFormData) => {
-    if (!category?.id) return;
+    if (!category?.id) return
 
-    setIsSubmitting(true);
-    updateCategoryMutation.mutate(data);
-  };
+    setIsSubmitting(true)
+    updateCategoryMutation.mutate(data)
+  }
 
   const handleClose = () => {
-    if (isSubmitting) return;
+    if (isSubmitting) return
 
     if (hasUnsavedChanges) {
-      setShowConfirmationModal(true);
+      setShowConfirmationModal(true)
     } else {
-      reset();
-      setHasUnsavedChanges(false);
-      onClose();
+      onClose()
     }
-  };
+  }
 
   const handleConfirmClose = () => {
-    reset();
-    setHasUnsavedChanges(false);
-    setShowConfirmationModal(false);
-    onClose();
-  };
+    setShowConfirmationModal(false)
+    onClose()
+  }
 
   const restoreCategoryMutation = useMutation({
     mutationFn: async () => {
-      if (!category?.id) throw new Error("ID da categoria não encontrado");
+      if (!category?.id) throw new Error('ID da categoria não encontrado')
 
-      const response = await fetch("/api/trash", {
-        method: "POST",
+      const response = await fetch('/api/trash', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify({
-          action: "restore",
+          action: 'restore',
           ids: [category.id],
-          type: "category",
+          type: 'category',
         }),
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Falha ao restaurar categoria");
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Falha ao restaurar categoria')
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      queryClient.invalidateQueries({ queryKey: ["trash"] });
-      toast.success("Categoria restaurada com sucesso");
-      onSuccess();
-      onClose();
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      toast.success('Categoria restaurada com sucesso')
+      onSuccess()
+      onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Falha ao restaurar categoria");
+      toast.error(error.message || 'Falha ao restaurar categoria')
     },
-  });
+  })
 
   const trashCategoryMutation = useMutation({
     mutationFn: async () => {
-      if (!category?.id) throw new Error("ID da categoria não encontrado");
+      if (!category?.id) throw new Error('ID da categoria não encontrado')
 
       const response = await fetch(`/api/categories/${category.id}/trash`, {
-        method: "PATCH",
-        credentials: "include",
-      });
+        method: 'PATCH',
+        credentials: 'include',
+      })
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = await response.json().catch(() => ({}))
         throw new Error(
-          errorData.message || "Falha ao mover categoria para lixeira",
-        );
+          errorData.message || 'Falha ao mover categoria para lixeira',
+        )
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      queryClient.invalidateQueries({ queryKey: ["trash"] });
-      toast.success("Categoria movida para lixeira");
-      onSuccess();
-      onClose();
+      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      toast.success('Categoria movida para lixeira')
+      onSuccess()
+      onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Falha ao mover para lixeira");
+      toast.error(error.message || 'Falha ao mover para lixeira')
     },
-  });
+  })
 
   const handleDelete = () => {
-    setShowTrashConfirmationModal(true);
-  };
+    setShowTrashConfirmationModal(true)
+  }
 
   const confirmTrash = () => {
-    trashCategoryMutation.mutate();
-    setShowTrashConfirmationModal(false);
-  };
+    trashCategoryMutation.mutate()
+    setShowTrashConfirmationModal(false)
+  }
 
   const handleRestore = () => {
-    restoreCategoryMutation.mutate();
-  };
+    restoreCategoryMutation.mutate()
+  }
 
-  const isDeleted = !!category?.deletedAt;
-  const isDisabled = isSubmitting || isDeleted;
-
-  if (!isOpen || !category) return null;
+  const isDeleted = !!category?.deletedAt
+  const isDisabled = isSubmitting || isDeleted
 
   return (
     <>
@@ -267,7 +263,7 @@ export function EditCategoryModal({
                   <Label htmlFor="name">Nome</Label>
                   <Input
                     id="name"
-                    {...register("name")}
+                    {...register('name')}
                     disabled={isDisabled}
                   />
                   {errors.name && (
@@ -291,7 +287,7 @@ export function EditCategoryModal({
                 <Label htmlFor="description">Descrição</Label>
                 <TextArea
                   id="description"
-                  {...register("description")}
+                  {...register('description')}
                   rows={6}
                   disabled={isDisabled}
                 />
@@ -309,16 +305,16 @@ export function EditCategoryModal({
                   onClick={handleRestore}
                   disabled={isSubmitting || restoreCategoryMutation.isPending}
                   style={{
-                    backgroundColor: "#00875F",
-                    color: "white",
-                    border: "1px solid #00875F",
+                    backgroundColor: '#00875F',
+                    color: 'white',
+                    border: '1px solid #00875F',
                   }}
                 >
                   <ArrowCounterClockwise size={20} weight="bold" />
                   <span className="label">
                     {restoreCategoryMutation.isPending
-                      ? "Restaurando..."
-                      : "Restaurar da lixeira"}
+                      ? 'Restaurando...'
+                      : 'Restaurar da lixeira'}
                   </span>
                 </DeleteButton>
               ) : (
@@ -336,7 +332,7 @@ export function EditCategoryModal({
                     onClick={handleSubmit(onSubmit)}
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? "Salvando..." : "Salvar"}
+                    {isSubmitting ? 'Salvando...' : 'Salvar'}
                   </SaveButton>
                 )}
               </div>
@@ -365,5 +361,5 @@ export function EditCategoryModal({
         cancelText="Cancelar"
       />
     </>
-  );
+  )
 }

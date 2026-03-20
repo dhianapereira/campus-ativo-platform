@@ -1,140 +1,140 @@
-import { Heading, styled } from "@/styles";
+import { Heading, styled } from '@/styles'
 
-export const Container = styled("div", {
-  display: "flex",
-  flexDirection: "column",
-  width: "100%",
-  height: "100vh",
-  backgroundColor: "$greenishWhite",
-  overflowY: "hidden",
-});
+export const Container = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+  height: '100vh',
+  backgroundColor: '$greenishWhite',
+  overflowY: 'hidden',
+})
 
-export const EditButton = styled("button", {
-  all: "unset",
-  borderRadius: "$sm",
-  fontSize: "$sm",
-  fontWeight: "$medium",
-  fontFamily: "$default",
-  textAlign: "center",
-  padding: "$4",
-  boxSizing: "border-box",
+export const EditButton = styled('button', {
+  all: 'unset',
+  borderRadius: '$sm',
+  fontSize: '$sm',
+  fontWeight: '$medium',
+  fontFamily: '$default',
+  textAlign: 'center',
+  padding: '$4',
+  boxSizing: 'border-box',
 
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "$2",
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '$2',
 
-  cursor: "pointer",
+  cursor: 'pointer',
 
-  "&:disabled": {
-    cursor: "not-allowed",
-    color: "$lightGray",
-    borderColor: "$lightGray",
+  '&:disabled': {
+    cursor: 'not-allowed',
+    color: '$lightGray',
+    borderColor: '$lightGray',
   },
 
-  "&:focus": {
-    boxShadow: "0 0 0 2px $colors $greenAccent",
+  '&:focus': {
+    boxShadow: '0 0 0 2px $colors $greenAccent',
   },
 
-  color: "$green",
-  border: "2px solid $green",
+  color: '$green',
+  border: '2px solid $green',
 
-  "&:not(:disabled):hover": {
-    backgroundColor: "$green",
-    color: "$white",
+  '&:not(:disabled):hover': {
+    backgroundColor: '$green',
+    color: '$white',
   },
-});
+})
 
-export const Header = styled("header", {
-  display: "flex",
-  flexDirection: "row",
-  alignItems: "center",
-  padding: "0 $4",
-  height: "20vh",
-  justifyContent: "space-between",
-  borderBottom: "1px solid $lightGray",
-  overflow: "hidden",
+export const Header = styled('header', {
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: '0 $4',
+  height: '20vh',
+  justifyContent: 'space-between',
+  borderBottom: '1px solid $lightGray',
+  overflow: 'hidden',
 
-  "& .first-component": {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    overflow: "hidden",
-    marginRight: "$1",
+  '& .first-component': {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden',
+    marginRight: '$1',
 
-    "& .back-icon": {
-      cursor: "pointer",
+    '& .back-icon': {
+      cursor: 'pointer',
     },
   },
 
-  "& .mobile": {
-    display: "none",
+  '& .mobile': {
+    display: 'none',
   },
 
-  "& .desktop": {
-    display: "flex",
+  '& .desktop': {
+    display: 'flex',
   },
 
-  "@media (max-width: 768px)": {
-    "& .desktop": {
-      display: "none",
+  '@media (max-width: 768px)': {
+    '& .desktop': {
+      display: 'none',
     },
 
-    "& .mobile": {
-      display: "flex",
+    '& .mobile': {
+      display: 'flex',
     },
   },
-});
+})
 
 export const Title = styled(Heading, {
-  marginLeft: "$4",
-  textOverflow: "ellipsis",
-  whiteSpace: "nowrap",
+  marginLeft: '$4',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
   flex: 1,
-  overflow: "hidden",
-});
+  overflow: 'hidden',
+})
 
-export const Body = styled("div", {
-  display: "flex",
-  flexDirection: "column",
-  padding: "$6",
-  justifyContent: "flex-start",
-  alignItems: "center",
-  gap: "$6",
-  width: "100%",
-  overflowY: "auto",
-  overflowX: "hidden",
-  alignSelf: "center",
+export const Body = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  padding: '$6',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  gap: '$6',
+  width: '100%',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  alignSelf: 'center',
 
-  "> *": {
-    width: "100%",
-    maxWidth: "839px",
+  '> *': {
+    width: '100%',
+    maxWidth: '839px',
   },
 
-  "@media (max-width: 768px)": {
-    padding: "$4",
-    gap: "$4",
+  '@media (max-width: 768px)': {
+    padding: '$4',
+    gap: '$4',
   },
-});
+})
 
-export const ImageContainer = styled("img", {
-  width: "100%",
+export const ImageContainer = styled('img', {
+  width: '100%',
   height: 331,
-  margin: "0 $4",
-  objectFit: "cover",
+  margin: '0 $4',
+  objectFit: 'cover',
 
-  "@media (max-width: 768px)": {
+  '@media (max-width: 768px)': {
     height: 242,
   },
-});
+})
 
-export const InfoContainer = styled("div", {
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "start",
-  gap: "$1",
+export const InfoContainer = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'start',
+  gap: '$1',
 
-  "& .label": {
-    fontWeight: "$bold",
+  '& .label': {
+    fontWeight: '$bold',
   },
-});
+})

@@ -1,17 +1,17 @@
-import { globalCss } from "@/styles";
+import { globalCss } from '@/styles'
 
 export const globalStyles = globalCss({
-  "*": {
-    boxSizing: "border-box",
+  '*': {
+    boxSizing: 'border-box',
     margin: 0,
     padding: 0,
   },
 
   body: {
-    backgroundColor: "$greenishWhite",
-    color: "$gray",
-    "-webkit-font-smoothing": "antialiased",
-    overflow: "hidden",
-    fontFamily: "$default",
+    backgroundColor: '$greenishWhite',
+    color: '$gray',
+    '-webkit-font-smoothing': 'antialiased',
+    overflow: 'hidden',
+    fontFamily: '$default',
   },
-});
+})

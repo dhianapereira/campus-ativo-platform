@@ -1,55 +1,55 @@
-import { ComponentProps } from "react";
-import { styled } from "@/styles/stitches";
+import { ComponentProps } from 'react'
+import { styled } from '@/styles/stitches'
 
-const TextAreaStyled = styled("textarea", {
-  backgroundColor: "$white",
-  padding: "$3 $4",
-  borderRadius: "$sm",
-  boxSizing: "border-box",
-  border: "1px solid $lightGray",
-  fontFamily: "$default",
-  fontSize: "$sm",
-  color: "$gray",
-  fontWeight: "$regular",
-  resize: "vertical",
+const TextAreaStyled = styled('textarea', {
+  backgroundColor: '$white',
+  padding: '$3 $4',
+  borderRadius: '$sm',
+  boxSizing: 'border-box',
+  border: '1px solid $lightGray',
+  fontFamily: '$default',
+  fontSize: '$sm',
+  color: '$gray',
+  fontWeight: '$regular',
+  resize: 'vertical',
   minHeight: 80,
 
-  "&:focus": {
+  '&:focus': {
     outline: 0,
-    border: "2px solid $green",
+    border: '2px solid $green',
   },
 
-  "&:disabled": {
+  '&:disabled': {
     opacity: 0.5,
-    cursor: "not-allowed",
+    cursor: 'not-allowed',
   },
 
-  "&::placeholder": {
-    color: "$lightGray",
+  '&::placeholder': {
+    color: '$lightGray',
   },
 
   variants: {
     hasError: {
       true: {
-        border: "2px solid $red",
-        "&:focus": {
-          border: "2px solid $red",
+        border: '2px solid $red',
+        '&:focus': {
+          border: '2px solid $red',
         },
       },
     },
     isAutocomplete: {
       true: {
-        backgroundColor: "transparent",
+        backgroundColor: 'transparent',
       },
     },
   },
-});
+})
 
 export interface TextAreaProps extends ComponentProps<typeof TextAreaStyled> {
-  hasError?: boolean;
-  isAutocomplete?: boolean;
-  maxLength?: number;
-  showCounter?: boolean;
+  hasError?: boolean
+  isAutocomplete?: boolean
+  maxLength?: number
+  showCounter?: boolean
 }
 
 export const TextArea = ({
@@ -59,11 +59,11 @@ export const TextArea = ({
   showCounter,
   ...props
 }: TextAreaProps) => {
-  const isControlled = "value" in props;
+  const isControlled = 'value' in props
   const displayValue = isControlled
-    ? ((props.value as string) ?? "")
-    : undefined;
-  const currentLength = (displayValue ?? "").toString().length;
+    ? ((props.value as string) ?? '')
+    : undefined
+  const currentLength = (displayValue ?? '').toString().length
 
   return (
     <div>
@@ -85,14 +85,14 @@ export const TextArea = ({
         </TextAreaCounter>
       )}
     </div>
-  );
-};
+  )
+}
 
-const TextAreaCounter = styled("div", {
-  fontSize: "$xs",
-  color: "$lightGray",
-  textAlign: "right",
-  marginTop: "$1",
-});
+const TextAreaCounter = styled('div', {
+  fontSize: '$xs',
+  color: '$lightGray',
+  textAlign: 'right',
+  marginTop: '$1',
+})
 
-TextArea.displayName = "TextArea";
+TextArea.displayName = 'TextArea'

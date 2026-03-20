@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react'
 import {
   Overlay,
   Content,
@@ -13,103 +13,103 @@ import {
   Footer,
   CloseButton,
   SubmitButton,
-} from "./styles";
-import { X } from "phosphor-react";
-import type { DashboardReportData } from "@/@types/dashboard";
-import { generateReportPdf } from "@/utils/generate-report-pdf";
+} from './styles'
+import { X } from 'phosphor-react'
+import type { DashboardReportData } from '@/@types/dashboard'
+import { generateReportPdf } from '@/utils/generate-report-pdf'
 
 function getPeriodDates(days: number): { start: string; end: string } {
-  const end = new Date();
-  const start = new Date();
-  start.setDate(start.getDate() - days);
-  start.setHours(0, 0, 0, 0);
-  end.setHours(23, 59, 59, 999);
+  const end = new Date()
+  const start = new Date()
+  start.setDate(start.getDate() - days)
+  start.setHours(0, 0, 0, 0)
+  end.setHours(23, 59, 59, 999)
   return {
     start: start.toISOString(),
     end: end.toISOString(),
-  };
+  }
 }
 
 function toInputDate(iso: string): string {
   try {
-    return iso.slice(0, 10);
+    return iso.slice(0, 10)
   } catch {
-    return "";
+    return ''
   }
 }
 
 interface ReportModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
 export function ReportModal({ isOpen, onClose }: ReportModalProps) {
-  const defaultRange = getPeriodDates(30);
-  const [startDate, setStartDate] = useState(toInputDate(defaultRange.start));
-  const [endDate, setEndDate] = useState(toInputDate(defaultRange.end));
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const defaultRange = getPeriodDates(30)
+  const [startDate, setStartDate] = useState(toInputDate(defaultRange.start))
+  const [endDate, setEndDate] = useState(toInputDate(defaultRange.end))
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const handlePreset = useCallback((days: number) => {
-    const { start, end } = getPeriodDates(days);
-    setStartDate(toInputDate(start));
-    setEndDate(toInputDate(end));
-    setError(null);
-  }, []);
+    const { start, end } = getPeriodDates(days)
+    setStartDate(toInputDate(start))
+    setEndDate(toInputDate(end))
+    setError(null)
+  }, [])
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
-      e.preventDefault();
-      setError(null);
+      e.preventDefault()
+      setError(null)
       if (!startDate || !endDate) {
-        setError("Selecione a data inicial e a data final.");
-        return;
+        setError('Selecione a data inicial e a data final.')
+        return
       }
-      const start = new Date(startDate + "T00:00:00.000Z");
-      const end = new Date(endDate + "T23:59:59.999Z");
+      const start = new Date(startDate + 'T00:00:00.000Z')
+      const end = new Date(endDate + 'T23:59:59.999Z')
       if (start > end) {
-        setError("A data inicial não pode ser maior que a data final.");
-        return;
+        setError('A data inicial não pode ser maior que a data final.')
+        return
       }
-      setLoading(true);
+      setLoading(true)
       try {
         const params = new URLSearchParams({
           startDate: start.toISOString(),
           endDate: end.toISOString(),
-        });
+        })
         const res = await fetch(`/api/dashboard/report?${params}`, {
-          credentials: "include",
-        });
-        const data = await res.json();
+          credentials: 'include',
+        })
+        const data = await res.json()
         if (!res.ok) {
           setError(
             (data as { message?: string }).message ||
-              "Erro ao gerar relatório. Tente novamente.",
-          );
-          return;
+              'Erro ao gerar relatório. Tente novamente.',
+          )
+          return
         }
-        generateReportPdf(data as DashboardReportData);
-        onClose();
+        generateReportPdf(data as DashboardReportData)
+        onClose()
       } catch (err) {
-        console.error(err);
+        console.error(err)
         setError(
-          "Não foi possível gerar o relatório. Verifique sua conexão e tente novamente.",
-        );
+          'Não foi possível gerar o relatório. Verifique sua conexão e tente novamente.',
+        )
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     },
     [startDate, endDate, onClose],
-  );
+  )
 
   const handleOverlayClick = useCallback(
     (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget && !loading) onClose();
+      if (e.target === e.currentTarget && !loading) onClose()
     },
     [onClose, loading],
-  );
+  )
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <Overlay
@@ -125,16 +125,16 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
           aria-label="Fechar"
           disabled={loading}
           style={{
-            position: "absolute",
-            top: "1rem",
-            right: "1rem",
-            background: "transparent",
-            border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
-            padding: "0.25rem",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            position: 'absolute',
+            top: '1rem',
+            right: '1rem',
+            background: 'transparent',
+            border: 'none',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            padding: '0.25rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           <X size={24} weight="bold" />
@@ -165,8 +165,8 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
               type="date"
               value={startDate}
               onChange={(e) => {
-                setStartDate(e.target.value);
-                setError(null);
+                setStartDate(e.target.value)
+                setError(null)
               }}
               required
             />
@@ -179,8 +179,8 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
               type="date"
               value={endDate}
               onChange={(e) => {
-                setEndDate(e.target.value);
-                setError(null);
+                setEndDate(e.target.value)
+                setError(null)
               }}
               required
             />
@@ -193,11 +193,11 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
               Cancelar
             </CloseButton>
             <SubmitButton type="submit" disabled={loading}>
-              {loading ? "Gerando..." : "Gerar PDF"}
+              {loading ? 'Gerando...' : 'Gerar PDF'}
             </SubmitButton>
           </Footer>
         </Form>
       </Content>
     </Overlay>
-  );
+  )
 }

@@ -1,14 +1,14 @@
-import { IMaintenance } from "./maintenance-types.d";
+import { IMaintenance } from './maintenance-types.d'
 
 export const maintenanceTypes: IMaintenance[] = [
   {
-    id: "preventive",
-    label: "Preventiva",
+    id: 'preventive',
+    label: 'Preventiva',
     isActive: false,
   },
   {
-    id: "corrective",
-    label: "Corretiva",
+    id: 'corrective',
+    label: 'Corretiva',
     isActive: false,
   },
-];
+]

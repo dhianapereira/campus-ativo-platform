@@ -1,9 +1,9 @@
-import React from "react";
-import { FunnelSimple } from "phosphor-react";
-import { FilterBtn } from "./styles";
+import React from 'react'
+import { FunnelSimple } from 'phosphor-react'
+import { FilterBtn } from './styles'
 
 export interface FilterButtonProps {
-  onClick?: () => void;
+  onClick?: () => void
 }
 
 export function FilterButton({ onClick }: FilterButtonProps) {
@@ -12,5 +12,5 @@ export function FilterButton({ onClick }: FilterButtonProps) {
       <FunnelSimple size={16} weight="regular" />
       Filtrar
     </FilterBtn>
-  );
+  )
 }

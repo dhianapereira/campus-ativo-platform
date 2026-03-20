@@ -1,39 +1,39 @@
-import { useState } from "react";
-import { Container, Body, Header, Input, Title } from "./styles";
-import { ArrowLeft } from "phosphor-react";
-import { Button, Text, TextArea, TextInput } from "@/styles";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { problemFormSchema } from "@/validators/problem-form";
-import { ProtectedRoute } from "@/styles/components/routes/ProtectedRoute";
-import { useRouter } from "next/router";
-import { toast } from "sonner";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
-import ImageUpload from "../components/ImageUpload";
+import { useState } from 'react'
+import { Container, Body, Header, Input, Title } from './styles'
+import { ArrowLeft } from 'phosphor-react'
+import { Button, Text, TextArea, TextInput } from '@/styles'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Controller, useForm } from 'react-hook-form'
+import { problemFormSchema } from '@/validators/problem-form'
+import { ProtectedRoute } from '@/styles/components/routes/ProtectedRoute'
+import { useRouter } from 'next/router'
+import { toast } from 'sonner'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { z } from 'zod'
+import ImageUpload from '../components/ImageUpload'
 
-type ProblemFormData = z.infer<typeof problemFormSchema>;
+type ProblemFormData = z.infer<typeof problemFormSchema>
 
 interface Category {
-  id: string;
-  name: string;
-  isActive?: boolean;
+  id: string
+  name: string
+  isActive?: boolean
 }
 
 interface Location {
-  id: string;
-  name: string;
-  code?: string;
-  isActive?: boolean;
+  id: string
+  name: string
+  code?: string
+  isActive?: boolean
 }
 
 export default function AddProblem() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
+  const router = useRouter()
+  const queryClient = useQueryClient()
 
-  const [attachmentId, setAttachmentId] = useState<string | null>(null);
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [attachmentId, setAttachmentId] = useState<string | null>(null)
+  const [isUploadingImage, setIsUploadingImage] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
 
   const {
     register,
@@ -45,108 +45,108 @@ export default function AddProblem() {
     formState: { errors, isSubmitting },
   } = useForm<ProblemFormData>({
     resolver: zodResolver(problemFormSchema),
-    mode: "onTouched",
+    mode: 'onTouched',
     defaultValues: {
-      title: "",
-      description: "",
-      categoryId: "",
-      locationId: "",
+      title: '',
+      description: '',
+      categoryId: '',
+      locationId: '',
     },
-  });
+  })
 
-  const title = watch("title");
-  const categoryId = watch("categoryId");
-  const locationId = watch("locationId");
-  const description = watch("description");
+  const title = watch('title')
+  const categoryId = watch('categoryId')
+  const locationId = watch('locationId')
+  const description = watch('description')
 
   const isFormValid =
-    title?.trim() !== "" &&
-    categoryId !== "" &&
-    locationId !== "" &&
-    description?.trim() !== "";
+    title?.trim() !== '' &&
+    categoryId !== '' &&
+    locationId !== '' &&
+    description?.trim() !== ''
 
   const { data: categoriesData, isLoading: isLoadingCategories } = useQuery({
-    queryKey: ["categories", "active"],
+    queryKey: ['categories', 'active'],
     queryFn: async () => {
-      const response = await fetch("/api/categories?isActive=true", {
-        credentials: "include",
-      });
-      if (!response.ok) throw new Error("Falha ao buscar categorias");
-      return response.json();
+      const response = await fetch('/api/categories?isActive=true', {
+        credentials: 'include',
+      })
+      if (!response.ok) throw new Error('Falha ao buscar categorias')
+      return response.json()
     },
-  });
+  })
 
   const { data: locationsData, isLoading: isLoadingLocations } = useQuery({
-    queryKey: ["locations", "active"],
+    queryKey: ['locations', 'active'],
     queryFn: async () => {
-      const response = await fetch("/api/locations?isActive=true", {
-        credentials: "include",
-      });
-      if (!response.ok) throw new Error("Falha ao buscar localizações");
-      return response.json();
+      const response = await fetch('/api/locations?isActive=true', {
+        credentials: 'include',
+      })
+      if (!response.ok) throw new Error('Falha ao buscar localizações')
+      return response.json()
     },
-  });
+  })
 
-  const categories: Category[] = categoriesData?.categories || [];
-  const locations: Location[] = locationsData?.locations || [];
+  const categories: Category[] = categoriesData?.categories || []
+  const locations: Location[] = locationsData?.locations || []
 
   const handleImageSelect = async (file: File | null) => {
-    setUploadError(null);
+    setUploadError(null)
 
     if (!file) {
-      setAttachmentId(null);
-      return;
+      setAttachmentId(null)
+      return
     }
 
-    setIsUploadingImage(true);
+    setIsUploadingImage(true)
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
+      const formData = new FormData()
+      formData.append('file', file)
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000);
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 60000)
 
-      const response = await fetch("/api/attachments", {
-        method: "POST",
-        credentials: "include",
+      const response = await fetch('/api/attachments', {
+        method: 'POST',
+        credentials: 'include',
         body: formData,
         signal: controller.signal,
-      });
+      })
 
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Falha ao fazer upload da imagem");
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Falha ao fazer upload da imagem')
       }
 
-      const data = await response.json();
-      setAttachmentId(data.attachmentId);
-      toast.success("Imagem enviada com sucesso!");
+      const data = await response.json()
+      setAttachmentId(data.attachmentId)
+      toast.success('Imagem enviada com sucesso!')
     } catch (error) {
       const errorMessage =
         error instanceof Error
-          ? error.name === "AbortError"
-            ? "Upload demorou muito. Tente novamente."
+          ? error.name === 'AbortError'
+            ? 'Upload demorou muito. Tente novamente.'
             : error.message
-          : "Falha ao fazer upload da imagem";
-      setUploadError(errorMessage);
-      toast.error(errorMessage);
-      setAttachmentId(null);
+          : 'Falha ao fazer upload da imagem'
+      setUploadError(errorMessage)
+      toast.error(errorMessage)
+      setAttachmentId(null)
     } finally {
-      setIsUploadingImage(false);
+      setIsUploadingImage(false)
     }
-  };
+  }
 
   const createProblemMutation = useMutation({
     mutationFn: async (data: ProblemFormData) => {
-      const response = await fetch("/api/problems/create", {
-        method: "POST",
+      const response = await fetch('/api/problems/create', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify({
           title: data.title.trim(),
           description: data.description.trim(),
@@ -154,52 +154,52 @@ export default function AddProblem() {
           locationId: data.locationId,
           attachmentIds: attachmentId ? [attachmentId] : undefined,
         }),
-      });
+      })
 
-      const errorData = await response.json().catch(() => ({}));
+      const errorData = await response.json().catch(() => ({}))
 
       if (!response.ok) {
         const message =
           errorData.message ||
-          "Falha ao cadastrar problema. Verifique os dados.";
-        throw new Error(message);
+          'Falha ao cadastrar problema. Verifique os dados.'
+        throw new Error(message)
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["problems"] });
-      toast.success("Problema cadastrado com sucesso!");
-      router.push("/problems");
+      queryClient.invalidateQueries({ queryKey: ['problems'] })
+      toast.success('Problema cadastrado com sucesso!')
+      router.push('/problems')
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Falha ao cadastrar problema");
-      setError("root", {
-        type: "manual",
+      toast.error(error.message || 'Falha ao cadastrar problema')
+      setError('root', {
+        type: 'manual',
         message: error.message,
-      });
+      })
     },
-  });
+  })
 
   async function handleRegisterProblem(data: ProblemFormData) {
-    clearErrors("root");
-    createProblemMutation.mutate(data);
+    clearErrors('root')
+    createProblemMutation.mutate(data)
   }
 
   const selectStyles = {
-    width: "100%",
-    padding: "0.875rem 1rem",
-    borderRadius: "6px",
-    border: "1px solid #d1d5db",
-    fontSize: "1rem",
-    color: "#383D3B",
-    backgroundColor: "white",
-    cursor: "pointer",
-    appearance: "none" as const,
+    width: '100%',
+    padding: '0.875rem 1rem',
+    borderRadius: '6px',
+    border: '1px solid #d1d5db',
+    fontSize: '1rem',
+    color: '#383D3B',
+    backgroundColor: 'white',
+    cursor: 'pointer',
+    appearance: 'none' as const,
     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 1rem center",
-  };
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'right 1rem center',
+  }
 
   return (
     <ProtectedRoute>
@@ -207,7 +207,7 @@ export default function AddProblem() {
         <Header>
           <ArrowLeft
             className="back-icon"
-            onClick={() => router.push("/problems")}
+            onClick={() => router.push('/problems')}
             weight="bold"
             size={24}
             aria-label="Voltar para a página anterior"
@@ -223,7 +223,7 @@ export default function AddProblem() {
             <Text size="md">Título</Text>
             <TextInput
               placeholder="Descreva brevemente o problema"
-              {...register("title")}
+              {...register('title')}
               aria-label="Título do problema"
               tabIndex={0}
             />
@@ -237,7 +237,7 @@ export default function AddProblem() {
           <Input>
             <Text size="md">Categoria</Text>
             <select
-              {...register("categoryId")}
+              {...register('categoryId')}
               aria-label="Categoria do problema"
               tabIndex={0}
               style={selectStyles}
@@ -245,8 +245,8 @@ export default function AddProblem() {
             >
               <option value="">
                 {isLoadingCategories
-                  ? "Carregando categorias..."
-                  : "Selecione uma categoria"}
+                  ? 'Carregando categorias...'
+                  : 'Selecione uma categoria'}
               </option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -264,7 +264,7 @@ export default function AddProblem() {
           <Input>
             <Text size="md">Localização</Text>
             <select
-              {...register("locationId")}
+              {...register('locationId')}
               aria-label="Localização do problema"
               tabIndex={0}
               style={selectStyles}
@@ -272,13 +272,13 @@ export default function AddProblem() {
             >
               <option value="">
                 {isLoadingLocations
-                  ? "Carregando localizações..."
-                  : "Selecione uma localização"}
+                  ? 'Carregando localizações...'
+                  : 'Selecione uma localização'}
               </option>
               {locations.map((location) => (
                 <option key={location.id} value={location.id}>
                   {location.name}
-                  {location.code ? ` (${location.code})` : ""}
+                  {location.code ? ` (${location.code})` : ''}
                 </option>
               ))}
             </select>
@@ -301,10 +301,10 @@ export default function AddProblem() {
                   aria-label="Descrição do problema"
                   tabIndex={0}
                   css={{
-                    width: "100%",
-                    minHeight: "120px",
-                    resize: "vertical",
-                    boxSizing: "border-box",
+                    width: '100%',
+                    minHeight: '120px',
+                    resize: 'vertical',
+                    boxSizing: 'border-box',
                   }}
                 />
               )}
@@ -322,7 +322,7 @@ export default function AddProblem() {
               onImageSelect={handleImageSelect}
               maxSizeKB={5120}
               placeholder="Faça o upload de uma imagem com tamanho inferior a 5MB."
-              buttonText={isUploadingImage ? "Enviando..." : "Escolher Imagem"}
+              buttonText={isUploadingImage ? 'Enviando...' : 'Escolher Imagem'}
               errorMessage={uploadError || undefined}
               disabled={isUploadingImage || createProblemMutation.isPending}
             />
@@ -332,7 +332,7 @@ export default function AddProblem() {
             <Text
               className="error-message"
               size="sm"
-              style={{ color: "#dc2626" }}
+              style={{ color: '#dc2626' }}
             >
               {errors.root.message}
             </Text>
@@ -350,10 +350,10 @@ export default function AddProblem() {
             aria-label="Cadastrar problema"
             tabIndex={0}
           >
-            {createProblemMutation.isPending ? "Cadastrando..." : "Cadastrar"}
+            {createProblemMutation.isPending ? 'Cadastrando...' : 'Cadastrar'}
           </Button>
         </Body>
       </Container>
     </ProtectedRoute>
-  );
+  )
 }

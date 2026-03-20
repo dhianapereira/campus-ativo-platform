@@ -1,56 +1,54 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { UserResponse } from "../../../server/client/models";
-import { getUserProfileControllerHandle } from "../../../server/client/user-profile/user-profile";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { UserResponse } from '../../../server/client/models'
+import { getUserProfileControllerHandle } from '../../../server/client/user-profile/user-profile'
 
 interface MeResponse {
-  success: boolean;
+  success: boolean
   user?: {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    position: string;
-  };
-  error?: string;
+    id: string
+    name: string
+    email: string
+    role: string
+    position: string
+  }
+  error?: string
 }
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<MeResponse>,
 ) {
-  if (req.method !== "GET") {
-    return res
-      .status(405)
-      .json({ success: false, error: "Method not allowed" });
+  if (req.method !== 'GET') {
+    return res.status(405).json({ success: false, error: 'Method not allowed' })
   }
 
   try {
-    const token = req.cookies["auth-token"];
+    const token = req.cookies['auth-token']
 
     if (!token) {
       return res.status(401).json({
         success: false,
-        error: "No authentication token found",
-      });
+        error: 'No authentication token found',
+      })
     }
 
     const userProfile = await getUserProfileControllerHandle({
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    });
+    })
 
     const profileData: UserResponse =
       (userProfile as { profile?: UserResponse })?.profile ||
-      (userProfile as UserResponse);
+      (userProfile as UserResponse)
 
-    let roleFromToken = null;
+    let roleFromToken = null
     try {
       const tokenPayload = JSON.parse(
-        Buffer.from(token.split(".")[1], "base64").toString(),
-      );
-      roleFromToken = tokenPayload.role;
-    } catch (e) {}
+        Buffer.from(token.split('.')[1], 'base64').toString(),
+      )
+      roleFromToken = tokenPayload.role
+    } catch (_e) {}
 
     const userData = {
       id: profileData.id,
@@ -59,27 +57,27 @@ export default async function handler(
       // IMPORTANT: Prioritize the profile role (always up-to-date)
       // instead of the token (static).
       role: profileData.role || roleFromToken,
-      position: profileData.position || "Não informado",
-    };
+      position: profileData.position || 'Não informado',
+    }
 
     return res.status(200).json({
       success: true,
       user: userData,
-    });
+    })
   } catch (error: unknown) {
     const axiosError = error as {
-      response?: { status?: number; data?: { message?: string } };
-    };
+      response?: { status?: number; data?: { message?: string } }
+    }
     if (axiosError?.response?.status === 401) {
       return res.status(401).json({
         success: false,
-        error: "Invalid or expired token",
-      });
+        error: 'Invalid or expired token',
+      })
     }
 
     return res.status(500).json({
       success: false,
-      error: "Internal server error",
-    });
+      error: 'Internal server error',
+    })
   }
 }

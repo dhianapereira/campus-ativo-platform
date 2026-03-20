@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { User, LockKey, Trash, FloppyDisk } from "phosphor-react";
+import { useState } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { User, LockKey, Trash, FloppyDisk } from 'phosphor-react'
 import {
   MainContainer,
   HeaderContainer,
@@ -24,10 +24,12 @@ import {
   DangerText,
   InfoBox,
   InfoText,
-} from "./styles";
-import PlatformLayout from "@/app/platform/layout";
-import { ConfirmationModal } from "@/components/confirmation-modal";
-import { useAuth } from "@/contexts/auth-context";
+} from './styles'
+import PlatformLayout from '@/app/platform/layout'
+import { ConfirmationModal } from '@/components/confirmation-modal'
+import { useAuth } from '@/contexts/auth-context'
+
+type AuthUser = NonNullable<ReturnType<typeof useAuth>['user']>
 
 export default function ProfilePage() {
   const {
@@ -35,211 +37,214 @@ export default function ProfilePage() {
     isProfileLoading: isLoading,
     retryProfileLoad,
     signOut,
-  } = useAuth();
-
-  const [name, setName] = useState("");
-  const [position, setPosition] = useState("");
-  const [hasProfileChanges, setHasProfileChanges] = useState(false);
-
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [showProfileDiscardConfirmation, setShowProfileDiscardConfirmation] =
-    useState(false);
-
-  useEffect(() => {
-    if (user) {
-      setName(user.name);
-      setPosition(user.position);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (user) {
-      const changed = name !== user.name || position !== user.position;
-      setHasProfileChanges(changed);
-    }
-  }, [name, position, user]);
-
-  const hasPasswordInput =
-    oldPassword.trim() !== "" ||
-    newPassword.trim() !== "" ||
-    confirmPassword.trim() !== "";
-
-  const updateProfileMutation = useMutation({
-    mutationFn: async (data: { name: string; position: string }) => {
-      const response = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          userId: user?.id,
-          name: data.name,
-          position: data.position,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Falha ao atualizar perfil");
-      }
-
-      return response.json();
-    },
-    onSuccess: async (data) => {
-      if (data?.user) {
-        setName(data.user.name);
-        setPosition(data.user.position);
-      }
-      await retryProfileLoad();
-      setHasProfileChanges(false);
-      toast.success("Perfil atualizado com sucesso");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Falha ao atualizar perfil");
-    },
-  });
-
-  const changePasswordMutation = useMutation({
-    mutationFn: async (data: { oldPassword: string; newPassword: string }) => {
-      const response = await fetch("/api/profile/password", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          userId: user?.id,
-          oldPassword: data.oldPassword,
-          newPassword: data.newPassword,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Falha ao alterar senha");
-      }
-
-      return response.json();
-    },
-    onSuccess: () => {
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setPasswordError("");
-      toast.success("Senha alterada com sucesso");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Falha ao alterar senha");
-    },
-  });
-
-  const deleteAccountMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch("/api/profile/delete", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          userId: user?.id,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Falha ao excluir conta");
-      }
-
-      return response.json();
-    },
-    onSuccess: async () => {
-      toast.success("Conta excluída com sucesso");
-      // Wait a bit for the toast to be visible, then sign out
-      setTimeout(async () => {
-        await signOut();
-      }, 1500);
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || "Falha ao excluir conta");
-    },
-  });
-
-  const handleProfileSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!name.trim() || !position.trim()) {
-      toast.error("Nome e cargo são obrigatórios");
-      return;
-    }
-
-    updateProfileMutation.mutate({
-      name: name.trim(),
-      position: position.trim(),
-    });
-  };
-
-  const handleProfileReset = () => {
-    if (hasProfileChanges) {
-      setShowProfileDiscardConfirmation(true);
-    }
-  };
-
-  const confirmProfileDiscard = () => {
-    if (user) {
-      setName(user.name);
-      setPosition(user.position);
-      setHasProfileChanges(false);
-      setShowProfileDiscardConfirmation(false);
-      toast.info("Alterações descartadas");
-    }
-  };
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPasswordError("");
-
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      setPasswordError("Todos os campos são obrigatórios");
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      setPasswordError("A nova senha deve ter no mínimo 6 caracteres");
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setPasswordError("As senhas não coincidem");
-      return;
-    }
-
-    if (oldPassword === newPassword) {
-      setPasswordError("A nova senha deve ser diferente da senha atual");
-      return;
-    }
-
-    changePasswordMutation.mutate({ oldPassword, newPassword });
-  };
-
-  const handleDeleteAccount = () => {
-    setShowDeleteConfirmation(true);
-  };
-
-  const confirmDeleteAccount = () => {
-    deleteAccountMutation.mutate();
-  };
+  } = useAuth()
 
   if (isLoading || !user) {
     return (
       <PlatformLayout>
         <MainContainer>
-          <div style={{ padding: "2rem", textAlign: "center" }}>
+          <div style={{ padding: '2rem', textAlign: 'center' }}>
             Carregando perfil...
           </div>
         </MainContainer>
       </PlatformLayout>
-    );
+    )
+  }
+
+  return (
+    <ProfileContent
+      key={`${user.id}:${user.name}:${user.position}`}
+      user={user}
+      retryProfileLoad={retryProfileLoad}
+      signOut={signOut}
+    />
+  )
+}
+
+function ProfileContent({
+  user,
+  retryProfileLoad,
+  signOut,
+}: {
+  user: AuthUser
+  retryProfileLoad: () => Promise<void>
+  signOut: () => Promise<void>
+}) {
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [showProfileDiscardConfirmation, setShowProfileDiscardConfirmation] =
+    useState(false)
+  const [name, setName] = useState(user?.name ?? '')
+  const [position, setPosition] = useState(user?.position ?? '')
+  const hasProfileChanges =
+    !!user && (name !== user.name || position !== user.position)
+
+  const hasPasswordInput =
+    oldPassword.trim() !== '' ||
+    newPassword.trim() !== '' ||
+    confirmPassword.trim() !== ''
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data: { name: string; position: string }) => {
+      const response = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          userId: user?.id,
+          name: data.name,
+          position: data.position,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Falha ao atualizar perfil')
+      }
+
+      return response.json()
+    },
+    onSuccess: async (data) => {
+      if (data?.user) {
+        setName(data.user.name)
+        setPosition(data.user.position)
+      }
+      await retryProfileLoad()
+      toast.success('Perfil atualizado com sucesso')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Falha ao atualizar perfil')
+    },
+  })
+
+  const changePasswordMutation = useMutation({
+    mutationFn: async (data: { oldPassword: string; newPassword: string }) => {
+      const response = await fetch('/api/profile/password', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          userId: user?.id,
+          oldPassword: data.oldPassword,
+          newPassword: data.newPassword,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Falha ao alterar senha')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      setOldPassword('')
+      setNewPassword('')
+      setConfirmPassword('')
+      setPasswordError('')
+      toast.success('Senha alterada com sucesso')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Falha ao alterar senha')
+    },
+  })
+
+  const deleteAccountMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch('/api/profile/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          userId: user?.id,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Falha ao excluir conta')
+      }
+
+      return response.json()
+    },
+    onSuccess: async () => {
+      toast.success('Conta excluída com sucesso')
+      // Wait a bit for the toast to be visible, then sign out
+      setTimeout(async () => {
+        await signOut()
+      }, 1500)
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Falha ao excluir conta')
+    },
+  })
+
+  const handleProfileSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!name.trim() || !position.trim()) {
+      toast.error('Nome e cargo são obrigatórios')
+      return
+    }
+
+    updateProfileMutation.mutate({
+      name: name.trim(),
+      position: position.trim(),
+    })
+  }
+
+  const handleProfileReset = () => {
+    if (hasProfileChanges) {
+      setShowProfileDiscardConfirmation(true)
+    }
+  }
+
+  const confirmProfileDiscard = () => {
+    if (user) {
+      setName(user.name)
+      setPosition(user.position)
+      setShowProfileDiscardConfirmation(false)
+      toast.info('Alterações descartadas')
+    }
+  }
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setPasswordError('')
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      setPasswordError('Todos os campos são obrigatórios')
+      return
+    }
+
+    if (newPassword.length < 6) {
+      setPasswordError('A nova senha deve ter no mínimo 6 caracteres')
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError('As senhas não coincidem')
+      return
+    }
+
+    if (oldPassword === newPassword) {
+      setPasswordError('A nova senha deve ser diferente da senha atual')
+      return
+    }
+
+    changePasswordMutation.mutate({ oldPassword, newPassword })
+  }
+
+  const handleDeleteAccount = () => {
+    setShowDeleteConfirmation(true)
+  }
+
+  const confirmDeleteAccount = () => {
+    deleteAccountMutation.mutate()
   }
 
   return (
@@ -259,7 +264,7 @@ export default function ProfilePage() {
                 <User
                   size={20}
                   weight="bold"
-                  style={{ display: "inline", marginRight: "0.5rem" }}
+                  style={{ display: 'inline', marginRight: '0.5rem' }}
                 />
                 Informações do Perfil
               </SectionTitle>
@@ -300,11 +305,11 @@ export default function ProfilePage() {
                 <Input
                   id="email"
                   type="email"
-                  value={user?.email || ""}
+                  value={user?.email || ''}
                   disabled
                   readOnly
                   title="O e-mail não pode ser alterado"
-                  style={{ cursor: "not-allowed", opacity: 0.6 }}
+                  style={{ cursor: 'not-allowed', opacity: 0.6 }}
                 />
               </FormGroup>
 
@@ -328,8 +333,8 @@ export default function ProfilePage() {
                 >
                   <FloppyDisk size={18} weight="bold" />
                   {updateProfileMutation.isPending
-                    ? "Salvando..."
-                    : "Salvar alterações"}
+                    ? 'Salvando...'
+                    : 'Salvar alterações'}
                 </Button>
               </ButtonsContainer>
             </Form>
@@ -341,7 +346,7 @@ export default function ProfilePage() {
                 <LockKey
                   size={20}
                   weight="bold"
-                  style={{ display: "inline", marginRight: "0.5rem" }}
+                  style={{ display: 'inline', marginRight: '0.5rem' }}
                 />
                 Alterar Senha
               </SectionTitle>
@@ -403,10 +408,10 @@ export default function ProfilePage() {
                   type="button"
                   variant="secondary"
                   onClick={() => {
-                    setOldPassword("");
-                    setNewPassword("");
-                    setConfirmPassword("");
-                    setPasswordError("");
+                    setOldPassword('')
+                    setNewPassword('')
+                    setConfirmPassword('')
+                    setPasswordError('')
                   }}
                   disabled={
                     !hasPasswordInput || changePasswordMutation.isPending
@@ -423,8 +428,8 @@ export default function ProfilePage() {
                 >
                   <LockKey size={18} weight="bold" />
                   {changePasswordMutation.isPending
-                    ? "Alterando..."
-                    : "Alterar senha"}
+                    ? 'Alterando...'
+                    : 'Alterar senha'}
                 </Button>
               </ButtonsContainer>
             </Form>
@@ -436,7 +441,7 @@ export default function ProfilePage() {
                 <Trash
                   size={20}
                   weight="bold"
-                  style={{ display: "inline", marginRight: "0.5rem" }}
+                  style={{ display: 'inline', marginRight: '0.5rem' }}
                 />
                 Zona de Perigo
               </SectionTitle>
@@ -459,8 +464,8 @@ export default function ProfilePage() {
               >
                 <Trash size={18} weight="bold" />
                 {deleteAccountMutation.isPending
-                  ? "Excluindo..."
-                  : "Excluir minha conta"}
+                  ? 'Excluindo...'
+                  : 'Excluir minha conta'}
               </Button>
             </DangerZone>
           </Section>
@@ -488,5 +493,5 @@ export default function ProfilePage() {
         variant="danger"
       />
     </PlatformLayout>
-  );
+  )
 }

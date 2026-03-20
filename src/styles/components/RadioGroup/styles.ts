@@ -1,49 +1,49 @@
-import { styled } from "@/styles/stitches";
+import { styled } from '@/styles/stitches'
 
-export const Container = styled("div", {
-  display: "flex",
-  gap: "18px",
-  margin: "$3 0",
+export const Container = styled('div', {
+  display: 'flex',
+  gap: '18px',
+  margin: '$3 0',
 
   variants: {
     orientation: {
       horizontal: {
-        flexDirection: "row",
-        flexWrap: "wrap",
+        flexDirection: 'row',
+        flexWrap: 'wrap',
       },
       vertical: {
-        flexDirection: "column",
-        gap: "$2",
+        flexDirection: 'column',
+        gap: '$2',
       },
     },
   },
 
   defaultVariants: {
-    orientation: "horizontal",
+    orientation: 'horizontal',
   },
-});
+})
 
-export const Title = styled("p", {
-  fontFamily: "$default",
-  fontSize: "$md",
-  fontWeight: "$bold",
-  color: "$gray",
+export const Title = styled('p', {
+  fontFamily: '$default',
+  fontSize: '$md',
+  fontWeight: '$bold',
+  color: '$gray',
   margin: 0,
-  marginBottom: "$2",
+  marginBottom: '$2',
 
   variants: {
     hasError: {
       true: {
-        color: "$red",
+        color: '$red',
       },
     },
   },
-});
+})
 
-export const ErrorMessage = styled("span", {
-  fontFamily: "$default",
-  fontSize: "$xs",
-  color: "$red",
-  marginTop: "$1",
-  display: "block",
-});
+export const ErrorMessage = styled('span', {
+  fontFamily: '$default',
+  fontSize: '$xs',
+  color: '$red',
+  marginTop: '$1',
+  display: 'block',
+})

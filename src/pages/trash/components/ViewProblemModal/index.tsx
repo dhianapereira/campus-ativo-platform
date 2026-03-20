@@ -15,29 +15,29 @@ import {
   Value,
   DescriptionValue,
   WarningMessage,
-} from "./styles";
-import { X, ArrowCounterClockwise, Warning } from "phosphor-react";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { useAuth } from "@/contexts/auth-context";
+} from './styles'
+import { X, ArrowCounterClockwise, Warning } from 'phosphor-react'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { useAuth } from '@/contexts/auth-context'
 
 interface ProblemData {
-  id: string;
-  title: string;
-  description?: string;
-  locationName?: string;
-  categoryName?: string;
-  authorId?: string;
-  authorName?: string;
-  createdAt?: string;
-  deletedAt?: string;
+  id: string
+  title: string
+  description?: string
+  locationName?: string
+  categoryName?: string
+  authorId?: string
+  authorName?: string
+  createdAt?: string
+  deletedAt?: string
 }
 
 interface ViewProblemModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
-  problem: ProblemData | null;
+  isOpen: boolean
+  onClose: () => void
+  onSuccess: () => void
+  problem: ProblemData | null
 }
 
 export function ViewProblemModal({
@@ -46,61 +46,61 @@ export function ViewProblemModal({
   onSuccess,
   problem,
 }: ViewProblemModalProps) {
-  const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const queryClient = useQueryClient()
+  const { user } = useAuth()
 
-  const isAuthor = user?.id === problem?.authorId;
+  const isAuthor = user?.id === problem?.authorId
 
   const restoreProblemMutation = useMutation({
     mutationFn: async () => {
-      if (!problem?.id) throw new Error("ID do problema não encontrado");
+      if (!problem?.id) throw new Error('ID do problema não encontrado')
 
-      const response = await fetch("/api/trash", {
-        method: "POST",
+      const response = await fetch('/api/trash', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify({
-          action: "restore",
+          action: 'restore',
           ids: [problem.id],
-          type: "problem",
+          type: 'problem',
         }),
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Falha ao restaurar problema");
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Falha ao restaurar problema')
       }
 
-      return response.json();
+      return response.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["problems"] });
-      queryClient.invalidateQueries({ queryKey: ["trash"] });
-      toast.success("Problema restaurado com sucesso");
-      onSuccess();
-      onClose();
+      queryClient.invalidateQueries({ queryKey: ['problems'] })
+      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      toast.success('Problema restaurado com sucesso')
+      onSuccess()
+      onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Falha ao restaurar problema");
+      toast.error(error.message || 'Falha ao restaurar problema')
     },
-  });
+  })
 
   const handleRestore = () => {
-    restoreProblemMutation.mutate();
-  };
+    restoreProblemMutation.mutate()
+  }
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return "-";
-    return new Date(dateString).toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    });
-  };
+    if (!dateString) return '-'
+    return new Date(dateString).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    })
+  }
 
-  if (!isOpen || !problem) return null;
+  if (!isOpen || !problem) return null
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -115,9 +115,9 @@ export function ViewProblemModal({
         <ModalBody>
           <p
             style={{
-              margin: "0 0 1rem",
-              fontSize: "0.875rem",
-              color: "#7C7C8A",
+              margin: '0 0 1rem',
+              fontSize: '0.875rem',
+              color: '#7C7C8A',
             }}
           >
             Visualização somente. Não é possível editar; apenas restaurar (se
@@ -183,13 +183,13 @@ export function ViewProblemModal({
               >
                 <ArrowCounterClockwise size={20} weight="bold" />
                 {restoreProblemMutation.isPending
-                  ? "Restaurando..."
-                  : "Restaurar"}
+                  ? 'Restaurando...'
+                  : 'Restaurar'}
               </RestoreButton>
             )}
           </ButtonGroup>
         </ModalFooter>
       </ModalContent>
     </ModalOverlay>
-  );
+  )
 }

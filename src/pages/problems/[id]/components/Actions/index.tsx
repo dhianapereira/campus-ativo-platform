@@ -1,21 +1,14 @@
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import {
-  Button,
-  Heading,
-  Text,
-  TextArea,
-  Dropdown,
-  RadioGroup,
-} from "@/styles";
-import { Column, Container, Form, Input, Section } from "./styles";
-import type { ProblemActionsProps } from "./types";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { actionsFormSchema } from "@/validators/actions-form";
-import { ActionsFormData } from "@/@types/form";
-import { StatusDataList } from "@/data/static/status-data";
-import { CategoryDataList } from "@/data/static/category-data";
-import { maintenanceTypes } from "@/data/static/maintenance-types";
+import React, { useEffect } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
+import { Button, Heading, Text, TextArea, Dropdown, RadioGroup } from '@/styles'
+import { Column, Container, Form, Input, Section } from './styles'
+import type { ProblemActionsProps } from './types'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { actionsFormSchema } from '@/validators/actions-form'
+import { ActionsFormData } from '@/@types/form'
+import { StatusDataList } from '@/data/static/status-data'
+import { CategoryDataList } from '@/data/static/category-data'
+import { maintenanceTypes } from '@/data/static/maintenance-types'
 
 export function Actions({
   initialStatus,
@@ -26,40 +19,45 @@ export function Actions({
     register,
     handleSubmit,
     setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
     trigger,
   } = useForm<ActionsFormData>({
     resolver: zodResolver(actionsFormSchema),
     defaultValues: {
-      status: initialStatus || "",
-      category: initialCategory || "",
-      maintenance: initialMaintenanceType || "",
+      status: initialStatus || '',
+      category: initialCategory || '',
+      maintenance: initialMaintenanceType || '',
     },
-  });
+  })
+
+  const [status, category, maintenance] = useWatch({
+    control,
+    name: ['status', 'category', 'maintenance'],
+  })
 
   const handleStatusChange = (value: string) => {
-    setValue("status", value, { shouldValidate: true });
-    trigger("status");
-  };
+    setValue('status', value, { shouldValidate: true })
+    trigger('status')
+  }
 
   const handleCategoryChange = (value: string) => {
-    setValue("category", value, { shouldValidate: true });
-    trigger("category");
-  };
+    setValue('category', value, { shouldValidate: true })
+    trigger('category')
+  }
 
   const handleMaintenanceChange = (value: string) => {
-    setValue("maintenance", value, { shouldValidate: true });
-    trigger("maintenance");
-  };
+    setValue('maintenance', value, { shouldValidate: true })
+    trigger('maintenance')
+  }
 
   async function handleSave(data: ActionsFormData) {
-    console.log(data);
+    console.log(data)
   }
 
   useEffect(() => {
-    trigger();
-  }, [trigger]);
+    trigger()
+  }, [trigger])
 
   return (
     <Container>
@@ -73,7 +71,7 @@ export function Actions({
                 label="Status"
                 hint="Selecione o status"
                 items={StatusDataList}
-                itemSelected={watch("status")}
+                itemSelected={status}
                 onChange={handleStatusChange}
                 hasError={!!errors.status}
                 errorMessage={errors.status?.message}
@@ -86,7 +84,7 @@ export function Actions({
                 label="Categoria"
                 hint="Selecione a categoria"
                 items={CategoryDataList}
-                itemSelected={watch("category")}
+                itemSelected={category}
                 onChange={handleCategoryChange}
                 hasError={!!errors.category}
                 errorMessage={errors.category?.message}
@@ -99,7 +97,7 @@ export function Actions({
                 title="Manutenção"
                 name="maintenance"
                 options={maintenanceTypes}
-                value={watch("maintenance")}
+                value={maintenance}
                 onChange={handleMaintenanceChange}
                 hasError={!!errors.maintenance}
                 errorMessage={errors.maintenance?.message}
@@ -109,7 +107,7 @@ export function Actions({
               <Text size="md">Observações</Text>
               <TextArea
                 placeholder="Adicione aqui as observações relacionadas ao status escolhido."
-                {...register("note")}
+                {...register('note')}
               />
               {errors.note && (
                 <Text className="error-message" size="sm">
@@ -124,5 +122,5 @@ export function Actions({
         </Button>
       </Form>
     </Container>
-  );
+  )
 }

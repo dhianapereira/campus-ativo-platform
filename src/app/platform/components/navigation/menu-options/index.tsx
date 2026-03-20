@@ -6,18 +6,18 @@ import {
   Users,
   Gear,
   Trash,
-} from "phosphor-react";
-import { NextRouter } from "next/router";
-import { IOption } from "./index.d";
+} from 'phosphor-react'
+import { NextRouter } from 'next/router'
+import { IOption } from './index.d'
 
 interface MenuOptionsConfig {
-  router: NextRouter;
-  onLogoutClick: () => Promise<void>;
-  onClose?: () => void;
-  openLogoutModal?: () => void;
-  onRetryProfile?: () => void;
-  canAccessUserManagement?: boolean;
-  canAccessSettings?: boolean;
+  router: NextRouter
+  onLogoutClick: () => Promise<void>
+  onClose?: () => void
+  openLogoutModal?: () => void
+  onRetryProfile?: () => void
+  canAccessUserManagement?: boolean
+  canAccessSettings?: boolean
 }
 
 export const createMenuOptions = ({
@@ -31,93 +31,93 @@ export const createMenuOptions = ({
 }: MenuOptionsConfig): IOption[] => {
   const options: IOption[] = [
     {
-      id: "dashboard",
-      name: "Dashboard",
+      id: 'dashboard',
+      name: 'Dashboard',
       icon: <ChartLineUp weight="bold" />,
       onClick: () => {
-        router.push("/home");
-        onClose?.();
+        router.push('/home')
+        onClose?.()
       },
     },
     {
-      id: "problems",
-      name: "Problemas",
+      id: 'problems',
+      name: 'Problemas',
       icon: <Warning weight="bold" />,
       onClick: () => {
-        router.push("/problems");
-        onClose?.();
+        router.push('/problems')
+        onClose?.()
       },
     },
-  ];
+  ]
 
   if (canAccessUserManagement) {
     options.push({
-      id: "members",
-      name: "Membros",
+      id: 'members',
+      name: 'Membros',
       icon: <Users weight="bold" />,
       onClick: () => {
-        router.push("/members");
-        onClose?.();
+        router.push('/members')
+        onClose?.()
       },
-    });
+    })
   }
 
   if (canAccessSettings) {
     options.push({
-      id: "settings",
-      name: "Configurações",
+      id: 'settings',
+      name: 'Configurações',
       icon: <Gear weight="bold" />,
       onClick: () => {
-        router.push("/settings");
-        onClose?.();
+        router.push('/settings')
+        onClose?.()
       },
-    });
+    })
 
     options.push({
-      id: "trash",
-      name: "Lixeira",
+      id: 'trash',
+      name: 'Lixeira',
       icon: <Trash weight="bold" />,
       onClick: () => {
-        router.push("/trash");
-        onClose?.();
+        router.push('/trash')
+        onClose?.()
       },
-    });
+    })
   }
 
   if (onRetryProfile) {
     options.push({
-      id: "retry-profile",
-      name: "Recarregar perfil",
+      id: 'retry-profile',
+      name: 'Recarregar perfil',
       icon: <ArrowClockwise weight="bold" />,
       onClick: () => {
-        onRetryProfile();
-        onClose?.();
+        onRetryProfile()
+        onClose?.()
       },
-    });
+    })
   }
 
   options.push({
-    id: "logout",
-    name: "Sair do sistema",
+    id: 'logout',
+    name: 'Sair do sistema',
     icon: <SignOut weight="bold" />,
     onClick: () => {
       if (openLogoutModal) {
-        openLogoutModal();
+        openLogoutModal()
       } else {
-        onLogoutClick();
-        onClose?.();
+        onLogoutClick()
+        onClose?.()
       }
     },
-  });
+  })
 
-  return options;
-};
+  return options
+}
 
 /** Path associado a cada item do menu (para estado ativo) */
 export const MENU_OPTION_PATHS: Record<string, string> = {
-  dashboard: "/home",
-  problems: "/problems",
-  members: "/members",
-  settings: "/settings",
-  trash: "/trash",
-};
+  dashboard: '/home',
+  problems: '/problems',
+  members: '/members',
+  settings: '/settings',
+  trash: '/trash',
+}
