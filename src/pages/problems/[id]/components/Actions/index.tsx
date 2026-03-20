@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { Button, Heading, Text, TextArea, Dropdown, RadioGroup } from '@/styles'
 import { Column, Container, Form, Input, Section } from './styles'
@@ -7,14 +7,40 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { actionsFormSchema } from '@/validators/actions-form'
 import { ActionsFormData } from '@/@types/form'
 import { StatusDataList } from '@/data/static/status-data'
-import { CategoryDataList } from '@/data/static/category-data'
 import { maintenanceTypes } from '@/data/static/maintenance-types'
+import { useQuery } from '@tanstack/react-query'
+import type { DropdownItem } from '@/styles/components/Dropdown'
+import type { CategoryResponse } from '@/server/client/models/categoryResponse'
 
 export function Actions({
   initialStatus,
   initialCategory,
   initialMaintenanceType,
 }: ProblemActionsProps) {
+  const { data: categoriesData } = useQuery({
+    queryKey: ['categories', 'active'],
+    queryFn: async () => {
+      const response = await fetch('/api/categories?isActive=true', {
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        throw new Error('Falha ao buscar categorias')
+      }
+
+      return (await response.json()) as { categories?: CategoryResponse[] }
+    },
+  })
+
+  const categoryItems = useMemo<DropdownItem[]>(
+    () =>
+      (categoriesData?.categories ?? []).map((category) => ({
+        name: category.name,
+        value: category.id,
+      })),
+    [categoriesData?.categories],
+  )
+
   const {
     register,
     handleSubmit,
@@ -83,7 +109,7 @@ export function Actions({
                 id="category"
                 label="Categoria"
                 hint="Selecione a categoria"
-                items={CategoryDataList}
+                items={categoryItems}
                 itemSelected={category}
                 onChange={handleCategoryChange}
                 hasError={!!errors.category}

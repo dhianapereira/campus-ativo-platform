@@ -20,7 +20,6 @@ import { ProtectedRoute } from '@/styles/components/routes/ProtectedRoute'
 import { useAuth } from '@/contexts/auth-context'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import type { CategoryResponse } from '@/server/client/models/categoryResponse'
 
 const STATUS_TO_ANALYSIS_BACKEND = 'TO_ANALYSIS'
 
@@ -73,24 +72,6 @@ export default function ProblemDetails() {
 
   const problem = apiResponse?.problem
 
-  const { data: category } = useQuery({
-    queryKey: ['category', problem?.categoryId],
-    queryFn: async () => {
-      const res = await fetch(`/api/categories/${problem?.categoryId}`, {
-        credentials: 'include',
-      })
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.message || 'Falha ao carregar categoria')
-      }
-
-      return (await res.json()) as CategoryResponse
-    },
-    enabled: !!problem?.categoryId,
-    retry: false,
-  })
-
   const problemData = useMemo<ProblemDetailsProps | null>(() => {
     if (!problem) return null
 
@@ -101,14 +82,14 @@ export default function ProblemDetails() {
       location: problem.location?.name ?? problem.locationId ?? '—',
       description: problem.description,
       status: BACKEND_STATUS_TO_FRONTEND[problem.status] ?? problem.status,
-      category: category?.name ?? problem.categoryId ?? null,
+      category: problem.categoryId ?? null,
       maintenanceType: problem.maintenanceType ?? null,
       imageUrl: firstAttachment?.url ?? null,
       reporter: problem.reporterName ?? problem.reporterId ?? '—',
       createdAt: formatDateTime(problem.createdAt),
       updatedAt: problem.updatedAt ? formatDateTime(problem.updatedAt) : null,
     }
-  }, [category?.name, problem])
+  }, [problem])
 
   const moveToTrashMutation = useMutation({
     mutationFn: async () => {
