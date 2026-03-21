@@ -36,6 +36,45 @@ const LoadingText = styled('p', {
   margin: 0,
 })
 
+const ErrorCard = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '$4',
+  maxWidth: '420px',
+  padding: '$6',
+  textAlign: 'center',
+})
+
+const ErrorTitle = styled('p', {
+  color: '$gray',
+  fontSize: '$lg',
+  fontWeight: '$bold',
+  margin: 0,
+})
+
+const ErrorDescription = styled('p', {
+  color: '$lightGray',
+  fontSize: '$sm',
+  lineHeight: 1.5,
+  margin: 0,
+})
+
+const RetryButton = styled('button', {
+  border: 0,
+  borderRadius: '$sm',
+  backgroundColor: '$green',
+  color: '$white',
+  cursor: 'pointer',
+  fontSize: '$sm',
+  fontWeight: '$medium',
+  padding: '$3 $4',
+
+  '&:hover': {
+    filter: 'brightness(0.95)',
+  },
+})
+
 interface RoleProtectedRouteProps {
   children: ReactNode
   requiredRole?: string
@@ -49,12 +88,22 @@ export function RoleProtectedRoute({
   requiredLevel,
   fallbackPath = '/problems',
 }: RoleProtectedRouteProps) {
-  const { isAuthenticated, isLoading, hasRole, hasRoleLevel } = useAuth()
+  const {
+    isAuthenticated,
+    isLoading,
+    hasRole,
+    hasRoleLevel,
+    profileError,
+    retryProfileLoad,
+    isProfileLoading,
+  } = useAuth()
   const router = useRouter()
+  const hasProfileError = !!profileError
 
   useAuthRedirect({
     isAuthenticated,
     isLoading,
+    canRedirect: !hasProfileError,
     redirectTo: '/login',
     clearHistory: true,
   })
@@ -74,11 +123,25 @@ export function RoleProtectedRoute({
     void router.replace({ pathname: '/unauthorized', query: { back: backTo } })
   }, [fallbackPath, hasPermission, isAuthenticated, isLoading, router])
 
-  if (isLoading) {
+  if (isLoading || (isProfileLoading && hasProfileError)) {
     return (
       <LoadingContainer>
         <LoadingSpinner />
         <LoadingText>Carregando...</LoadingText>
+      </LoadingContainer>
+    )
+  }
+
+  if (hasProfileError) {
+    return (
+      <LoadingContainer>
+        <ErrorCard>
+          <ErrorTitle>Erro ao validar sua sessao</ErrorTitle>
+          <ErrorDescription>{profileError}</ErrorDescription>
+          <RetryButton type="button" onClick={() => void retryProfileLoad()}>
+            Tentar novamente
+          </RetryButton>
+        </ErrorCard>
       </LoadingContainer>
     )
   }

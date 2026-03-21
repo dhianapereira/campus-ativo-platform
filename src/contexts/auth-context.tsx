@@ -30,13 +30,19 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 async function fetchUserProfile(): Promise<User | null> {
   const response = await fetch('/api/auth/me')
-  const data = await response.json()
+  const data = await response.json().catch(() => null)
+
+  if (response.status === 401) {
+    return null
+  }
 
   if (response.ok && data.success) {
     return data.user
   }
 
-  return null
+  throw new Error(
+    data?.error || 'Nao foi possivel carregar o perfil do usuario.',
+  )
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -65,7 +71,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const isAuthenticated = !!user
   const isProfileLoading = isLoading
-  const profileError = error ? 'Failed to load user profile' : null
+  const profileError =
+    error instanceof Error
+      ? error.message
+      : error
+        ? 'Nao foi possivel carregar o perfil do usuario.'
+        : null
 
   async function retryProfileLoad() {
     await refetch()
