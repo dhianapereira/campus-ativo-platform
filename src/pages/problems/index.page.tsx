@@ -18,10 +18,7 @@ import { FilterButton } from './components/FilterButton'
 import { FilterDialog, FilterOption, Text } from '@/styles'
 import { useRouter } from 'next/router'
 import { useState, useMemo } from 'react'
-import {
-  BACKEND_STATUS_TO_FRONTEND,
-  Status,
-} from '@/data/static/status-data'
+import { BACKEND_STATUS_TO_FRONTEND, Status } from '@/data/static/status-data'
 import { useQuery } from '@tanstack/react-query'
 import NoProblemSvg from '@/assets/no-problem.svg'
 import Image from 'next/image'
@@ -37,25 +34,27 @@ export default function Problems() {
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
 
-  const { data, isLoading, error } = useQuery<FetchProblemsControllerHandle200>({
-    queryKey: ['problems', page, searchValue],
-    queryFn: async () => {
-      const params = new URLSearchParams()
-      if (page) params.append('page', page.toString())
-      if (searchValue) params.append('query', searchValue)
+  const { data, isLoading, error } = useQuery<FetchProblemsControllerHandle200>(
+    {
+      queryKey: ['problems', page, searchValue],
+      queryFn: async () => {
+        const params = new URLSearchParams()
+        if (page) params.append('page', page.toString())
+        if (searchValue) params.append('query', searchValue)
 
-      const response = await fetch(`/api/problems?${params.toString()}`, {
-        credentials: 'include',
-      })
+        const response = await fetch(`/api/problems?${params.toString()}`, {
+          credentials: 'include',
+        })
 
-      if (!response.ok) {
-        throw new Error('Falha ao buscar problemas')
-      }
+        if (!response.ok) {
+          throw new Error('Falha ao buscar problemas')
+        }
 
-      return response.json() as Promise<FetchProblemsControllerHandle200>
+        return response.json() as Promise<FetchProblemsControllerHandle200>
+      },
+      retry: false,
     },
-    retry: false,
-  })
+  )
 
   const filterOptions: FilterOption[] = [
     { id: Status.ToAnalysis, label: 'Para análise', checked: false },

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import { useAuthRedirect } from '@/hooks/use-auth-redirect'
 import { styled } from '@/styles/stitches'
@@ -59,6 +59,21 @@ export function RoleProtectedRoute({
     clearHistory: true,
   })
 
+  const hasPermission =
+    (!requiredRole || hasRole(requiredRole)) &&
+    (!requiredLevel || hasRoleLevel(requiredLevel))
+
+  useEffect(() => {
+    if (isLoading || !isAuthenticated || hasPermission) {
+      return
+    }
+
+    const backTo =
+      typeof window !== 'undefined' ? window.location.pathname : fallbackPath
+
+    void router.replace({ pathname: '/unauthorized', query: { back: backTo } })
+  }, [fallbackPath, hasPermission, isAuthenticated, isLoading, router])
+
   if (isLoading) {
     return (
       <LoadingContainer>
@@ -72,14 +87,7 @@ export function RoleProtectedRoute({
     return null
   }
 
-  const hasPermission =
-    (!requiredRole || hasRole(requiredRole)) &&
-    (!requiredLevel || hasRoleLevel(requiredLevel))
-
   if (!hasPermission) {
-    const backTo =
-      typeof window !== 'undefined' ? window.location.pathname : fallbackPath
-    router.replace({ pathname: '/unauthorized', query: { back: backTo } })
     return null
   }
 
