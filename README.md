@@ -1,46 +1,175 @@
-# IFAL - Campus Arapiraca
+# IFAL Arapiraca Frontend
 
+Aplicação em Next.js para a interface do Campus Ativo, sistema de gerenciamento de problemas de infraestrutura do IFAL Arapiraca.
+O frontend cobre autenticação, abertura e acompanhamento de problemas, dashboard, gestão de categorias e localizações,
+perfil do usuário, administração de usuários e integração com relatórios consumindo a API do projeto.
 Caso queira contribuir com novos componentes, melhorias e/ou correções no projeto, siga os passos do arquivo [CONTRIBUTING.md](./.github/docs/CONTRIBUTING.md).
 
-## Design
+## Stack
 
-O design foi desenvolvido no Figma. Para acessar, [clique aqui](https://www.figma.com/file/funQY0pFnfx28yBEYmfmnF/design-system?type=design&node-id=4%3A2&mode=design&t=D9Hq8odDk7pAuv7C-1).
+- Node.js `22.18.0`
+- Next.js `16`
+- React `18`
+- TypeScript
+- React Query
+- React Hook Form
+- Zod
+- Stitches
+- ESLint
+- Prettier
+- Orval
 
-## Ambiente de Desenvolvimento
+## O que a aplicação faz
 
-Para que todos tenham o ambiente de desenvolvimento o mais parecido possível e evitar problemas, certifique-se de ter as ferramentas acima com as seguintes versões:
+- autenticação de usuários
+- cadastro de conta e fluxo de acesso inicial
+- listagem, visualização, criação e edição de problemas
+- dashboard com métricas e geração de relatório
+- gestão de categorias e localizações
+- gestão de usuários por perfis administrativos
+- edição de perfil e alteração de senha
+- upload de anexos e integração com endpoints internos da aplicação
 
-| Ferramenta | Versão         |
-| ---------- | -------------- |
-| Git        | A mais recente |
-| NodeJS     | v18.18.0       |
+## Estrutura do projeto
 
-Para instalar as devidas versões, siga o passo a passo do arquivo [`dev_environment.md`](./.github/docs/dev_environment.md).
+O projeto segue uma separação entre páginas, componentes visuais, regras de formulário e integração com a API:
 
-## Guia de Instalação
-
-> Com as ferramentas devidamente instaladas, execute os comandos abaixo
-
-### **1. Clonar repositório**
-
-```bash
-git clone https://github.com/campusativo/ifal-arapiraca-frontend.git
+```text
+src/
+  components/                    componentes reutilizáveis
+  contexts/                      estados globais, como autenticação
+  layouts/                       estruturas visuais compartilhadas
+  pages/                         páginas e rotas de API do Next.js
+  server/                        cliente HTTP, OpenAPI e código gerado pelo Orval
+  styles/                        estilos globais e componentes base
+  utils/                         utilitários
+  validators/                    schemas e validações de formulário
 ```
 
-### **2. Entrar na pasta do projeto**
+Fluxo geral da aplicação:
+
+1. `src/pages` renderiza a interface e aciona hooks, contexto e componentes.
+2. As rotas em `src/pages/api` funcionam como camada intermediária para algumas chamadas.
+3. `src/server` concentra o cliente HTTP e o código gerado a partir do contrato OpenAPI.
+4. A aplicação consome a API backend definida em `NEXT_PUBLIC_SERVER_URL`.
+
+## Variáveis de ambiente
+
+Copie o arquivo [`.env.example`](./.env.example) para `.env`:
 
 ```bash
-cd ifal-arapiraca-frontend
+cp .env.example .env
 ```
 
-### **3. Instalar as dependências**
+Variáveis usadas atualmente:
+
+- `NEXT_PUBLIC_SERVER_URL`: URL base da API backend. Em ambiente local, o valor esperado é `http://localhost:3333`
+- `NODE_ENV`: ambiente da aplicação. Em desenvolvimento local, use `development`
+
+## Como rodar localmente
+
+### 1. Instalar dependências
 
 ```bash
 npm install
 ```
 
-### **3. Executar a aplicação**
+### 2. Criar e revisar o `.env`
+
+```bash
+cp .env.example .env
+```
+
+Preencha ou confirme ao menos:
+
+- `NEXT_PUBLIC_SERVER_URL`
+- `NODE_ENV`
+
+### 3. Garantir que o backend esteja rodando
+
+O frontend depende da API backend para carregar autenticação, dashboard, usuários, problemas, categorias, localizações e anexos.
+
+Por padrão, a aplicação espera o backend em:
+
+```text
+http://localhost:3333
+```
+
+### 4. Iniciar a aplicação
 
 ```bash
 npm run dev
 ```
+
+Por padrão, o frontend sobe em `http://localhost:3000`.
+
+## Geração do cliente da API
+
+O projeto usa Orval para gerar o cliente HTTP a partir do arquivo [`src/server/openapi.json`](./src/server/openapi.json).
+
+Para regenerar os arquivos de cliente:
+
+```bash
+npm run generate:api
+```
+
+Observações:
+
+- o código gerado fica em `src/server/client`
+- evite editar manualmente arquivos gerados
+- se o contrato da API mudar, atualize o `openapi.json` antes de regenerar
+
+## Scripts úteis
+
+```bash
+npm run dev            # desenvolvimento
+npm run build          # build de produção
+npm run start          # executa a aplicação após o build
+npm run lint           # lint com correções automáticas
+npm run format         # formata os arquivos do projeto
+npm run format:check   # valida a formatação
+npm run generate:api   # regenera o cliente OpenAPI
+```
+
+## Principais áreas da interface
+
+- `/login` e `/register` para autenticação e criação de conta
+- `/problems` para listagem e acompanhamento dos problemas
+- `/problems/[id]` para detalhes e ações sobre um problema
+- `/dashboard` para métricas e relatórios
+- `/settings` para categorias e localizações
+- `/users` para administração de usuários
+- `/profile` para edição de perfil
+
+## Design
+
+O design foi desenvolvido no Figma. Para acessar, [clique aqui](https://www.figma.com/design/uRxcTWge7V9l36AfLkKclf/Campus-Ativo).
+
+## Problemas comuns
+
+### A aplicação abre, mas não carrega dados
+
+Verifique se:
+
+- o backend está rodando
+- `NEXT_PUBLIC_SERVER_URL` aponta para a URL correta
+- há erro de CORS ou indisponibilidade na API
+
+### O login não funciona localmente
+
+Confirme se:
+
+- a API backend está acessível
+- o frontend está rodando em `localhost`
+- a URL configurada no `.env` corresponde ao backend esperado
+
+### O lint alterou arquivos
+
+Isso é esperado. O script `npm run lint` executa correções automáticas e pode ajustar imports, formatação e outros problemas simples.
+
+## Observações de desenvolvimento
+
+- o projeto usa `.nvmrc`; se você utiliza `nvm`, rode `nvm use`
+- `npm run lint` executa correções automáticas com `--fix`
+- as rotas de API do Next.js ficam em `src/pages/api`
+- para padrões de commit e fluxo de colaboração, consulte a documentação em [`.github/docs`](./.github/docs)
