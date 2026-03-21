@@ -1,4 +1,4 @@
-import PlatformLayout from '@/app/platform/layout'
+import PlatformLayout from '@/layouts/platform/layout'
 import {
   MainContainer,
   DashboardHeader,
@@ -34,11 +34,11 @@ import {
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { DashboardMetrics } from '@/@types/dashboard'
-import { DashboardShimmer } from '@/app/platform/components/DashboardShimmer'
+import { DashboardShimmer } from '@/layouts/platform/components/DashboardShimmer'
 import { Button } from '@/styles'
 import { colors } from '@/styles/tokens'
 import { FileText, MagnifyingGlass, Gear } from 'phosphor-react'
-import { ReportModal } from '@/app/platform/components/ReportModal'
+import { ReportModal } from '@/layouts/platform/components/ReportModal'
 
 const EMPTY_TOP_MESSAGE =
   'Não há dados suficientes ainda para exibir esta lista.'

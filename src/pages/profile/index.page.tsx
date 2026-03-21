@@ -25,7 +25,7 @@ import {
   InfoBox,
   InfoText,
 } from './styles'
-import PlatformLayout from '@/app/platform/layout'
+import PlatformLayout from '@/layouts/platform/layout'
 import { ConfirmationModal } from '@/components/confirmation-modal'
 import { useAuth } from '@/contexts/auth-context'
 

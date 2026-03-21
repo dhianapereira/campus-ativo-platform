@@ -6,7 +6,7 @@ import notFoundBg from '@/assets/not-found-bg.svg'
 import notFound404 from '@/assets/404.svg'
 import { styled } from '@/styles'
 import { useAuth } from '@/contexts/auth-context'
-import PlatformLayout from '@/app/platform/layout'
+import PlatformLayout from '@/layouts/platform/layout'
 
 const PageContainer = styled('div', {
   position: 'relative',

@@ -26,7 +26,7 @@ import {
   FiltersContainer,
   FilterButton,
 } from './styles'
-import PlatformLayout from '@/app/platform/layout'
+import PlatformLayout from '@/layouts/platform/layout'
 import { useAuth } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
 import type { FetchUsersControllerHandle200UsersItem } from '../../server/client/models'

@@ -1,4 +1,4 @@
-import PlatformLayout from '@/app/platform/layout'
+import PlatformLayout from '@/layouts/platform/layout'
 import {
   GridView,
   HeaderContainer,

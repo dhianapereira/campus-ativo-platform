@@ -39,7 +39,7 @@ import {
   PaginationButton,
   PaginationDots,
 } from './styles'
-import PlatformLayout from '@/app/platform/layout'
+import PlatformLayout from '@/layouts/platform/layout'
 import { RoleProtectedRoute } from '@/styles/components/routes/RoleProtectedRoute'
 import { AddCategoryModal } from './components/AddCategoryModal'
 import { AddLocationModal } from './components/AddLocationModal'
