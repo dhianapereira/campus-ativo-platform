@@ -1,4 +1,5 @@
 import { Item } from '@/@types/basic-types'
+import { ProblemResponseStatus } from '@/server/client/models'
 
 export enum Status {
   ToAnalysis = 'toAnalysis',
@@ -9,14 +10,15 @@ export enum Status {
   Finished = 'finished',
 }
 
-export const BACKEND_STATUS_TO_FRONTEND: Record<string, string> = {
-  TO_ANALYSIS: Status.ToAnalysis,
-  IN_ANALYSIS: Status.InAnalysis,
-  ACCEPTED: Status.Accepted,
-  REJECTED: Status.Rejected,
-  IN_PROGRESS: Status.InProgress,
-  FINISHED: Status.Finished,
-}
+export const BACKEND_STATUS_TO_FRONTEND: Record<ProblemResponseStatus, Status> =
+  {
+    TO_ANALYSIS: Status.ToAnalysis,
+    IN_ANALYSIS: Status.InAnalysis,
+    ACCEPTED: Status.Accepted,
+    REJECTED: Status.Rejected,
+    IN_PROGRESS: Status.InProgress,
+    FINISHED: Status.Finished,
+  }
 
 export const StatusDataList: Item[] = [
   {

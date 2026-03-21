@@ -18,10 +18,17 @@ import { FilterButton } from './components/FilterButton'
 import { FilterDialog, FilterOption, Text } from '@/styles'
 import { useRouter } from 'next/router'
 import { useState, useMemo } from 'react'
-import { Status } from '@/data/static/status-data'
+import {
+  BACKEND_STATUS_TO_FRONTEND,
+  Status,
+} from '@/data/static/status-data'
 import { useQuery } from '@tanstack/react-query'
 import NoProblemSvg from '@/assets/no-problem.svg'
 import Image from 'next/image'
+import type {
+  FetchProblemsControllerHandle200,
+  ProblemWithDetailsResponse,
+} from '@/server/client/models'
 
 export default function Problems() {
   const router = useRouter()
@@ -30,7 +37,7 @@ export default function Problems() {
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<FetchProblemsControllerHandle200>({
     queryKey: ['problems', page, searchValue],
     queryFn: async () => {
       const params = new URLSearchParams()
@@ -45,7 +52,7 @@ export default function Problems() {
         throw new Error('Falha ao buscar problemas')
       }
 
-      return response.json()
+      return response.json() as Promise<FetchProblemsControllerHandle200>
     },
     retry: false,
   })
@@ -65,7 +72,7 @@ export default function Problems() {
     title: string
     location: string
     description: string
-    badgeId: string
+    badgeId: Status
   }
 
   // Transform API data to match current component structure.
@@ -73,13 +80,13 @@ export default function Problems() {
   const problems = useMemo<ProblemItem[]>(() => {
     if (!data?.problems) return []
 
-    return data.problems.map((problem: any) => ({
+    return data.problems.map((problem: ProblemWithDetailsResponse) => ({
       id: problem.id || problem.slug || '',
       slug: problem.slug || problem.id || '',
       title: problem.title || '',
       location: problem.locationName || 'Localização excluída',
-      description: problem.excerpt || problem.description || '',
-      badgeId: problem.status || Status.ToAnalysis,
+      description: problem.excerpt || '',
+      badgeId: BACKEND_STATUS_TO_FRONTEND[problem.status],
     }))
   }, [data])
 

@@ -81,7 +81,10 @@ export default function ProblemDetails() {
       title: problem.title,
       location: problem.location?.name ?? problem.locationId ?? '—',
       description: problem.description,
-      status: BACKEND_STATUS_TO_FRONTEND[problem.status] ?? problem.status,
+      status:
+        BACKEND_STATUS_TO_FRONTEND[
+          problem.status as keyof typeof BACKEND_STATUS_TO_FRONTEND
+        ] ?? problem.status,
       category: problem.categoryId ?? null,
       maintenanceType: problem.maintenanceType ?? null,
       imageUrl: firstAttachment?.url ?? null,

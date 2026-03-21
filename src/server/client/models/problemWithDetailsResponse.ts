@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
+import type { ProblemResponseStatus } from './problemResponseStatus';
+
 export interface ProblemWithDetailsResponse {
   id: string;
   title: string;
@@ -14,5 +16,7 @@ export interface ProblemWithDetailsResponse {
   slug: string;
   /** Nome da localização (ou 'Localização excluída' se foi deletada) */
   locationName: string;
+  /** Status do problema */
+  status: ProblemResponseStatus;
   createdAt: string;
 }
