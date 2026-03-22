@@ -117,7 +117,10 @@ function EditCategoryModalContent({
         credentials: 'include',
         body: JSON.stringify({
           name: data.name,
-          description: data.description?.trim() || undefined,
+          description:
+            data.description === undefined
+              ? undefined
+              : data.description.trim(),
           isActive,
         }),
       })
