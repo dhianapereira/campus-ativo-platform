@@ -48,7 +48,7 @@ function filterByDeletedDate(
         return deletedDate >= thirtyDaysAgo
       }
       case 'thisyear': {
-        return deletedDate.getFullYear() === 2025
+        return deletedDate.getFullYear() === now.getFullYear()
       }
       default:
         return true

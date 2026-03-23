@@ -100,6 +100,7 @@ export default function TrashPage() {
   const queryClient = useQueryClient()
   const { hasRoleLevel } = useAuth()
   const canSeeLocationsAndCategories = hasRoleLevel(2)
+  const currentYear = new Date().getFullYear()
   const [searchTerm, setSearchTerm] = useState('')
   const [typeFilter, setTypeFilter] = useState<
     'all' | 'location' | 'category' | 'problem'
@@ -603,7 +604,7 @@ export default function TrashPage() {
                   <option value="today">Hoje</option>
                   <option value="last7days">Últimos 7 dias</option>
                   <option value="last30days">Últimos 30 dias</option>
-                  <option value="thisyear">Este ano (2025)</option>
+                  <option value="thisyear">{`Este ano (${currentYear})`}</option>
                 </select>
               </FiltersContainer>
 
