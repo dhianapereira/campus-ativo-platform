@@ -1,16 +1,20 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   Overlay,
   Content,
   Title,
+  Description,
   Form,
   Field,
   Label,
   Input,
   Presets,
   PresetButton,
+  PresetHint,
+  DateGrid,
   ErrorMessage,
   Footer,
+  IconButton,
   CloseButton,
   SubmitButton,
 } from './styles'
@@ -47,13 +51,38 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
   const defaultRange = getPeriodDates(30)
   const [startDate, setStartDate] = useState(toInputDate(defaultRange.start))
   const [endDate, setEndDate] = useState(toInputDate(defaultRange.end))
+  const [activePreset, setActivePreset] = useState<number | null>(30)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const range = getPeriodDates(30)
+    setStartDate(toInputDate(range.start))
+    setEndDate(toInputDate(range.end))
+    setActivePreset(30)
+    setError(null)
+    setLoading(false)
+  }, [isOpen])
 
   const handlePreset = useCallback((days: number) => {
     const { start, end } = getPeriodDates(days)
     setStartDate(toInputDate(start))
     setEndDate(toInputDate(end))
+    setActivePreset(days)
+    setError(null)
+  }, [])
+
+  const handleStartDateChange = useCallback((value: string) => {
+    setStartDate(value)
+    setActivePreset(null)
+    setError(null)
+  }, [])
+
+  const handleEndDateChange = useCallback((value: string) => {
+    setEndDate(value)
+    setActivePreset(null)
     setError(null)
   }, [])
 
@@ -119,72 +148,86 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
       aria-labelledby="report-modal-title"
     >
       <Content onClick={(e) => e.stopPropagation()}>
-        <CloseButton
+        <IconButton
           type="button"
           onClick={onClose}
           aria-label="Fechar"
           disabled={loading}
-          style={{
-            position: 'absolute',
-            top: '1rem',
-            right: '1rem',
-            background: 'transparent',
-            border: 'none',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            padding: '0.25rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
         >
           <X size={24} weight="bold" />
-        </CloseButton>
+        </IconButton>
 
         <Title id="report-modal-title">Gerar relatório em PDF</Title>
+        <Description>
+          Escolha um período pronto ou ajuste as datas manualmente para gerar o
+          relatório.
+        </Description>
 
         <Form onSubmit={handleSubmit}>
           <Field>
             <Label htmlFor="report-start">Período do relatório</Label>
             <Presets>
-              <PresetButton type="button" onClick={() => handlePreset(7)}>
+              <PresetButton
+                type="button"
+                onClick={() => handlePreset(7)}
+                data-active={activePreset === 7}
+                aria-pressed={activePreset === 7}
+              >
                 Últimos 7 dias
               </PresetButton>
-              <PresetButton type="button" onClick={() => handlePreset(30)}>
+              <PresetButton
+                type="button"
+                onClick={() => handlePreset(30)}
+                data-active={activePreset === 30}
+                aria-pressed={activePreset === 30}
+              >
                 Últimos 30 dias
               </PresetButton>
-              <PresetButton type="button" onClick={() => handlePreset(90)}>
+              <PresetButton
+                type="button"
+                onClick={() => handlePreset(90)}
+                data-active={activePreset === 90}
+                aria-pressed={activePreset === 90}
+              >
                 Últimos 90 dias
               </PresetButton>
             </Presets>
+            <PresetHint>
+              {activePreset
+                ? `Filtro ativo: últimos ${activePreset} dias.`
+                : 'Filtro personalizado ativo.'}
+            </PresetHint>
           </Field>
 
-          <Field>
-            <Label htmlFor="report-start">Data inicial</Label>
-            <Input
-              id="report-start"
-              type="date"
-              value={startDate}
-              onChange={(e) => {
-                setStartDate(e.target.value)
-                setError(null)
-              }}
-              required
-            />
-          </Field>
+          <DateGrid>
+            <Field>
+              <Label htmlFor="report-start">Data inicial</Label>
+              <Input
+                id="report-start"
+                type="date"
+                value={startDate}
+                max={endDate || undefined}
+                onChange={(e) => {
+                  handleStartDateChange(e.target.value)
+                }}
+                required
+              />
+            </Field>
 
-          <Field>
-            <Label htmlFor="report-end">Data final</Label>
-            <Input
-              id="report-end"
-              type="date"
-              value={endDate}
-              onChange={(e) => {
-                setEndDate(e.target.value)
-                setError(null)
-              }}
-              required
-            />
-          </Field>
+            <Field>
+              <Label htmlFor="report-end">Data final</Label>
+              <Input
+                id="report-end"
+                type="date"
+                value={endDate}
+                min={startDate || undefined}
+                onChange={(e) => {
+                  handleEndDateChange(e.target.value)
+                }}
+                required
+              />
+            </Field>
+          </DateGrid>
 
           {error && <ErrorMessage>{error}</ErrorMessage>}
 

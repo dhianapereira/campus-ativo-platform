@@ -16,16 +16,23 @@ export const Content = styled('div', {
   borderRadius: '$card',
   boxShadow: '0 12px 36px rgba(0, 0, 0, 0.28)',
   width: '100%',
-  maxWidth: '420px',
-  padding: '$6',
+  maxWidth: '480px',
+  padding: '$7 $6 $6',
   position: 'relative',
 })
 
 export const Title = styled('h2', {
-  margin: '0 0 $4',
+  margin: '0 0 $2',
   fontSize: '1.25rem',
   fontWeight: 700,
   color: '$darkGray',
+})
+
+export const Description = styled('p', {
+  margin: '0 0 $5',
+  fontSize: '0.9375rem',
+  lineHeight: 1.5,
+  color: '$gray',
 })
 
 export const Form = styled('form', {
@@ -52,10 +59,14 @@ export const Input = styled('input', {
   border: '1px solid rgba(0, 0, 0, 0.07)',
   fontSize: '0.875rem',
   color: '$darkGray',
+  minHeight: '44px',
+  backgroundColor: '$white',
+  transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
 
   '&:focus': {
     outline: 'none',
     borderColor: '$green',
+    boxShadow: '0 0 0 3px rgba(0, 128, 96, 0.12)',
   },
 })
 
@@ -66,17 +77,44 @@ export const Presets = styled('div', {
 })
 
 export const PresetButton = styled('button', {
-  padding: '$1 $3',
+  padding: '$2 $3',
   borderRadius: '$card',
   border: '1px solid $green',
   backgroundColor: 'transparent',
   color: '$green',
   fontSize: '0.8125rem',
-  fontWeight: 500,
+  fontWeight: 600,
   cursor: 'pointer',
+  transition:
+    'background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease',
 
   '&:hover': {
     backgroundColor: '$greenishWhite',
+  },
+
+  '&:focus-visible': {
+    outline: 'none',
+    boxShadow: '0 0 0 3px rgba(0, 128, 96, 0.14)',
+  },
+
+  '&[data-active="true"]': {
+    backgroundColor: '$green',
+    color: '$white',
+    boxShadow: '0 8px 18px rgba(0, 128, 96, 0.18)',
+  },
+})
+
+export const PresetHint = styled('span', {
+  fontSize: '0.8125rem',
+  color: '$gray',
+})
+
+export const DateGrid = styled('div', {
+  display: 'grid',
+  gap: '$3',
+
+  '@media (min-width: 640px)': {
+    gridTemplateColumns: '1fr 1fr',
   },
 })
 
@@ -88,9 +126,36 @@ export const ErrorMessage = styled('p', {
 
 export const Footer = styled('div', {
   display: 'flex',
+  flexWrap: 'wrap',
   gap: '$3',
   justifyContent: 'flex-end',
   marginTop: '$4',
+})
+
+export const IconButton = styled('button', {
+  position: 'absolute',
+  top: '$4',
+  right: '$4',
+  backgroundColor: 'transparent',
+  border: 'none',
+  color: '$gray',
+  cursor: 'pointer',
+  padding: '0.25rem',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '$full',
+  transition: 'background-color 0.2s ease, color 0.2s ease',
+
+  '&:hover:not(:disabled)': {
+    backgroundColor: '$greenishWhite',
+    color: '$darkGray',
+  },
+
+  '&:disabled': {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
 })
 
 export const CloseButton = styled('button', {
@@ -105,6 +170,11 @@ export const CloseButton = styled('button', {
 
   '&:hover': {
     backgroundColor: '$greenishWhite',
+  },
+
+  '&:disabled': {
+    opacity: 0.7,
+    cursor: 'not-allowed',
   },
 })
 
