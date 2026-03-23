@@ -39,6 +39,7 @@ export default function EditProblem() {
   const { id } = router.query
   const { user } = useAuth()
   const queryClient = useQueryClient()
+  const problemDetailsPath = typeof id === 'string' ? `/problems/${id}` : '/problems'
 
   const [problemData, setProblemData] = useState<ProblemData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -255,7 +256,7 @@ export default function EditProblem() {
           <Header>
             <ArrowLeft
               className="back-icon"
-              onClick={() => router.push('/problems')}
+              onClick={() => router.push(problemDetailsPath)}
               weight="bold"
               size={24}
               aria-label="Voltar para a página anterior"
@@ -283,7 +284,7 @@ export default function EditProblem() {
           <Header>
             <ArrowLeft
               className="back-icon"
-              onClick={() => router.push('/problems')}
+              onClick={() => router.push(problemDetailsPath)}
               weight="bold"
               size={24}
               aria-label="Voltar para a página anterior"
@@ -324,7 +325,7 @@ export default function EditProblem() {
         <Header>
           <ArrowLeft
             className="back-icon"
-            onClick={() => router.push('/problems')}
+            onClick={() => router.push(problemDetailsPath)}
             weight="bold"
             size={24}
             aria-label="Voltar para a página anterior"
