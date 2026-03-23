@@ -13,11 +13,12 @@ export const Header = styled('header', {
   flexDirection: 'row',
   alignItems: 'center',
   padding: '0 $4',
-  height: '12vh',
-  minHeight: '80px',
-  maxHeight: '120px',
+  height: 'clamp(72px, 10vh, 96px)',
+  minHeight: '72px',
+  maxHeight: '96px',
   borderBottom: '1px solid $lightGray',
   gap: '$2',
+  flexShrink: 0,
 
   '& .back-icon': {
     cursor: 'pointer',
@@ -26,14 +27,15 @@ export const Header = styled('header', {
 
   '@media (max-width: 768px)': {
     padding: '0 $3',
-    height: '10vh',
-    minHeight: '70px',
+    height: '72px',
+    minHeight: '72px',
   },
 
   '@media (max-width: 480px)': {
     padding: '0 $2',
-    height: '8vh',
-    minHeight: '60px',
+    height: '64px',
+    minHeight: '64px',
+    maxHeight: '64px',
   },
 })
 

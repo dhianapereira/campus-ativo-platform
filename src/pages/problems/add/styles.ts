@@ -15,8 +15,10 @@ export const Header = styled('header', {
   flexDirection: 'row',
   alignItems: 'center',
   padding: '0 $4',
-  height: '12vh',
+  height: 'clamp(72px, 10vh, 96px)',
+  minHeight: '72px',
   borderBottom: '1px solid $lightGray',
+  flexShrink: 0,
 
   '& .back-icon': {
     cursor: 'pointer',

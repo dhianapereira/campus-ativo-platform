@@ -50,10 +50,12 @@ export const Header = styled('header', {
   flexDirection: 'row',
   alignItems: 'center',
   padding: '0 $4',
-  height: '20vh',
+  height: 'clamp(80px, 12vh, 112px)',
+  minHeight: '80px',
   justifyContent: 'space-between',
   borderBottom: '1px solid $lightGray',
   overflow: 'hidden',
+  flexShrink: 0,
 
   '& .first-component': {
     display: 'flex',
@@ -76,6 +78,9 @@ export const Header = styled('header', {
   },
 
   '@media (max-width: 768px)': {
+    height: '80px',
+    minHeight: '80px',
+
     '& .desktop': {
       display: 'none',
     },
@@ -83,6 +88,11 @@ export const Header = styled('header', {
     '& .mobile': {
       display: 'flex',
     },
+  },
+
+  '@media (max-width: 480px)': {
+    height: '72px',
+    minHeight: '72px',
   },
 })
 
