@@ -36,7 +36,7 @@ export const DashboardHeader = styled('div', {
 
 export const DashboardTitle = styled('h2', {
   margin: 0,
-  fontSize: '0.875rem',
+  fontSize: '1.25rem',
   fontWeight: 700,
   color: '$darkGray',
 })

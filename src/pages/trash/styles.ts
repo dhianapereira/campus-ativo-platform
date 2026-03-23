@@ -32,15 +32,10 @@ export const HeaderContainer = styled('div', {
 })
 
 export const PageTitle = styled('h1', {
-  fontSize: '2rem',
+  fontSize: '1.25rem',
   fontWeight: 600,
   color: '$darkGray',
   margin: '0 0 1.5rem 0',
-
-  '@media(max-width: 640px)': {
-    fontSize: '1.5rem',
-    margin: '0 0 1rem 0',
-  },
 })
 
 export const SearchActionsContainer = styled('div', {

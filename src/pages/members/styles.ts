@@ -41,15 +41,7 @@ export const SectionTitle = styled('h2', {
   color: '$darkGray',
   fontWeight: 700,
   lineHeight: 1.3,
-  fontSize: '1.5rem',
-
-  '@media(max-width: 768px)': {
-    fontSize: '1.375rem',
-  },
-
-  '@media(max-width: 480px)': {
-    fontSize: '1.25rem',
-  },
+  fontSize: '1.25rem',
 })
 
 export const SearchContainer = styled('div', {
