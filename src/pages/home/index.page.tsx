@@ -45,9 +45,13 @@ const EMPTY_TOP_MESSAGE =
 
 function DashboardContent({
   data,
+  selectedPeriod,
+  onPeriodChange,
   onOpenReportModal,
 }: {
   data: DashboardMetrics
+  selectedPeriod: string
+  onPeriodChange: (period: string) => void
   onOpenReportModal: () => void
 }) {
   const maxBar =
@@ -70,11 +74,12 @@ function DashboardContent({
         >
           <FilterSelect
             aria-label="Filtrar por período"
-            defaultValue="30"
-            disabled
-            title="Filtro por período (em desenvolvimento)"
+            value={selectedPeriod}
+            onChange={(e) => onPeriodChange(e.target.value)}
           >
+            <option value="7">Últimos 7 dias</option>
             <option value="30">Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
           </FilterSelect>
           <Button
             type="button"
@@ -213,11 +218,15 @@ function DashboardContent({
 
 export default function Home() {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false)
+  const [selectedPeriod, setSelectedPeriod] = useState('30')
 
   const { data, isLoading, error, refetch, isRefetching } = useQuery({
-    queryKey: ['dashboard'],
+    queryKey: ['dashboard', selectedPeriod],
     queryFn: async () => {
-      const res = await fetch('/api/dashboard', { credentials: 'include' })
+      const params = new URLSearchParams({ days: selectedPeriod })
+      const res = await fetch(`/api/dashboard?${params.toString()}`, {
+        credentials: 'include',
+      })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
         throw new Error(
@@ -275,6 +284,8 @@ export default function Home() {
       <MainContainer>
         <DashboardContent
           data={data}
+          selectedPeriod={selectedPeriod}
+          onPeriodChange={setSelectedPeriod}
           onOpenReportModal={() => setIsReportModalOpen(true)}
         />
         <ReportModal

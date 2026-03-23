@@ -42,18 +42,27 @@ export const DashboardTitle = styled('h2', {
 })
 
 export const FilterSelect = styled('select', {
-  padding: '6px 12px',
-  borderRadius: '$card',
-  fontSize: '10px',
-  fontWeight: 400,
-  border: '1px solid $darkGray',
+  all: 'unset',
+  boxSizing: 'border-box',
+  display: 'inline-flex',
+  alignItems: 'center',
+  padding: '0.5rem 2rem 0.5rem 1rem',
+  borderRadius: '8px',
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  border: '1px solid #d1d5db',
   backgroundColor: 'white',
-  color: '$darkGray',
+  color: '#374151',
   cursor: 'pointer',
-  appearance: 'none',
-  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23121214' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+  appearance: 'none' as const,
+  height: '48px',
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
   backgroundRepeat: 'no-repeat',
-  backgroundPosition: 'right 12px center',
+  backgroundPosition: 'right 0.75rem center',
+
+  '&:focus': {
+    borderColor: '#4a9960',
+  },
 })
 
 export const MetricsGrid = styled('div', {

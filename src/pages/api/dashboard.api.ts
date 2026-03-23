@@ -18,7 +18,20 @@ export default async function handler(
   }
 
   try {
-    const response = await fetch(`${BACKEND_URL}/dashboard/metrics`, {
+    const params = new URLSearchParams()
+    const days = Array.isArray(req.query.days)
+      ? req.query.days[0]
+      : req.query.days
+
+    if (typeof days === 'string' && days.trim() !== '') {
+      params.set('days', days.trim())
+    }
+
+    const dashboardUrl = `${BACKEND_URL}/dashboard/metrics${
+      params.toString() ? `?${params.toString()}` : ''
+    }`
+
+    const response = await fetch(dashboardUrl, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
