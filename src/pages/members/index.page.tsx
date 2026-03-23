@@ -32,9 +32,24 @@ import { useQuery } from '@tanstack/react-query'
 import type { FetchUsersControllerHandle200UsersItem } from '../../server/client/models'
 import { EditMemberModal } from './components/EditMemberModal'
 
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
+
 export default function MembersPage() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<
     'all' | 'active' | 'inactive'
   >('all')
@@ -46,6 +61,7 @@ export default function MembersPage() {
 
   const { hasRoleLevel, isLoading: isAuthLoading } = useAuth()
   const router = useRouter()
+  const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
   const handleMemberClick = (
     member: FetchUsersControllerHandle200UsersItem,
@@ -75,12 +91,12 @@ export default function MembersPage() {
   }, [canLoad, router, isAuthLoading])
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ['users', searchQuery, statusFilter],
+    queryKey: ['users', debouncedSearchTerm, statusFilter],
     queryFn: async () => {
       const params = new URLSearchParams()
 
-      if (searchQuery) {
-        params.append('query', searchQuery)
+      if (debouncedSearchTerm) {
+        params.append('query', debouncedSearchTerm)
       }
 
       if (statusFilter === 'active') {
@@ -104,6 +120,7 @@ export default function MembersPage() {
     },
     enabled: !isAuthLoading && canLoad,
     retry: false,
+    placeholderData: (previousData) => previousData,
   })
 
   const usersData: FetchUsersControllerHandle200UsersItem[] = useMemo(() => {
@@ -125,13 +142,9 @@ export default function MembersPage() {
   const startIndex = (effectiveCurrentPage - 1) * itemsPerPage
   const currentUsers = usersData.slice(startIndex, startIndex + itemsPerPage)
 
-  const handleSearch = () => {
-    setSearchQuery(searchTerm)
-    setCurrentPage(1)
-  }
-
   const handleInputChange = (value: string) => {
     setSearchTerm(value)
+    setCurrentPage(1)
   }
 
   const handleStatusFilterChange = (filter: 'all' | 'active' | 'inactive') => {
@@ -280,7 +293,6 @@ export default function MembersPage() {
                 placeholder="Busque pelo nome ou email..."
                 value={searchTerm}
                 onChange={(e) => handleInputChange(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
             </SearchInputContainer>
           </SearchContainer>
@@ -312,7 +324,7 @@ export default function MembersPage() {
           <div style={{ padding: '2rem', textAlign: 'center' }}>
             <p>Nenhum resultado encontrado</p>
             <p style={{ color: '#666', fontSize: '0.9em' }}>
-              {searchQuery || statusFilter !== 'all'
+              {debouncedSearchTerm || statusFilter !== 'all'
                 ? 'Tente ajustar sua busca ou filtros e tente novamente.'
                 : 'Não há membros cadastrados ainda.'}
             </p>
