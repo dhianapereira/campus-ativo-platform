@@ -123,8 +123,11 @@ function EditLocationModalContent({
         credentials: 'include',
         body: JSON.stringify({
           name: data.name,
-          code: data.code?.trim() || undefined,
-          description: data.description?.trim() || undefined,
+          code: data.code === undefined ? undefined : data.code.trim(),
+          description:
+            data.description === undefined
+              ? undefined
+              : data.description.trim(),
           isActive,
         }),
       })
