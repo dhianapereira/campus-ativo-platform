@@ -210,14 +210,16 @@ export default function Problems() {
         )}
       </MainContainer>
 
-      <FilterDialog
-        isOpen={isFilterDialogOpen}
-        onClose={closeFilterDialog}
-        onApply={handleFilterApply}
-        filterOptions={currentFilterOptions}
-        title="Filtrar Problemas"
-        description="Selecione os status para refinar sua busca"
-      />
+      {isFilterDialogOpen && (
+        <FilterDialog
+          isOpen={isFilterDialogOpen}
+          onClose={closeFilterDialog}
+          onApply={handleFilterApply}
+          filterOptions={currentFilterOptions}
+          title="Filtrar Problemas"
+          description="Selecione os status para refinar sua busca"
+        />
+      )}
     </PlatformLayout>
   )
 }

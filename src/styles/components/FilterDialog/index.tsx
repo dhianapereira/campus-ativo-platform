@@ -58,7 +58,7 @@ export const FilterDialog = ({
   }
 
   const handleClear = () => {
-    setFilters(filters.map((option) => ({ ...option, checked: false })))
+    setFilters((prev) => prev.map((option) => ({ ...option, checked: false })))
   }
 
   const getActiveFiltersCount = () => {
