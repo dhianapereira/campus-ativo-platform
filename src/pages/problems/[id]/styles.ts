@@ -36,12 +36,31 @@ export const EditButton = styled('button', {
     boxShadow: '0 0 0 2px $colors $greenAccent',
   },
 
-  color: '$green',
-  border: '2px solid $green',
+  variants: {
+    tone: {
+      default: {
+        color: '$green',
+        border: '2px solid $green',
 
-  '&:not(:disabled):hover': {
-    backgroundColor: '$green',
-    color: '$white',
+        '&:not(:disabled):hover': {
+          backgroundColor: '$green',
+          color: '$white',
+        },
+      },
+      danger: {
+        color: '#b91c1c',
+        border: '2px solid #b91c1c',
+
+        '&:not(:disabled):hover': {
+          backgroundColor: '#b91c1c',
+          color: '$white',
+        },
+      },
+    },
+  },
+
+  defaultVariants: {
+    tone: 'default',
   },
 })
 

@@ -196,19 +196,27 @@ export default function ProblemDetails() {
                   disabled={moveToTrashMutation.isPending}
                   aria-label="Mover para a lixeira"
                   tabIndex={0}
-                  css={{ color: '#b91c1c', borderColor: '#b91c1c' }}
+                  css={{
+                    color: '#b91c1c',
+                    borderColor: '#b91c1c',
+                    '&:not(:disabled):hover': {
+                      backgroundColor: '#b91c1c',
+                      borderColor: '#b91c1c',
+                      color: '#fff',
+                    },
+                  }}
                 >
                   <Trash weight="bold" size={24} />
                   Mover para lixeira
                 </Button>
                 <EditButton
                   className="mobile"
+                  tone="danger"
                   onClick={handleMoveToTrash}
                   disabled={moveToTrashMutation.isPending}
                   aria-label="Mover para a lixeira"
                   tabIndex={0}
                   role="button"
-                  style={{ color: '#b91c1c', borderColor: '#b91c1c' }}
                 >
                   <Trash weight="bold" size={24} />
                 </EditButton>
