@@ -171,21 +171,104 @@ export const InfoContainer = styled('div', {
 export const HistorySection = styled('section', {
   display: 'flex',
   flexDirection: 'column',
-  gap: '$4',
+  borderRadius: '$sm',
+  border: '1px solid $lightGray',
+  backgroundColor: '$white',
+
+  '& .label': {
+    fontWeight: '$bold',
+  },
 })
 
-export const HistoryList = styled('div', {
+export const HistoryToggle = styled('button', {
+  all: 'unset',
+  boxSizing: 'border-box',
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '$3',
+  padding: '$4',
+  backgroundColor: '$white',
+  cursor: 'pointer',
+
+  '&:focus': {
+    boxShadow: 'inset 0 0 0 2px $colors $greenAccent',
+  },
+})
+
+export const HistoryPanel = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$3',
+  padding: '$1 $4 $4',
+  borderTop: '1px solid $lightGray',
+  backgroundColor: '$greenishWhite',
 })
 
-export const HistoryCard = styled('div', {
+export const HistoryTimeline = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+})
+
+export const HistoryEntry = styled('article', {
+  position: 'relative',
+  display: 'grid',
+  gridTemplateColumns: '20px 1fr',
+  gap: '$3',
+  padding: '$4 0',
+
+  '&:not(:last-child)': {
+    borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+  },
+
+  '&::before': {
+    content: '',
+    position: 'absolute',
+    left: '9px',
+    top: 0,
+    bottom: 0,
+    width: '2px',
+    backgroundColor: '$lightGray',
+  },
+
+  '&:first-child::before': {
+    top: '$4',
+  },
+
+  '&:last-child::before': {
+    bottom: 'calc(100% - 20px)',
+  },
+})
+
+export const HistoryEntryMarker = styled('span', {
+  position: 'relative',
+  zIndex: 1,
+  width: '20px',
+  height: '20px',
+  borderRadius: '$full',
+  backgroundColor: '$white',
+  border: '2px solid $green',
+  marginTop: '$1',
+})
+
+export const HistoryEntryBody = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$2',
-  padding: '$4',
-  borderRadius: '$sm',
-  backgroundColor: '$white',
-  border: '1px solid $lightGray',
+  minWidth: 0,
+})
+
+export const HistoryEntryHeader = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$1',
+})
+
+export const HistoryChangeList = styled('ul', {
+  margin: 0,
+  paddingLeft: '$5',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$2',
 })

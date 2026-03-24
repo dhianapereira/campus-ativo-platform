@@ -1,10 +1,15 @@
+export interface ProblemHistoryChange {
+  field: 'status' | 'category' | 'maintenanceType' | 'note'
+  oldValue?: string | null
+  newValue?: string | null
+}
+
 export interface ProblemHistoryEntry {
   id: string
   action: string
   userName: string
-  oldValue?: string | null
-  newValue?: string | null
   note?: string | null
+  changes?: ProblemHistoryChange[] | null
   createdAt: string
 }
 

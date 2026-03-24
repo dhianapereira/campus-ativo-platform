@@ -5,10 +5,9 @@
  * API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca
  * OpenAPI spec version: 1.0.0
  */
+import type { ProblemHistoryChangeResponse } from './problemHistoryChangeResponse';
 import type { ProblemHistoryEntryResponseAction } from './problemHistoryEntryResponseAction';
-import type { ProblemHistoryEntryResponseNewValue } from './problemHistoryEntryResponseNewValue';
 import type { ProblemHistoryEntryResponseNote } from './problemHistoryEntryResponseNote';
-import type { ProblemHistoryEntryResponseOldValue } from './problemHistoryEntryResponseOldValue';
 
 export interface ProblemHistoryEntryResponse {
   /** ID do registro de histórico */
@@ -18,20 +17,15 @@ export interface ProblemHistoryEntryResponse {
   /** Nome do usuário que realizou a ação */
   userName: string;
   /**
-   * Valor antigo da alteração
-   * @nullable
-   */
-  oldValue?: ProblemHistoryEntryResponseOldValue;
-  /**
-   * Novo valor da alteração
-   * @nullable
-   */
-  newValue?: ProblemHistoryEntryResponseNewValue;
-  /**
    * Observação adicionada ao histórico
    * @nullable
    */
   note?: ProblemHistoryEntryResponseNote;
+  /**
+   * Lista de mudanças agrupadas no registro de histórico
+   * @nullable
+   */
+  changes?: ProblemHistoryChangeResponse[] | null;
   /** Data de criação do registro de histórico */
   createdAt: string;
 }

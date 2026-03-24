@@ -8,12 +8,18 @@ import {
   InfoContainer,
   EditButton,
   HistorySection,
-  HistoryList,
-  HistoryCard,
+  HistoryToggle,
+  HistoryPanel,
+  HistoryTimeline,
+  HistoryEntry,
+  HistoryEntryMarker,
+  HistoryEntryBody,
+  HistoryEntryHeader,
+  HistoryChangeList,
 } from './styles'
-import { ArrowLeft, NotePencil, Trash } from 'phosphor-react'
+import { ArrowLeft, CaretDown, NotePencil, Trash } from 'phosphor-react'
 import { useRouter } from 'next/router'
-import type { ProblemDetailsProps } from './types'
+import type { ProblemDetailsProps, ProblemHistoryChange } from './types'
 import { Button, Text } from '@/styles'
 import { TrashActionButton } from '@/components/trash-action-button'
 import { Actions } from './components/Actions'
@@ -52,22 +58,23 @@ function formatDateTime(isoString?: string | null): string {
   }
 }
 
-function formatHistoryDescription(
-  entry: ProblemDetailsProps['history'][number],
+function formatHistoryChange(
+  change: NonNullable<
+    ProblemDetailsProps['history'][number]['changes']
+  >[number],
 ) {
-  if (entry.action === 'STATUS_CHANGED') {
-    return `De ${getStatusLabel(entry.oldValue)} para ${getStatusLabel(entry.newValue)}`
+  switch (change.field) {
+    case 'status':
+      return `Status: de ${getStatusLabel(change.oldValue)} para ${getStatusLabel(change.newValue)}`
+    case 'maintenanceType':
+      return `Manutenção: de ${getMaintenanceTypeLabel(change.oldValue)} para ${getMaintenanceTypeLabel(change.newValue)}`
+    case 'category':
+      return 'Categoria atualizada.'
+    case 'note':
+      return null
+    default:
+      return 'Atualização registrada.'
   }
-
-  if (entry.action === 'MAINTENANCE_TYPE_CHANGED') {
-    return `De ${getMaintenanceTypeLabel(entry.oldValue)} para ${getMaintenanceTypeLabel(entry.newValue)}`
-  }
-
-  if (entry.action === 'CATEGORY_CHANGED') {
-    return 'Categoria atualizada.'
-  }
-
-  return null
 }
 
 export default function ProblemDetails() {
@@ -77,6 +84,7 @@ export default function ProblemDetails() {
   const { user } = useAuth()
 
   const [imageError, setImageError] = useState(false)
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false)
 
   const {
     data: apiResponse,
@@ -105,11 +113,25 @@ export default function ProblemDetails() {
     if (!problem) return null
 
     const firstAttachment = problem.attachments?.[0]
-    const latestNote =
-      problem.history?.find(
-        (entry: { note?: string | null }) =>
-          typeof entry.note === 'string' && entry.note.trim().length > 0,
-      )?.note ?? ''
+    const latestNote = (() => {
+      for (const entry of problem.history ?? []) {
+        const noteChange = (entry.changes ?? []).find(
+          (change: ProblemHistoryChange) => change.field === 'note',
+        )
+
+        if (noteChange) {
+          return typeof noteChange.newValue === 'string'
+            ? noteChange.newValue.trim()
+            : ''
+        }
+
+        if (typeof entry.note === 'string') {
+          return entry.note.trim()
+        }
+      }
+
+      return ''
+    })()
 
     return {
       id: problem.id,
@@ -327,33 +349,114 @@ export default function ProblemDetails() {
             </InfoContainer>
           )}
           <HistorySection>
-            <Text className="label" size="md">
-              Histórico:
-            </Text>
-            <HistoryList>
-              {problemData.history.length > 0 ? (
-                problemData.history.map((entry) => {
-                  const description = formatHistoryDescription(entry)
-
-                  return (
-                    <HistoryCard key={entry.id}>
-                      <Text size="md">
-                        {getHistoryActionLabel(entry.action)}
-                      </Text>
-                      <Text size="sm">
-                        {entry.userName} em {formatDateTime(entry.createdAt)}
-                      </Text>
-                      {description && <Text size="sm">{description}</Text>}
-                      {entry.note && <Text size="md">{entry.note}</Text>}
-                    </HistoryCard>
-                  )
-                })
-              ) : (
-                <Text size="md">
-                  Nenhuma atualização registrada até o momento.
+            <HistoryToggle
+              type="button"
+              onClick={() => setIsHistoryOpen((current) => !current)}
+              aria-expanded={isHistoryOpen}
+              aria-controls="problem-history-panel"
+            >
+              <div>
+                <Text className="label" size="md">
+                  Histórico
                 </Text>
-              )}
-            </HistoryList>
+                <Text size="sm">
+                  {problemData.history.length} registro
+                  {problemData.history.length === 1 ? '' : 's'}
+                </Text>
+              </div>
+              <CaretDown
+                size={18}
+                weight="bold"
+                style={{
+                  transform: isHistoryOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.2s ease',
+                }}
+              />
+            </HistoryToggle>
+            {isHistoryOpen && (
+              <HistoryPanel id="problem-history-panel">
+                {problemData.history.length > 0 ? (
+                  <HistoryTimeline>
+                    {problemData.history.map((entry) => {
+                      const changes = entry.changes ?? []
+                      const noteChange = changes.find(
+                        (change) => change.field === 'note',
+                      )
+                      const noteText =
+                        typeof noteChange?.newValue === 'string'
+                          ? noteChange.newValue
+                          : typeof entry.note === 'string'
+                            ? entry.note
+                            : null
+                      const noteWasRemoved =
+                        !!noteChange &&
+                        !(
+                          typeof noteChange.newValue === 'string' &&
+                          noteChange.newValue.trim()
+                        )
+                      const visibleChanges = changes.filter(
+                        (change) => change.field !== 'note',
+                      )
+
+                      return (
+                        <HistoryEntry key={entry.id}>
+                          <HistoryEntryMarker aria-hidden="true" />
+                          <HistoryEntryBody>
+                            <HistoryEntryHeader>
+                              <Text size="md">
+                                {getHistoryActionLabel(entry.action)}
+                              </Text>
+                              <Text size="sm">
+                                {entry.userName} em{' '}
+                                {formatDateTime(entry.createdAt)}
+                              </Text>
+                            </HistoryEntryHeader>
+                            {(visibleChanges.length > 0 ||
+                              noteText ||
+                              noteWasRemoved) && (
+                              <HistoryChangeList>
+                                {visibleChanges.map((change, index) => {
+                                  const description =
+                                    formatHistoryChange(change)
+
+                                  if (!description) return null
+
+                                  return (
+                                    <li
+                                      key={`${entry.id}-${change.field}-${index}`}
+                                    >
+                                      <Text size="sm">{description}</Text>
+                                    </li>
+                                  )
+                                })}
+                                {noteText && (
+                                  <li key={`${entry.id}-note`}>
+                                    <Text size="sm">
+                                      {`Observações: ${noteText}`}
+                                    </Text>
+                                  </li>
+                                )}
+                                {noteWasRemoved && (
+                                  <li key={`${entry.id}-note-removed`}>
+                                    <Text size="sm">
+                                      Observações removidas.
+                                    </Text>
+                                  </li>
+                                )}
+                              </HistoryChangeList>
+                            )}
+                          </HistoryEntryBody>
+                        </HistoryEntry>
+                      )
+                    })}
+                  </HistoryTimeline>
+                ) : (
+                  <Text size="md">
+                    Nenhuma atualização registrada até o momento.
+                  </Text>
+                )}
+              </HistoryPanel>
+            )}
           </HistorySection>
           <Actions
             problemId={problemData.id}

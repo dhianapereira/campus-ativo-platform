@@ -95,6 +95,9 @@ export function Actions({
 
   async function handleSave(data: ActionsFormData) {
     const nextBackendStatus = toBackendStatus(data.status)
+    const trimmedNote = data.note?.trim() || ''
+    const trimmedInitialNote = initialNote.trim()
+    const noteChanged = trimmedNote !== trimmedInitialNote
 
     const response = await fetch(`/api/problems/${problemId}`, {
       method: 'PATCH',
@@ -106,7 +109,7 @@ export function Actions({
         status: nextBackendStatus,
         categoryId: data.category || undefined,
         maintenanceType: toBackendMaintenanceType(data.maintenance),
-        note: data.note?.trim() || undefined,
+        note: noteChanged ? trimmedNote : undefined,
       }),
     })
 

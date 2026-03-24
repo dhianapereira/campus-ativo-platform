@@ -79,6 +79,8 @@ export function getHistoryActionLabel(action?: string | null) {
       return 'Tipo de manutenção alterado'
     case 'NOTE_ADDED':
       return 'Observação adicionada'
+    case 'UPDATED':
+      return 'Alterações registradas'
     default:
       return 'Atualização registrada'
   }
