@@ -20,7 +20,7 @@ import Drawer from '../navigation/Drawer'
 import { LogoutConfirmationModal } from '../LogoutModal'
 import { truncateUserName } from '@/utils/truncate-name'
 import { useAuth } from '@/contexts/auth-context'
-import { Text, Avatar, Heading } from '@/styles'
+import { Text, Avatar, Heading } from '@/components'
 import { useRouter } from 'next/router'
 
 export default function Header({

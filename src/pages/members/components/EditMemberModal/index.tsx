@@ -35,7 +35,7 @@ import type {
   FetchUsersControllerHandle200UsersItem,
   ChangeUserRoleControllerHandleBodyRole,
 } from '../../../../lib/api/generated/models'
-import { ConfirmationModal } from '@/components/confirmation-modal'
+import { ConfirmationModal } from '@/components/ConfirmationModal'
 
 const memberSchema = z.object({
   name: z

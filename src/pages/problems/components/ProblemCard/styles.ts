@@ -1,4 +1,5 @@
-import { Box, Text, styled } from '@/styles'
+import { styled } from '@/styles'
+import { Box, Text } from '@/components'
 
 export const Container = styled(Box, {
   width: 324,

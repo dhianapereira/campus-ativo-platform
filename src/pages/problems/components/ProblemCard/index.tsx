@@ -1,4 +1,4 @@
-import { StatusBadge } from '@/styles'
+import { StatusBadge } from '@/components'
 import type { ProblemCardProps } from './types'
 import { Container, Description, Location, Title } from './styles'
 import { ReactElement } from 'react'

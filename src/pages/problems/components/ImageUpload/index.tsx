@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Button, Text } from '@/styles'
+import { Button, Text } from '@/components'
 import { Image as ImageIcon } from 'phosphor-react'
 import {
   UploadContainer,

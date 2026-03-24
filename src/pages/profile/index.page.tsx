@@ -26,7 +26,7 @@ import {
   InfoText,
 } from './styles'
 import PlatformLayout from '@/layouts/platform/layout'
-import { ConfirmationModal } from '@/components/confirmation-modal'
+import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { useAuth } from '@/contexts/auth-context'
 
 type AuthUser = NonNullable<ReturnType<typeof useAuth>['user']>

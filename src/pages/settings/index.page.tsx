@@ -49,7 +49,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
 import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
-import { ConfirmationModal } from '@/components/confirmation-modal'
+import { ConfirmationModal } from '@/components/ConfirmationModal'
 
 type LocationItem = LocationResponse
 type CategoryItem = CategoryResponse

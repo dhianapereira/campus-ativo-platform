@@ -1,4 +1,5 @@
-import { Heading, styled } from '@/styles'
+import { styled } from '@/styles'
+import { Heading } from '@/components'
 
 export const Container = styled('div', {
   display: 'flex',

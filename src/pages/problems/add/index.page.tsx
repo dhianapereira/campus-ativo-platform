@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Container, Body, Header, Input, Title } from './styles'
 import { ArrowLeft } from 'phosphor-react'
-import { Button, Text, TextArea, TextInput } from '@/styles'
+import { Button, Text, TextArea, TextInput } from '@/components'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { problemFormSchema } from '@/validators/problem-form'

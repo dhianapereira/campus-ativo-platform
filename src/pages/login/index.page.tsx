@@ -1,5 +1,5 @@
-import { Button, Heading, Text, TextInput } from '@/styles'
-import PasswordIcon from './components/PasswordIcon'
+import { Button, Heading, Text, TextInput } from '@/components'
+import PasswordIcon from '@/components/PasswordIcon'
 import {
   PageWrapper,
   Container,

@@ -1,4 +1,5 @@
-import { Heading, LinkButton, Text, styled } from '@/styles'
+import { styled } from '@/styles'
+import { Heading, LinkButton, Text } from '@/components'
 
 export const PageWrapper = styled('div', {
   width: '100vw',

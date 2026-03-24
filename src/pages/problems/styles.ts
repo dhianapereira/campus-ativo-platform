@@ -1,4 +1,5 @@
-import { styled, Button, Text } from '@/styles'
+import { styled } from '@/styles'
+import { Button, Text } from '@/components'
 import { SearchBar } from './components/SearchBar'
 
 export const GridView = styled('div', {

@@ -1,4 +1,5 @@
-import { Button, styled, Text } from '@/styles'
+import { styled } from '@/styles'
+import { Button, Text } from '@/components'
 
 export const Container = styled('div', {
   display: 'flex',

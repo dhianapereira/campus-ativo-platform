@@ -1,4 +1,5 @@
-import { Heading, Text, styled, TextArea, TextInput } from '@/styles'
+import { styled } from '@/styles'
+import { Heading, Text, TextArea, TextInput } from '@/components'
 
 export const Container = styled('div', {
   display: 'flex',

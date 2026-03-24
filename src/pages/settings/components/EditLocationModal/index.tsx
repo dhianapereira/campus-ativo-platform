@@ -28,7 +28,7 @@ import { X, Trash, ArrowCounterClockwise } from 'phosphor-react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { LocationResponse } from '../../../../lib/api/generated/models/locationResponse'
-import { ConfirmationModal } from '@/components/confirmation-modal'
+import { ConfirmationModal } from '@/components/ConfirmationModal'
 
 const locationSchema = z.object({
   name: z
