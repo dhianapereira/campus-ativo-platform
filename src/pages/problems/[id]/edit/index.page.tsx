@@ -9,7 +9,7 @@ import {
   EditProblemFormData,
 } from '@/validators/edit-problem-form'
 import { useRouter } from 'next/router'
-import { ProtectedRoute } from '@/styles/components/routes/ProtectedRoute'
+import { ProtectedRoute } from '@/guards/ProtectedRoute'
 import { useAuth } from '@/contexts/auth-context'
 import { toast } from 'sonner'
 import { useMutation, useQueryClient } from '@tanstack/react-query'

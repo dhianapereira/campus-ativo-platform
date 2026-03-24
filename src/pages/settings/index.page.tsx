@@ -40,7 +40,7 @@ import {
   PaginationDots,
 } from './styles'
 import PlatformLayout from '@/layouts/platform/layout'
-import { RoleProtectedRoute } from '@/styles/components/routes/RoleProtectedRoute'
+import { RoleProtectedRoute } from '@/guards/RoleProtectedRoute'
 import { AddCategoryModal } from './components/AddCategoryModal'
 import { AddLocationModal } from './components/AddLocationModal'
 import { EditLocationModal } from './components/EditLocationModal'
