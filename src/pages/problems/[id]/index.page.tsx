@@ -81,7 +81,7 @@ export default function ProblemDetails() {
   const router = useRouter()
   const { id } = router.query
   const queryClient = useQueryClient()
-  const { user } = useAuth()
+  const { user, hasRole } = useAuth()
 
   const [imageError, setImageError] = useState(false)
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
@@ -177,6 +177,7 @@ export default function ProblemDetails() {
   const isStatusToAnalysis = problem?.status === STATUS_TO_ANALYSIS_BACKEND
   const canMoveToTrash = isReporter && isStatusToAnalysis
   const canEdit = isStatusToAnalysis
+  const canAccessActions = hasRole('MANAGER')
 
   if (isLoading || (id && !problem && !error)) {
     return (
@@ -458,14 +459,16 @@ export default function ProblemDetails() {
               </HistoryPanel>
             )}
           </HistorySection>
-          <Actions
-            problemId={problemData.id}
-            problemQueryKey={problemQueryKey}
-            initialStatus={problemData.status}
-            initialCategory={problemData.category}
-            initialMaintenanceType={problemData.maintenanceType}
-            initialNote={problemData.latestNote}
-          />
+          {canAccessActions && (
+            <Actions
+              problemId={problemData.id}
+              problemQueryKey={problemQueryKey}
+              initialStatus={problemData.status}
+              initialCategory={problemData.category}
+              initialMaintenanceType={problemData.maintenanceType}
+              initialNote={problemData.latestNote}
+            />
+          )}
         </Body>
       </Container>
     </ProtectedRoute>
