@@ -23,18 +23,19 @@ export const TrashActionButton = styled('button', {
   variants: {
     variant: {
       primary: {
-        backgroundColor: '#00875F',
-        color: 'white',
+        backgroundColor: '$green',
+        color: '$white',
         '&:hover:not(:disabled)': {
-          backgroundColor: '#00a66f',
+          backgroundColor: '$greenHover',
         },
       },
       danger: {
-        backgroundColor: 'white',
-        color: '#dc2626',
-        border: '2px solid #dc2626',
+        backgroundColor: '$white',
+        color: '$red',
+        border: '2px solid $red',
         '&:hover:not(:disabled)': {
-          backgroundColor: '#fef2f2',
+          backgroundColor: '$red',
+          color: '$white',
         },
       },
     },

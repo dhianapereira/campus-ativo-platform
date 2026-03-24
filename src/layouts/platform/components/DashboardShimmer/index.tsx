@@ -7,7 +7,8 @@ const shimmer = keyframes({
 
 export const ShimmerBox = styled('div', {
   borderRadius: '$card',
-  background: 'linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%)',
+  background:
+    'linear-gradient(90deg, $gray100 25%, $gray300 50%, $gray100 75%)',
   backgroundSize: '200% 100%',
   animation: `${shimmer} 1.5s ease-in-out infinite`,
 })

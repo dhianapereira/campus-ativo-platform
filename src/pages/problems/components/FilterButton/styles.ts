@@ -6,8 +6,8 @@ export const FilterBtn = styled('button', {
   fontFamily: '$default',
   fontSize: '$md',
   fontWeight: '$medium',
-  color: '#00875F',
-  backgroundColor: '#ffffff',
+  color: '$green',
+  backgroundColor: '$white',
   padding: '$3 $4',
   cursor: 'pointer',
   display: 'flex',
@@ -16,17 +16,17 @@ export const FilterBtn = styled('button', {
   gap: '$2',
   height: '48px',
   borderRadius: '$xs',
-  border: '2px solid #00875F',
+  border: '2px solid $green',
   transition: 'all 0.2s ease',
   minWidth: '120px',
 
   '&:hover': {
-    backgroundColor: '#00875F',
-    color: '#ffffff',
+    backgroundColor: '$green',
+    color: '$white',
   },
 
   '&:focus': {
-    outline: '2px solid #00875F',
+    outline: '2px solid $green',
     outlineOffset: '2px',
   },
 

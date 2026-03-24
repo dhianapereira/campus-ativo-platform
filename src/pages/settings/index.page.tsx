@@ -50,6 +50,7 @@ import { toast } from 'sonner'
 import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
 import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
+import { colors } from '@/styles/tokens'
 
 type LocationItem = LocationResponse
 type CategoryItem = CategoryResponse
@@ -449,7 +450,7 @@ export default function SettingsPage() {
                 style={{
                   marginTop: '1rem',
                   padding: '0.5rem 1rem',
-                  backgroundColor: '#2d5a3d',
+                  backgroundColor: colors.greenMuted,
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',

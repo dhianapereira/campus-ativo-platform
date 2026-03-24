@@ -71,8 +71,8 @@ export const ModalCloseButton = styled('button', {
   flexShrink: 0,
 
   '&:hover': {
-    backgroundColor: '#f3f4f6',
-    color: '#374151',
+    backgroundColor: '$gray100',
+    color: '$gray700',
   },
 
   '&:disabled': {
@@ -135,18 +135,18 @@ export const WarningMessage = styled('div', {
   alignItems: 'center',
   gap: '0.75rem',
   padding: '1rem',
-  backgroundColor: '#fef3c7',
+  backgroundColor: '$orangeSoft',
   borderRadius: '$card',
   marginBottom: '1.5rem',
 
   svg: {
-    color: '#d97706',
+    color: '$orangeStrong',
     flexShrink: 0,
   },
 
   span: {
     fontSize: '0.875rem',
-    color: '#92400e',
+    color: '$orangeText',
     lineHeight: 1.5,
   },
 })
@@ -174,9 +174,9 @@ export const ButtonGroup = styled('div', {
 })
 
 export const CancelButton = styled('button', {
-  backgroundColor: '#ffffff',
-  color: '#374151',
-  border: '1px solid #d1d5db',
+  backgroundColor: '$white',
+  color: '$gray700',
+  border: '1px solid $gray300',
   padding: '0.875rem 2rem',
   borderRadius: '$card',
   fontSize: '0.875rem',
@@ -186,13 +186,13 @@ export const CancelButton = styled('button', {
   minWidth: '120px',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '#f9fafb',
-    borderColor: '#9ca3af',
+    backgroundColor: '$gray50',
+    borderColor: '$gray400',
   },
 
   '&:disabled': {
-    backgroundColor: '#f9fafb',
-    color: '#9ca3af',
+    backgroundColor: '$gray50',
+    color: '$gray400',
     cursor: 'not-allowed',
   },
 
@@ -207,9 +207,9 @@ export const CancelButton = styled('button', {
 })
 
 export const RestoreButton = styled('button', {
-  backgroundColor: '#00875F',
+  backgroundColor: '$green',
   color: 'white',
-  border: '1px solid #00875F',
+  border: '1px solid $green',
   padding: '0.875rem 1.5rem',
   borderRadius: '$card',
   fontSize: '0.875rem',
@@ -222,14 +222,14 @@ export const RestoreButton = styled('button', {
   transition: 'all 0.2s',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '#065f46',
-    borderColor: '#065f46',
+    backgroundColor: '$greenPressed',
+    borderColor: '$greenPressed',
   },
 
   '&:disabled': {
-    backgroundColor: '#d1d5db',
-    color: '#9ca3af',
-    borderColor: '#d1d5db',
+    backgroundColor: '$gray300',
+    color: '$gray400',
+    borderColor: '$gray300',
     cursor: 'not-allowed',
   },
 

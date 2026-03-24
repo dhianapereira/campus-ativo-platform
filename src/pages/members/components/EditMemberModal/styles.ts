@@ -55,7 +55,7 @@ export const ModalCloseButton = styled('button', {
   transition: 'color 0.2s',
 
   '&:hover:not(:disabled)': {
-    color: '#374151',
+    color: '$gray700',
   },
 
   '&:disabled': {
@@ -122,7 +122,7 @@ export const Label = styled('label', {
 
 export const Input = styled('input', {
   padding: '0.875rem 1rem',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   borderRadius: '0.5rem',
   fontSize: '1rem',
   transition: 'border-color 0.2s',
@@ -131,12 +131,12 @@ export const Input = styled('input', {
 
   '&:focus': {
     outline: 'none',
-    borderColor: '#00875F',
+    borderColor: '$green',
     boxShadow: '0 0 0 3px rgba(0, 135, 95, 0.1)',
   },
 
   '&:disabled': {
-    backgroundColor: '#f9fafb',
+    backgroundColor: '$gray50',
     color: '$lightGray',
     border: '1px solid rgba(0, 0, 0, 0.07)',
     cursor: 'not-allowed',
@@ -163,7 +163,7 @@ export const SelectContainer = styled('div', {
 
 export const Select = styled('select', {
   padding: '0.875rem 2.5rem 0.875rem 1rem',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   borderRadius: '0.5rem',
   fontSize: '1rem',
   transition: 'border-color 0.2s',
@@ -174,12 +174,12 @@ export const Select = styled('select', {
 
   '&:focus': {
     outline: 'none',
-    borderColor: '#00875F',
+    borderColor: '$green',
     boxShadow: '0 0 0 3px rgba(0, 135, 95, 0.1)',
   },
 
   '&:disabled': {
-    backgroundColor: '#f9fafb',
+    backgroundColor: '$gray50',
     color: '$lightGray',
     border: '1px solid rgba(0, 0, 0, 0.07)',
     cursor: 'not-allowed',
@@ -188,7 +188,7 @@ export const Select = styled('select', {
 
 export const ErrorMessage = styled('span', {
   fontSize: '0.875rem',
-  color: '#dc2626',
+  color: '$red',
   fontWeight: 500,
 })
 
@@ -236,15 +236,15 @@ export const StatusToggle = styled('button', {
   border: 'none',
   cursor: 'pointer',
   transition: 'background-color 0.2s',
-  backgroundColor: '#d1d5db',
+  backgroundColor: '$gray300',
 
   variants: {
     isActive: {
       true: {
-        backgroundColor: '#00875F',
+        backgroundColor: '$green',
       },
       false: {
-        backgroundColor: '#d1d5db',
+        backgroundColor: '$gray300',
       },
     },
   },
@@ -285,17 +285,17 @@ export const ButtonGroup = styled('div', {
 
 export const CancelButton = styled('button', {
   padding: '0.75rem 1.5rem',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   borderRadius: '0.5rem',
   backgroundColor: 'white',
-  color: '#374151',
+  color: '$gray700',
   fontSize: '1rem',
   fontWeight: 500,
   cursor: 'pointer',
   transition: 'background-color 0.2s',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '$gray100',
   },
 
   '&:disabled': {
@@ -308,7 +308,7 @@ export const SubmitButton = styled('button', {
   padding: '0.75rem 1.5rem',
   border: 'none',
   borderRadius: '0.5rem',
-  backgroundColor: '#00875F',
+  backgroundColor: '$green',
   color: 'white',
   fontSize: '1rem',
   fontWeight: 500,
@@ -316,7 +316,7 @@ export const SubmitButton = styled('button', {
   transition: 'background-color 0.2s',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '#065f46',
+    backgroundColor: '$greenPressed',
   },
 
   '&:disabled': {

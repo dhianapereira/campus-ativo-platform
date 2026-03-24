@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/auth-context'
 import { toast } from 'sonner'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import ImageUpload from '../../components/ImageUpload'
+import { colors } from '@/styles/tokens'
 
 interface AttachmentInfo {
   id: string
@@ -302,7 +303,7 @@ export default function EditProblem() {
               css={{
                 textAlign: 'center',
                 padding: '2rem',
-                color: '#dc2626',
+                color: colors.red,
               }}
             >
               {permissionError}
@@ -384,7 +385,7 @@ export default function EditProblem() {
                   marginBottom: '1rem',
                 }}
               >
-                <Text size="sm" css={{ color: '#6B7280' }}>
+                <Text size="sm" css={{ color: colors.gray500 }}>
                   Imagem atual:
                 </Text>
                 <div
@@ -415,8 +416,8 @@ export default function EditProblem() {
                       width: '24px',
                       height: '24px',
                       borderRadius: '50%',
-                      backgroundColor: '#dc2626',
-                      color: 'white',
+                      backgroundColor: colors.red,
+                      color: colors.white,
                       border: 'none',
                       cursor: 'pointer',
                       display: 'flex',
@@ -429,7 +430,10 @@ export default function EditProblem() {
                     <X size={14} weight="bold" />
                   </button>
                 </div>
-                <Text size="sm" css={{ color: '#6B7280', fontStyle: 'italic' }}>
+                <Text
+                  size="sm"
+                  css={{ color: colors.gray500, fontStyle: 'italic' }}
+                >
                   Para substituir a imagem, escolha uma nova abaixo.
                 </Text>
               </div>

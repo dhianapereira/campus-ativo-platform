@@ -7,9 +7,9 @@ export const ErrorContainer = styled('div', {
   justifyContent: 'center',
   height: '331px',
   width: '100%',
-  backgroundColor: '#f8f9fa',
+  backgroundColor: '$graySurface',
   borderRadius: '$md',
-  border: '2px dashed #dee2e6',
+  border: '2px dashed $gray250',
   padding: '$6',
   gap: '$4',
 })
@@ -21,17 +21,17 @@ export const ErrorIcon = styled('div', {
   width: '56px',
   height: '56px',
   borderRadius: '$full',
-  backgroundColor: '#ffffff',
-  color: '#dc3545',
+  backgroundColor: '$white',
+  color: '$redStrong',
   flexShrink: 0,
-  border: '1px solid #f8d7da',
+  border: '1px solid $redLightBorder',
 })
 
 export const ErrorTitle = styled('h3', {
   fontFamily: '$default',
   fontSize: '$lg',
   fontWeight: '$semibold',
-  color: '#212529',
+  color: '$gray900',
   margin: 0,
   textAlign: 'center',
 })
@@ -39,7 +39,7 @@ export const ErrorTitle = styled('h3', {
 export const ErrorDescription = styled('p', {
   fontFamily: '$default',
   fontSize: '$sm',
-  color: '#6c757d',
+  color: '$gray600',
   margin: 0,
   textAlign: 'center',
   lineHeight: '$relaxed',

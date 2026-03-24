@@ -46,6 +46,7 @@ import {
   ErrorStateMessage,
   RetryButton,
 } from './styles'
+import { colors } from '@/styles/tokens'
 import PlatformLayout from '@/layouts/platform/layout'
 import { RoleProtectedRoute } from '@/guards/RoleProtectedRoute'
 import { useAuth } from '@/contexts/auth-context'
@@ -560,9 +561,9 @@ export default function TrashPage() {
                     borderRadius: '8px',
                     fontSize: '0.875rem',
                     fontWeight: 500,
-                    border: '1px solid #d1d5db',
-                    backgroundColor: 'white',
-                    color: '#374151',
+                    border: `1px solid ${colors.gray300}`,
+                    backgroundColor: colors.white,
+                    color: colors.gray700,
                     cursor: 'pointer',
                     appearance: 'none',
                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
@@ -590,9 +591,9 @@ export default function TrashPage() {
                     borderRadius: '8px',
                     fontSize: '0.875rem',
                     fontWeight: 500,
-                    border: '1px solid #d1d5db',
-                    backgroundColor: 'white',
-                    color: '#374151',
+                    border: `1px solid ${colors.gray300}`,
+                    backgroundColor: colors.white,
+                    color: colors.gray700,
                     cursor: 'pointer',
                     appearance: 'none',
                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,

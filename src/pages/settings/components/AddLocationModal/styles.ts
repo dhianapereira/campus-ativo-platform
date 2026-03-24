@@ -77,8 +77,8 @@ export const ModalCloseButton = styled('button', {
   flexShrink: 0,
 
   '&:hover:not(:disabled)': {
-    color: '#374151',
-    backgroundColor: '#f3f4f6',
+    color: '$gray700',
+    backgroundColor: '$gray100',
   },
 
   '&:disabled': {
@@ -143,7 +143,7 @@ export const Label = styled('label', {
 
 export const Input = styled('input', {
   padding: '0.875rem 1rem',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   borderRadius: '0.5rem',
   fontSize: '1rem',
   transition: 'border-color 0.2s',
@@ -151,17 +151,17 @@ export const Input = styled('input', {
   color: '$darkGray',
 
   '&::placeholder': {
-    color: '#9ca3af',
+    color: '$gray400',
   },
 
   '&:focus': {
     outline: 'none',
-    borderColor: '#4a9960',
+    borderColor: '$greenBorder',
     boxShadow: '0 0 0 3px rgba(74, 153, 96, 0.1)',
   },
 
   '&:disabled': {
-    backgroundColor: '#f9fafb',
+    backgroundColor: '$gray50',
     color: '$lightGray',
     cursor: 'not-allowed',
   },
@@ -176,7 +176,7 @@ export const Input = styled('input', {
 
 export const TextArea = styled('textarea', {
   padding: '0.875rem 1rem',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   borderRadius: '0.5rem',
   fontSize: '1rem',
   transition: 'border-color 0.2s',
@@ -188,16 +188,16 @@ export const TextArea = styled('textarea', {
 
   '&:focus': {
     outline: 'none',
-    borderColor: '#4a9960',
+    borderColor: '$greenBorder',
     boxShadow: '0 0 0 3px rgba(74, 153, 96, 0.1)',
   },
 
   '&::placeholder': {
-    color: '#9ca3af',
+    color: '$gray400',
   },
 
   '&:disabled': {
-    backgroundColor: '#f9fafb',
+    backgroundColor: '$gray50',
     color: '$lightGray',
     cursor: 'not-allowed',
   },
@@ -216,7 +216,7 @@ export const TextArea = styled('textarea', {
 
 export const ErrorMessage = styled('span', {
   fontSize: '0.875rem',
-  color: '#dc2626',
+  color: '$red',
 })
 
 export const ButtonGroup = styled('div', {
@@ -233,10 +233,10 @@ export const ButtonGroup = styled('div', {
 
 export const CancelButton = styled('button', {
   padding: '0.875rem 2rem',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   borderRadius: '$card',
   backgroundColor: 'white',
-  color: '#374151',
+  color: '$gray700',
   fontSize: '0.875rem',
   fontWeight: 500,
   cursor: 'pointer',
@@ -244,13 +244,13 @@ export const CancelButton = styled('button', {
   minWidth: '120px',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '#f9fafb',
-    borderColor: '#9ca3af',
+    backgroundColor: '$gray50',
+    borderColor: '$gray400',
   },
 
   '&:disabled': {
-    backgroundColor: '#f9fafb',
-    color: '#9ca3af',
+    backgroundColor: '$gray50',
+    color: '$gray400',
     cursor: 'not-allowed',
   },
 
@@ -261,16 +261,16 @@ export const CancelButton = styled('button', {
     fontSize: '1rem',
     fontWeight: 500,
     borderRadius: '0.5rem',
-    border: '1px solid #d1d5db',
-    color: '#374151',
+    border: '1px solid $gray300',
+    color: '$gray700',
   },
 })
 
 export const SubmitButton = styled('button', {
   padding: '0.875rem 2rem',
-  border: '1px solid #00875F',
+  border: '1px solid $green',
   borderRadius: '$card',
-  backgroundColor: '#00875F',
+  backgroundColor: '$green',
   color: 'white',
   fontSize: '0.875rem',
   fontWeight: 500,
@@ -279,14 +279,14 @@ export const SubmitButton = styled('button', {
   minWidth: '140px',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '#065f46',
-    borderColor: '#065f46',
+    backgroundColor: '$greenPressed',
+    borderColor: '$greenPressed',
   },
 
   '&:disabled': {
-    backgroundColor: '#d1d5db',
-    color: '#9ca3af',
-    borderColor: '#d1d5db',
+    backgroundColor: '$gray300',
+    color: '$gray400',
+    borderColor: '$gray300',
     cursor: 'not-allowed',
   },
 
@@ -297,7 +297,7 @@ export const SubmitButton = styled('button', {
     fontSize: '1rem',
     fontWeight: 500,
     borderRadius: '0.5rem',
-    backgroundColor: '#00875F',
-    border: '1px solid #00875F',
+    backgroundColor: '$green',
+    border: '1px solid $green',
   },
 })

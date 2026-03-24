@@ -7,9 +7,9 @@ export const NoImageContainer = styled('div', {
   justifyContent: 'center',
   height: '331px',
   width: '100%',
-  backgroundColor: '#f8f9fa',
+  backgroundColor: '$graySurface',
   borderRadius: '$md',
-  border: '2px dashed #adb5bd',
+  border: '2px dashed $grayDashed',
   padding: '$6',
   gap: '$4',
 })
@@ -21,17 +21,17 @@ export const NoImageIcon = styled('div', {
   width: '56px',
   height: '56px',
   borderRadius: '$full',
-  backgroundColor: '#ffffff',
-  color: '#6c757d',
+  backgroundColor: '$white',
+  color: '$gray600',
   flexShrink: 0,
-  border: '1px solid #e9ecef',
+  border: '1px solid $gray200',
 })
 
 export const NoImageTitle = styled('h3', {
   fontFamily: '$default',
   fontSize: '$lg',
   fontWeight: '$semibold',
-  color: '#495057',
+  color: '$gray750',
   margin: 0,
   textAlign: 'center',
 })
@@ -39,7 +39,7 @@ export const NoImageTitle = styled('h3', {
 export const NoImageDescription = styled('p', {
   fontFamily: '$default',
   fontSize: '$sm',
-  color: '#6c757d',
+  color: '$gray600',
   margin: 0,
   textAlign: 'center',
   lineHeight: '$relaxed',

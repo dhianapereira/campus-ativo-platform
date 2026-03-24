@@ -81,7 +81,7 @@ export const FormGroup = styled('div', {
 export const Label = styled('label', {
   fontSize: '0.875rem',
   fontWeight: 500,
-  color: '#374151',
+  color: '$gray700',
 })
 
 export const Input = styled('input', {
@@ -90,23 +90,23 @@ export const Input = styled('input', {
   fontSize: '0.875rem',
   color: '$darkGray',
   backgroundColor: 'white',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   borderRadius: '$card',
   outline: 'none',
   transition: 'border-color 0.2s',
 
   '&:focus': {
-    borderColor: '#00875F',
+    borderColor: '$green',
   },
 
   '&:disabled': {
-    backgroundColor: '#f3f4f6',
-    color: '#9ca3af',
+    backgroundColor: '$gray100',
+    color: '$gray400',
     cursor: 'not-allowed',
   },
 
   '&::placeholder': {
-    color: '#9ca3af',
+    color: '$gray400',
   },
 })
 
@@ -158,25 +158,26 @@ export const Button = styled('button', {
   variants: {
     variant: {
       primary: {
-        backgroundColor: '#00875F',
-        color: 'white',
+        backgroundColor: '$green',
+        color: '$white',
         '&:hover:not(:disabled)': {
-          backgroundColor: '#00a66f',
+          backgroundColor: '$greenHover',
         },
       },
       secondary: {
-        backgroundColor: 'white',
-        color: '#374151',
-        border: '1px solid #d1d5db',
+        backgroundColor: '$white',
+        color: '$gray700',
+        border: '1px solid $gray300',
         '&:hover:not(:disabled)': {
-          backgroundColor: '#f9fafb',
+          backgroundColor: '$gray50',
         },
       },
       danger: {
-        backgroundColor: '#dc2626',
-        color: 'white',
+        backgroundColor: '$red',
+        color: '$white',
         '&:hover:not(:disabled)': {
-          backgroundColor: '#b91c1c',
+          backgroundColor: '$red',
+          filter: 'brightness(0.95)',
         },
       },
     },
@@ -189,34 +190,34 @@ export const Button = styled('button', {
 
 export const ErrorMessage = styled('span', {
   fontSize: '0.75rem',
-  color: '#dc2626',
+  color: '$red',
 })
 
 export const DangerZone = styled('div', {
   marginTop: '0.5rem',
   padding: '1rem',
-  backgroundColor: '#fef2f2',
-  border: '1px solid #fecaca',
+  backgroundColor: '$red12Bg',
+  border: '1px solid $redSoftBorder',
   borderRadius: '$card',
 })
 
 export const DangerText = styled('p', {
   fontSize: '0.875rem',
-  color: '#991b1b',
+  color: '$red',
   marginBottom: '1rem',
   lineHeight: 1.5,
 })
 
 export const InfoBox = styled('div', {
   padding: '1rem',
-  backgroundColor: '#f0fdf4',
-  border: '1px solid #bbf7d0',
+  backgroundColor: '$greenSurface',
+  border: '1px solid $greenSoftBorder',
   borderRadius: '$card',
   marginBottom: '1rem',
 })
 
 export const InfoText = styled('p', {
   fontSize: '0.875rem',
-  color: '#166534',
+  color: '$greenDeep',
   lineHeight: 1.5,
 })

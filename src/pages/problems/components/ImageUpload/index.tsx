@@ -14,6 +14,7 @@ import {
   RemoveButton,
   ContentWrapper,
 } from './styles'
+import { colors } from '@/styles/tokens'
 
 export interface ImageUploadProps {
   onImageSelect?: (file: File | null) => void
@@ -121,7 +122,10 @@ export default function ImageUpload({
       <ContentWrapper>
         {' '}
         <InfoText>
-          <Text size="sm" style={{ color: '#6B7280', fontStyle: 'italic' }}>
+          <Text
+            size="sm"
+            style={{ color: colors.gray500, fontStyle: 'italic' }}
+          >
             {placeholder}
           </Text>
         </InfoText>
@@ -131,10 +135,10 @@ export default function ImageUpload({
             onClick={handleButtonClick}
             disabled={disabled}
             style={{
-              borderColor: '#059669',
-              color: '#00875F',
+              borderColor: colors.greenStrong,
+              color: colors.green,
               backgroundColor: 'transparent',
-              border: '1.5px solid #00875F',
+              border: `1.5px solid ${colors.green}`,
               borderRadius: '4px',
             }}
           >
@@ -143,11 +147,11 @@ export default function ImageUpload({
 
           <StatusText>
             {selectedFile ? (
-              <Text size="sm" style={{ color: '#059669' }}>
+              <Text size="sm" style={{ color: colors.greenStrong }}>
                 {selectedFile.name} ({formatFileSize(selectedFile.size)})
               </Text>
             ) : (
-              <Text size="sm" style={{ color: '#6B7280' }}>
+              <Text size="sm" style={{ color: colors.gray500 }}>
                 Nenhuma imagem escolhida
               </Text>
             )}
@@ -155,7 +159,7 @@ export default function ImageUpload({
         </UploadControls>
         {(error || errorMessage) && (
           <ErrorText>
-            <Text size="sm" style={{ color: '#DC2626' }}>
+            <Text size="sm" style={{ color: colors.red }}>
               {error || errorMessage}
             </Text>
           </ErrorText>

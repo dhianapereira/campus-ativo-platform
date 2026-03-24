@@ -16,6 +16,7 @@ import {
   DescriptionValue,
   WarningMessage,
 } from './styles'
+import { colors } from '@/styles/tokens'
 import { X, ArrowCounterClockwise, Warning } from 'phosphor-react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
@@ -117,7 +118,7 @@ export function ViewProblemModal({
             style={{
               margin: '0 0 1rem',
               fontSize: '0.875rem',
-              color: '#7C7C8A',
+              color: colors.lightGray,
             }}
           >
             Visualização somente. Não é possível editar; apenas restaurar (se

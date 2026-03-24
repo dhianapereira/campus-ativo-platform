@@ -60,14 +60,14 @@ export const SearchInputContainer = styled('div', {
   flex: 1,
   display: 'flex',
   alignItems: 'center',
-  backgroundColor: '#ffffff',
-  border: '1px solid #e2e8f0',
+  backgroundColor: '$white',
+  border: '1px solid $grayBlue100',
   transition: 'all 0.2s ease',
   maxWidth: '100%',
   borderRadius: '$md',
 
   '&:focus-within': {
-    borderColor: '#4a9960',
+    borderColor: '$greenBorder',
   },
 })
 
@@ -75,7 +75,7 @@ export const SearchIcon = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: '#6c757d',
+  color: '$gray600',
   paddingLeft: '1rem',
   marginRight: '0.75rem',
   flexShrink: 0,
@@ -86,7 +86,7 @@ export const SearchInput = styled('input', {
   boxSizing: 'border-box',
   fontFamily: 'inherit',
   fontSize: '$4',
-  color: '#212529',
+  color: '$gray900',
   width: '100%',
   height: '46px',
   padding: '$3',
@@ -95,7 +95,7 @@ export const SearchInput = styled('input', {
   textOverflow: 'ellipsis',
 
   '&::placeholder': {
-    color: '#6c757d',
+    color: '$gray600',
     fontWeight: 'normal',
   },
 
@@ -114,7 +114,7 @@ export const SearchInput = styled('input', {
 
 export const TableWrapper = styled('div', {
   width: '100%',
-  backgroundColor: '#FFFFFF',
+  backgroundColor: '$white',
   borderRadius: '14px',
   boxShadow:
     '0 10px 24px -12px rgba(0,0,0,0.18), 0 6px 12px -6px rgba(0,0,0,0.10)',
@@ -155,7 +155,7 @@ export const MobileCardsWrapper = styled('div', {
 })
 
 export const MemberCard = styled('div', {
-  background: '#FFFFFF',
+  background: '$white',
   borderRadius: '16px',
   padding: '$6 $6 $6 $6',
   boxShadow:
@@ -167,7 +167,7 @@ export const MemberCard = styled('div', {
   transition: 'background-color 0.2s ease',
 
   '&:hover': {
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '$gray100',
   },
 })
 
@@ -184,7 +184,7 @@ export const MemberCardEmail = styled('p', {
   fontSize: '1rem',
   lineHeight: 1.4,
   fontWeight: 400,
-  color: '#374151',
+  color: '$gray700',
   wordBreak: 'break-word',
 })
 
@@ -203,14 +203,14 @@ export const MemberCardPosition = styled('p', {
 })
 
 export const TableHeader = styled('th', {
-  background: '#FFFFFF',
+  background: '$white',
   padding: '1.25rem 0',
   textAlign: 'left',
   fontWeight: 600,
   fontSize: '1rem',
-  color: '#1f2937',
+  color: '$gray875',
   position: 'relative',
-  borderBottom: '2px solid #00875F',
+  borderBottom: '2px solid $green',
   '&:first-child': { width: '33%' },
   '&:nth-child(2)': { width: '37%' },
   '&:nth-child(3)': { width: '30%' },
@@ -224,17 +224,17 @@ export const SearchBar = styled('div', {
   display: 'flex',
   alignItems: 'center',
   padding: '0.5rem',
-  border: '1px solid #E5E5E5',
+  border: '1px solid $grayBorder',
   borderRadius: '0.375rem',
-  background: '#FFFFFF',
+  background: '$white',
   boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   '&:focus-within': {
-    borderColor: '#00875F',
+    borderColor: '$green',
   },
 })
 
 export const TableRow = styled('tr', {
-  background: '#FFFFFF',
+  background: '$white',
   borderBottom: '1px solid rgba(0, 0, 0, 0.07)',
   transition: 'background-color 0.2s ease',
 
@@ -246,7 +246,7 @@ export const TableRow = styled('tr', {
       false: {
         cursor: 'pointer',
         '&:hover': {
-          backgroundColor: '#f3f4f6',
+          backgroundColor: '$gray100',
         },
         '&:last-child': {
           borderBottom: 'none',
@@ -258,7 +258,7 @@ export const TableRow = styled('tr', {
 
 export const TableCell = styled('td', {
   padding: '1.25rem 0',
-  color: '#374151',
+  color: '$gray700',
   fontSize: '0.95rem',
   lineHeight: 1.5,
   verticalAlign: 'middle',
@@ -306,18 +306,18 @@ export const PaginationButton = styled('button', {
         backgroundColor: 'transparent',
 
         '&:hover:not(:disabled)': {
-          color: '#374151',
-          backgroundColor: '#f3f4f6',
+          color: '$gray700',
+          backgroundColor: '$gray100',
         },
 
         '&:disabled': {
-          color: '#d1d5db',
+          color: '$gray300',
           cursor: 'not-allowed',
         },
       },
       nav: {
         background: 'transparent',
-        color: '#2F2F2F',
+        color: '$gray850',
         fontSize: '1.05rem',
         fontWeight: 600,
         minWidth: 'auto',
@@ -334,20 +334,20 @@ export const PaginationButton = styled('button', {
         },
       },
       number: {
-        color: '#374151',
+        color: '$gray700',
         backgroundColor: 'white',
-        border: '1px solid #d1d5db',
+        border: '1px solid $gray300',
 
         '&:hover': {
-          backgroundColor: '#f3f4f6',
+          backgroundColor: '$gray100',
         },
       },
     },
     isActive: {
       true: {
-        backgroundColor: '#00875F',
+        backgroundColor: '$green',
         color: 'white',
-        border: '1px solid #00875F',
+        border: '1px solid $green',
       },
     },
   },
@@ -363,7 +363,7 @@ export const PaginationDots = styled('span', {
   display: 'flex',
   alignItems: 'center',
   padding: '0.5rem',
-  color: '#9ca3af',
+  color: '$gray400',
   fontSize: '0.875rem',
 
   '@media (max-width: 768px)': {
@@ -392,22 +392,22 @@ export const FilterButton = styled('button', {
   fontWeight: 500,
   cursor: 'pointer',
   transition: 'all 0.2s ease',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
 
   variants: {
     isActive: {
       true: {
-        backgroundColor: '#00875F',
+        backgroundColor: '$green',
         color: 'white',
-        border: '1px solid #00875F',
+        border: '1px solid $green',
       },
       false: {
         backgroundColor: 'white',
         color: '$lightGray',
-        border: '1px solid #d1d5db',
+        border: '1px solid $gray300',
         '&:hover': {
-          backgroundColor: '#f3f4f6',
-          color: '#374151',
+          backgroundColor: '$gray100',
+          color: '$gray700',
         },
       },
     },

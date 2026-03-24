@@ -18,6 +18,7 @@ import ifalLogo from '../../assets/ifal-logo.png'
 import { useAuth } from '@/contexts/auth-context'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { colors } from '@/styles/tokens'
 
 export default function Login() {
   const { signIn, isAuthenticated, isLoading } = useAuth()
@@ -150,7 +151,7 @@ export default function Login() {
             Não possui uma conta?{' '}
             <Link
               href="/register"
-              style={{ color: '#00875F', fontWeight: 'bold' }}
+              style={{ color: colors.green, fontWeight: 'bold' }}
             >
               Criar conta
             </Link>

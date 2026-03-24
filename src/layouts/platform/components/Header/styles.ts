@@ -88,6 +88,6 @@ export const UserMenuItem = styled('button', {
   },
 
   '&[data-variant="danger"]': {
-    color: '#dc2626',
+    color: '$red',
   },
 })

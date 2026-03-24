@@ -31,6 +31,7 @@ import { useAuth } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
 import type { FetchUsersControllerHandle200UsersItem } from '../../lib/api/generated/models'
 import { EditMemberModal } from './components/EditMemberModal'
+import { colors } from '@/styles/tokens'
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
@@ -264,7 +265,7 @@ export default function MembersPage() {
               style={{
                 marginTop: '1rem',
                 padding: '0.5rem 1rem',
-                backgroundColor: '#2d5a3d',
+                backgroundColor: colors.greenMuted,
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',

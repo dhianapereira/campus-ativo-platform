@@ -17,6 +17,7 @@ import illustrationLogin from '../../assets/illustration-login.png'
 import ifalLogo from '../../assets/ifal-logo.png'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { colors } from '@/styles/tokens'
 
 export default function Register() {
   const router = useRouter()
@@ -208,7 +209,7 @@ export default function Register() {
             Já possui uma conta?{' '}
             <Link
               href="/login"
-              style={{ color: '#00875F', fontWeight: 'bold' }}
+              style={{ color: colors.green, fontWeight: 'bold' }}
             >
               Fazer login
             </Link>

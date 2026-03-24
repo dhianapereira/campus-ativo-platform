@@ -13,9 +13,9 @@ export const UploadContainer = styled('div', {
 export const UploadArea = styled('div', {
   minWidth: '130px',
   height: '100px',
-  border: '2px dashed #D1D5DB',
+  border: '2px dashed $gray300',
   borderRadius: '$lg',
-  backgroundColor: '#F3F4F6',
+  backgroundColor: '$gray100',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -24,30 +24,30 @@ export const UploadArea = styled('div', {
   flexShrink: 0,
 
   '&:hover': {
-    borderColor: '#059669',
-    backgroundColor: '#F0FDF4',
+    borderColor: '$greenStrong',
+    backgroundColor: '$greenSurface',
   },
 
   variants: {
     hasError: {
       true: {
-        borderColor: '#DC2626',
-        backgroundColor: '#FEF2F2',
+        borderColor: '$red',
+        backgroundColor: '$red12Bg',
 
         '&:hover': {
-          borderColor: '#DC2626',
-          backgroundColor: '#FEF2F2',
+          borderColor: '$red',
+          backgroundColor: '$red12Bg',
         },
       },
     },
     hasImage: {
       true: {
-        border: '2px solid #059669',
-        backgroundColor: '#F0FDF4',
+        border: '2px solid $greenStrong',
+        backgroundColor: '$greenSurface',
 
         '&:hover': {
-          borderColor: '#047857',
-          backgroundColor: '#ECFDF5',
+          borderColor: '$greenStrongHover',
+          backgroundColor: '$greenSurfaceHover',
         },
       },
     },
@@ -58,7 +58,7 @@ export const IconContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: '#9CA3AF',
+  color: '$gray400',
 
   '& svg': {
     width: '32px',

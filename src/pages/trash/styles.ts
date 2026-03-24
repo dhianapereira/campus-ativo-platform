@@ -68,22 +68,22 @@ export const FilterButton = styled('button', {
   fontWeight: 500,
   cursor: 'pointer',
   transition: 'all 0.2s ease',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
 
   variants: {
     isActive: {
       true: {
-        backgroundColor: '#00875F',
+        backgroundColor: '$green',
         color: 'white',
-        border: '1px solid #00875F',
+        border: '1px solid $green',
       },
       false: {
         backgroundColor: 'white',
         color: '$lightGray',
-        border: '1px solid #d1d5db',
+        border: '1px solid $gray300',
         '&:hover': {
-          backgroundColor: '#f3f4f6',
-          color: '#374151',
+          backgroundColor: '$gray100',
+          color: '$gray700',
         },
       },
     },
@@ -127,14 +127,14 @@ export const SearchInputContainer = styled('div', {
   flex: 1,
   display: 'flex',
   alignItems: 'center',
-  backgroundColor: '#ffffff',
-  border: '1px solid #e2e8f0',
+  backgroundColor: '$white',
+  border: '1px solid $grayBlue100',
   transition: 'all 0.2s ease',
   maxWidth: '100%',
   borderRadius: '$md',
 
   '&:focus-within': {
-    borderColor: '#4a9960',
+    borderColor: '$greenBorder',
   },
 
   '@media(max-width: 640px)': {
@@ -147,7 +147,7 @@ export const SearchIcon = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: '#6c757d',
+  color: '$gray600',
   paddingLeft: '1rem',
   marginRight: '0.75rem',
   flexShrink: 0,
@@ -158,7 +158,7 @@ export const SearchInput = styled('input', {
   boxSizing: 'border-box',
   fontFamily: 'inherit',
   fontSize: '$4',
-  color: '#212529',
+  color: '$gray900',
   width: '100%',
   height: '46px',
   padding: '$3',
@@ -167,7 +167,7 @@ export const SearchInput = styled('input', {
   textOverflow: 'ellipsis',
 
   '&::placeholder': {
-    color: '#6c757d',
+    color: '$gray600',
     fontWeight: 'normal',
   },
 
@@ -228,22 +228,23 @@ export const ActionButton = styled('button', {
   variants: {
     variant: {
       primary: {
-        backgroundColor: '#00875F',
+        backgroundColor: '$green',
         color: 'white',
         '&:hover:not(:disabled)': {
-          backgroundColor: '#00a66f',
+          backgroundColor: '$greenHover',
         },
       },
       danger: {
-        backgroundColor: 'white',
-        color: '#dc2626',
-        border: '2px solid #dc2626',
+        backgroundColor: '$white',
+        color: '$red',
+        border: '2px solid $red',
         '&:hover:not(:disabled)': {
-          backgroundColor: '#fef2f2',
+          backgroundColor: '$red',
+          color: '$white',
         },
 
         '@media(max-width: 768px)': {
-          border: '1.5px solid #dc2626',
+          border: '1.5px solid $red',
         },
       },
     },
@@ -276,7 +277,7 @@ export const DesktopTableWrapper = styled('div', {
 
 export const TableWrapper = styled('div', {
   width: '100%',
-  backgroundColor: '#FFFFFF',
+  backgroundColor: '$white',
   borderRadius: '14px',
   boxShadow:
     '0 10px 24px -12px rgba(0,0,0,0.18), 0 6px 12px -6px rgba(0,0,0,0.10)',
@@ -300,14 +301,14 @@ export const Table = styled('table', {
 })
 
 export const TableHeader = styled('th', {
-  background: '#FFFFFF',
+  background: '$white',
   padding: '1.25rem 0',
   textAlign: 'left',
   fontWeight: 600,
   fontSize: '1rem',
-  color: '#1f2937',
+  color: '$gray875',
   position: 'relative',
-  borderBottom: '2px solid #00875F',
+  borderBottom: '2px solid $green',
 
   '&:first-child': {
     width: '60px',
@@ -322,7 +323,7 @@ export const TableHeader = styled('th', {
 })
 
 export const TableRow = styled('tr', {
-  background: '#FFFFFF',
+  background: '$white',
   borderBottom: '1px solid rgba(0, 0, 0, 0.07)',
   transition: 'background-color 0.2s ease',
 
@@ -333,7 +334,7 @@ export const TableRow = styled('tr', {
       },
       false: {
         '&:hover': {
-          backgroundColor: '#f3f4f6',
+          backgroundColor: '$gray100',
         },
         '&:last-child': {
           borderBottom: 'none',
@@ -345,7 +346,7 @@ export const TableRow = styled('tr', {
 
 export const TableCell = styled('td', {
   padding: '1.25rem 0',
-  color: '#374151',
+  color: '$gray700',
   fontSize: '0.95rem',
   lineHeight: 1.5,
   verticalAlign: 'middle',
@@ -367,12 +368,12 @@ export const Checkbox = styled('input', {
   width: '1.125rem',
   height: '1.125rem',
   borderRadius: '0.25rem',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   cursor: 'pointer',
-  accentColor: '#00875F',
+  accentColor: '$green',
 
   '&:focus': {
-    outline: '2px solid #00875F',
+    outline: '2px solid $green',
     outlineOffset: '2px',
   },
 })
@@ -424,7 +425,7 @@ export const CardInfo = styled('p', {
 
 export const CardDescription = styled('p', {
   fontSize: '0.875rem',
-  color: '#9ca3af',
+  color: '$gray400',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   display: '-webkit-box',
@@ -439,8 +440,8 @@ export const CardStatus = styled('span', {
   borderRadius: '1rem',
   fontSize: '0.75rem',
   fontWeight: 600,
-  backgroundColor: '#dbeafe',
-  color: '#1e40af',
+  backgroundColor: '$blueSoft',
+  color: '$blueStrong',
   marginTop: '0.5rem',
 })
 
@@ -478,7 +479,7 @@ export const PaginationButton = styled('button', {
     variant: {
       nav: {
         background: 'transparent',
-        color: '#2F2F2F',
+        color: '$gray850',
         fontSize: '1.05rem',
         fontWeight: 600,
         minWidth: 'auto',
@@ -497,20 +498,20 @@ export const PaginationButton = styled('button', {
         },
       },
       number: {
-        color: '#374151',
+        color: '$gray700',
         backgroundColor: 'white',
-        border: '1px solid #d1d5db',
+        border: '1px solid $gray300',
 
         '&:hover': {
-          backgroundColor: '#f3f4f6',
+          backgroundColor: '$gray100',
         },
       },
     },
     isActive: {
       true: {
-        backgroundColor: '#00875F',
+        backgroundColor: '$green',
         color: 'white',
-        border: '1px solid #00875F',
+        border: '1px solid $green',
       },
     },
   },
@@ -526,7 +527,7 @@ export const PaginationDots = styled('span', {
   display: 'flex',
   alignItems: 'center',
   padding: '0.5rem',
-  color: '#9ca3af',
+  color: '$gray400',
   fontSize: '0.875rem',
 
   '@media (max-width: 768px)': {
@@ -545,7 +546,7 @@ export const EmptyState = styled('div', {
 })
 
 export const EmptyStateIcon = styled('div', {
-  color: '#d1d5db',
+  color: '$gray300',
   marginBottom: '1.5rem',
   display: 'flex',
   alignItems: 'center',
@@ -555,7 +556,7 @@ export const EmptyStateIcon = styled('div', {
 export const EmptyStateTitle = styled('h3', {
   fontSize: '1.25rem',
   fontWeight: 600,
-  color: '#374151',
+  color: '$gray700',
   marginBottom: '0.5rem',
 })
 
@@ -575,14 +576,14 @@ export const ErrorState = styled('div', {
 })
 
 export const ErrorStateIcon = styled('div', {
-  color: '#ef4444',
+  color: '$red',
   marginBottom: '1rem',
 })
 
 export const ErrorStateTitle = styled('h3', {
   fontSize: '1.25rem',
   fontWeight: 600,
-  color: '#374151',
+  color: '$gray700',
   marginBottom: '0.5rem',
 })
 
@@ -598,7 +599,7 @@ export const RetryButton = styled('button', {
   boxSizing: 'border-box',
   padding: '0.75rem 1.5rem',
   borderRadius: '2rem',
-  backgroundColor: '#00875F',
+  backgroundColor: '$green',
   color: 'white',
   fontSize: '0.875rem',
   fontWeight: 600,
@@ -606,7 +607,7 @@ export const RetryButton = styled('button', {
   transition: 'all 0.2s ease',
 
   '&:hover': {
-    backgroundColor: '#00a66f',
+    backgroundColor: '$greenHover',
   },
 
   '&:active': {

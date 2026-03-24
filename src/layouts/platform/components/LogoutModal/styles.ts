@@ -88,8 +88,8 @@ export const DialogIcon = styled('div', {
   width: '$10',
   height: '$10',
   borderRadius: '$full',
-  backgroundColor: '#fef2f2',
-  color: '#ef4444',
+  backgroundColor: '$red12Bg',
+  color: '$red',
   flexShrink: 0,
 })
 
@@ -169,16 +169,17 @@ export const CancelButton = styled(BaseButton, {
 
 export const ConfirmButton = styled(BaseButton, {
   color: '$white',
-  backgroundColor: '#ef4444',
-  border: '1px solid #ef4444',
+  backgroundColor: '$red',
+  border: '1px solid $red',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '#dc2626',
-    borderColor: '#dc2626',
+    backgroundColor: '$red',
+    borderColor: '$red',
+    filter: 'brightness(0.95)',
   },
 
   '&:focus': {
-    outlineColor: '#ef4444',
+    outlineColor: '$red',
   },
 })
 
@@ -193,10 +194,10 @@ export const CompactDialogContent = styled(DialogContent, {
 })
 
 export const DangerDialogContent = styled(DialogContent, {
-  border: '2px solid #fecaca',
+  border: '2px solid $redSoftBorder',
 
   [`& ${DialogTitle}`]: {
-    color: '#dc2626',
+    color: '$red',
   },
 })
 

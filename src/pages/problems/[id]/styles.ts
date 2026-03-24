@@ -49,11 +49,11 @@ export const EditButton = styled('button', {
         },
       },
       danger: {
-        color: '#b91c1c',
-        border: '2px solid #b91c1c',
+        color: '$red',
+        border: '2px solid $red',
 
         '&:not(:disabled):hover': {
-          backgroundColor: '#b91c1c',
+          backgroundColor: '$red',
           color: '$white',
         },
       },

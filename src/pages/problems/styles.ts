@@ -149,7 +149,7 @@ export const AddButton = styled(Button, {
 
 export const ResultsCounter = styled('div', {
   marginBottom: '$6',
-  color: '#6c757d',
+  color: '$gray600',
   fontSize: '$4',
   display: 'flex',
   flexWrap: 'wrap',
@@ -171,8 +171,8 @@ export const ResultsCounter = styled('div', {
 })
 
 export const FilterBadge = styled(Text, {
-  background: '#e3f2fd',
-  color: '#1976d2',
+  background: '$blueInfoSurface',
+  color: '$blueInfoText',
   padding: '$1 $2',
   borderRadius: '$3',
   display: 'inline-flex',

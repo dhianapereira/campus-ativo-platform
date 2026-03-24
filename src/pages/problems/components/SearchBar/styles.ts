@@ -13,14 +13,14 @@ export const SearchInputContainer = styled('div', {
   flex: 1,
   position: 'relative',
 
-  backgroundColor: '#ffffff',
-  border: '1px solid #e9ecef',
+  backgroundColor: '$white',
+  border: '1px solid $gray200',
   transition: 'all 0.2s ease',
   maxWidth: '33.5rem',
   borderRadius: '$md',
 
   '&:focus-within': {
-    borderColor: '#4a9960',
+    borderColor: '$greenBorder',
   },
 })
 
@@ -28,7 +28,7 @@ export const SearchIcon = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: '#6c757d',
+  color: '$gray600',
   paddingLeft: '$4',
   marginRight: '$3',
   flexShrink: 0,
@@ -39,13 +39,13 @@ export const SearchInput = styled('input', {
   boxSizing: 'border-box',
   fontFamily: '$default',
   fontSize: '$md',
-  color: '#212529',
+  color: '$gray900',
   width: '100%',
   height: '46px',
   padding: '$3 0',
 
   '&::placeholder': {
-    color: '#6c757d',
+    color: '$gray600',
     fontWeight: '$normal',
   },
 })
@@ -56,8 +56,8 @@ export const FilterButton = styled('button', {
   fontFamily: '$default',
   fontSize: '$md',
   fontWeight: '$medium',
-  color: '#6c757d',
-  backgroundColor: '#ffffff',
+  color: '$gray600',
+  backgroundColor: '$white',
   padding: '$3 $4',
   cursor: 'pointer',
   display: 'flex',
@@ -66,18 +66,18 @@ export const FilterButton = styled('button', {
   gap: '$2',
   height: '48px',
   borderRadius: '$md',
-  border: '1px solid #e9ecef',
+  border: '1px solid $gray200',
   transition: 'all 0.2s ease',
 
   marginLeft: '$3',
 
   '&:hover': {
-    backgroundColor: '#f8f9fa',
-    borderColor: '#dee2e6',
+    backgroundColor: '$graySurface',
+    borderColor: '$gray250',
   },
 
   '&:focus': {
-    outline: '2px solid #4a9960',
+    outline: '2px solid $greenBorder',
     outlineOffset: '2px',
   },
 })

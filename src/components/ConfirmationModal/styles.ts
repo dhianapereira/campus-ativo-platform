@@ -12,7 +12,7 @@ export const ModalOverlay = styled('div', {
 })
 
 export const ModalContent = styled('div', {
-  backgroundColor: '#FFFFFF',
+  backgroundColor: '$white',
   borderRadius: '12px',
   boxShadow: '0 12px 36px rgba(0, 0, 0, 0.28)',
   width: '100%',
@@ -62,7 +62,7 @@ export const CloseButton = styled('button', {
   right: '16px',
   background: 'transparent',
   border: 'none',
-  color: '#9CA3AF',
+  color: '$gray400',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
@@ -76,7 +76,7 @@ export const CloseButton = styled('button', {
   zIndex: 10,
 
   '&:hover': {
-    backgroundColor: '#F3F4F6',
+    backgroundColor: '$gray100',
     color: '$darkGray',
   },
 
@@ -119,17 +119,17 @@ export const CancelButton = styled('button', {
   fontSize: '16px',
   fontWeight: '600',
   borderRadius: '$card',
-  border: '1.5px solid #D1D5DB',
-  backgroundColor: '#FFFFFF',
-  color: '#374151',
+  border: '1.5px solid $gray300',
+  backgroundColor: '$white',
+  color: '$gray700',
   cursor: 'pointer',
   transition: 'all 0.2s',
   minHeight: '52px',
   minWidth: '160px',
 
   '&:hover': {
-    backgroundColor: '#F9FAFB',
-    borderColor: '#C7CCD1',
+    backgroundColor: '$gray50',
+    borderColor: '$gray300',
   },
 
   '&:active': {
@@ -150,7 +150,7 @@ export const ConfirmButton = styled('button', {
   fontWeight: '600',
   borderRadius: '$card',
   border: 'none',
-  color: '#FFFFFF',
+  color: '$white',
   cursor: 'pointer',
   transition: 'all 0.2s',
   minHeight: '52px',
@@ -170,15 +170,17 @@ export const ConfirmButton = styled('button', {
   variants: {
     variant: {
       warning: {
-        backgroundColor: '#F59E0B',
+        backgroundColor: '$orange',
         '&:hover': {
-          backgroundColor: '#EA8A07',
+          backgroundColor: '$orange',
+          filter: 'brightness(0.95)',
         },
       },
       danger: {
-        backgroundColor: '#DC2626',
+        backgroundColor: '$red',
         '&:hover': {
-          backgroundColor: '#B91C1C',
+          backgroundColor: '$red',
+          filter: 'brightness(0.95)',
         },
       },
     },

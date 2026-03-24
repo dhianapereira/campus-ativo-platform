@@ -77,8 +77,8 @@ export const ModalCloseButton = styled('button', {
   flexShrink: 0,
 
   '&:hover': {
-    backgroundColor: '#f3f4f6',
-    color: '#374151',
+    backgroundColor: '$gray100',
+    color: '$gray700',
   },
 
   '&:disabled': {
@@ -145,7 +145,7 @@ export const Label = styled('label', {
 
 export const Input = styled('input', {
   padding: '0.875rem 1rem',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   borderRadius: '6px',
   fontSize: '1rem',
   color: '$darkGray',
@@ -153,24 +153,24 @@ export const Input = styled('input', {
 
   '&:focus': {
     outline: 'none',
-    borderColor: '#4a9960',
+    borderColor: '$greenBorder',
     boxShadow: '0 0 0 3px rgba(74, 153, 96, 0.1)',
   },
 
   '&:disabled': {
-    backgroundColor: '#f9fafb',
+    backgroundColor: '$gray50',
     color: '$lightGray',
     cursor: 'not-allowed',
   },
 
   '&::placeholder': {
-    color: '#9ca3af',
+    color: '$gray400',
   },
 })
 
 export const TextArea = styled('textarea', {
   padding: '0.875rem 1rem',
-  border: '1px solid #d1d5db',
+  border: '1px solid $gray300',
   borderRadius: '6px',
   fontSize: '1rem',
   color: '$darkGray',
@@ -181,18 +181,18 @@ export const TextArea = styled('textarea', {
 
   '&:focus': {
     outline: 'none',
-    borderColor: '#4a9960',
+    borderColor: '$greenBorder',
     boxShadow: '0 0 0 3px rgba(74, 153, 96, 0.1)',
   },
 
   '&:disabled': {
-    backgroundColor: '#f9fafb',
+    backgroundColor: '$gray50',
     color: '$lightGray',
     cursor: 'not-allowed',
   },
 
   '&::placeholder': {
-    color: '#9ca3af',
+    color: '$gray400',
   },
 
   '@media (max-width: 640px)': {
@@ -209,7 +209,7 @@ export const TextArea = styled('textarea', {
 
 export const ErrorMessage = styled('span', {
   fontSize: '0.75rem',
-  color: '#dc2626',
+  color: '$red',
   marginTop: '0.25rem',
 })
 
@@ -266,10 +266,10 @@ export const StatusToggle = styled('button', {
   variants: {
     isActive: {
       true: {
-        backgroundColor: '#00875F',
+        backgroundColor: '$green',
 
         '&:hover:not(:disabled)': {
-          backgroundColor: '#065f46',
+          backgroundColor: '$greenPressed',
         },
 
         '& > div': {
@@ -277,10 +277,10 @@ export const StatusToggle = styled('button', {
         },
       },
       false: {
-        backgroundColor: '#d1d5db',
+        backgroundColor: '$gray300',
 
         '&:hover:not(:disabled)': {
-          backgroundColor: '#9ca3af',
+          backgroundColor: '$gray400',
         },
 
         '& > div': {
@@ -331,9 +331,9 @@ export const ButtonGroup = styled('div', {
 export const DeleteButton = styled('button', {
   all: 'unset',
   boxSizing: 'border-box',
-  backgroundColor: '#ffffff',
-  color: '#dc2626',
-  border: '2px solid #dc2626',
+  backgroundColor: '$white',
+  color: '$red',
+  border: '2px solid $red',
   padding: '0.625rem 1.25rem',
   borderRadius: '$card',
   fontSize: '0.875rem',
@@ -360,15 +360,16 @@ export const DeleteButton = styled('button', {
     variant: {
       danger: {
         '&:hover:not(:disabled)': {
-          backgroundColor: '#fef2f2',
+          backgroundColor: '$red',
+          color: '$white',
         },
       },
       primary: {
-        backgroundColor: '#00875F',
-        color: 'white',
-        border: '1px solid #00875F',
+        backgroundColor: '$green',
+        color: '$white',
+        border: '1px solid $green',
         '&:hover:not(:disabled)': {
-          backgroundColor: '#00a66f',
+          backgroundColor: '$greenHover',
         },
       },
     },
@@ -393,9 +394,9 @@ export const DeleteButton = styled('button', {
 })
 
 export const CancelButton = styled('button', {
-  backgroundColor: '#ffffff',
-  color: '#374151',
-  border: '1px solid #d1d5db',
+  backgroundColor: '$white',
+  color: '$gray700',
+  border: '1px solid $gray300',
   padding: '0.875rem 2rem',
   borderRadius: '$card',
   fontSize: '0.875rem',
@@ -405,13 +406,13 @@ export const CancelButton = styled('button', {
   minWidth: '120px',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '#f9fafb',
-    borderColor: '#9ca3af',
+    backgroundColor: '$gray50',
+    borderColor: '$gray400',
   },
 
   '&:disabled': {
-    backgroundColor: '#f9fafb',
-    color: '#9ca3af',
+    backgroundColor: '$gray50',
+    color: '$gray400',
     cursor: 'not-allowed',
   },
 
@@ -424,9 +425,9 @@ export const CancelButton = styled('button', {
 })
 
 export const SaveButton = styled('button', {
-  backgroundColor: '#00875F',
-  color: 'white',
-  border: '1px solid #00875F',
+  backgroundColor: '$green',
+  color: '$white',
+  border: '1px solid $green',
   padding: '0.875rem 2rem',
   borderRadius: '$card',
   fontSize: '0.875rem',
@@ -436,14 +437,14 @@ export const SaveButton = styled('button', {
   minWidth: '120px',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '#065f46',
-    borderColor: '#065f46',
+    backgroundColor: '$greenPressed',
+    borderColor: '$greenPressed',
   },
 
   '&:disabled': {
-    backgroundColor: '#d1d5db',
-    color: '#9ca3af',
-    borderColor: '#d1d5db',
+    backgroundColor: '$gray300',
+    color: '$gray400',
+    borderColor: '$gray300',
     cursor: 'not-allowed',
   },
 
@@ -452,7 +453,7 @@ export const SaveButton = styled('button', {
     fontSize: '1rem',
     fontWeight: 500,
     borderRadius: '0.5rem',
-    backgroundColor: '#00875F',
-    border: '1px solid #00875F',
+    backgroundColor: '$green',
+    border: '1px solid $green',
   },
 })

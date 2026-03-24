@@ -10,6 +10,7 @@ import {
   CancelButton,
 } from './styles'
 import { X, SignOut } from 'phosphor-react'
+import { colors } from '@/styles/tokens'
 
 export interface LogoutConfirmationModalProps {
   isOpen: boolean
@@ -59,7 +60,7 @@ export const LogoutConfirmationModal = ({
             marginBottom: '16px',
           }}
         >
-          <SignOut size={24} weight="bold" color="#ef4444" />
+          <SignOut size={24} weight="bold" color={colors.red} />
           <DialogTitle>{title}</DialogTitle>
         </div>
 
@@ -73,8 +74,8 @@ export const LogoutConfirmationModal = ({
             onClick={handleConfirm}
             disabled={isLoggingOut}
             style={{
-              backgroundColor: '#ef4444',
-              borderColor: '#ef4444',
+              backgroundColor: colors.red,
+              borderColor: colors.red,
             }}
           >
             {isLoggingOut ? 'Saindo...' : 'Sair'}
