@@ -7,19 +7,27 @@ import {
   ImageContainer,
   InfoContainer,
   EditButton,
+  HistorySection,
+  HistoryList,
+  HistoryCard,
 } from './styles'
 import { ArrowLeft, NotePencil, Trash } from 'phosphor-react'
 import { useRouter } from 'next/router'
 import type { ProblemDetailsProps } from './types'
 import { Button, Text } from '@/styles'
 import { Actions } from './components/Actions'
-import { BACKEND_STATUS_TO_FRONTEND } from '@/data/static/status-data'
 import { ImageError } from '@/layouts/platform/components/ImageError'
 import { NoImage } from '@/layouts/platform/components/NoImage'
 import { ProtectedRoute } from '@/styles/components/routes/ProtectedRoute'
 import { useAuth } from '@/contexts/auth-context'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import {
+  getHistoryActionLabel,
+  getMaintenanceTypeLabel,
+  getStatusLabel,
+  toFrontendStatus,
+} from '@/utils/problem-mapping'
 
 const STATUS_TO_ANALYSIS_BACKEND = 'TO_ANALYSIS'
 
@@ -41,6 +49,24 @@ function formatDateTime(isoString?: string | null): string {
   } catch {
     return isoString
   }
+}
+
+function formatHistoryDescription(
+  entry: ProblemDetailsProps['history'][number],
+) {
+  if (entry.action === 'STATUS_CHANGED') {
+    return `De ${getStatusLabel(entry.oldValue)} para ${getStatusLabel(entry.newValue)}`
+  }
+
+  if (entry.action === 'MAINTENANCE_TYPE_CHANGED') {
+    return `De ${getMaintenanceTypeLabel(entry.oldValue)} para ${getMaintenanceTypeLabel(entry.newValue)}`
+  }
+
+  if (entry.action === 'CATEGORY_CHANGED') {
+    return 'Categoria atualizada.'
+  }
+
+  return null
 }
 
 export default function ProblemDetails() {
@@ -71,26 +97,33 @@ export default function ProblemDetails() {
   })
 
   const problem = apiResponse?.problem
+  const problemQueryKey =
+    typeof id === 'string' ? id : (problem?.slug ?? problem?.id)
 
   const problemData = useMemo<ProblemDetailsProps | null>(() => {
     if (!problem) return null
 
     const firstAttachment = problem.attachments?.[0]
+    const latestNote =
+      problem.history?.find(
+        (entry: { note?: string | null }) =>
+          typeof entry.note === 'string' && entry.note.trim().length > 0,
+      )?.note ?? ''
 
     return {
+      id: problem.id,
       title: problem.title,
       location: problem.location?.name ?? problem.locationId ?? '—',
       description: problem.description,
-      status:
-        BACKEND_STATUS_TO_FRONTEND[
-          problem.status as keyof typeof BACKEND_STATUS_TO_FRONTEND
-        ] ?? problem.status,
+      status: toFrontendStatus(problem.status),
       category: problem.categoryId ?? null,
       maintenanceType: problem.maintenanceType ?? null,
       imageUrl: firstAttachment?.url ?? null,
       reporter: problem.reporterName ?? problem.reporterId ?? '—',
       createdAt: formatDateTime(problem.createdAt),
       updatedAt: problem.updatedAt ? formatDateTime(problem.updatedAt) : null,
+      history: problem.history ?? [],
+      latestNote,
     }
   }, [problem])
 
@@ -299,10 +332,42 @@ export default function ProblemDetails() {
               <Text size="md">{problemData.updatedAt}</Text>
             </InfoContainer>
           )}
+          <HistorySection>
+            <Text className="label" size="md">
+              Histórico:
+            </Text>
+            <HistoryList>
+              {problemData.history.length > 0 ? (
+                problemData.history.map((entry) => {
+                  const description = formatHistoryDescription(entry)
+
+                  return (
+                    <HistoryCard key={entry.id}>
+                      <Text size="md">
+                        {getHistoryActionLabel(entry.action)}
+                      </Text>
+                      <Text size="sm">
+                        {entry.userName} em {formatDateTime(entry.createdAt)}
+                      </Text>
+                      {description && <Text size="sm">{description}</Text>}
+                      {entry.note && <Text size="md">{entry.note}</Text>}
+                    </HistoryCard>
+                  )
+                })
+              ) : (
+                <Text size="md">
+                  Nenhuma atualização registrada até o momento.
+                </Text>
+              )}
+            </HistoryList>
+          </HistorySection>
           <Actions
+            problemId={problemData.id}
+            problemQueryKey={problemQueryKey}
             initialStatus={problemData.status}
             initialCategory={problemData.category}
             initialMaintenanceType={problemData.maintenanceType}
+            initialNote={problemData.latestNote}
           />
         </Body>
       </Container>

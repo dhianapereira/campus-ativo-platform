@@ -29,7 +29,8 @@ import type {
   EditProblemRequest,
   FetchProblemsControllerHandle200,
   FetchProblemsControllerHandleParams,
-  GetProblemBySlugControllerHandle200
+  GetProblemBySlugControllerHandle200,
+  ManageProblemRequest
 } from '../models';
 
 import { axiosInstance } from '../../axios';
@@ -413,6 +414,71 @@ export const useDeleteProblemControllerHandle = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getDeleteProblemControllerHandleMutationOptions(options), queryClient);
+    }
+    /**
+ * Atualiza status, categoria, tipo de manutenção e adiciona observações ao histórico do problema.
+ * @summary Gerenciar problema
+ */
+export const manageProblemControllerHandle = (
+    id: string,
+    manageProblemRequest: BodyType<ManageProblemRequest>,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<void>(
+      {url: `/problems/${id}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: manageProblemRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getManageProblemControllerHandleMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof manageProblemControllerHandle>>, TError,{id: string;data: BodyType<ManageProblemRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof manageProblemControllerHandle>>, TError,{id: string;data: BodyType<ManageProblemRequest>}, TContext> => {
+
+const mutationKey = ['manageProblemControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof manageProblemControllerHandle>>, {id: string;data: BodyType<ManageProblemRequest>}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  manageProblemControllerHandle(id,data,requestOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ManageProblemControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof manageProblemControllerHandle>>>
+    export type ManageProblemControllerHandleMutationBody = BodyType<ManageProblemRequest>
+    export type ManageProblemControllerHandleMutationError = ErrorType<void>
+
+    /**
+ * @summary Gerenciar problema
+ */
+export const useManageProblemControllerHandle = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof manageProblemControllerHandle>>, TError,{id: string;data: BodyType<ManageProblemRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof manageProblemControllerHandle>>,
+        TError,
+        {id: string;data: BodyType<ManageProblemRequest>},
+        TContext
+      > => {
+      return useMutation(getManageProblemControllerHandleMutationOptions(options), queryClient);
     }
     /**
  * Move um problema para a lixeira (soft delete). Apenas o autor do problema pode movê-lo para a lixeira e somente quando o status for TO_ANALYSIS.

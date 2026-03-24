@@ -1,4 +1,15 @@
+export interface ProblemHistoryEntry {
+  id: string
+  action: string
+  userName: string
+  oldValue?: string | null
+  newValue?: string | null
+  note?: string | null
+  createdAt: string
+}
+
 export interface ProblemDetailsProps {
+  id: string
   title: string
   location: string
   description: string
@@ -9,4 +20,6 @@ export interface ProblemDetailsProps {
   reporter: string
   createdAt: string
   updatedAt: string | null
+  history: ProblemHistoryEntry[]
+  latestNote: string
 }

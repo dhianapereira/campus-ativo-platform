@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { AttachmentInfo } from './attachmentInfo';
+import type { ProblemHistoryEntryResponse } from './problemHistoryEntryResponse';
 import type { ProblemResponseCategoryId } from './problemResponseCategoryId';
 import type { ProblemResponseDeletedAt } from './problemResponseDeletedAt';
 import type { ProblemResponseLocationId } from './problemResponseLocationId';
@@ -57,4 +58,6 @@ export interface ProblemResponse {
   deletedAt?: ProblemResponseDeletedAt;
   /** Anexos do problema */
   attachments?: AttachmentInfo[];
+  /** Histórico de ações do problema */
+  history?: ProblemHistoryEntryResponse[];
 }

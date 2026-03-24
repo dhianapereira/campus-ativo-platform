@@ -39,7 +39,8 @@ export default function EditProblem() {
   const { id } = router.query
   const { user } = useAuth()
   const queryClient = useQueryClient()
-  const problemDetailsPath = typeof id === 'string' ? `/problems/${id}` : '/problems'
+  const problemDetailsPath =
+    typeof id === 'string' ? `/problems/${id}` : '/problems'
 
   const [problemData, setProblemData] = useState<ProblemData | null>(null)
   const [isLoading, setIsLoading] = useState(true)

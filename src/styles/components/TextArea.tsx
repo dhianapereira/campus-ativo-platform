@@ -1,7 +1,8 @@
-import { ComponentProps } from 'react'
+import { ComponentProps, ElementRef, forwardRef } from 'react'
 import { styled } from '@/styles/stitches'
 
 const TextAreaStyled = styled('textarea', {
+  width: '100%',
   backgroundColor: '$white',
   padding: '$3 $4',
   borderRadius: '$sm',
@@ -52,13 +53,10 @@ export interface TextAreaProps extends ComponentProps<typeof TextAreaStyled> {
   showCounter?: boolean
 }
 
-export const TextArea = ({
-  hasError,
-  isAutocomplete,
-  maxLength,
-  showCounter,
-  ...props
-}: TextAreaProps) => {
+export const TextArea = forwardRef<
+  ElementRef<typeof TextAreaStyled>,
+  TextAreaProps
+>(({ hasError, isAutocomplete, maxLength, showCounter, ...props }, ref) => {
   const isControlled = 'value' in props
   const displayValue = isControlled
     ? ((props.value as string) ?? '')
@@ -66,8 +64,9 @@ export const TextArea = ({
   const currentLength = (displayValue ?? '').toString().length
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <TextAreaStyled
+        ref={ref}
         hasError={hasError}
         isAutocomplete={isAutocomplete}
         maxLength={maxLength}
@@ -86,7 +85,7 @@ export const TextArea = ({
       )}
     </div>
   )
-}
+})
 
 const TextAreaCounter = styled('div', {
   fontSize: '$xs',

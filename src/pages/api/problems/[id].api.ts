@@ -87,5 +87,39 @@ export default async function handler(
     }
   }
 
+  if (req.method === 'PATCH') {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(req.body),
+        },
+      )
+
+      const responseBody = await response.json().catch(() => null)
+
+      if (!response.ok) {
+        return res.status(response.status).json({
+          message: responseBody?.message || 'Erro ao atualizar histórico',
+        })
+      }
+
+      return res.status(204).end()
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message })
+      }
+
+      return res
+        .status(500)
+        .json({ message: 'Erro ao atualizar histórico do problema' })
+    }
+  }
+
   return res.status(405).json({ message: 'Método não permitido' })
 }

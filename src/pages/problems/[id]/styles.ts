@@ -167,3 +167,25 @@ export const InfoContainer = styled('div', {
     fontWeight: '$bold',
   },
 })
+
+export const HistorySection = styled('section', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$4',
+})
+
+export const HistoryList = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$3',
+})
+
+export const HistoryCard = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$2',
+  padding: '$4',
+  borderRadius: '$sm',
+  backgroundColor: '$white',
+  border: '1px solid $lightGray',
+})
