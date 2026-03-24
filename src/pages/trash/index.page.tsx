@@ -497,7 +497,7 @@ export default function TrashPage() {
 
   if (error) {
     return (
-      <RoleProtectedRoute requiredLevel={1}>
+      <RoleProtectedRoute requiredLevel={2}>
         <PlatformLayout>
           <MainContainer>
             <HeaderContainer>
@@ -524,7 +524,7 @@ export default function TrashPage() {
   }
 
   return (
-    <RoleProtectedRoute requiredLevel={1}>
+    <RoleProtectedRoute requiredLevel={2}>
       <PlatformLayout>
         <MainContainer>
           <HeaderContainer>
