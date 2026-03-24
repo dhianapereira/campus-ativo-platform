@@ -15,6 +15,7 @@ import { ArrowLeft, NotePencil, Trash } from 'phosphor-react'
 import { useRouter } from 'next/router'
 import type { ProblemDetailsProps } from './types'
 import { Button, Text } from '@/styles'
+import { TrashActionButton } from '@/components/trash-action-button'
 import { Actions } from './components/Actions'
 import { ImageError } from '@/layouts/platform/components/ImageError'
 import { NoImage } from '@/layouts/platform/components/NoImage'
@@ -222,29 +223,21 @@ export default function ProblemDetails() {
           >
             {canMoveToTrash && (
               <>
-                <Button
+                <TrashActionButton
                   className="desktop"
-                  variant="secondary"
+                  variant="danger"
                   onClick={handleMoveToTrash}
                   disabled={moveToTrashMutation.isPending}
                   aria-label="Mover para a lixeira"
                   tabIndex={0}
-                  css={{
-                    color: '#b91c1c',
-                    borderColor: '#b91c1c',
-                    '&:not(:disabled):hover': {
-                      backgroundColor: '#b91c1c',
-                      borderColor: '#b91c1c',
-                      color: '#fff',
-                    },
-                  }}
                 >
                   <Trash weight="bold" size={24} />
-                  Mover para lixeira
-                </Button>
-                <EditButton
+                  <span className="label">Mover para lixeira</span>
+                </TrashActionButton>
+                <TrashActionButton
                   className="mobile"
-                  tone="danger"
+                  variant="danger"
+                  mobileBehavior="iconOnly"
                   onClick={handleMoveToTrash}
                   disabled={moveToTrashMutation.isPending}
                   aria-label="Mover para a lixeira"
@@ -252,7 +245,8 @@ export default function ProblemDetails() {
                   role="button"
                 >
                   <Trash weight="bold" size={24} />
-                </EditButton>
+                  <span className="label">Mover para lixeira</span>
+                </TrashActionButton>
               </>
             )}
             {canEdit && (

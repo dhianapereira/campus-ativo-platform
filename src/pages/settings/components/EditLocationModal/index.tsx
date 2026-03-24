@@ -320,13 +320,9 @@ function EditLocationModalContent({
             <ButtonGroup>
               {isDeleted ? (
                 <DeleteButton
+                  variant="primary"
                   onClick={handleRestore}
                   disabled={isSubmitting || restoreLocationMutation.isPending}
-                  style={{
-                    backgroundColor: '#00875F',
-                    color: 'white',
-                    border: '1px solid #00875F',
-                  }}
                 >
                   <ArrowCounterClockwise size={20} weight="bold" />
                   <span className="label">
@@ -337,7 +333,7 @@ function EditLocationModalContent({
                 </DeleteButton>
               ) : (
                 <DeleteButton onClick={handleDelete} disabled={isSubmitting}>
-                  <Trash size={20} />
+                  <Trash size={20} weight="bold" />
                   <span className="label">Mover para lixeira</span>
                 </DeleteButton>
               )}

@@ -219,31 +219,32 @@ export const ActionsContainer = styled('div', {
 export const ActionButton = styled('button', {
   all: 'unset',
   boxSizing: 'border-box',
-  padding: '0.75rem 1.25rem',
-  borderRadius: '0.5rem',
+  padding: '0.625rem 1.25rem',
+  borderRadius: '$card',
   fontSize: '0.875rem',
-  fontWeight: 500,
+  fontWeight: 600,
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'center',
   gap: '0.5rem',
   transition: 'all 0.2s ease',
   whiteSpace: 'nowrap',
 
+  '&:disabled': {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
+
   variants: {
     variant: {
       delete: {
-        backgroundColor: 'transparent',
+        backgroundColor: 'white',
         color: '#dc2626',
-        border: '1px solid #dc2626',
+        border: '2px solid #dc2626',
 
         '&:hover:not(:disabled)': {
           backgroundColor: '#fef2f2',
-        },
-
-        '&:disabled': {
-          opacity: 0.5,
-          cursor: 'not-allowed',
         },
       },
       add: {

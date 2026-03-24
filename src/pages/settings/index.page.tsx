@@ -520,8 +520,8 @@ export default function SettingsPage() {
                   onClick={handleDeleteSelected}
                   disabled={selectedItems.length === 0}
                 >
-                  <Trash size={16} />
-                  Mover para lixeira
+                  <Trash size={20} weight="bold" />
+                  <span>Mover para lixeira</span>
                 </ActionButton>
                 <ActionButton variant="add" onClick={handleAddNew}>
                   <Plus size={16} />

@@ -332,30 +332,26 @@ export const ButtonGroup = styled('div', {
 })
 
 export const DeleteButton = styled('button', {
+  all: 'unset',
+  boxSizing: 'border-box',
   backgroundColor: '#ffffff',
   color: '#dc2626',
-  border: '1px solid #dc2626',
-  padding: '0.875rem 1.25rem',
+  border: '2px solid #dc2626',
+  padding: '0.625rem 1.25rem',
   borderRadius: '$card',
   fontSize: '0.875rem',
-  fontWeight: 500,
+  fontWeight: 600,
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   gap: '0.5rem',
-  transition: 'all 0.2s',
+  transition: 'all 0.2s ease',
   minWidth: 'auto',
   alignSelf: 'flex-start',
 
-  '&:hover:not(:disabled)': {
-    backgroundColor: '#fef2f2',
-  },
-
   '&:disabled': {
-    backgroundColor: '#f9fafb',
-    color: '#9ca3af',
-    borderColor: '#d1d5db',
+    opacity: 0.5,
     cursor: 'not-allowed',
   },
 
@@ -363,14 +359,33 @@ export const DeleteButton = styled('button', {
     display: 'inline',
   },
 
+  variants: {
+    variant: {
+      danger: {
+        '&:hover:not(:disabled)': {
+          backgroundColor: '#fef2f2',
+        },
+      },
+      primary: {
+        backgroundColor: '#00875F',
+        color: 'white',
+        border: '1px solid #00875F',
+        '&:hover:not(:disabled)': {
+          backgroundColor: '#00a66f',
+        },
+      },
+    },
+  },
+
+  defaultVariants: {
+    variant: 'danger',
+  },
+
   '@media (max-width: 48rem)': {
-    width: '3rem',
-    height: '3rem',
-    padding: '0',
-    borderRadius: '0.5rem',
-    fontSize: '0',
-    border: '1px solid #dc2626',
-    backgroundColor: '#ffffff',
+    padding: '0.625rem',
+    minWidth: '44px',
+    minHeight: '44px',
+    borderRadius: '$card',
     alignSelf: 'center',
     flexShrink: 0,
 
