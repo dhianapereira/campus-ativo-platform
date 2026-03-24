@@ -194,7 +194,7 @@ export const CompactDialogContent = styled(DialogContent, {
 })
 
 export const DangerDialogContent = styled(DialogContent, {
-  border: '2px solid $redSoftBorder',
+  border: '2px solid $borderDangerSoft',
 
   [`& ${DialogTitle}`]: {
     color: '$red',

@@ -26,7 +26,7 @@ export const TrashActionButton = styled('button', {
         backgroundColor: '$green',
         color: '$white',
         '&:hover:not(:disabled)': {
-          backgroundColor: '$greenHover',
+          backgroundColor: '$brandPrimaryHover',
         },
       },
       danger: {

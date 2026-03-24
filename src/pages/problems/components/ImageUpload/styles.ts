@@ -13,9 +13,9 @@ export const UploadContainer = styled('div', {
 export const UploadArea = styled('div', {
   minWidth: '130px',
   height: '100px',
-  border: '2px dashed $gray300',
+  border: '2px dashed $borderDefault',
   borderRadius: '$lg',
-  backgroundColor: '$gray100',
+  backgroundColor: '$surfaceMuted',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -24,8 +24,8 @@ export const UploadArea = styled('div', {
   flexShrink: 0,
 
   '&:hover': {
-    borderColor: '$greenStrong',
-    backgroundColor: '$greenSurface',
+    borderColor: '$feedbackSuccess',
+    backgroundColor: '$surfaceSuccess',
   },
 
   variants: {
@@ -42,12 +42,12 @@ export const UploadArea = styled('div', {
     },
     hasImage: {
       true: {
-        border: '2px solid $greenStrong',
-        backgroundColor: '$greenSurface',
+        border: '2px solid $feedbackSuccess',
+        backgroundColor: '$surfaceSuccess',
 
         '&:hover': {
-          borderColor: '$greenStrongHover',
-          backgroundColor: '$greenSurfaceHover',
+          borderColor: '$feedbackSuccessHover',
+          backgroundColor: '$surfaceSuccessHover',
         },
       },
     },
@@ -58,7 +58,7 @@ export const IconContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: '$gray400',
+  color: '$textDisabled',
 
   '& svg': {
     width: '32px',

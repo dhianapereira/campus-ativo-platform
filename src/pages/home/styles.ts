@@ -50,9 +50,9 @@ export const FilterSelect = styled('select', {
   borderRadius: '8px',
   fontSize: '0.875rem',
   fontWeight: 500,
-  border: '1px solid $gray300',
+  border: '1px solid $borderDefault',
   backgroundColor: 'white',
-  color: '$gray700',
+  color: '$textNeutral',
   cursor: 'pointer',
   appearance: 'none' as const,
   height: '48px',
@@ -61,7 +61,7 @@ export const FilterSelect = styled('select', {
   backgroundPosition: 'right 0.75rem center',
 
   '&:focus': {
-    borderColor: '$greenBorder',
+    borderColor: '$borderSuccess',
   },
 })
 

@@ -61,13 +61,13 @@ export const SearchInputContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
   backgroundColor: '$white',
-  border: '1px solid $grayBlue100',
+  border: '1px solid $borderLight',
   transition: 'all 0.2s ease',
   maxWidth: '100%',
   borderRadius: '$md',
 
   '&:focus-within': {
-    borderColor: '$greenBorder',
+    borderColor: '$borderSuccess',
   },
 })
 
@@ -75,7 +75,7 @@ export const SearchIcon = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: '$gray600',
+  color: '$textSecondary',
   paddingLeft: '1rem',
   marginRight: '0.75rem',
   flexShrink: 0,
@@ -86,7 +86,7 @@ export const SearchInput = styled('input', {
   boxSizing: 'border-box',
   fontFamily: 'inherit',
   fontSize: '$4',
-  color: '$gray900',
+  color: '$textBody',
   width: '100%',
   height: '46px',
   padding: '$3',
@@ -95,7 +95,7 @@ export const SearchInput = styled('input', {
   textOverflow: 'ellipsis',
 
   '&::placeholder': {
-    color: '$gray600',
+    color: '$textSecondary',
     fontWeight: 'normal',
   },
 
@@ -167,7 +167,7 @@ export const MemberCard = styled('div', {
   transition: 'background-color 0.2s ease',
 
   '&:hover': {
-    backgroundColor: '$gray100',
+    backgroundColor: '$surfaceMuted',
   },
 })
 
@@ -184,7 +184,7 @@ export const MemberCardEmail = styled('p', {
   fontSize: '1rem',
   lineHeight: 1.4,
   fontWeight: 400,
-  color: '$gray700',
+  color: '$textNeutral',
   wordBreak: 'break-word',
 })
 
@@ -208,7 +208,7 @@ export const TableHeader = styled('th', {
   textAlign: 'left',
   fontWeight: 600,
   fontSize: '1rem',
-  color: '$gray875',
+  color: '$textPrimary',
   position: 'relative',
   borderBottom: '2px solid $green',
   '&:first-child': { width: '33%' },
@@ -224,7 +224,7 @@ export const SearchBar = styled('div', {
   display: 'flex',
   alignItems: 'center',
   padding: '0.5rem',
-  border: '1px solid $grayBorder',
+  border: '1px solid $borderMuted',
   borderRadius: '0.375rem',
   background: '$white',
   boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
@@ -246,7 +246,7 @@ export const TableRow = styled('tr', {
       false: {
         cursor: 'pointer',
         '&:hover': {
-          backgroundColor: '$gray100',
+          backgroundColor: '$surfaceMuted',
         },
         '&:last-child': {
           borderBottom: 'none',
@@ -258,7 +258,7 @@ export const TableRow = styled('tr', {
 
 export const TableCell = styled('td', {
   padding: '1.25rem 0',
-  color: '$gray700',
+  color: '$textNeutral',
   fontSize: '0.95rem',
   lineHeight: 1.5,
   verticalAlign: 'middle',
@@ -306,18 +306,18 @@ export const PaginationButton = styled('button', {
         backgroundColor: 'transparent',
 
         '&:hover:not(:disabled)': {
-          color: '$gray700',
-          backgroundColor: '$gray100',
+          color: '$textNeutral',
+          backgroundColor: '$surfaceMuted',
         },
 
         '&:disabled': {
-          color: '$gray300',
+          color: '$textDisabled',
           cursor: 'not-allowed',
         },
       },
       nav: {
         background: 'transparent',
-        color: '$gray850',
+        color: '$textStrong',
         fontSize: '1.05rem',
         fontWeight: 600,
         minWidth: 'auto',
@@ -334,12 +334,12 @@ export const PaginationButton = styled('button', {
         },
       },
       number: {
-        color: '$gray700',
+        color: '$textNeutral',
         backgroundColor: 'white',
-        border: '1px solid $gray300',
+        border: '1px solid $borderDefault',
 
         '&:hover': {
-          backgroundColor: '$gray100',
+          backgroundColor: '$surfaceMuted',
         },
       },
     },
@@ -363,7 +363,7 @@ export const PaginationDots = styled('span', {
   display: 'flex',
   alignItems: 'center',
   padding: '0.5rem',
-  color: '$gray400',
+  color: '$textDisabled',
   fontSize: '0.875rem',
 
   '@media (max-width: 768px)': {
@@ -392,7 +392,7 @@ export const FilterButton = styled('button', {
   fontWeight: 500,
   cursor: 'pointer',
   transition: 'all 0.2s ease',
-  border: '1px solid $gray300',
+  border: '1px solid $borderDefault',
 
   variants: {
     isActive: {
@@ -404,10 +404,10 @@ export const FilterButton = styled('button', {
       false: {
         backgroundColor: 'white',
         color: '$lightGray',
-        border: '1px solid $gray300',
+        border: '1px solid $borderDefault',
         '&:hover': {
-          backgroundColor: '$gray100',
-          color: '$gray700',
+          backgroundColor: '$surfaceMuted',
+          color: '$textNeutral',
         },
       },
     },

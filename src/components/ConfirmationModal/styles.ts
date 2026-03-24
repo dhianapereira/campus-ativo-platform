@@ -62,7 +62,7 @@ export const CloseButton = styled('button', {
   right: '16px',
   background: 'transparent',
   border: 'none',
-  color: '$gray400',
+  color: '$textDisabled',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
@@ -76,7 +76,7 @@ export const CloseButton = styled('button', {
   zIndex: 10,
 
   '&:hover': {
-    backgroundColor: '$gray100',
+    backgroundColor: '$surfaceMuted',
     color: '$darkGray',
   },
 
@@ -119,17 +119,17 @@ export const CancelButton = styled('button', {
   fontSize: '16px',
   fontWeight: '600',
   borderRadius: '$card',
-  border: '1.5px solid $gray300',
+  border: '1.5px solid $borderDefault',
   backgroundColor: '$white',
-  color: '$gray700',
+  color: '$textNeutral',
   cursor: 'pointer',
   transition: 'all 0.2s',
   minHeight: '52px',
   minWidth: '160px',
 
   '&:hover': {
-    backgroundColor: '$gray50',
-    borderColor: '$gray300',
+    backgroundColor: '$surfaceSubtle',
+    borderColor: '$borderDefault',
   },
 
   '&:active': {

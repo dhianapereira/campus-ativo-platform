@@ -77,8 +77,8 @@ export const ModalCloseButton = styled('button', {
   flexShrink: 0,
 
   '&:hover': {
-    backgroundColor: '$gray100',
-    color: '$gray700',
+    backgroundColor: '$surfaceMuted',
+    color: '$textNeutral',
   },
 
   '&:disabled': {
@@ -145,7 +145,7 @@ export const Label = styled('label', {
 
 export const Input = styled('input', {
   padding: '0.875rem 1rem',
-  border: '1px solid $gray300',
+  border: '1px solid $borderDefault',
   borderRadius: '6px',
   fontSize: '1rem',
   color: '$darkGray',
@@ -153,18 +153,18 @@ export const Input = styled('input', {
 
   '&:focus': {
     outline: 'none',
-    borderColor: '$greenBorder',
+    borderColor: '$borderSuccess',
     boxShadow: '0 0 0 3px rgba(74, 153, 96, 0.1)',
   },
 
   '&:disabled': {
-    backgroundColor: '$gray50',
+    backgroundColor: '$surfaceSubtle',
     color: '$lightGray',
     cursor: 'not-allowed',
   },
 
   '&::placeholder': {
-    color: '$gray400',
+    color: '$textDisabled',
   },
 
   '@media (max-width: 48rem)': {
@@ -177,7 +177,7 @@ export const Input = styled('input', {
 
 export const TextArea = styled('textarea', {
   padding: '0.875rem 1rem',
-  border: '1px solid $gray300',
+  border: '1px solid $borderDefault',
   borderRadius: '6px',
   fontSize: '1rem',
   color: '$darkGray',
@@ -188,18 +188,18 @@ export const TextArea = styled('textarea', {
 
   '&:focus': {
     outline: 'none',
-    borderColor: '$greenBorder',
+    borderColor: '$borderSuccess',
     boxShadow: '0 0 0 3px rgba(74, 153, 96, 0.1)',
   },
 
   '&:disabled': {
-    backgroundColor: '$gray50',
+    backgroundColor: '$surfaceSubtle',
     color: '$lightGray',
     cursor: 'not-allowed',
   },
 
   '&::placeholder': {
-    color: '$gray400',
+    color: '$textDisabled',
   },
 
   '@media (max-width: 48rem)': {
@@ -272,7 +272,7 @@ export const StatusToggle = styled('button', {
         backgroundColor: '$green',
 
         '&:hover:not(:disabled)': {
-          backgroundColor: '$greenPressed',
+          backgroundColor: '$brandPrimaryPressed',
         },
 
         '& > div': {
@@ -280,10 +280,10 @@ export const StatusToggle = styled('button', {
         },
       },
       false: {
-        backgroundColor: '$gray300',
+        backgroundColor: '$borderDefault',
 
         '&:hover:not(:disabled)': {
-          backgroundColor: '$gray400',
+          backgroundColor: '$textDisabled',
         },
 
         '& > div': {
@@ -372,7 +372,7 @@ export const DeleteButton = styled('button', {
         color: '$white',
         border: '1px solid $green',
         '&:hover:not(:disabled)': {
-          backgroundColor: '$greenHover',
+          backgroundColor: '$brandPrimaryHover',
         },
       },
     },
@@ -398,8 +398,8 @@ export const DeleteButton = styled('button', {
 
 export const CancelButton = styled('button', {
   backgroundColor: '$white',
-  color: '$gray700',
-  border: '1px solid $gray300',
+  color: '$textNeutral',
+  border: '1px solid $borderDefault',
   padding: '0.875rem 2rem',
   borderRadius: '$card',
   fontSize: '0.875rem',
@@ -409,13 +409,13 @@ export const CancelButton = styled('button', {
   minWidth: '120px',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '$gray50',
-    borderColor: '$gray400',
+    backgroundColor: '$surfaceSubtle',
+    borderColor: '$textDisabled',
   },
 
   '&:disabled': {
-    backgroundColor: '$gray50',
-    color: '$gray400',
+    backgroundColor: '$surfaceSubtle',
+    color: '$textDisabled',
     cursor: 'not-allowed',
   },
 
@@ -440,14 +440,14 @@ export const SaveButton = styled('button', {
   minWidth: '120px',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '$greenPressed',
-    borderColor: '$greenPressed',
+    backgroundColor: '$brandPrimaryPressed',
+    borderColor: '$brandPrimaryPressed',
   },
 
   '&:disabled': {
-    backgroundColor: '$gray300',
-    color: '$gray400',
-    borderColor: '$gray300',
+    backgroundColor: '$borderDefault',
+    color: '$textDisabled',
+    borderColor: '$borderDefault',
     cursor: 'not-allowed',
   },
 

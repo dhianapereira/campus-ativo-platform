@@ -21,13 +21,13 @@ const ErrorTitle = styled('h1', {
   margin: 0,
   fontSize: '28px',
   fontWeight: 700,
-  color: '$gray800',
+  color: '$textHeadline',
 })
 
 const ErrorMessage = styled('p', {
   margin: '16px 0 0',
   fontSize: '16px',
-  color: '$gray500',
+  color: '$textMuted',
 })
 
 export default function ErrorPage({ statusCode }: ErrorPageProps) {

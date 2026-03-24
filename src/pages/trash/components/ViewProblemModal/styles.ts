@@ -71,8 +71,8 @@ export const ModalCloseButton = styled('button', {
   flexShrink: 0,
 
   '&:hover': {
-    backgroundColor: '$gray100',
-    color: '$gray700',
+    backgroundColor: '$surfaceMuted',
+    color: '$textNeutral',
   },
 
   '&:disabled': {
@@ -135,18 +135,18 @@ export const WarningMessage = styled('div', {
   alignItems: 'center',
   gap: '0.75rem',
   padding: '1rem',
-  backgroundColor: '$orangeSoft',
+  backgroundColor: '$surfaceWarning',
   borderRadius: '$card',
   marginBottom: '1.5rem',
 
   svg: {
-    color: '$orangeStrong',
+    color: '$textWarningAccent',
     flexShrink: 0,
   },
 
   span: {
     fontSize: '0.875rem',
-    color: '$orangeText',
+    color: '$textWarning',
     lineHeight: 1.5,
   },
 })
@@ -175,8 +175,8 @@ export const ButtonGroup = styled('div', {
 
 export const CancelButton = styled('button', {
   backgroundColor: '$white',
-  color: '$gray700',
-  border: '1px solid $gray300',
+  color: '$textNeutral',
+  border: '1px solid $borderDefault',
   padding: '0.875rem 2rem',
   borderRadius: '$card',
   fontSize: '0.875rem',
@@ -186,13 +186,13 @@ export const CancelButton = styled('button', {
   minWidth: '120px',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '$gray50',
-    borderColor: '$gray400',
+    backgroundColor: '$surfaceSubtle',
+    borderColor: '$textDisabled',
   },
 
   '&:disabled': {
-    backgroundColor: '$gray50',
-    color: '$gray400',
+    backgroundColor: '$surfaceSubtle',
+    color: '$textDisabled',
     cursor: 'not-allowed',
   },
 
@@ -222,14 +222,14 @@ export const RestoreButton = styled('button', {
   transition: 'all 0.2s',
 
   '&:hover:not(:disabled)': {
-    backgroundColor: '$greenPressed',
-    borderColor: '$greenPressed',
+    backgroundColor: '$brandPrimaryPressed',
+    borderColor: '$brandPrimaryPressed',
   },
 
   '&:disabled': {
-    backgroundColor: '$gray300',
-    color: '$gray400',
-    borderColor: '$gray300',
+    backgroundColor: '$borderDefault',
+    color: '$textDisabled',
+    borderColor: '$borderDefault',
     cursor: 'not-allowed',
   },
 

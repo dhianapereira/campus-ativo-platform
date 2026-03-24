@@ -1,4 +1,4 @@
-export const colors = {
+const palette = {
   white: '#FFFFFF',
   greenishWhite: '#FCFDFD',
   darkGray: '#121214',
@@ -61,4 +61,61 @@ export const colors = {
   redSoftBorder: '#9A0E0333',
   redStrong: '#DC3545',
   redLightBorder: '#F8D7DA',
+}
+
+export const colors = {
+  ...palette,
+
+  surfaceBase: palette.white,
+  surfaceAlt: palette.greenishWhite,
+  surfaceSubtle: palette.gray50,
+  surfaceMuted: palette.gray100,
+  surfaceNeutral: palette.graySurface,
+  surfaceInfo: palette.blueSoft,
+  surfaceInfoMuted: palette.blueInfoSurface,
+  surfaceWarning: palette.orangeSoft,
+  surfaceSuccess: palette.greenSurface,
+  surfaceSuccessHover: palette.greenSurfaceHover,
+  surfaceDanger: palette.red12Bg,
+
+  borderSoft: palette.gray200,
+  borderSubtle: palette.gray250,
+  borderDefault: palette.gray300,
+  borderLight: palette.grayBlue100,
+  borderMuted: palette.grayBorder,
+  borderDashed: palette.grayDashed,
+  borderSuccess: palette.greenBorder,
+  borderSuccessSoft: palette.greenSoftBorder,
+  borderDangerSoft: palette.redSoftBorder,
+  borderDangerLight: palette.redLightBorder,
+
+  textPrimary: palette.gray875,
+  textBody: palette.gray900,
+  textSecondary: palette.gray600,
+  textMuted: palette.gray500,
+  textDisabled: palette.gray400,
+  textNeutral: palette.gray700,
+  textTertiary: palette.gray750,
+  textHeadline: palette.gray800,
+  textStrong: palette.gray850,
+  textSubtle: palette.lightGray,
+  textInfo: palette.blueStrong,
+  textInfoMuted: palette.blueInfoText,
+  textWarning: palette.orangeText,
+  textWarningAccent: palette.orangeStrong,
+  textSuccess: palette.greenDeep,
+  textDanger: palette.red,
+  textDangerStrong: palette.redStrong,
+
+  brandPrimary: palette.green,
+  brandPrimaryHover: palette.greenHover,
+  brandPrimaryPressed: palette.greenPressed,
+  brandAccent: palette.greenAccent,
+  brandMuted: palette.greenMuted,
+
+  feedbackSuccess: palette.greenStrong,
+  feedbackSuccessHover: palette.greenStrongHover,
+  feedbackInfo: palette.blue,
+  feedbackWarning: palette.orange,
+  feedbackDanger: palette.red,
 }

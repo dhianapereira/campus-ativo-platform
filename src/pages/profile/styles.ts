@@ -81,7 +81,7 @@ export const FormGroup = styled('div', {
 export const Label = styled('label', {
   fontSize: '0.875rem',
   fontWeight: 500,
-  color: '$gray700',
+  color: '$textNeutral',
 })
 
 export const Input = styled('input', {
@@ -90,7 +90,7 @@ export const Input = styled('input', {
   fontSize: '0.875rem',
   color: '$darkGray',
   backgroundColor: 'white',
-  border: '1px solid $gray300',
+  border: '1px solid $borderDefault',
   borderRadius: '$card',
   outline: 'none',
   transition: 'border-color 0.2s',
@@ -100,13 +100,13 @@ export const Input = styled('input', {
   },
 
   '&:disabled': {
-    backgroundColor: '$gray100',
-    color: '$gray400',
+    backgroundColor: '$surfaceMuted',
+    color: '$textDisabled',
     cursor: 'not-allowed',
   },
 
   '&::placeholder': {
-    color: '$gray400',
+    color: '$textDisabled',
   },
 })
 
@@ -161,15 +161,15 @@ export const Button = styled('button', {
         backgroundColor: '$green',
         color: '$white',
         '&:hover:not(:disabled)': {
-          backgroundColor: '$greenHover',
+          backgroundColor: '$brandPrimaryHover',
         },
       },
       secondary: {
         backgroundColor: '$white',
-        color: '$gray700',
-        border: '1px solid $gray300',
+        color: '$textNeutral',
+        border: '1px solid $borderDefault',
         '&:hover:not(:disabled)': {
-          backgroundColor: '$gray50',
+          backgroundColor: '$surfaceSubtle',
         },
       },
       danger: {
@@ -197,7 +197,7 @@ export const DangerZone = styled('div', {
   marginTop: '0.5rem',
   padding: '1rem',
   backgroundColor: '$red12Bg',
-  border: '1px solid $redSoftBorder',
+  border: '1px solid $borderDangerSoft',
   borderRadius: '$card',
 })
 
@@ -210,14 +210,14 @@ export const DangerText = styled('p', {
 
 export const InfoBox = styled('div', {
   padding: '1rem',
-  backgroundColor: '$greenSurface',
-  border: '1px solid $greenSoftBorder',
+  backgroundColor: '$surfaceSuccess',
+  border: '1px solid $borderSuccessSoft',
   borderRadius: '$card',
   marginBottom: '1rem',
 })
 
 export const InfoText = styled('p', {
   fontSize: '0.875rem',
-  color: '$greenDeep',
+  color: '$textSuccess',
   lineHeight: 1.5,
 })
