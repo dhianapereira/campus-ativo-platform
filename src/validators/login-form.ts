@@ -19,3 +19,5 @@ export const loginFormSchema = z.object({
       'A senha precisa ter letras maiúsculas e números.',
     ),
 })
+
+export type LoginFormData = z.infer<typeof loginFormSchema>

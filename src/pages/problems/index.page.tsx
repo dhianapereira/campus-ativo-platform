@@ -19,7 +19,10 @@ import { FilterDialog, Text } from '@/components'
 import type { FilterOption } from '@/components'
 import { useRouter } from 'next/router'
 import { useState, useMemo } from 'react'
-import { BACKEND_STATUS_TO_FRONTEND, Status } from '@/data/static/status-data'
+import {
+  backendStatusToProblemStatus,
+  ProblemStatus,
+} from '@/constants/problems/status'
 import { useQuery } from '@tanstack/react-query'
 import NoProblemSvg from '@/assets/no-problem.svg'
 import Image from 'next/image'
@@ -58,12 +61,12 @@ export default function Problems() {
   )
 
   const filterOptions: FilterOption[] = [
-    { id: Status.ToAnalysis, label: 'Para análise', checked: false },
-    { id: Status.InAnalysis, label: 'Em análise', checked: false },
-    { id: Status.Accepted, label: 'Aceito', checked: false },
-    { id: Status.Rejected, label: 'Recusado', checked: false },
-    { id: Status.InProgress, label: 'Em andamento', checked: false },
-    { id: Status.Finished, label: 'Concluído', checked: false },
+    { id: ProblemStatus.ToAnalysis, label: 'Para análise', checked: false },
+    { id: ProblemStatus.InAnalysis, label: 'Em análise', checked: false },
+    { id: ProblemStatus.Accepted, label: 'Aceito', checked: false },
+    { id: ProblemStatus.Rejected, label: 'Recusado', checked: false },
+    { id: ProblemStatus.InProgress, label: 'Em andamento', checked: false },
+    { id: ProblemStatus.Finished, label: 'Concluído', checked: false },
   ]
 
   type ProblemItem = {
@@ -72,7 +75,7 @@ export default function Problems() {
     title: string
     location: string
     description: string
-    badgeId: Status
+    badgeId: ProblemStatus
   }
 
   // Transform API data to match current component structure.
@@ -86,7 +89,7 @@ export default function Problems() {
       title: problem.title || '',
       location: problem.locationName || 'Localização excluída',
       description: problem.excerpt || '',
-      badgeId: BACKEND_STATUS_TO_FRONTEND[problem.status],
+      badgeId: backendStatusToProblemStatus[problem.status],
     }))
   }, [data])
 

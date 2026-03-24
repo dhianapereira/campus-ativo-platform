@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import type { DashboardReportData } from '@/@types/dashboard'
+import type { DashboardReportData } from '@/pages/home/types'
 
 function formatDate(iso: string): string {
   try {
@@ -35,7 +35,6 @@ export function generateReportPdf(data: DashboardReportData): void {
   )
   y += 12
 
-  // 1. Resumo por status
   doc.setFontSize(12)
   doc.text('1. Problemas por status', 14, y)
   y += 6
@@ -56,7 +55,6 @@ export function generateReportPdf(data: DashboardReportData): void {
     (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
       .finalY + 10
 
-  // 2. Por categoria
   if (y > 250) {
     doc.addPage()
     y = 15
@@ -76,7 +74,6 @@ export function generateReportPdf(data: DashboardReportData): void {
     (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
       .finalY + 10
 
-  // 3. Por localização
   if (y > 250) {
     doc.addPage()
     y = 15
@@ -96,7 +93,6 @@ export function generateReportPdf(data: DashboardReportData): void {
     (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
       .finalY + 10
 
-  // 4. Por tipo de manutenção
   if (y > 250) {
     doc.addPage()
     y = 15
@@ -116,7 +112,6 @@ export function generateReportPdf(data: DashboardReportData): void {
     (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable
       .finalY + 12
 
-  // 5. Lista de problemas
   doc.setFontSize(12)
   doc.text('5. Lista de problemas do período', 14, y)
   y += 6

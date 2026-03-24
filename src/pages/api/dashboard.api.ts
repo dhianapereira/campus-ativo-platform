@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { DashboardMetrics } from '@/@types/dashboard'
+import type { DashboardMetrics } from '@/pages/home/types'
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3333'

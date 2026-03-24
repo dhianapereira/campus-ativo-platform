@@ -14,3 +14,5 @@ export const problemFormSchema = z.object({
     .min(1, 'O campo descrição é obrigatório.')
     .max(500, 'A descrição não pode passar de 500 caracteres.'),
 })
+
+export type ProblemFormData = z.infer<typeof problemFormSchema>

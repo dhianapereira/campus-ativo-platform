@@ -34,7 +34,7 @@ import {
   getMaintenanceTypeLabel,
   getStatusLabel,
   toFrontendStatus,
-} from '@/utils/problem-mapping'
+} from '../problem-mapping'
 
 const STATUS_TO_ANALYSIS_BACKEND = 'TO_ANALYSIS'
 

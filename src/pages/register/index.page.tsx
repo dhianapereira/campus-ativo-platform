@@ -10,8 +10,10 @@ import {
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useWatch } from 'react-hook-form'
-import { RegisterFormData } from '@/@types/form'
-import { registerFormSchema } from '@/validators/register-form'
+import {
+  registerFormSchema,
+  RegisterFormData,
+} from '@/validators/register-form'
 import Image from 'next/image'
 import illustrationLogin from '../../assets/illustration-login.png'
 import ifalLogo from '../../assets/ifal-logo.png'

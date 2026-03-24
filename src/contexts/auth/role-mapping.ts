@@ -1,6 +1,3 @@
-/**
- * Maps backend user roles to user-friendly display names in Portuguese
- */
 export function mapRoleToDisplayName(role: string): string {
   switch (role) {
     case 'ADMIN':
@@ -16,10 +13,6 @@ export function mapRoleToDisplayName(role: string): string {
   }
 }
 
-/**
- * Gets role hierarchy level for permission checking
- * Higher numbers indicate higher permissions
- */
 export function getRoleLevel(role: string): number {
   switch (role) {
     case 'ADMIN':
@@ -35,9 +28,6 @@ export function getRoleLevel(role: string): number {
   }
 }
 
-/**
- * Checks if a user has sufficient role level for a required operation
- */
 export function hasRequiredRole(
   userRole: string,
   requiredRole: string,
@@ -45,9 +35,6 @@ export function hasRequiredRole(
   return getRoleLevel(userRole) >= getRoleLevel(requiredRole)
 }
 
-/**
- * Gets a short description of role permissions
- */
 export function getRoleDescription(role: string): string {
   switch (role) {
     case 'ADMIN':

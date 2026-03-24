@@ -33,7 +33,7 @@ import {
 } from './styles'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import type { DashboardMetrics } from '@/@types/dashboard'
+import type { DashboardMetrics } from './types'
 import { DashboardShimmer } from '@/layouts/platform/components/DashboardShimmer'
 import { Button } from '@/components'
 import { colors } from '@/styles/tokens'

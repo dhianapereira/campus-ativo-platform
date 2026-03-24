@@ -18,7 +18,7 @@ import {
 } from 'phosphor-react'
 import Drawer from '../navigation/Drawer'
 import { LogoutConfirmationModal } from '../LogoutModal'
-import { truncateUserName } from '@/utils/truncate-name'
+import { truncateUserName } from './truncate-name'
 import { useAuth } from '@/contexts/auth-context'
 import { Text, Avatar, Heading } from '@/components'
 import { useRouter } from 'next/router'

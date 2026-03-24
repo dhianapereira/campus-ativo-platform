@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { AuthenticateRequest, UserResponse } from '../lib/api/generated/models'
-import { getRoleLevel, hasRequiredRole } from '@/utils/role-mapping'
+import { getRoleLevel, hasRequiredRole } from '@/contexts/auth/role-mapping'
 
 type User = UserResponse & { position: string }
 

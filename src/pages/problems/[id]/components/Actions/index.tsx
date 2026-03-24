@@ -1,13 +1,19 @@
 import React, { useEffect, useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import { Button, Heading, Text, TextArea, Dropdown, RadioGroup } from '@/components'
+import {
+  Button,
+  Heading,
+  Text,
+  TextArea,
+  Dropdown,
+  RadioGroup,
+} from '@/components'
 import { Column, Container, Form, Input, Section } from './styles'
 import type { ProblemActionsProps } from './types'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { actionsFormSchema } from '@/validators/actions-form'
-import { ActionsFormData } from '@/@types/form'
-import { StatusDataList } from '@/data/static/status-data'
-import { maintenanceTypes } from '@/data/static/maintenance-types'
+import { actionsFormSchema, ActionsFormData } from '@/validators/actions-form'
+import { problemStatusOptions } from '@/constants/problems/status'
+import { maintenanceTypeOptions } from '@/constants/problems/maintenance-types'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { DropdownItem } from '@/components/Dropdown'
 import type { CategoryResponse } from '@/lib/api/generated/models/categoryResponse'
@@ -17,7 +23,7 @@ import {
   toBackendMaintenanceType,
   toBackendStatus,
   toFrontendMaintenanceType,
-} from '@/utils/problem-mapping'
+} from '../../../problem-mapping'
 
 export function Actions({
   problemId,
@@ -208,7 +214,7 @@ export function Actions({
                 id="status"
                 label="Status"
                 hint="Selecione o status"
-                items={StatusDataList}
+                items={problemStatusOptions}
                 itemSelected={status}
                 onChange={handleStatusChange}
                 hasError={!!errors.status}
@@ -234,7 +240,7 @@ export function Actions({
               <RadioGroup
                 title="Manutenção"
                 name="maintenance"
-                options={maintenanceTypes}
+                options={maintenanceTypeOptions}
                 value={maintenance}
                 onChange={handleMaintenanceChange}
                 hasError={!!errors.maintenance}

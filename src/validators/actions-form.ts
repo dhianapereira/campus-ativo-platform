@@ -1,4 +1,4 @@
-import { Status } from '@/data/static/status-data'
+import { ProblemStatus } from '@/constants/problems/status'
 import { z } from 'zod'
 
 /**
@@ -6,7 +6,11 @@ import { z } from 'zod'
  * certain actions, such as filling in the notes field
  * and the maintenance type field.
  */
-const requiredStatus = [Status.Accepted, Status.InProgress, Status.Finished]
+const requiredStatus = [
+  ProblemStatus.Accepted,
+  ProblemStatus.InProgress,
+  ProblemStatus.Finished,
+]
 
 export const actionsFormSchema = z
   .object({
@@ -20,21 +24,27 @@ export const actionsFormSchema = z
     maintenance: z.string().trim().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.status === Status.Rejected && !data.note) {
+    if (data.status === ProblemStatus.Rejected && !data.note) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Este campo é obrigatório.',
         path: ['note'],
       })
     }
-    if (requiredStatus.includes(data.status as Status) && !data.category) {
+    if (
+      requiredStatus.includes(data.status as ProblemStatus) &&
+      !data.category
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Este campo é obrigatório.',
         path: ['category'],
       })
     }
-    if (requiredStatus.includes(data.status as Status) && !data.maintenance) {
+    if (
+      requiredStatus.includes(data.status as ProblemStatus) &&
+      !data.maintenance
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Este campo é obrigatório.',
@@ -42,3 +52,5 @@ export const actionsFormSchema = z
       })
     }
   })
+
+export type ActionsFormData = z.infer<typeof actionsFormSchema>

@@ -4,16 +4,13 @@ import { ArrowLeft } from 'phosphor-react'
 import { Button, Text, TextArea, TextInput } from '@/components'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
-import { problemFormSchema } from '@/validators/problem-form'
+import { problemFormSchema, ProblemFormData } from '@/validators/problem-form'
 import { ProtectedRoute } from '@/guards/ProtectedRoute'
 import { useRouter } from 'next/router'
 import { toast } from 'sonner'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { z } from 'zod'
 import ImageUpload from '../components/ImageUpload'
 import { colors } from '@/styles/tokens'
-
-type ProblemFormData = z.infer<typeof problemFormSchema>
 
 interface Category {
   id: string

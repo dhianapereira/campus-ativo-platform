@@ -15,7 +15,7 @@ import {
   deleteProblemControllerHandle,
 } from '../../lib/api/generated/problems/problems'
 import { getUserProfileControllerHandle } from '../../lib/api/generated/user-profile/user-profile'
-import { getRoleLevel } from '../../utils/role-mapping'
+import { getRoleLevel } from '../../contexts/auth/role-mapping'
 
 function filterByDeletedDate(
   items: Array<{ deletedAt?: string | null }>,

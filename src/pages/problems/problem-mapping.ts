@@ -1,13 +1,16 @@
-import { maintenanceTypes } from '@/data/static/maintenance-types'
-import { Status, StatusDataList } from '@/data/static/status-data'
+import { maintenanceTypeOptions } from '@/constants/problems/maintenance-types'
+import {
+  ProblemStatus,
+  problemStatusOptions,
+} from '@/constants/problems/status'
 
 const FRONTEND_STATUS_TO_BACKEND: Record<string, string> = {
-  [Status.ToAnalysis]: 'TO_ANALYSIS',
-  [Status.InAnalysis]: 'IN_ANALYSIS',
-  [Status.Accepted]: 'ACCEPTED',
-  [Status.Rejected]: 'REJECTED',
-  [Status.InProgress]: 'IN_PROGRESS',
-  [Status.Finished]: 'FINISHED',
+  [ProblemStatus.ToAnalysis]: 'TO_ANALYSIS',
+  [ProblemStatus.InAnalysis]: 'IN_ANALYSIS',
+  [ProblemStatus.Accepted]: 'ACCEPTED',
+  [ProblemStatus.Rejected]: 'REJECTED',
+  [ProblemStatus.InProgress]: 'IN_PROGRESS',
+  [ProblemStatus.Finished]: 'FINISHED',
 }
 
 const BACKEND_STATUS_TO_FRONTEND: Record<string, string> = Object.fromEntries(
@@ -44,7 +47,7 @@ export function getStatusLabel(status?: string | null) {
 
   const frontendStatus = toFrontendStatus(status)
   return (
-    StatusDataList.find((item) => item.value === frontendStatus)?.name ??
+    problemStatusOptions.find((item) => item.value === frontendStatus)?.name ??
     frontendStatus
   )
 }
@@ -64,7 +67,7 @@ export function getMaintenanceTypeLabel(maintenanceType?: string | null) {
 
   const frontendMaintenanceType = toFrontendMaintenanceType(maintenanceType)
   return (
-    maintenanceTypes.find((item) => item.id === frontendMaintenanceType)
+    maintenanceTypeOptions.find((item) => item.id === frontendMaintenanceType)
       ?.label ?? frontendMaintenanceType
   )
 }

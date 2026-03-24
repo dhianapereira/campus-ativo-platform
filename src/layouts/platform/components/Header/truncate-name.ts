@@ -6,12 +6,6 @@ export interface TruncateNameOptions {
   preserveWords?: boolean
 }
 
-/**
- * Truncates user name when it exceeds character limit
- * @param name - Full user name
- * @param options - Configuration options
- * @returns Truncated name with suffix if necessary
- */
 export const truncateName = (
   name: string,
   options: TruncateNameOptions = {},
