@@ -55,8 +55,8 @@ import { ConfirmationModal } from '@/components/confirmation-modal'
 import { EditLocationModal } from '@/pages/settings/components/EditLocationModal'
 import { EditCategoryModal } from '@/pages/settings/components/EditCategoryModal'
 import { ViewProblemModal } from './components/ViewProblemModal'
-import type { LocationResponse } from '../../server/client/models/locationResponse'
-import type { CategoryResponse } from '../../server/client/models/categoryResponse'
+import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
+import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
 
 interface ProblemData {
   id: string

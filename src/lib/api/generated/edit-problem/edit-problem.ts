@@ -13,39 +13,39 @@ import type {
   UseMutationResult,
 } from "@tanstack/react-query";
 
-import { axiosInstance } from "../../axios";
-import type { ErrorType } from "../../axios";
+import { axiosInstance } from '../../axios';
+import type { ErrorType } from '../../axios';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const deleteProblemControllerHandle = (
+export const editProblemControllerHandle = (
   id: string,
   options?: SecondParameter<typeof axiosInstance>,
 ) => {
   return axiosInstance<null>(
-    { url: `/problems/${id}`, method: "DELETE" },
+    { url: `/problems/${id}`, method: "PUT" },
     options,
   );
 };
 
-export const getDeleteProblemControllerHandleMutationOptions = <
+export const getEditProblemControllerHandleMutationOptions = <
   TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+    Awaited<ReturnType<typeof editProblemControllerHandle>>,
     TError,
     { id: string },
     TContext
   >;
   request?: SecondParameter<typeof axiosInstance>;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+  Awaited<ReturnType<typeof editProblemControllerHandle>>,
   TError,
   { id: string },
   TContext
 > => {
-  const mutationKey = ["deleteProblemControllerHandle"];
+  const mutationKey = ["editProblemControllerHandle"];
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       "mutationKey" in options.mutation &&
@@ -55,30 +55,30 @@ export const getDeleteProblemControllerHandleMutationOptions = <
     : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+    Awaited<ReturnType<typeof editProblemControllerHandle>>,
     { id: string }
   > = (props) => {
     const { id } = props ?? {};
 
-    return deleteProblemControllerHandle(id, requestOptions);
+    return editProblemControllerHandle(id, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type DeleteProblemControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof deleteProblemControllerHandle>>
+export type EditProblemControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof editProblemControllerHandle>>
 >;
 
-export type DeleteProblemControllerHandleMutationError = ErrorType<unknown>;
+export type EditProblemControllerHandleMutationError = ErrorType<unknown>;
 
-export const useDeleteProblemControllerHandle = <
+export const useEditProblemControllerHandle = <
   TError = ErrorType<unknown>,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+      Awaited<ReturnType<typeof editProblemControllerHandle>>,
       TError,
       { id: string },
       TContext
@@ -87,13 +87,13 @@ export const useDeleteProblemControllerHandle = <
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
-  Awaited<ReturnType<typeof deleteProblemControllerHandle>>,
+  Awaited<ReturnType<typeof editProblemControllerHandle>>,
   TError,
   { id: string },
   TContext
 > => {
   const mutationOptions =
-    getDeleteProblemControllerHandleMutationOptions(options);
+    getEditProblemControllerHandleMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

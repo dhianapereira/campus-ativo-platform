@@ -18,39 +18,39 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { FetchLocationsControllerHandleParams } from "../models";
+import type { FetchProblemsControllerHandleParams } from "../models";
 
-import { axiosInstance } from "../../axios";
-import type { ErrorType } from "../../axios";
+import { axiosInstance } from '../../axios';
+import type { ErrorType } from '../../axios';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const fetchLocationsControllerHandle = (
-  params: FetchLocationsControllerHandleParams,
+export const fetchProblemsControllerHandle = (
+  params: FetchProblemsControllerHandleParams,
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal,
 ) => {
   return axiosInstance<null>(
-    { url: `/locations`, method: "GET", params, signal },
+    { url: `/problems`, method: "GET", params, signal },
     options,
   );
 };
 
-export const getFetchLocationsControllerHandleQueryKey = (
-  params?: FetchLocationsControllerHandleParams,
+export const getFetchProblemsControllerHandleQueryKey = (
+  params?: FetchProblemsControllerHandleParams,
 ) => {
-  return [`/locations`, ...(params ? [params] : [])] as const;
+  return [`/problems`, ...(params ? [params] : [])] as const;
 };
 
-export const getFetchLocationsControllerHandleQueryOptions = <
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+export const getFetchProblemsControllerHandleQueryOptions = <
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchLocationsControllerHandleParams,
+  params: FetchProblemsControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
         TError,
         TData
       >
@@ -61,43 +61,43 @@ export const getFetchLocationsControllerHandleQueryOptions = <
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getFetchLocationsControllerHandleQueryKey(params);
+    queryOptions?.queryKey ?? getFetchProblemsControllerHandleQueryKey(params);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
+    Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
   > = ({ signal }) =>
-    fetchLocationsControllerHandle(params, requestOptions, signal);
+    fetchProblemsControllerHandle(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+    Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
     TError,
     TData
   > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type FetchLocationsControllerHandleQueryResult = NonNullable<
-  Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
+export type FetchProblemsControllerHandleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
 >;
-export type FetchLocationsControllerHandleQueryError = ErrorType<unknown>;
+export type FetchProblemsControllerHandleQueryError = ErrorType<unknown>;
 
-export function useFetchLocationsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+export function useFetchProblemsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchLocationsControllerHandleParams,
+  params: FetchProblemsControllerHandleParams,
   options: {
     query: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
         TError,
         TData
       >
     > &
       Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+          Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
           TError,
-          Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
+          Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
         >,
         "initialData"
       >;
@@ -107,24 +107,24 @@ export function useFetchLocationsControllerHandle<
 ): DefinedUseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useFetchLocationsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+export function useFetchProblemsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchLocationsControllerHandleParams,
+  params: FetchProblemsControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
         TError,
         TData
       >
     > &
       Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+          Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
           TError,
-          Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
+          Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
         >,
         "initialData"
       >;
@@ -134,15 +134,15 @@ export function useFetchLocationsControllerHandle<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useFetchLocationsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+export function useFetchProblemsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchLocationsControllerHandleParams,
+  params: FetchProblemsControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
         TError,
         TData
       >
@@ -154,15 +154,15 @@ export function useFetchLocationsControllerHandle<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 
-export function useFetchLocationsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+export function useFetchProblemsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchLocationsControllerHandleParams,
+  params: FetchProblemsControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
+        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
         TError,
         TData
       >
@@ -173,7 +173,7 @@ export function useFetchLocationsControllerHandle<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getFetchLocationsControllerHandleQueryOptions(
+  const queryOptions = getFetchProblemsControllerHandleQueryOptions(
     params,
     options,
   );

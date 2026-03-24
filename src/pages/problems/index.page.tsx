@@ -25,7 +25,7 @@ import Image from 'next/image'
 import type {
   FetchProblemsControllerHandle200,
   ProblemWithDetailsResponse,
-} from '@/server/client/models'
+} from '@/lib/api/generated/models'
 
 export default function Problems() {
   const router = useRouter()

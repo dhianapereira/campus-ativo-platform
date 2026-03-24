@@ -18,39 +18,35 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { FetchProblemsControllerHandleParams } from "../models";
-
-import { axiosInstance } from "../../axios";
-import type { ErrorType } from "../../axios";
+import { axiosInstance } from '../../axios';
+import type { ErrorType } from '../../axios';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const fetchProblemsControllerHandle = (
-  params: FetchProblemsControllerHandleParams,
+export const getProblemBySlugControllerHandle = (
+  slug: string,
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal,
 ) => {
   return axiosInstance<null>(
-    { url: `/problems`, method: "GET", params, signal },
+    { url: `/problems/${slug}`, method: "GET", signal },
     options,
   );
 };
 
-export const getFetchProblemsControllerHandleQueryKey = (
-  params?: FetchProblemsControllerHandleParams,
-) => {
-  return [`/problems`, ...(params ? [params] : [])] as const;
+export const getGetProblemBySlugControllerHandleQueryKey = (slug?: string) => {
+  return [`/problems/${slug}`] as const;
 };
 
-export const getFetchProblemsControllerHandleQueryOptions = <
-  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+export const getGetProblemBySlugControllerHandleQueryOptions = <
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchProblemsControllerHandleParams,
+  slug: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
         TError,
         TData
       >
@@ -61,43 +57,48 @@ export const getFetchProblemsControllerHandleQueryOptions = <
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ?? getFetchProblemsControllerHandleQueryKey(params);
+    queryOptions?.queryKey ?? getGetProblemBySlugControllerHandleQueryKey(slug);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
+    Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>
   > = ({ signal }) =>
-    fetchProblemsControllerHandle(params, requestOptions, signal);
+    getProblemBySlugControllerHandle(slug, requestOptions, signal);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!slug,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
     TError,
     TData
   > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type FetchProblemsControllerHandleQueryResult = NonNullable<
-  Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
+export type GetProblemBySlugControllerHandleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>
 >;
-export type FetchProblemsControllerHandleQueryError = ErrorType<unknown>;
+export type GetProblemBySlugControllerHandleQueryError = ErrorType<unknown>;
 
-export function useFetchProblemsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+export function useGetProblemBySlugControllerHandle<
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchProblemsControllerHandleParams,
+  slug: string,
   options: {
     query: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
         TError,
         TData
       >
     > &
       Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+          Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
           TError,
-          Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
+          Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>
         >,
         "initialData"
       >;
@@ -107,24 +108,24 @@ export function useFetchProblemsControllerHandle<
 ): DefinedUseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useFetchProblemsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+export function useGetProblemBySlugControllerHandle<
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchProblemsControllerHandleParams,
+  slug: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
         TError,
         TData
       >
     > &
       Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+          Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
           TError,
-          Awaited<ReturnType<typeof fetchProblemsControllerHandle>>
+          Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>
         >,
         "initialData"
       >;
@@ -134,15 +135,15 @@ export function useFetchProblemsControllerHandle<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useFetchProblemsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+export function useGetProblemBySlugControllerHandle<
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchProblemsControllerHandleParams,
+  slug: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
         TError,
         TData
       >
@@ -154,15 +155,15 @@ export function useFetchProblemsControllerHandle<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 
-export function useFetchProblemsControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+export function useGetProblemBySlugControllerHandle<
+  TData = Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchProblemsControllerHandleParams,
+  slug: string,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchProblemsControllerHandle>>,
+        Awaited<ReturnType<typeof getProblemBySlugControllerHandle>>,
         TError,
         TData
       >
@@ -173,8 +174,8 @@ export function useFetchProblemsControllerHandle<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getFetchProblemsControllerHandleQueryOptions(
-    params,
+  const queryOptions = getGetProblemBySlugControllerHandleQueryOptions(
+    slug,
     options,
   );
 

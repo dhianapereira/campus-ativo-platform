@@ -34,7 +34,7 @@ import { useInvalidateUser } from '@/hooks/use-invalidate-user'
 import type {
   FetchUsersControllerHandle200UsersItem,
   ChangeUserRoleControllerHandleBodyRole,
-} from '../../../../server/client/models'
+} from '../../../../lib/api/generated/models'
 import { ConfirmationModal } from '@/components/confirmation-modal'
 
 const memberSchema = z.object({

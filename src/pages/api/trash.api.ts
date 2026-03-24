@@ -3,18 +3,18 @@ import {
   fetchLocationsControllerHandle,
   restoreLocationControllerHandle,
   deleteLocationControllerHandle,
-} from '../../server/client/locations/locations'
+} from '../../lib/api/generated/locations/locations'
 import {
   fetchCategoriesControllerHandle,
   restoreCategoryControllerHandle,
   deleteCategoryControllerHandle,
-} from '../../server/client/categories/categories'
+} from '../../lib/api/generated/categories/categories'
 import {
   fetchProblemsControllerHandle,
   restoreProblemControllerHandle,
   deleteProblemControllerHandle,
-} from '../../server/client/problems/problems'
-import { getUserProfileControllerHandle } from '../../server/client/user-profile/user-profile'
+} from '../../lib/api/generated/problems/problems'
+import { getUserProfileControllerHandle } from '../../lib/api/generated/user-profile/user-profile'
 import { getRoleLevel } from '../../utils/role-mapping'
 
 function filterByDeletedDate(

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { UserResponse } from '../../../server/client/models'
-import { getUserProfileControllerHandle } from '../../../server/client/user-profile/user-profile'
+import { UserResponse } from '../../../lib/api/generated/models'
+import { getUserProfileControllerHandle } from '../../../lib/api/generated/user-profile/user-profile'
 
 interface MeResponse {
   success: boolean

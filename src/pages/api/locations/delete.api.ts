@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { trashLocationControllerHandle } from '../../../server/client/locations/locations'
+import { trashLocationControllerHandle } from '../../../lib/api/generated/locations/locations'
 
 export default async function handler(
   req: NextApiRequest,

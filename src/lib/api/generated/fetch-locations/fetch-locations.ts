@@ -18,39 +18,39 @@ import type {
   UseQueryResult,
 } from "@tanstack/react-query";
 
-import type { FetchCategoriesControllerHandleParams } from "../models";
+import type { FetchLocationsControllerHandleParams } from "../models";
 
-import { axiosInstance } from "../../axios";
-import type { ErrorType } from "../../axios";
+import { axiosInstance } from '../../axios';
+import type { ErrorType } from '../../axios';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const fetchCategoriesControllerHandle = (
-  params: FetchCategoriesControllerHandleParams,
+export const fetchLocationsControllerHandle = (
+  params: FetchLocationsControllerHandleParams,
   options?: SecondParameter<typeof axiosInstance>,
   signal?: AbortSignal,
 ) => {
   return axiosInstance<null>(
-    { url: `/categories`, method: "GET", params, signal },
+    { url: `/locations`, method: "GET", params, signal },
     options,
   );
 };
 
-export const getFetchCategoriesControllerHandleQueryKey = (
-  params?: FetchCategoriesControllerHandleParams,
+export const getFetchLocationsControllerHandleQueryKey = (
+  params?: FetchLocationsControllerHandleParams,
 ) => {
-  return [`/categories`, ...(params ? [params] : [])] as const;
+  return [`/locations`, ...(params ? [params] : [])] as const;
 };
 
-export const getFetchCategoriesControllerHandleQueryOptions = <
-  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+export const getFetchLocationsControllerHandleQueryOptions = <
+  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchCategoriesControllerHandleParams,
+  params: FetchLocationsControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
         TError,
         TData
       >
@@ -61,44 +61,43 @@ export const getFetchCategoriesControllerHandleQueryOptions = <
   const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
-    queryOptions?.queryKey ??
-    getFetchCategoriesControllerHandleQueryKey(params);
+    queryOptions?.queryKey ?? getFetchLocationsControllerHandleQueryKey(params);
 
   const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>
+    Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
   > = ({ signal }) =>
-    fetchCategoriesControllerHandle(params, requestOptions, signal);
+    fetchLocationsControllerHandle(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+    Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
     TError,
     TData
   > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type FetchCategoriesControllerHandleQueryResult = NonNullable<
-  Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>
+export type FetchLocationsControllerHandleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
 >;
-export type FetchCategoriesControllerHandleQueryError = ErrorType<unknown>;
+export type FetchLocationsControllerHandleQueryError = ErrorType<unknown>;
 
-export function useFetchCategoriesControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+export function useFetchLocationsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchCategoriesControllerHandleParams,
+  params: FetchLocationsControllerHandleParams,
   options: {
     query: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
         TError,
         TData
       >
     > &
       Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+          Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
           TError,
-          Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>
+          Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
         >,
         "initialData"
       >;
@@ -108,24 +107,24 @@ export function useFetchCategoriesControllerHandle<
 ): DefinedUseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useFetchCategoriesControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+export function useFetchLocationsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchCategoriesControllerHandleParams,
+  params: FetchLocationsControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
         TError,
         TData
       >
     > &
       Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+          Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
           TError,
-          Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>
+          Awaited<ReturnType<typeof fetchLocationsControllerHandle>>
         >,
         "initialData"
       >;
@@ -135,15 +134,15 @@ export function useFetchCategoriesControllerHandle<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useFetchCategoriesControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+export function useFetchLocationsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchCategoriesControllerHandleParams,
+  params: FetchLocationsControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
         TError,
         TData
       >
@@ -155,15 +154,15 @@ export function useFetchCategoriesControllerHandle<
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 
-export function useFetchCategoriesControllerHandle<
-  TData = Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+export function useFetchLocationsControllerHandle<
+  TData = Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
   TError = ErrorType<unknown>,
 >(
-  params: FetchCategoriesControllerHandleParams,
+  params: FetchLocationsControllerHandleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<
-        Awaited<ReturnType<typeof fetchCategoriesControllerHandle>>,
+        Awaited<ReturnType<typeof fetchLocationsControllerHandle>>,
         TError,
         TData
       >
@@ -174,7 +173,7 @@ export function useFetchCategoriesControllerHandle<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getFetchCategoriesControllerHandleQueryOptions(
+  const queryOptions = getFetchLocationsControllerHandleQueryOptions(
     params,
     options,
   );

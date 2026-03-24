@@ -29,7 +29,7 @@ import {
 import PlatformLayout from '@/layouts/platform/layout'
 import { useAuth } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
-import type { FetchUsersControllerHandle200UsersItem } from '../../server/client/models'
+import type { FetchUsersControllerHandle200UsersItem } from '../../lib/api/generated/models'
 import { EditMemberModal } from './components/EditMemberModal'
 
 function useDebounce<T>(value: T, delay: number): T {

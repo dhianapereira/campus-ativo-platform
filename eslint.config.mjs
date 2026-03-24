@@ -38,6 +38,6 @@ export default defineConfig([
     'out/**',
     'dist/**',
     'build/**',
-    'src/server/client/**', //Generated Code (Orval)
+    'src/lib/api/client/**', //Generated Code (Orval)
   ]),
 ])

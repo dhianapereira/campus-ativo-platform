@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   getProblemBySlugControllerHandle,
   editProblemControllerHandle,
-} from '../../../server/client/problems/problems'
+} from '../../../lib/api/generated/problems/problems'
 
 export default async function handler(
   req: NextApiRequest,

@@ -1,5 +1,5 @@
 import { Item } from '@/@types/basic-types'
-import { ProblemResponseStatus } from '@/server/client/models'
+import { ProblemResponseStatus } from '@/lib/api/generated/models'
 
 export enum Status {
   ToAnalysis = 'toAnalysis',

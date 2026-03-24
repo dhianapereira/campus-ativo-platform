@@ -38,9 +38,10 @@ O projeto segue uma separação entre páginas, componentes visuais, regras de f
 src/
   components/                    componentes reutilizáveis
   contexts/                      estados globais, como autenticação
+  lib/api/                       cliente HTTP e infraestrutura manual de API
+  lib/api/generated/             cliente OpenAPI e modelos gerados pelo Orval
   layouts/                       estruturas visuais compartilhadas
   pages/                         páginas e rotas de API do Next.js
-  server/                        cliente HTTP, OpenAPI e código gerado pelo Orval
   styles/                        estilos globais e componentes base
   utils/                         utilitários
   validators/                    schemas e validações de formulário
@@ -50,7 +51,7 @@ Fluxo geral da aplicação:
 
 1. `src/pages` renderiza a interface e aciona hooks, contexto e componentes.
 2. As rotas em `src/pages/api` funcionam como camada intermediária para algumas chamadas.
-3. `src/server` concentra o cliente HTTP e o código gerado a partir do contrato OpenAPI.
+3. `src/lib/api/generated` concentra o código gerado a partir do contrato OpenAPI, enquanto `src/lib/api` guarda a infraestrutura manual.
 4. A aplicação consome a API backend definida em `NEXT_PUBLIC_SERVER_URL`.
 
 ## Variáveis de ambiente
@@ -105,7 +106,7 @@ Por padrão, o frontend sobe em `http://localhost:3000`.
 
 ## Geração do cliente da API
 
-O projeto usa Orval para gerar o cliente HTTP a partir do arquivo [`src/server/openapi.json`](./src/server/openapi.json).
+O projeto usa Orval para gerar o cliente HTTP a partir do arquivo [`openapi/openapi.json`](./openapi/openapi.json).
 
 Para regenerar os arquivos de cliente:
 
@@ -115,7 +116,8 @@ npm run generate:api
 
 Observações:
 
-- o código gerado fica em `src/server/client`
+- o contrato OpenAPI fica em `openapi/openapi.json`
+- o código gerado fica em `src/lib/api/generated`
 - evite editar manualmente arquivos gerados
 - se o contrato da API mudar, atualize o `openapi.json` antes de regenerar
 

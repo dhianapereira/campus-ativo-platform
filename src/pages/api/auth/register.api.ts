@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { CreateAccountRequest } from '../../../server/client/models'
-import { createAccountControllerHandle } from '../../../server/client/authentication/authentication'
+import { CreateAccountRequest } from '../../../lib/api/generated/models'
+import { createAccountControllerHandle } from '../../../lib/api/generated/authentication/authentication'
 
 interface RegisterResponse {
   success: boolean

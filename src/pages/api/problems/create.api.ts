@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { createProblemControllerHandle } from '../../../server/client/problems/problems'
+import { createProblemControllerHandle } from '../../../lib/api/generated/problems/problems'
 
 export default async function handler(
   req: NextApiRequest,

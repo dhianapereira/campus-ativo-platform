@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { fetchUsersControllerHandle } from '../../server/client/user-management/user-management'
+import { fetchUsersControllerHandle } from '../../lib/api/generated/user-management/user-management'
 
 export default async function handler(
   req: NextApiRequest,

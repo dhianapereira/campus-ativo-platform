@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import {
   fetchLocationsControllerHandle,
   createLocationControllerHandle,
-} from '../../server/client/locations/locations'
+} from '../../lib/api/generated/locations/locations'
 
 export default async function handler(
   req: NextApiRequest,

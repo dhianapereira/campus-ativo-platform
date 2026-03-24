@@ -13,39 +13,39 @@ import type {
   UseMutationResult,
 } from "@tanstack/react-query";
 
-import { axiosInstance } from "../../axios";
-import type { ErrorType } from "../../axios";
+import { axiosInstance } from '../../axios';
+import type { ErrorType } from '../../axios';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-export const editProblemControllerHandle = (
-  id: string,
+export const createLocationControllerHandle = (
   options?: SecondParameter<typeof axiosInstance>,
+  signal?: AbortSignal,
 ) => {
   return axiosInstance<null>(
-    { url: `/problems/${id}`, method: "PUT" },
+    { url: `/locations`, method: "POST", signal },
     options,
   );
 };
 
-export const getEditProblemControllerHandleMutationOptions = <
+export const getCreateLocationControllerHandleMutationOptions = <
   TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof editProblemControllerHandle>>,
+    Awaited<ReturnType<typeof createLocationControllerHandle>>,
     TError,
-    { id: string },
+    void,
     TContext
   >;
   request?: SecondParameter<typeof axiosInstance>;
 }): UseMutationOptions<
-  Awaited<ReturnType<typeof editProblemControllerHandle>>,
+  Awaited<ReturnType<typeof createLocationControllerHandle>>,
   TError,
-  { id: string },
+  void,
   TContext
 > => {
-  const mutationKey = ["editProblemControllerHandle"];
+  const mutationKey = ["createLocationControllerHandle"];
   const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       "mutationKey" in options.mutation &&
@@ -55,45 +55,43 @@ export const getEditProblemControllerHandleMutationOptions = <
     : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof editProblemControllerHandle>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
-
-    return editProblemControllerHandle(id, requestOptions);
+    Awaited<ReturnType<typeof createLocationControllerHandle>>,
+    void
+  > = () => {
+    return createLocationControllerHandle(requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
 };
 
-export type EditProblemControllerHandleMutationResult = NonNullable<
-  Awaited<ReturnType<typeof editProblemControllerHandle>>
+export type CreateLocationControllerHandleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof createLocationControllerHandle>>
 >;
 
-export type EditProblemControllerHandleMutationError = ErrorType<unknown>;
+export type CreateLocationControllerHandleMutationError = ErrorType<unknown>;
 
-export const useEditProblemControllerHandle = <
+export const useCreateLocationControllerHandle = <
   TError = ErrorType<unknown>,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof editProblemControllerHandle>>,
+      Awaited<ReturnType<typeof createLocationControllerHandle>>,
       TError,
-      { id: string },
+      void,
       TContext
     >;
     request?: SecondParameter<typeof axiosInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
-  Awaited<ReturnType<typeof editProblemControllerHandle>>,
+  Awaited<ReturnType<typeof createLocationControllerHandle>>,
   TError,
-  { id: string },
+  void,
   TContext
 > => {
   const mutationOptions =
-    getEditProblemControllerHandleMutationOptions(options);
+    getCreateLocationControllerHandleMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };

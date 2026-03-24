@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { changeUserRoleControllerHandle } from '../../../../server/client/user-management/user-management'
-import type { ChangeUserRoleControllerHandleBodyRole } from '../../../../server/client/models'
+import { changeUserRoleControllerHandle } from '../../../../lib/api/generated/user-management/user-management'
+import type { ChangeUserRoleControllerHandleBodyRole } from '../../../../lib/api/generated/models'
 
 export default async function handler(
   req: NextApiRequest,

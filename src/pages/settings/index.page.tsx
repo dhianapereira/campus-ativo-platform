@@ -47,8 +47,8 @@ import { EditLocationModal } from './components/EditLocationModal'
 import { EditCategoryModal } from './components/EditCategoryModal'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import type { LocationResponse } from '../../server/client/models/locationResponse'
-import type { CategoryResponse } from '../../server/client/models/categoryResponse'
+import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
+import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
 import { ConfirmationModal } from '@/components/confirmation-modal'
 
 type LocationItem = LocationResponse

@@ -10,8 +10,8 @@ import { StatusDataList } from '@/data/static/status-data'
 import { maintenanceTypes } from '@/data/static/maintenance-types'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { DropdownItem } from '@/styles/components/Dropdown'
-import type { CategoryResponse } from '@/server/client/models/categoryResponse'
-import type { FetchProblemsControllerHandle200 } from '@/server/client/models'
+import type { CategoryResponse } from '@/lib/api/generated/models/categoryResponse'
+import type { FetchProblemsControllerHandle200 } from '@/lib/api/generated/models'
 import { toast } from 'sonner'
 import {
   toBackendMaintenanceType,
