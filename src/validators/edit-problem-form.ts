@@ -6,6 +6,8 @@ export const editProblemFormSchema = z.object({
     .trim()
     .min(1, 'O campo título é obrigatório.')
     .max(100, 'O título não pode passar de 100 caracteres.'),
+  categoryId: z.string().min(1, 'Selecione uma categoria.'),
+  locationId: z.string().min(1, 'Selecione uma localização.'),
   description: z
     .string()
     .trim()

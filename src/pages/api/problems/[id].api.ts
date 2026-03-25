@@ -47,12 +47,14 @@ export default async function handler(
 
   if (req.method === 'PUT') {
     try {
-      const { title, description, attachmentIds } = req.body
+      const { title, description, categoryId, locationId, attachmentIds } =
+        req.body
 
-      if (!title || !description) {
-        return res
-          .status(400)
-          .json({ message: 'Título e descrição são obrigatórios' })
+      if (!title || !description || !categoryId || !locationId) {
+        return res.status(400).json({
+          message:
+            'Título, descrição, categoria e localização são obrigatórios',
+        })
       }
 
       await editProblemControllerHandle(
@@ -60,6 +62,8 @@ export default async function handler(
         {
           title,
           description,
+          categoryId,
+          locationId,
           attachmentIds:
             attachmentIds !== undefined ? attachmentIds : undefined,
         },

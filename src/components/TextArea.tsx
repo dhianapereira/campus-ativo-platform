@@ -9,7 +9,7 @@ const TextAreaStyled = styled('textarea', {
   boxSizing: 'border-box',
   border: '1px solid $lightGray',
   fontFamily: '$default',
-  fontSize: '$sm',
+  fontSize: '$md',
   color: '$gray',
   fontWeight: '$regular',
   resize: 'vertical',

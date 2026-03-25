@@ -26,7 +26,6 @@ export const SelectWrapper = styled('div', {
   position: 'relative',
   display: 'inline-block',
   width: '100%',
-  maxWidth: 280,
   height: 60,
 })
 
@@ -112,4 +111,48 @@ export const ErrorMessage = styled('span', {
   fontSize: '$xs',
   color: '$red',
   marginTop: '$1',
+})
+
+export const SelectedInfo = styled('div', {
+  marginTop: '$1',
+  paddingLeft: '$3',
+  borderLeft: '2px solid rgba(18, 90, 57, 0.12)',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$1',
+})
+
+export const SelectedHeader = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '$2',
+  flexWrap: 'wrap',
+})
+
+export const SelectedName = styled('span', {
+  color: '$darkGray',
+  fontFamily: '$default',
+  fontSize: '$md',
+  fontWeight: '$medium',
+})
+
+export const SelectedCode = styled('span', {
+  display: 'inline-flex',
+  alignItems: 'center',
+  padding: '$1 $2',
+  borderRadius: '$full',
+  backgroundColor: 'rgba(18, 90, 57, 0.08)',
+  color: '$green',
+  fontSize: '$xs',
+  fontWeight: '$bold',
+  letterSpacing: '0.02em',
+  textTransform: 'uppercase',
+})
+
+export const SelectedDescription = styled('span', {
+  color: '$gray',
+  fontFamily: '$default',
+  fontSize: '$md',
+  lineHeight: 1.5,
+  maxWidth: '40rem',
 })

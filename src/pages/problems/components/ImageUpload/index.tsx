@@ -131,6 +131,7 @@ export default function ImageUpload({
         </InfoText>
         <UploadControls>
           <Button
+            type="button"
             variant="secondary"
             onClick={handleButtonClick}
             disabled={disabled}

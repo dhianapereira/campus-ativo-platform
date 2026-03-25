@@ -11,8 +11,11 @@ export const UploadContainer = styled('div', {
 })
 
 export const UploadArea = styled('div', {
+  width: '130px',
   minWidth: '130px',
+  maxWidth: '130px',
   height: '100px',
+  overflow: 'hidden',
   border: '2px dashed $borderDefault',
   borderRadius: '$lg',
   backgroundColor: '$surfaceMuted',

@@ -2287,6 +2287,16 @@
             "description": "Nova descrição do problema",
             "example": "O ar condicionado da sala 201 está fazendo ruído estranho e não resfriando adequadamente"
           },
+          "categoryId": {
+            "type": "string",
+            "description": "Novo ID da categoria do problema",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "locationId": {
+            "type": "string",
+            "description": "Novo ID da localização do problema",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
           "attachmentIds": {
             "description": "IDs dos anexos. Envie array vazio para remover todos os anexos.",
             "example": ["123e4567-e89b-12d3-a456-426614174002"],
@@ -2296,7 +2306,7 @@
             }
           }
         },
-        "required": ["title", "description"]
+        "required": ["title", "description", "categoryId", "locationId"]
       },
       "ManageProblemRequest": {
         "type": "object",

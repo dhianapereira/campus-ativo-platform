@@ -11,17 +11,23 @@ import { toast } from 'sonner'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ImageUpload from '../components/ImageUpload'
 import { colors } from '@/styles/tokens'
+import {
+  getCategoryOptionLabel,
+  getLocationOptionLabel,
+} from '../form-option-labels'
 
 interface Category {
   id: string
   name: string
+  description?: string | null
   isActive?: boolean
 }
 
 interface Location {
   id: string
   name: string
-  code?: string
+  code?: string | null
+  description?: string | null
   isActive?: boolean
 }
 
@@ -248,7 +254,7 @@ export default function AddProblem() {
               </option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
-                  {category.name}
+                  {getCategoryOptionLabel(category)}
                 </option>
               ))}
             </select>
@@ -275,8 +281,7 @@ export default function AddProblem() {
               </option>
               {locations.map((location) => (
                 <option key={location.id} value={location.id}>
-                  {location.name}
-                  {location.code ? ` (${location.code})` : ''}
+                  {getLocationOptionLabel(location)}
                 </option>
               ))}
             </select>

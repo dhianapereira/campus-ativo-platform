@@ -38,7 +38,7 @@ export const TextInputContainer = styled('div', {
 
 export const Input = styled('input', {
   fontFamily: '$default',
-  fontSize: '$sm',
+  fontSize: '$md',
   color: '$gray',
   fontWeight: '$regular',
   background: 'transparent',

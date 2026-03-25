@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Container, Body, Header, Input, Title } from './styles'
 import { ArrowLeft, X } from 'phosphor-react'
-import { Button, Text, TextArea, TextInput } from '@/components'
+import { Button, Dropdown, Text, TextArea, TextInput } from '@/components'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import {
   editProblemFormSchema,
   EditProblemFormData,
@@ -12,9 +12,13 @@ import { useRouter } from 'next/router'
 import { ProtectedRoute } from '@/guards/ProtectedRoute'
 import { useAuth } from '@/contexts/auth-context'
 import { toast } from 'sonner'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ImageUpload from '../../components/ImageUpload'
 import { colors } from '@/styles/tokens'
+import {
+  getCategoryOptionLabel,
+  getLocationOptionLabel,
+} from '../../form-option-labels'
 
 interface AttachmentInfo {
   id: string
@@ -27,8 +31,17 @@ interface ProblemData {
   title: string
   description: string
   slug: string
-  categoryId: string
-  locationId?: string | null
+  category: {
+    id: string
+    name: string
+    description?: string | null
+  }
+  location: {
+    id: string
+    name: string
+    code?: string
+    description?: string
+  }
   reporter: {
     id: string
     email: string
@@ -36,6 +49,25 @@ interface ProblemData {
   status: string
   createdAt: string
   attachments?: AttachmentInfo[]
+}
+
+interface Category {
+  id: string
+  name: string
+  description?: string
+  isActive?: boolean
+}
+
+interface Location {
+  id: string
+  name: string
+  code?: string | null
+  description?: string | null
+  isActive?: boolean
+}
+
+function buildUnavailableLabel(label: string) {
+  return `${label} (indisponível)`
 }
 
 export default function EditProblem() {
@@ -118,28 +150,132 @@ export default function EditProblem() {
 
   const {
     register,
+    control,
     handleSubmit,
     watch,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<EditProblemFormData>({
     resolver: zodResolver(editProblemFormSchema),
+    mode: 'onTouched',
+    defaultValues: {
+      title: '',
+      description: '',
+      categoryId: '',
+      locationId: '',
+    },
   })
 
   const title = watch('title')
   const description = watch('description')
+  const categoryId = watch('categoryId')
+  const locationId = watch('locationId')
 
   const isFormValid =
-    title && description && title.trim() !== '' && description.trim() !== ''
+    title?.trim() !== '' &&
+    description?.trim() !== '' &&
+    categoryId !== '' &&
+    locationId !== ''
+
+  const originalTitle = problemData?.title.trim() ?? ''
+  const originalDescription = problemData?.description.trim() ?? ''
+  const originalCategoryId = problemData?.category.id ?? ''
+  const originalLocationId = problemData?.location.id ?? ''
+  const originalAttachmentId = problemData?.attachments?.[0]?.id ?? null
+
+  const hasAttachmentChanges =
+    newAttachmentId !== null ||
+    (originalAttachmentId !== null && currentAttachment === null)
+
+  const hasFormChanges =
+    title?.trim() !== originalTitle ||
+    description?.trim() !== originalDescription ||
+    categoryId !== originalCategoryId ||
+    locationId !== originalLocationId ||
+    hasAttachmentChanges
+
+  const { data: categoriesData, isLoading: isLoadingCategories } = useQuery({
+    queryKey: ['categories', 'active'],
+    queryFn: async () => {
+      const response = await fetch('/api/categories?isActive=true', {
+        credentials: 'include',
+      })
+      if (!response.ok) throw new Error('Falha ao buscar categorias')
+      return response.json()
+    },
+  })
+
+  const { data: locationsData, isLoading: isLoadingLocations } = useQuery({
+    queryKey: ['locations', 'active'],
+    queryFn: async () => {
+      const response = await fetch('/api/locations?isActive=true', {
+        credentials: 'include',
+      })
+      if (!response.ok) throw new Error('Falha ao buscar localizações')
+      return response.json()
+    },
+  })
+
+  const categories: Category[] = categoriesData?.categories || []
+  const locations: Location[] = locationsData?.locations || []
+  const categoryItems = categories.map((category) => ({
+    value: category.id,
+    name: category.name,
+    description: category.description ?? undefined,
+    label: getCategoryOptionLabel(category),
+  }))
+  const locationItems = locations.map((location) => ({
+    value: location.id,
+    name: location.name,
+    code: location.code ?? undefined,
+    description: location.description ?? undefined,
+    label: getLocationOptionLabel(location),
+  }))
+
+  if (
+    problemData?.category?.id &&
+    !categoryItems.some((item) => item.value === problemData.category.id)
+  ) {
+    categoryItems.unshift({
+      value: problemData.category.id,
+      name: problemData.category.name,
+      description: problemData.category.description ?? undefined,
+      label: buildUnavailableLabel(
+        getCategoryOptionLabel(problemData.category),
+      ),
+    })
+  }
+
+  if (
+    problemData?.location?.id &&
+    !locationItems.some((item) => item.value === problemData.location.id)
+  ) {
+    locationItems.unshift({
+      value: problemData.location.id,
+      name: problemData.location.name,
+      code: problemData.location.code ?? undefined,
+      description: problemData.location.description ?? undefined,
+      label: buildUnavailableLabel(
+        getLocationOptionLabel(problemData.location),
+      ),
+    })
+  }
 
   useEffect(() => {
     if (problemData && hasPermission) {
       reset({
         title: problemData.title,
         description: problemData.description,
+        categoryId: problemData.category.id,
+        locationId: problemData.location.id,
       })
+      setAttachmentChanged(false)
+      setNewAttachmentId(null)
+      setUploadError(null)
       if (problemData.attachments && problemData.attachments.length > 0) {
         setCurrentAttachment(problemData.attachments[0])
+      } else {
+        setCurrentAttachment(null)
       }
     }
   }, [problemData, hasPermission, reset])
@@ -200,10 +336,14 @@ export default function EditProblem() {
       const requestBody: {
         title: string
         description: string
+        categoryId: string
+        locationId: string
         attachmentIds?: string[]
       } = {
         title: data.title.trim(),
         description: data.description.trim(),
+        categoryId: data.categoryId,
+        locationId: data.locationId,
       }
 
       if (attachmentChanged) {
@@ -370,19 +510,76 @@ export default function EditProblem() {
               </Text>
             )}
           </Input>
+
+          <Input>
+            <Text size="md">Categoria</Text>
+            <Controller
+              name="categoryId"
+              control={control}
+              render={({ field }) => (
+                <Dropdown
+                  id="categoryId"
+                  hint={
+                    isLoadingCategories
+                      ? 'Carregando categorias...'
+                      : 'Selecione uma categoria'
+                  }
+                  items={categoryItems}
+                  itemSelected={field.value}
+                  onChange={(value) => field.onChange(value)}
+                  hasError={!!errors.categoryId}
+                  errorMessage={errors.categoryId?.message}
+                  disabled={isLoadingCategories}
+                  required
+                />
+              )}
+            />
+          </Input>
+
+          <Input>
+            <Text size="md">Localização</Text>
+            <Controller
+              name="locationId"
+              control={control}
+              render={({ field }) => (
+                <Dropdown
+                  id="locationId"
+                  hint={
+                    isLoadingLocations
+                      ? 'Carregando localizações...'
+                      : 'Selecione uma localização'
+                  }
+                  items={locationItems}
+                  itemSelected={field.value}
+                  onChange={(value) => field.onChange(value)}
+                  hasError={!!errors.locationId}
+                  errorMessage={errors.locationId?.message}
+                  disabled={isLoadingLocations}
+                  required
+                />
+              )}
+            />
+          </Input>
+
           <Input>
             <Text size="md">Descrição</Text>
-            <TextArea
-              placeholder="Detalhe o problema com o máximo de informações possível"
-              {...register('description')}
-              aria-label="Descrição do problema"
-              css={{
-                width: '100%',
-                minHeight: '120px',
-                resize: 'vertical',
-                boxSizing: 'border-box',
-              }}
-              tabIndex={0}
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextArea
+                  placeholder="Detalhe o problema com o máximo de informações possível"
+                  {...field}
+                  aria-label="Descrição do problema"
+                  css={{
+                    width: '100%',
+                    minHeight: '120px',
+                    resize: 'vertical',
+                    boxSizing: 'border-box',
+                  }}
+                  tabIndex={0}
+                />
+              )}
             />
             {errors.description && (
               <Text className="error-message" size="sm">
@@ -471,6 +668,7 @@ export default function EditProblem() {
             disabled={
               isSubmitting ||
               !isFormValid ||
+              !hasFormChanges ||
               editProblemMutation.isPending ||
               isUploadingImage
             }

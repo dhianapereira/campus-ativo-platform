@@ -6,18 +6,26 @@ import {
   Select,
   Icon,
   ErrorMessage,
+  SelectedInfo,
+  SelectedHeader,
+  SelectedName,
+  SelectedCode,
+  SelectedDescription,
 } from './styles'
 import { CaretDown } from 'phosphor-react'
 
 export interface DropdownItem {
   value: string
   name: string
+  code?: string
+  description?: string
+  label?: string
   disabled?: boolean
 }
 
 export interface DropdownProps {
   id: string
-  label: string
+  label?: string
   hint: string
   itemSelected?: string | null
   items: DropdownItem[]
@@ -47,6 +55,25 @@ export const Dropdown = ({
   className,
   style,
 }: DropdownProps) => {
+  const selectedItem = items.find((item) => item.value === itemSelected) ?? null
+
+  const getItemLabel = (item: DropdownItem) => {
+    if (item.label?.trim()) {
+      return item.label
+    }
+
+    return item.code?.trim()
+      ? `[${item.code.trim()}] ${item.name.trim()}`
+      : item.name.trim()
+  }
+
+  const helperIds = [
+    selectedItem ? `${id}-details` : null,
+    hasError ? `${id}-error` : null,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value
     onChange?.(value, event)
@@ -54,10 +81,11 @@ export const Dropdown = ({
 
   return (
     <Container>
-      <Label htmlFor={id} hasError={hasError}>
-        {label}
-        {required && <span aria-label="obrigatório"> *</span>}
-      </Label>
+      {label && (
+        <Label htmlFor={id} hasError={hasError}>
+          {label}
+        </Label>
+      )}
 
       <SelectWrapper>
         <Select
@@ -68,7 +96,7 @@ export const Dropdown = ({
           disabled={disabled}
           aria-required={required}
           aria-invalid={hasError}
-          aria-describedby={hasError ? `${id}-error` : undefined}
+          aria-describedby={helperIds || undefined}
           className={className}
           style={style}
         >
@@ -81,7 +109,7 @@ export const Dropdown = ({
               value={item.value}
               disabled={item.disabled}
             >
-              {item.name}
+              {getItemLabel(item)}
             </option>
           ))}
         </Select>
@@ -90,6 +118,24 @@ export const Dropdown = ({
           <CaretDown weight="bold" />
         </Icon>
       </SelectWrapper>
+
+      {selectedItem &&
+        (selectedItem.code?.trim() || selectedItem.description?.trim()) && (
+          <SelectedInfo id={`${id}-details`}>
+            <SelectedHeader>
+              <SelectedName>{selectedItem.name}</SelectedName>
+              {selectedItem.code?.trim() && (
+                <SelectedCode>{selectedItem.code.trim()}</SelectedCode>
+              )}
+            </SelectedHeader>
+
+            {selectedItem.description?.trim() && (
+              <SelectedDescription>
+                {selectedItem.description.trim()}
+              </SelectedDescription>
+            )}
+          </SelectedInfo>
+        )}
 
       {hasError && errorMessage && (
         <ErrorMessage id={`${id}-error`}>{errorMessage}</ErrorMessage>

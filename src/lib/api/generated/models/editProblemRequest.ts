@@ -11,6 +11,10 @@ export interface EditProblemRequest {
   title: string;
   /** Nova descrição do problema */
   description: string;
+  /** Novo ID da categoria do problema */
+  categoryId: string;
+  /** Novo ID da localização do problema */
+  locationId: string;
   /** IDs dos anexos. Envie array vazio para remover todos os anexos. */
   attachmentIds?: string[];
 }
