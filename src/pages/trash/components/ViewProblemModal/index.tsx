@@ -1,26 +1,20 @@
+import { TrashItemModal } from '../TrashItemModal'
 import {
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalTitle,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  ButtonGroup,
-  CancelButton,
   RestoreButton,
+  DeleteButton,
   InfoGroup,
   InfoItem,
   Label,
   Value,
   DescriptionValue,
   WarningMessage,
-} from './styles'
-import { colors } from '@/styles/tokens'
-import { X, ArrowCounterClockwise, Warning } from 'phosphor-react'
+} from '../TrashItemModal/styles'
+import { ArrowCounterClockwise, Warning, Trash } from 'phosphor-react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useAuth } from '@/contexts/auth-context'
+import { ConfirmationModal } from '@/components/ConfirmationModal'
+import { useState } from 'react'
 
 interface ProblemData {
   id: string
@@ -49,6 +43,8 @@ export function ViewProblemModal({
 }: ViewProblemModalProps) {
   const queryClient = useQueryClient()
   const { user } = useAuth()
+  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
+    useState(false)
 
   const isAuthor = user?.id === problem?.authorId
 
@@ -92,6 +88,47 @@ export function ViewProblemModal({
     restoreProblemMutation.mutate()
   }
 
+  const deleteProblemMutation = useMutation({
+    mutationFn: async () => {
+      if (!problem?.id) throw new Error('ID do problema não encontrado')
+
+      const response = await fetch('/api/trash', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          action: 'delete',
+          ids: [problem.id],
+          type: 'problem',
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || 'Falha ao excluir problema')
+      }
+
+      return response.json()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['problems'] })
+      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      toast.success('Problema excluído permanentemente')
+      setShowDeleteConfirmationModal(false)
+      onSuccess()
+      onClose()
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Falha ao excluir problema')
+    },
+  })
+
+  const handlePermanentDelete = () => {
+    deleteProblemMutation.mutate()
+  }
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return '-'
     return new Date(dateString).toLocaleDateString('pt-BR', {
@@ -101,29 +138,37 @@ export function ViewProblemModal({
     })
   }
 
-  if (!isOpen || !problem) return null
+  if (!problem) return null
 
   return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <ModalHeader>
-          <ModalTitle>Problema na Lixeira</ModalTitle>
-          <ModalCloseButton onClick={onClose}>
-            <X size={24} />
-          </ModalCloseButton>
-        </ModalHeader>
-
-        <ModalBody>
-          <p
-            style={{
-              margin: '0 0 1rem',
-              fontSize: '0.875rem',
-              color: colors.lightGray,
-            }}
-          >
-            Visualização somente. Não é possível editar; apenas restaurar (se
-            você for o autor).
-          </p>
+    <>
+      <TrashItemModal
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Problema"
+        actions={
+          isAuthor ? (
+            <div className="action-buttons">
+              <DeleteButton
+                onClick={() => setShowDeleteConfirmationModal(true)}
+                disabled={deleteProblemMutation.isPending}
+              >
+                <Trash size={20} weight="bold" />
+                {deleteProblemMutation.isPending ? 'Excluindo...' : 'Excluir'}
+              </DeleteButton>
+              <RestoreButton
+                onClick={handleRestore}
+                disabled={restoreProblemMutation.isPending}
+              >
+                <ArrowCounterClockwise size={20} weight="bold" />
+                {restoreProblemMutation.isPending
+                  ? 'Restaurando...'
+                  : 'Restaurar'}
+              </RestoreButton>
+            </div>
+          ) : undefined
+        }
+      >
           {!isAuthor && problem.authorId && (
             <WarningMessage>
               <Warning size={20} weight="fill" />
@@ -172,25 +217,18 @@ export function ViewProblemModal({
               </InfoItem>
             )}
           </InfoGroup>
-        </ModalBody>
+      </TrashItemModal>
 
-        <ModalFooter>
-          <ButtonGroup>
-            <CancelButton onClick={onClose}>Fechar</CancelButton>
-            {isAuthor && (
-              <RestoreButton
-                onClick={handleRestore}
-                disabled={restoreProblemMutation.isPending}
-              >
-                <ArrowCounterClockwise size={20} weight="bold" />
-                {restoreProblemMutation.isPending
-                  ? 'Restaurando...'
-                  : 'Restaurar'}
-              </RestoreButton>
-            )}
-          </ButtonGroup>
-        </ModalFooter>
-      </ModalContent>
-    </ModalOverlay>
+      <ConfirmationModal
+        isOpen={showDeleteConfirmationModal}
+        onClose={() => setShowDeleteConfirmationModal(false)}
+        onConfirm={handlePermanentDelete}
+        title="Excluir problema permanentemente?"
+        message="Este problema será removido de forma definitiva e não poderá ser recuperado depois."
+        confirmText="Excluir permanentemente"
+        cancelText="Cancelar"
+        variant="danger"
+      />
+    </>
   )
 }

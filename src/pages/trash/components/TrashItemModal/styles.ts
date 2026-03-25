@@ -162,14 +162,25 @@ export const ModalFooter = styled('div', {
 
 export const ButtonGroup = styled('div', {
   display: 'flex',
-  justifyContent: 'flex-end',
+  justifyContent: 'space-between',
   alignItems: 'center',
   gap: '1rem',
 
+  '& .action-buttons': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+  },
+
   '@media (max-width: 48rem)': {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: 'column-reverse',
+    alignItems: 'stretch',
     gap: '0.75rem',
+
+    '& .action-buttons': {
+      width: '100%',
+      gap: '0.75rem',
+    },
   },
 })
 
@@ -224,6 +235,43 @@ export const RestoreButton = styled('button', {
   '&:hover:not(:disabled)': {
     backgroundColor: '$brandPrimaryPressed',
     borderColor: '$brandPrimaryPressed',
+  },
+
+  '&:disabled': {
+    backgroundColor: '$borderDefault',
+    color: '$textDisabled',
+    borderColor: '$borderDefault',
+    cursor: 'not-allowed',
+  },
+
+  '@media (max-width: 48rem)': {
+    padding: '0.875rem 1.5rem',
+    fontSize: '1rem',
+    fontWeight: 500,
+    borderRadius: '0.5rem',
+    flex: 1,
+  },
+})
+
+export const DeleteButton = styled('button', {
+  backgroundColor: '$white',
+  color: '$red',
+  border: '1px solid $red',
+  padding: '0.875rem 1.5rem',
+  borderRadius: '$card',
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0.5rem',
+  transition: 'all 0.2s',
+
+  '&:hover:not(:disabled)': {
+    backgroundColor: '$red',
+    borderColor: '$red',
+    color: '$white',
   },
 
   '&:disabled': {

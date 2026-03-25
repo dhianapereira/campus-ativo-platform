@@ -52,9 +52,9 @@ import { useAuth } from '@/contexts/auth-context'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
-import { EditLocationModal } from '@/pages/settings/components/EditLocationModal'
-import { EditCategoryModal } from '@/pages/settings/components/EditCategoryModal'
 import { ViewProblemModal } from './components/ViewProblemModal'
+import { ViewLocationModal } from './components/ViewLocationModal'
+import { ViewCategoryModal } from './components/ViewCategoryModal'
 import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
 import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
 
@@ -113,11 +113,11 @@ export default function TrashPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const [isEditLocationModalOpen, setIsEditLocationModalOpen] = useState(false)
-  const [selectedLocationForEdit, setSelectedLocationForEdit] =
+  const [isViewLocationModalOpen, setIsViewLocationModalOpen] = useState(false)
+  const [selectedLocationForView, setSelectedLocationForView] =
     useState<LocationResponse | null>(null)
-  const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false)
-  const [selectedCategoryForEdit, setSelectedCategoryForEdit] =
+  const [isViewCategoryModalOpen, setIsViewCategoryModalOpen] = useState(false)
+  const [selectedCategoryForView, setSelectedCategoryForView] =
     useState<CategoryResponse | null>(null)
   const [isViewProblemModalOpen, setIsViewProblemModalOpen] = useState(false)
   const [selectedProblemForView, setSelectedProblemForView] =
@@ -315,8 +315,8 @@ export default function TrashPage() {
         )
         if (response.ok) {
           const location = await response.json()
-          setSelectedLocationForEdit(location)
-          setIsEditLocationModalOpen(true)
+          setSelectedLocationForView(location)
+          setIsViewLocationModalOpen(true)
         } else {
           toast.error('Localização não encontrada')
         }
@@ -334,8 +334,8 @@ export default function TrashPage() {
         )
         if (response.ok) {
           const category = await response.json()
-          setSelectedCategoryForEdit(category)
-          setIsEditCategoryModalOpen(true)
+          setSelectedCategoryForView(category)
+          setIsViewCategoryModalOpen(true)
         } else {
           toast.error('Categoria não encontrada')
         }
@@ -358,26 +358,26 @@ export default function TrashPage() {
     }
   }
 
-  const handleEditLocationSuccess = () => {
-    setIsEditLocationModalOpen(false)
-    setSelectedLocationForEdit(null)
+  const handleViewLocationSuccess = () => {
+    setIsViewLocationModalOpen(false)
+    setSelectedLocationForView(null)
     queryClient.invalidateQueries({ queryKey: ['trash'] })
   }
 
-  const handleEditLocationClose = () => {
-    setIsEditLocationModalOpen(false)
-    setSelectedLocationForEdit(null)
+  const handleViewLocationClose = () => {
+    setIsViewLocationModalOpen(false)
+    setSelectedLocationForView(null)
   }
 
-  const handleEditCategorySuccess = () => {
-    setIsEditCategoryModalOpen(false)
-    setSelectedCategoryForEdit(null)
+  const handleViewCategorySuccess = () => {
+    setIsViewCategoryModalOpen(false)
+    setSelectedCategoryForView(null)
     queryClient.invalidateQueries({ queryKey: ['trash'] })
   }
 
-  const handleEditCategoryClose = () => {
-    setIsEditCategoryModalOpen(false)
-    setSelectedCategoryForEdit(null)
+  const handleViewCategoryClose = () => {
+    setIsViewCategoryModalOpen(false)
+    setSelectedCategoryForView(null)
   }
 
   const handleViewProblemSuccess = () => {
@@ -738,18 +738,18 @@ export default function TrashPage() {
           variant="danger"
         />
 
-        <EditLocationModal
-          isOpen={isEditLocationModalOpen}
-          onClose={handleEditLocationClose}
-          onSuccess={handleEditLocationSuccess}
-          location={selectedLocationForEdit}
+        <ViewLocationModal
+          isOpen={isViewLocationModalOpen}
+          onClose={handleViewLocationClose}
+          onSuccess={handleViewLocationSuccess}
+          location={selectedLocationForView}
         />
 
-        <EditCategoryModal
-          isOpen={isEditCategoryModalOpen}
-          onClose={handleEditCategoryClose}
-          onSuccess={handleEditCategorySuccess}
-          category={selectedCategoryForEdit}
+        <ViewCategoryModal
+          isOpen={isViewCategoryModalOpen}
+          onClose={handleViewCategoryClose}
+          onSuccess={handleViewCategorySuccess}
+          category={selectedCategoryForView}
         />
 
         <ViewProblemModal

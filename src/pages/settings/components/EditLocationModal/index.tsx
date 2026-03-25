@@ -24,7 +24,7 @@ import {
   StatusLabel,
   StatusToggle,
 } from './styles'
-import { X, Trash, ArrowCounterClockwise } from 'phosphor-react'
+import { X, Trash } from 'phosphor-react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { LocationResponse } from '../../../../lib/api/generated/models/locationResponse'
@@ -173,42 +173,6 @@ function EditLocationModalContent({
     onClose()
   }
 
-  const restoreLocationMutation = useMutation({
-    mutationFn: async () => {
-      if (!location?.id) throw new Error('ID da localização não encontrado')
-
-      const response = await fetch('/api/trash', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          action: 'restore',
-          ids: [location.id],
-          type: 'location',
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao restaurar localização')
-      }
-
-      return response.json()
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['locations'] })
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
-      toast.success('Localização restaurada com sucesso')
-      onSuccess()
-      onClose()
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao restaurar localização')
-    },
-  })
-
   const trashLocationMutation = useMutation({
     mutationFn: async () => {
       if (!location?.id) throw new Error('ID da localização não encontrado')
@@ -255,13 +219,7 @@ function EditLocationModalContent({
     trashLocationMutation.mutate()
     setShowTrashConfirmationModal(false)
   }
-
-  const handleRestore = () => {
-    restoreLocationMutation.mutate()
-  }
-
-  const isDeleted = !!location?.deletedAt
-  const isDisabled = isSubmitting || isDeleted
+  const isDisabled = isSubmitting
 
   return (
     <>
@@ -326,37 +284,20 @@ function EditLocationModalContent({
 
           <ModalFooter>
             <ButtonGroup>
-              {isDeleted ? (
-                <DeleteButton
-                  variant="primary"
-                  onClick={handleRestore}
-                  disabled={isSubmitting || restoreLocationMutation.isPending}
-                >
-                  <ArrowCounterClockwise size={20} weight="bold" />
-                  <span className="label">
-                    {restoreLocationMutation.isPending
-                      ? 'Restaurando...'
-                      : 'Restaurar da lixeira'}
-                  </span>
-                </DeleteButton>
-              ) : (
-                <DeleteButton onClick={handleDelete} disabled={isSubmitting}>
-                  <Trash size={20} weight="bold" />
-                  <span className="label">Mover para lixeira</span>
-                </DeleteButton>
-              )}
+              <DeleteButton onClick={handleDelete} disabled={isSubmitting}>
+                <Trash size={20} weight="bold" />
+                <span className="label">Mover para lixeira</span>
+              </DeleteButton>
               <div className="action-buttons">
                 <CancelButton onClick={handleClose} disabled={isSubmitting}>
                   Cancelar
                 </CancelButton>
-                {!isDeleted && (
-                  <SaveButton
-                    onClick={handleSubmit(onSubmit)}
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? 'Salvando...' : 'Salvar'}
-                  </SaveButton>
-                )}
+                <SaveButton
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Salvando...' : 'Salvar'}
+                </SaveButton>
               </div>
             </ButtonGroup>
           </ModalFooter>

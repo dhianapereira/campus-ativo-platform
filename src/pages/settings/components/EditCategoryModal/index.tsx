@@ -24,7 +24,7 @@ import {
   StatusLabel,
   StatusToggle,
 } from './styles'
-import { X, Trash, ArrowCounterClockwise } from 'phosphor-react'
+import { X, Trash } from 'phosphor-react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { CategoryResponse } from '../../../../lib/api/generated/models/categoryResponse'
@@ -166,42 +166,6 @@ function EditCategoryModalContent({
     onClose()
   }
 
-  const restoreCategoryMutation = useMutation({
-    mutationFn: async () => {
-      if (!category?.id) throw new Error('ID da categoria não encontrado')
-
-      const response = await fetch('/api/trash', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          action: 'restore',
-          ids: [category.id],
-          type: 'category',
-        }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao restaurar categoria')
-      }
-
-      return response.json()
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
-      toast.success('Categoria restaurada com sucesso')
-      onSuccess()
-      onClose()
-    },
-    onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao restaurar categoria')
-    },
-  })
-
   const trashCategoryMutation = useMutation({
     mutationFn: async () => {
       if (!category?.id) throw new Error('ID da categoria não encontrado')
@@ -248,13 +212,7 @@ function EditCategoryModalContent({
     trashCategoryMutation.mutate()
     setShowTrashConfirmationModal(false)
   }
-
-  const handleRestore = () => {
-    restoreCategoryMutation.mutate()
-  }
-
-  const isDeleted = !!category?.deletedAt
-  const isDisabled = isSubmitting || isDeleted
+  const isDisabled = isSubmitting
 
   return (
     <>
@@ -311,37 +269,20 @@ function EditCategoryModalContent({
 
           <ModalFooter>
             <ButtonGroup>
-              {isDeleted ? (
-                <DeleteButton
-                  variant="primary"
-                  onClick={handleRestore}
-                  disabled={isSubmitting || restoreCategoryMutation.isPending}
-                >
-                  <ArrowCounterClockwise size={20} weight="bold" />
-                  <span className="label">
-                    {restoreCategoryMutation.isPending
-                      ? 'Restaurando...'
-                      : 'Restaurar da lixeira'}
-                  </span>
-                </DeleteButton>
-              ) : (
-                <DeleteButton onClick={handleDelete} disabled={isSubmitting}>
-                  <Trash size={20} weight="bold" />
-                  <span className="label">Mover para lixeira</span>
-                </DeleteButton>
-              )}
+              <DeleteButton onClick={handleDelete} disabled={isSubmitting}>
+                <Trash size={20} weight="bold" />
+                <span className="label">Mover para lixeira</span>
+              </DeleteButton>
               <div className="action-buttons">
                 <CancelButton onClick={handleClose} disabled={isSubmitting}>
                   Cancelar
                 </CancelButton>
-                {!isDeleted && (
-                  <SaveButton
-                    onClick={handleSubmit(onSubmit)}
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? 'Salvando...' : 'Salvar'}
-                  </SaveButton>
-                )}
+                <SaveButton
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Salvando...' : 'Salvar'}
+                </SaveButton>
               </div>
             </ButtonGroup>
           </ModalFooter>
