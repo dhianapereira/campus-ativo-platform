@@ -540,30 +540,50 @@ export const EmptyState = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  justifyContent: 'center',
-  padding: '4rem 2rem',
+  justifyContent: 'flex-start',
+  minHeight: '36vh',
+  padding: '2.5rem 2rem 4.5rem',
   textAlign: 'center',
+
+  '@media (max-width: 768px)': {
+    minHeight: '28vh',
+    padding: '1.75rem 1.25rem 2.5rem',
+  },
 })
 
 export const EmptyStateIcon = styled('div', {
   color: '$textDisabled',
-  marginBottom: '1.5rem',
+  marginBottom: '1.25rem',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  opacity: 0.9,
 })
 
 export const EmptyStateTitle = styled('h3', {
-  fontSize: '1.25rem',
-  fontWeight: 600,
-  color: '$textNeutral',
-  marginBottom: '0.5rem',
+  fontSize: '2.125rem',
+  lineHeight: 1.1,
+  fontWeight: 700,
+  color: '$textMuted',
+  marginBottom: '0.85rem',
+  letterSpacing: '-0.02em',
+
+  '@media (max-width: 768px)': {
+    fontSize: '1.625rem',
+  },
 })
 
 export const EmptyStateMessage = styled('p', {
-  fontSize: '0.875rem',
-  color: '$lightGray',
-  maxWidth: '400px',
+  fontSize: '1rem',
+  lineHeight: 1.6,
+  color: '$textSecondary',
+  maxWidth: '460px',
+  margin: 0,
+
+  '@media (max-width: 768px)': {
+    fontSize: '0.9375rem',
+    maxWidth: '340px',
+  },
 })
 
 export const ErrorState = styled('div', {
@@ -571,34 +591,63 @@ export const ErrorState = styled('div', {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
+  minHeight: '48vh',
   padding: '4rem 2rem',
   textAlign: 'center',
+  maxWidth: '560px',
+  margin: '0 auto',
+  border: '1px solid $borderDangerLight',
+  borderRadius: '20px',
+  background:
+    'linear-gradient(180deg, rgba(154,14,3,0.04) 0%, rgba(255,255,255,0.98) 100%)',
+  boxShadow: '0 18px 40px -28px rgba(154,14,3,0.28)',
+
+  '@media (max-width: 768px)': {
+    minHeight: '38vh',
+    padding: '2.5rem 1.25rem',
+    borderRadius: '16px',
+  },
 })
 
 export const ErrorStateIcon = styled('div', {
+  width: '4.5rem',
+  height: '4.5rem',
+  borderRadius: '999px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   color: '$red',
-  marginBottom: '1rem',
+  backgroundColor: '$surfaceDanger',
+  border: '1px solid $borderDangerLight',
+  marginBottom: '1.25rem',
 })
 
 export const ErrorStateTitle = styled('h3', {
-  fontSize: '1.25rem',
-  fontWeight: 600,
-  color: '$textNeutral',
-  marginBottom: '0.5rem',
+  fontSize: '1.75rem',
+  lineHeight: 1.15,
+  fontWeight: 700,
+  color: '$textStrong',
+  marginBottom: '0.75rem',
+  letterSpacing: '-0.02em',
+
+  '@media (max-width: 768px)': {
+    fontSize: '1.375rem',
+  },
 })
 
 export const ErrorStateMessage = styled('p', {
-  fontSize: '0.875rem',
-  color: '$lightGray',
-  maxWidth: '400px',
-  marginBottom: '1.5rem',
+  fontSize: '0.975rem',
+  lineHeight: 1.6,
+  color: '$textSecondary',
+  maxWidth: '420px',
+  margin: '0 0 1.5rem 0',
 })
 
 export const RetryButton = styled('button', {
   all: 'unset',
   boxSizing: 'border-box',
-  padding: '0.75rem 1.5rem',
-  borderRadius: '2rem',
+  padding: '0.875rem 1.5rem',
+  borderRadius: '999px',
   backgroundColor: '$green',
   color: 'white',
   fontSize: '0.875rem',

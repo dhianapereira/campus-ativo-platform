@@ -19,6 +19,7 @@ interface AuthContextData {
   hasRoleLevel: (requiredLevel: number) => boolean
   canAccessUserManagement: () => boolean
   canAccessSettings: () => boolean
+  canAccessTrash: () => boolean
   canManageUserRole: (targetUserRole: string) => boolean
 }
 
@@ -140,6 +141,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return hasRoleLevel(2)
   }
 
+  function canAccessTrash(): boolean {
+    return !!user
+  }
+
   function canManageUserRole(targetUserRole: string): boolean {
     if (!user?.role) return false
 
@@ -170,6 +175,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         hasRoleLevel,
         canAccessUserManagement,
         canAccessSettings,
+        canAccessTrash,
         canManageUserRole,
       }}
     >

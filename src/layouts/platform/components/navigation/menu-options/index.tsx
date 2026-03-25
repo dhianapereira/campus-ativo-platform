@@ -18,6 +18,7 @@ interface MenuOptionsConfig {
   onRetryProfile?: () => void
   canAccessUserManagement?: boolean
   canAccessSettings?: boolean
+  canAccessTrash?: boolean
 }
 
 export const createMenuOptions = ({
@@ -28,6 +29,7 @@ export const createMenuOptions = ({
   onRetryProfile,
   canAccessUserManagement = false,
   canAccessSettings = false,
+  canAccessTrash = false,
 }: MenuOptionsConfig): IOption[] => {
   const options: IOption[] = [
     {
@@ -72,7 +74,9 @@ export const createMenuOptions = ({
         onClose?.()
       },
     })
+  }
 
+  if (canAccessTrash) {
     options.push({
       id: 'trash',
       name: 'Lixeira',

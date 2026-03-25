@@ -17,6 +17,8 @@ import {
 import { getUserProfileControllerHandle } from '../../lib/api/generated/user-profile/user-profile'
 import { getRoleLevel } from '../../contexts/auth/role-mapping'
 
+const TRASH_PAGE_SIZE = 20
+
 function filterByDeletedDate(
   items: Array<{ deletedAt?: string | null }>,
   dateFilter?: string,
@@ -56,6 +58,90 @@ function filterByDeletedDate(
   })
 }
 
+function extractComparableId(value: unknown): string | null {
+  if (!value) return null
+
+  if (typeof value === 'string') {
+    return value
+  }
+
+  if (typeof value === 'object') {
+    const record = value as Record<string, unknown>
+    const candidates = ['id', '_id', 'value', '$oid']
+
+    for (const key of candidates) {
+      const candidate = record[key]
+      if (typeof candidate === 'string' && candidate.trim() !== '') {
+        return candidate
+      }
+    }
+  }
+
+  return null
+}
+
+function extractUserProfile(
+  payload: unknown,
+): { id?: string | null; role?: string | null } | null {
+  if (!payload || typeof payload !== 'object') {
+    return null
+  }
+
+  const directProfile = payload as { id?: string | null; role?: string | null }
+
+  if (
+    typeof directProfile.id === 'string' ||
+    typeof directProfile.role === 'string'
+  ) {
+    return directProfile
+  }
+
+  const wrappedProfile = (payload as { profile?: unknown }).profile
+
+  if (!wrappedProfile || typeof wrappedProfile !== 'object') {
+    return null
+  }
+
+  return wrappedProfile as { id?: string | null; role?: string | null }
+}
+
+function extractRoleFromToken(token: string): string | null {
+  try {
+    const tokenPayload = JSON.parse(
+      Buffer.from(token.split('.')[1], 'base64').toString(),
+    ) as { role?: unknown }
+
+    return typeof tokenPayload.role === 'string' ? tokenPayload.role : null
+  } catch {
+    return null
+  }
+}
+
+async function fetchAllPages<T>(
+  fetchPage: (page: number) => Promise<T[]>,
+): Promise<T[]> {
+  const items: T[] = []
+  let page = 1
+
+  while (true) {
+    const currentPageItems = await fetchPage(page)
+
+    if (currentPageItems.length === 0) {
+      break
+    }
+
+    items.push(...currentPageItems)
+
+    if (currentPageItems.length < TRASH_PAGE_SIZE) {
+      break
+    }
+
+    page += 1
+  }
+
+  return items
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -80,20 +166,26 @@ export default async function handler(
       let currentUserId: string | null = null
       let roleLevel = 0
       try {
-        const profile = await getUserProfileControllerHandle({
+        const profileResponse = await getUserProfileControllerHandle({
           headers: { Authorization: `Bearer ${authToken}` },
         })
+        const profile = extractUserProfile(profileResponse)
+        const roleFromToken = extractRoleFromToken(authToken)
+
         currentUserId = profile?.id ?? null
-        roleLevel = profile?.role ? getRoleLevel(profile.role) : 0
+        roleLevel = getRoleLevel(profile?.role || roleFromToken || '')
       } catch {
-        // continua sem filtrar por usuário em caso de erro no perfil
+        // Mantem a lixeira vazia em caso de erro no perfil para evitar expor itens de outros usuarios.
       }
 
-      const isReporter = roleLevel === 1
+      const canSeeLocationsAndCategories = roleLevel >= 2
       const onlyOwnProblems = (problems: Array<Record<string, unknown>>) =>
         currentUserId
-          ? problems.filter((p) => (p.reporterId as string) === currentUserId)
-          : problems
+          ? problems.filter((p) => {
+              const reporterId = extractComparableId(p.reporterId)
+              return reporterId === currentUserId
+            })
+          : []
 
       const results: {
         items: unknown[]
@@ -106,41 +198,57 @@ export default async function handler(
           headers: { Authorization: `Bearer ${authToken}` },
         }
 
-        const [locationsData, categoriesData, problemsData] = await Promise.all(
-          [
-            isReporter
-              ? Promise.resolve({ locations: [] })
-              : fetchLocationsControllerHandle(
-                  { includeDeleted: true, query: searchQuery },
-                  fetchPayload,
-                ),
-            isReporter
-              ? Promise.resolve({ categories: [] })
-              : fetchCategoriesControllerHandle(
-                  { includeDeleted: true, query: searchQuery },
-                  fetchPayload,
-                ),
-            fetchProblemsControllerHandle(
-              { includeDeleted: true, query: searchQuery },
-              fetchPayload,
-            ),
-          ],
-        )
+        const [locationsResult, categoriesResult, problemsResult] =
+          await Promise.allSettled([
+            canSeeLocationsAndCategories
+              ? fetchAllPages(async (page) => {
+                  const response = await fetchLocationsControllerHandle(
+                    { includeDeleted: true, query: searchQuery, page },
+                    fetchPayload,
+                  )
+
+                  return response?.locations || []
+                })
+              : Promise.resolve([]),
+            canSeeLocationsAndCategories
+              ? fetchAllPages(async (page) => {
+                  const response = await fetchCategoriesControllerHandle(
+                    { includeDeleted: true, query: searchQuery, page },
+                    fetchPayload,
+                  )
+
+                  return response?.categories || []
+                })
+              : Promise.resolve([]),
+            fetchAllPages(async (page) => {
+              const response = await fetchProblemsControllerHandle(
+                { includeDeleted: true, query: searchQuery, page },
+                fetchPayload,
+              )
+
+              return response?.problems || []
+            }),
+          ])
+
+        const locationsData =
+          locationsResult.status === 'fulfilled' ? locationsResult.value : []
+        const categoriesData =
+          categoriesResult.status === 'fulfilled' ? categoriesResult.value : []
+        const problemsData =
+          problemsResult.status === 'fulfilled' ? problemsResult.value : []
 
         const deletedLocations =
-          locationsData?.locations?.filter(
+          locationsData.filter(
             (loc: { deletedAt?: string | null }) =>
               loc.deletedAt !== null && loc.deletedAt !== undefined,
           ) || []
         const deletedCategories =
-          categoriesData?.categories?.filter(
+          categoriesData.filter(
             (cat: { deletedAt?: string | null }) =>
               cat.deletedAt !== null && cat.deletedAt !== undefined,
           ) || []
         const deletedProblemsRaw =
-          (
-            problemsData?.problems as unknown as Array<Record<string, unknown>>
-          )?.filter(
+          (problemsData as unknown as Array<Record<string, unknown>>).filter(
             (prob) => prob.deletedAt !== null && prob.deletedAt !== undefined,
           ) || []
         const deletedProblems = onlyOwnProblems(deletedProblemsRaw)
@@ -184,15 +292,20 @@ export default async function handler(
         results.items = allItems
         results.total = allItems.length
       } else if (itemType === 'location') {
-        if (isReporter) {
+        if (!canSeeLocationsAndCategories) {
           results.items = []
           results.total = 0
           results.type = 'location'
-        } else {
-          const data = await fetchLocationsControllerHandle(
+
+          return res.status(200).json(results)
+        }
+
+        const data = await fetchAllPages(async (page) => {
+          const response = await fetchLocationsControllerHandle(
             {
               includeDeleted: true,
               query: searchQuery,
+              page,
             },
             {
               headers: {
@@ -201,34 +314,38 @@ export default async function handler(
             },
           )
 
-          const deletedItems =
-            data?.locations?.filter(
-              (loc: { deletedAt?: string | null }) =>
-                loc.deletedAt !== null && loc.deletedAt !== undefined,
-            ) || []
+          return response?.locations || []
+        })
 
-          const filteredItems = filterByDeletedDate(
-            deletedItems,
-            dateFilterValue,
-          )
+        const deletedItems =
+          data.filter(
+            (loc: { deletedAt?: string | null }) =>
+              loc.deletedAt !== null && loc.deletedAt !== undefined,
+          ) || []
 
-          results.items = filteredItems.map((item) => ({
-            ...(item as Record<string, unknown>),
-            itemType: 'location',
-          }))
-          results.total = filteredItems.length
-          results.type = 'location'
-        }
+        const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
+
+        results.items = filteredItems.map((item) => ({
+          ...(item as Record<string, unknown>),
+          itemType: 'location',
+        }))
+        results.total = filteredItems.length
+        results.type = 'location'
       } else if (itemType === 'category') {
-        if (isReporter) {
+        if (!canSeeLocationsAndCategories) {
           results.items = []
           results.total = 0
           results.type = 'category'
-        } else {
-          const data = await fetchCategoriesControllerHandle(
+
+          return res.status(200).json(results)
+        }
+
+        const data = await fetchAllPages(async (page) => {
+          const response = await fetchCategoriesControllerHandle(
             {
               includeDeleted: true,
               query: searchQuery,
+              page,
             },
             {
               headers: {
@@ -237,39 +354,43 @@ export default async function handler(
             },
           )
 
-          const deletedItems =
-            data?.categories?.filter(
-              (cat: { deletedAt?: string | null }) =>
-                cat.deletedAt !== null && cat.deletedAt !== undefined,
-            ) || []
+          return response?.categories || []
+        })
 
-          const filteredItems = filterByDeletedDate(
-            deletedItems,
-            dateFilterValue,
+        const deletedItems =
+          data.filter(
+            (cat: { deletedAt?: string | null }) =>
+              cat.deletedAt !== null && cat.deletedAt !== undefined,
+          ) || []
+
+        const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
+
+        results.items = filteredItems.map((item) => ({
+          ...(item as Record<string, unknown>),
+          itemType: 'category',
+        }))
+        results.total = filteredItems.length
+        results.type = 'category'
+      } else if (itemType === 'problem') {
+        const data = await fetchAllPages(async (page) => {
+          const response = await fetchProblemsControllerHandle(
+            {
+              includeDeleted: true,
+              query: searchQuery,
+              page,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            },
           )
 
-          results.items = filteredItems.map((item) => ({
-            ...(item as Record<string, unknown>),
-            itemType: 'category',
-          }))
-          results.total = filteredItems.length
-          results.type = 'category'
-        }
-      } else if (itemType === 'problem') {
-        const data = await fetchProblemsControllerHandle(
-          {
-            includeDeleted: true,
-            query: searchQuery,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          },
-        )
+          return response?.problems || []
+        })
 
         const deletedItemsRaw =
-          (data?.problems as unknown as Array<Record<string, unknown>>)?.filter(
+          (data as unknown as Array<Record<string, unknown>>).filter(
             (prob) => prob.deletedAt !== null && prob.deletedAt !== undefined,
           ) || []
         const deletedItems = onlyOwnProblems(deletedItemsRaw)
@@ -283,6 +404,7 @@ export default async function handler(
           const prob = item as Record<string, unknown> & {
             location?: { name?: string }
           }
+
           return {
             ...prob,
             itemType: 'problem',

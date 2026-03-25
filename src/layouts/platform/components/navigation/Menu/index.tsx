@@ -22,7 +22,8 @@ export default function Menu({ onLogoutClick }: MenuProps) {
   const router = useRouter()
   const pathname = router.pathname
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
-  const { canAccessUserManagement, canAccessSettings } = useAuth()
+  const { canAccessUserManagement, canAccessSettings, canAccessTrash } =
+    useAuth()
 
   const menuOptions = createMenuOptions({
     router,
@@ -30,6 +31,7 @@ export default function Menu({ onLogoutClick }: MenuProps) {
     openLogoutModal: () => setIsLogoutModalOpen(true),
     canAccessUserManagement: canAccessUserManagement(),
     canAccessSettings: canAccessSettings(),
+    canAccessTrash: canAccessTrash(),
   })
 
   const logoutOption = menuOptions.find((o) => o.id === 'logout')

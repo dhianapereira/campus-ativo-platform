@@ -21,7 +21,8 @@ export default function Drawer({
 }: DrawerProps) {
   const router = useRouter()
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
-  const { canAccessUserManagement, canAccessSettings } = useAuth()
+  const { canAccessUserManagement, canAccessSettings, canAccessTrash } =
+    useAuth()
 
   const menuOptions = createMenuOptions({
     router,
@@ -31,6 +32,7 @@ export default function Drawer({
     onRetryProfile,
     canAccessUserManagement: canAccessUserManagement(),
     canAccessSettings: canAccessSettings(),
+    canAccessTrash: canAccessTrash(),
   })
 
   const handleLogoutConfirm = async () => {

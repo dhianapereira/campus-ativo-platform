@@ -1,5 +1,4 @@
 import { useMemo, useState, useEffect } from 'react'
-import Image from 'next/image'
 import {
   MagnifyingGlass,
   Trash,
@@ -7,7 +6,6 @@ import {
   ArrowLeft,
   ArrowRight,
 } from 'phosphor-react'
-import noTrashImage from '@/assets/no-trash.svg'
 import {
   MainContainer,
   HeaderContainer,
@@ -39,7 +37,8 @@ import {
   ItemsCount,
   SelectedCount,
   EmptyState,
-  EmptyStateIcon,
+  EmptyStateTitle,
+  EmptyStateMessage,
   ErrorState,
   ErrorStateIcon,
   ErrorStateTitle,
@@ -497,7 +496,7 @@ export default function TrashPage() {
 
   if (error) {
     return (
-      <RoleProtectedRoute requiredLevel={2}>
+      <RoleProtectedRoute requiredLevel={1}>
         <PlatformLayout>
           <MainContainer>
             <HeaderContainer>
@@ -524,7 +523,7 @@ export default function TrashPage() {
   }
 
   return (
-    <RoleProtectedRoute requiredLevel={2}>
+    <RoleProtectedRoute requiredLevel={1}>
       <PlatformLayout>
         <MainContainer>
           <HeaderContainer>
@@ -649,15 +648,12 @@ export default function TrashPage() {
             </div>
           ) : items.length === 0 ? (
             <EmptyState>
-              <EmptyStateIcon>
-                <Image
-                  src={noTrashImage}
-                  alt="Lixeira vazia"
-                  width={200}
-                  height={200}
-                  priority
-                />
-              </EmptyStateIcon>
+              <EmptyStateTitle>A lixeira está vazia</EmptyStateTitle>
+              <EmptyStateMessage>
+                Os items que você mover para a lixeira aparecerão aqui. Quando
+                isso acontecer, você poderá restaurá-los ou excluí-los
+                permanentemente.
+              </EmptyStateMessage>
             </EmptyState>
           ) : (
             <>
