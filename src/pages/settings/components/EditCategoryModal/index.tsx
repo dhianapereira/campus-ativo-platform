@@ -220,9 +220,17 @@ function EditCategoryModalContent({
 
       return response.json()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['categories'],
+          refetchType: 'all',
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['trash'],
+          refetchType: 'all',
+        }),
+      ])
       toast.success('Categoria movida para lixeira')
       onSuccess()
       onClose()

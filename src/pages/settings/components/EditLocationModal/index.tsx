@@ -227,9 +227,17 @@ function EditLocationModalContent({
 
       return response.json()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['locations'] })
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['locations'],
+          refetchType: 'all',
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['trash'],
+          refetchType: 'all',
+        }),
+      ])
       toast.success('Localização movida para lixeira')
       onSuccess()
       onClose()

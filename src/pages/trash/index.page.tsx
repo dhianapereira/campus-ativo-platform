@@ -94,6 +94,8 @@ interface TrashItem {
   description?: string
   local?: string
   deletedAt?: string
+  reporterId?: string
+  createdAt?: string
 }
 
 export default function TrashPage() {
@@ -347,9 +349,8 @@ export default function TrashPage() {
         title: item.name,
         description: item.description,
         locationName: item.local,
-        authorId: (item as TrashItem & { reporter?: { id?: string } }).reporter
-          ?.id,
-        createdAt: (item as TrashItem & { createdAt?: string }).createdAt,
+        authorId: item.reporterId,
+        createdAt: item.createdAt,
         deletedAt: item.deletedAt,
       }
       setSelectedProblemForView(problemData)

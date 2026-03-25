@@ -283,10 +283,19 @@ export default function ProblemDetails() {
         throw new Error(err.message || 'Falha ao mover para a lixeira')
       }
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['problems'] })
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['problems'],
+          refetchType: 'all',
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['trash'],
+          refetchType: 'all',
+        }),
+      ])
       toast.success('Problema movido para a lixeira.')
-      router.push('/problems')
+      await router.push('/problems')
     },
     onError: (err: Error) => {
       toast.error(err.message || 'Falha ao mover para a lixeira')
