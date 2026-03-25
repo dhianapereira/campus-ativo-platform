@@ -6,6 +6,7 @@ import {
   Title,
   ImageContainer,
   InfoContainer,
+  CategoryInfo,
   LocationInfo,
   EditButton,
   HistorySection,
@@ -18,7 +19,14 @@ import {
   HistoryEntryHeader,
   HistoryChangeList,
 } from './styles'
-import { ArrowLeft, CaretDown, MapPin, NotePencil, Trash } from 'phosphor-react'
+import {
+  ArrowLeft,
+  CaretDown,
+  MapPin,
+  NotePencil,
+  Tag,
+  Trash,
+} from 'phosphor-react'
 import { useRouter } from 'next/router'
 import type { ProblemDetailsProps, ProblemHistoryChange } from './types'
 import { Button, Text } from '@/components'
@@ -69,8 +77,6 @@ function formatHistoryChange(
       return `Status: de ${getStatusLabel(change.oldValue)} para ${getStatusLabel(change.newValue)}`
     case 'maintenanceType':
       return `Manutenção: de ${getMaintenanceTypeLabel(change.oldValue)} para ${getMaintenanceTypeLabel(change.newValue)}`
-    case 'category':
-      return 'Categoria atualizada.'
     case 'note':
       return null
     default:
@@ -137,6 +143,10 @@ export default function ProblemDetails() {
     return {
       id: problem.id,
       title: problem.title,
+      category: {
+        name: problem.category.name,
+        description: problem.category.description ?? null,
+      },
       location: {
         name: problem.location.name,
         code: problem.location.code ?? null,
@@ -144,7 +154,6 @@ export default function ProblemDetails() {
       },
       description: problem.description,
       status: toFrontendStatus(problem.status),
-      category: problem.categoryId ?? null,
       maintenanceType: problem.maintenanceType ?? null,
       imageUrl: firstAttachment?.url ?? null,
       reporter: problem.reporter.email,
@@ -340,6 +349,34 @@ export default function ProblemDetails() {
           </InfoContainer>
           <InfoContainer>
             <Text className="label" size="md">
+              Categoria:
+            </Text>
+            <CategoryInfo>
+              <div className="category-header">
+                <Tag
+                  className="category-icon"
+                  size={18}
+                  weight="fill"
+                  aria-hidden="true"
+                />
+                <Text className="category-name" size="md">
+                  {problemData.category.name}
+                </Text>
+              </div>
+              {problemData.category.description && (
+                <div className="category-description">
+                  <Text className="category-description-label" size="xs">
+                    Descrição
+                  </Text>
+                  <Text className="category-description-text" size="sm">
+                    {problemData.category.description}
+                  </Text>
+                </div>
+              )}
+            </CategoryInfo>
+          </InfoContainer>
+          <InfoContainer>
+            <Text className="label" size="md">
               Local:
             </Text>
             <LocationInfo>
@@ -514,7 +551,6 @@ export default function ProblemDetails() {
               problemId={problemData.id}
               problemQueryKey={problemQueryKey}
               initialStatus={problemData.status}
-              initialCategory={problemData.category}
               initialMaintenanceType={problemData.maintenanceType}
               initialNote={problemData.latestNote}
             />

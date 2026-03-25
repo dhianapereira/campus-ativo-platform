@@ -6,10 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { AttachmentInfo } from './attachmentInfo';
+import type { ProblemCategorySummaryResponse } from './problemCategorySummaryResponse';
 import type { ProblemHistoryEntryResponse } from './problemHistoryEntryResponse';
 import type { ProblemLocationSummaryResponse } from './problemLocationSummaryResponse';
 import type { ProblemReporterResponse } from './problemReporterResponse';
-import type { ProblemResponseCategoryId } from './problemResponseCategoryId';
 import type { ProblemResponseDeletedAt } from './problemResponseDeletedAt';
 import type { ProblemResponseMaintenanceType } from './problemResponseMaintenanceType';
 import type { ProblemResponseStatus } from './problemResponseStatus';
@@ -19,11 +19,8 @@ export interface ProblemResponse {
   id: string;
   /** Dados do autor do problema */
   reporter: ProblemReporterResponse;
-  /**
-   * ID da categoria do problema
-   * @nullable
-   */
-  categoryId?: ProblemResponseCategoryId;
+  /** Resumo da categoria do problema */
+  category: ProblemCategorySummaryResponse;
   /** Resumo da localização do problema */
   location: ProblemLocationSummaryResponse;
   /** Título do problema */

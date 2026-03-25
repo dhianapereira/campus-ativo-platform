@@ -44,6 +44,8 @@ export * from './manageProblemControllerHandle200';
 export * from './manageProblemRequest';
 export * from './manageProblemRequestMaintenanceType';
 export * from './manageProblemRequestStatus';
+export * from './problemCategorySummaryResponse';
+export * from './problemCategorySummaryResponseDescription';
 export * from './problemHistoryChangeResponse';
 export * from './problemHistoryChangeResponseField';
 export * from './problemHistoryChangeResponseNewValue';

@@ -14,7 +14,6 @@ export type ProblemHistoryEntryResponseAction = typeof ProblemHistoryEntryRespon
 
 export const ProblemHistoryEntryResponseAction = {
   STATUS_CHANGED: 'STATUS_CHANGED',
-  CATEGORY_CHANGED: 'CATEGORY_CHANGED',
   MAINTENANCE_TYPE_CHANGED: 'MAINTENANCE_TYPE_CHANGED',
   NOTE_ADDED: 'NOTE_ADDED',
   UPDATED: 'UPDATED',

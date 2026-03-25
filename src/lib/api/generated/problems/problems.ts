@@ -416,7 +416,7 @@ export const useDeleteProblemControllerHandle = <TError = ErrorType<void>,
       return useMutation(getDeleteProblemControllerHandleMutationOptions(options), queryClient);
     }
     /**
- * Atualiza status, categoria, tipo de manutenção e adiciona observações ao histórico do problema.
+ * Atualiza status, tipo de manutenção e adiciona observações ao histórico do problema.
  * @summary Gerenciar problema
  */
 export const manageProblemControllerHandle = (

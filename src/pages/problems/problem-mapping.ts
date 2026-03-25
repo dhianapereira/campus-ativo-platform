@@ -76,8 +76,6 @@ export function getHistoryActionLabel(action?: string | null) {
   switch (action) {
     case 'STATUS_CHANGED':
       return 'Status alterado'
-    case 'CATEGORY_CHANGED':
-      return 'Categoria alterada'
     case 'MAINTENANCE_TYPE_CHANGED':
       return 'Tipo de manutenção alterado'
     case 'NOTE_ADDED':

@@ -1366,7 +1366,7 @@
         "tags": ["Problems"]
       },
       "patch": {
-        "description": "Atualiza status, categoria, tipo de manutenção e adiciona observações ao histórico do problema.",
+        "description": "Atualiza status, tipo de manutenção e adiciona observações ao histórico do problema.",
         "operationId": "ManageProblemController_handle",
         "parameters": [
           {
@@ -1825,7 +1825,7 @@
             }
           }
         },
-        "required": ["title", "description", "locationId"]
+        "required": ["title", "description", "categoryId", "locationId"]
       },
       "ProblemReporterResponse": {
         "type": "object",
@@ -1950,6 +1950,28 @@
           "createdAt"
         ]
       },
+      "ProblemCategorySummaryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID da categoria",
+            "example": "123e4567-e89b-12d3-a456-426614174002"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome da categoria",
+            "example": "Climatizacao"
+          },
+          "description": {
+            "type": "object",
+            "description": "Descrição da categoria",
+            "example": "Problemas relacionados a ar condicionado e ventilação",
+            "nullable": true
+          }
+        },
+        "required": ["id", "name"]
+      },
       "ProblemLocationSummaryResponse": {
         "type": "object",
         "properties": {
@@ -1982,7 +2004,7 @@
           "field": {
             "type": "string",
             "description": "Campo alterado no registro de histórico",
-            "enum": ["status", "category", "maintenanceType", "note"],
+            "enum": ["status", "maintenanceType", "note"],
             "example": "status"
           },
           "oldValue": {
@@ -2013,7 +2035,6 @@
             "description": "Ação realizada no histórico do problema",
             "enum": [
               "STATUS_CHANGED",
-              "CATEGORY_CHANGED",
               "MAINTENANCE_TYPE_CHANGED",
               "NOTE_ADDED",
               "UPDATED"
@@ -2064,11 +2085,13 @@
               }
             ]
           },
-          "categoryId": {
-            "type": "object",
-            "description": "ID da categoria do problema",
-            "example": "123e4567-e89b-12d3-a456-426614174002",
-            "nullable": true
+          "category": {
+            "description": "Resumo da categoria do problema",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProblemCategorySummaryResponse"
+              }
+            ]
           },
           "location": {
             "description": "Resumo da localização do problema",
@@ -2154,6 +2177,7 @@
         "required": [
           "id",
           "reporter",
+          "category",
           "location",
           "title",
           "description",
@@ -2284,11 +2308,6 @@
               "FINISHED"
             ],
             "example": "IN_ANALYSIS"
-          },
-          "categoryId": {
-            "type": "string",
-            "description": "ID da categoria do problema",
-            "example": "123e4567-e89b-12d3-a456-426614174000"
           },
           "maintenanceType": {
             "type": "string",

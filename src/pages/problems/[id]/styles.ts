@@ -169,7 +169,7 @@ export const InfoContainer = styled('div', {
   },
 })
 
-export const LocationInfo = styled('div', {
+const detailCardBase = {
   display: 'flex',
   flexDirection: 'column',
   gap: '$3',
@@ -178,6 +178,52 @@ export const LocationInfo = styled('div', {
   borderRadius: '$sm',
   border: '1px solid rgba(18, 90, 57, 0.12)',
   backgroundColor: 'rgba(255, 255, 255, 0.9)',
+} as const
+
+export const CategoryInfo = styled('div', {
+  ...detailCardBase,
+
+  '& .category-header': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '$2',
+    width: '100%',
+  },
+
+  '& .category-icon': {
+    color: '$orange',
+    flexShrink: 0,
+  },
+
+  '& .category-name': {
+    fontWeight: '$medium',
+    color: '$darkGray',
+  },
+
+  '& .category-description': {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '$1',
+    paddingTop: '$1',
+    borderTop: '1px solid rgba(0, 0, 0, 0.06)',
+  },
+
+  '& .category-description-label': {
+    color: '$gray',
+    fontWeight: '$bold',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+  },
+
+  '& .category-description-text': {
+    color: '$darkGray',
+    lineHeight: '$base',
+    whiteSpace: 'pre-wrap',
+  },
+})
+
+export const LocationInfo = styled('div', {
+  ...detailCardBase,
 
   '& .location-header': {
     display: 'flex',

@@ -14,7 +14,6 @@ export type ProblemHistoryChangeResponseField = typeof ProblemHistoryChangeRespo
 
 export const ProblemHistoryChangeResponseField = {
   status: 'status',
-  category: 'category',
   maintenanceType: 'maintenanceType',
   note: 'note',
 } as const;

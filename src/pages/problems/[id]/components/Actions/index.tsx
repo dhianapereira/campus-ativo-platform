@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import {
   Button,
@@ -8,15 +8,21 @@ import {
   Dropdown,
   RadioGroup,
 } from '@/components'
-import { Column, Container, Form, Input, Section } from './styles'
+import {
+  Column,
+  Container,
+  Form,
+  Header,
+  Helper,
+  Input,
+  Section,
+} from './styles'
 import type { ProblemActionsProps } from './types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { actionsFormSchema, ActionsFormData } from '@/validators/actions-form'
 import { problemStatusOptions } from '@/constants/problems/status'
 import { maintenanceTypeOptions } from '@/constants/problems/maintenance-types'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
-import type { DropdownItem } from '@/components/Dropdown'
-import type { CategoryResponse } from '@/lib/api/generated/models/categoryResponse'
+import { useQueryClient } from '@tanstack/react-query'
 import type { FetchProblemsControllerHandle200 } from '@/lib/api/generated/models'
 import { toast } from 'sonner'
 import {
@@ -29,34 +35,10 @@ export function Actions({
   problemId,
   problemQueryKey,
   initialStatus,
-  initialCategory,
   initialMaintenanceType,
   initialNote,
 }: ProblemActionsProps) {
   const queryClient = useQueryClient()
-  const { data: categoriesData } = useQuery({
-    queryKey: ['categories', 'active'],
-    queryFn: async () => {
-      const response = await fetch('/api/categories?isActive=true', {
-        credentials: 'include',
-      })
-
-      if (!response.ok) {
-        throw new Error('Falha ao buscar categorias')
-      }
-
-      return (await response.json()) as { categories?: CategoryResponse[] }
-    },
-  })
-
-  const categoryItems = useMemo<DropdownItem[]>(
-    () =>
-      (categoriesData?.categories ?? []).map((category) => ({
-        name: category.name,
-        value: category.id,
-      })),
-    [categoriesData?.categories],
-  )
 
   const normalizedInitialMaintenanceType =
     toFrontendMaintenanceType(initialMaintenanceType) || ''
@@ -73,25 +55,19 @@ export function Actions({
     resolver: zodResolver(actionsFormSchema),
     defaultValues: {
       status: initialStatus || '',
-      category: initialCategory || '',
       maintenance: normalizedInitialMaintenanceType,
       note: initialNote || '',
     },
   })
 
-  const [status, category, maintenance] = useWatch({
+  const [status, maintenance] = useWatch({
     control,
-    name: ['status', 'category', 'maintenance'],
+    name: ['status', 'maintenance'],
   })
 
   const handleStatusChange = (value: string) => {
     setValue('status', value, { shouldValidate: true })
     trigger('status')
-  }
-
-  const handleCategoryChange = (value: string) => {
-    setValue('category', value, { shouldValidate: true })
-    trigger('category')
   }
 
   const handleMaintenanceChange = (value: string) => {
@@ -113,7 +89,6 @@ export function Actions({
       },
       body: JSON.stringify({
         status: nextBackendStatus,
-        categoryId: data.category || undefined,
         maintenanceType: toBackendMaintenanceType(data.maintenance),
         note: noteChanged ? trimmedNote : undefined,
       }),
@@ -159,7 +134,6 @@ export function Actions({
     reset(
       {
         status: data.status,
-        category: data.category,
         maintenance: data.maintenance,
         note: data.note || '',
       },
@@ -179,17 +153,10 @@ export function Actions({
   useEffect(() => {
     reset({
       status: initialStatus || '',
-      category: initialCategory || '',
       maintenance: normalizedInitialMaintenanceType,
       note: initialNote || '',
     })
-  }, [
-    initialCategory,
-    initialNote,
-    initialStatus,
-    normalizedInitialMaintenanceType,
-    reset,
-  ])
+  }, [initialNote, initialStatus, normalizedInitialMaintenanceType, reset])
 
   async function onSubmit(data: ActionsFormData) {
     try {
@@ -205,10 +172,30 @@ export function Actions({
 
   return (
     <Container>
-      <Heading size="md">Ações</Heading>
+      <Header>
+        <Heading size="md">Ações</Heading>
+        <Helper>
+          <span className="helper-dot" aria-hidden="true" />
+          <Text size="sm">
+            Atualize o andamento do problema e registre o contexto dessa
+            atualização para o histórico.
+          </Text>
+        </Helper>
+      </Header>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Section>
           <Column>
+            <Text
+              size="sm"
+              css={{
+                color: '$gray',
+                fontWeight: '$bold',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+              }}
+            >
+              Andamento
+            </Text>
             <Input>
               <Dropdown
                 id="status"
@@ -221,21 +208,19 @@ export function Actions({
                 errorMessage={errors.status?.message}
               />
             </Input>
-
-            <Input>
-              <Dropdown
-                id="category"
-                label="Categoria"
-                hint="Selecione a categoria"
-                items={categoryItems}
-                itemSelected={category}
-                onChange={handleCategoryChange}
-                hasError={!!errors.category}
-                errorMessage={errors.category?.message}
-              />
-            </Input>
           </Column>
           <Column>
+            <Text
+              size="sm"
+              css={{
+                color: '$gray',
+                fontWeight: '$bold',
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+              }}
+            >
+              Informações Complementares
+            </Text>
             <Input>
               <RadioGroup
                 title="Manutenção"

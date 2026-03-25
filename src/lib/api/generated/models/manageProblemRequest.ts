@@ -11,8 +11,6 @@ import type { ManageProblemRequestStatus } from './manageProblemRequestStatus';
 export interface ManageProblemRequest {
   /** Novo status do problema */
   status?: ManageProblemRequestStatus;
-  /** ID da categoria do problema */
-  categoryId?: string;
   /** Tipo de manutenção */
   maintenanceType?: ManageProblemRequestMaintenanceType;
   /** Observação adicionada ao histórico do problema */

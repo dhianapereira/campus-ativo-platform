@@ -5,17 +5,43 @@ export const Container = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$4',
+  padding: '$4',
+  borderRadius: '$sm',
+  border: '1px solid rgba(18, 90, 57, 0.12)',
+  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+})
+
+export const Header = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$1',
+})
+
+export const Helper = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '$2',
+  padding: '$3',
+  borderRadius: '$sm',
+  backgroundColor: 'rgba(18, 90, 57, 0.06)',
+
+  '& .helper-dot': {
+    width: 8,
+    height: 8,
+    borderRadius: '$full',
+    backgroundColor: '$green',
+    flexShrink: 0,
+  },
 })
 
 export const Section = styled('div', {
-  display: 'flex',
-  flexDirection: 'row',
+  display: 'grid',
+  gridTemplateColumns: 'minmax(240px, 0.95fr) minmax(320px, 1.35fr)',
   gap: '$4',
   width: '100%',
 
   '@media(max-width: 620px)': {
-    flexDirection: 'column',
-    justifyContent: 'center',
+    gridTemplateColumns: '1fr',
   },
 })
 
@@ -35,6 +61,11 @@ export const Column = styled('div', {
   flexDirection: 'column',
   gap: '$4',
   width: '100%',
+  padding: '$4',
+  borderRadius: '$sm',
+  backgroundColor: 'rgba(248, 251, 249, 0.9)',
+  border: '1px solid rgba(18, 90, 57, 0.12)',
+  minHeight: '100%',
 })
 
 export const Input = styled('div', {

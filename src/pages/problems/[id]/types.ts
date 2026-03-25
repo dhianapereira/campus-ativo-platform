@@ -1,5 +1,5 @@
 export interface ProblemHistoryChange {
-  field: 'status' | 'category' | 'maintenanceType' | 'note'
+  field: 'status' | 'maintenanceType' | 'note'
   oldValue?: string | null
   newValue?: string | null
 }
@@ -16,6 +16,10 @@ export interface ProblemHistoryEntry {
 export interface ProblemDetailsProps {
   id: string
   title: string
+  category: {
+    name: string
+    description: string | null
+  }
   location: {
     name: string
     code: string | null
@@ -23,7 +27,6 @@ export interface ProblemDetailsProps {
   }
   description: string
   status: string
-  category: string | null
   maintenanceType: string | null
   imageUrl: string | null
   reporter: string

@@ -12,7 +12,7 @@ export interface CreateProblemRequest {
   /** Descrição detalhada do problema */
   description: string;
   /** ID da categoria do problema */
-  categoryId?: string;
+  categoryId: string;
   /** ID da localização onde ocorreu o problema */
   locationId: string;
   /** IDs dos anexos (retornados pelo upload) */
