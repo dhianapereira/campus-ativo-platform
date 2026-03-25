@@ -10,18 +10,24 @@ import {
   LocationInfo,
   EditButton,
   HistorySection,
-  HistoryToggle,
+  HistoryHeader,
   HistoryPanel,
-  HistoryTimeline,
-  HistoryEntry,
-  HistoryEntryMarker,
-  HistoryEntryBody,
-  HistoryEntryHeader,
+  HistorySummary,
+  HistoryList,
+  HistoryTimelineItem,
+  HistoryMarker,
+  HistoryCard,
+  HistoryCardHeader,
+  HistoryCardBody,
+  HistoryMeta,
+  HistoryBadge,
+  HistoryNote,
   HistoryChangeList,
 } from './styles'
 import {
   ArrowLeft,
   CaretDown,
+  ClockCounterClockwise,
   MapPin,
   NotePencil,
   Tag,
@@ -82,6 +88,107 @@ function formatHistoryChange(
     default:
       return 'Atualização registrada.'
   }
+}
+
+function getStatusVariant(status?: string | null) {
+  switch (status) {
+    case 'TO_ANALYSIS':
+    case 'toAnalysis':
+      return 'toAnalysis'
+    case 'IN_ANALYSIS':
+    case 'inAnalysis':
+      return 'inAnalysis'
+    case 'ACCEPTED':
+    case 'accepted':
+      return 'accepted'
+    case 'REJECTED':
+    case 'rejected':
+      return 'rejected'
+    case 'IN_PROGRESS':
+    case 'inProgress':
+      return 'inProgress'
+    case 'FINISHED':
+    case 'finished':
+      return 'finished'
+    default:
+      return null
+  }
+}
+
+function getMaintenanceTone(maintenanceType?: string | null) {
+  switch (maintenanceType) {
+    case 'PREVENTIVE':
+    case 'preventive':
+      return 'maintenance-preventive'
+    case 'CORRECTIVE':
+    case 'corrective':
+      return 'maintenance-corrective'
+    default:
+      return 'default'
+  }
+}
+
+function renderHistoryChanges(
+  changes: NonNullable<ProblemDetailsProps['history'][number]['changes']>,
+) {
+  return changes.map((change, index) => {
+    if (change.field === 'note') return null
+
+    if (change.field === 'status') {
+      return (
+        <div key={`${change.field}-${index}`} className="history-change-item">
+          <Text size="sm">
+            <span className="history-change-prefix">Status:</span> de{' '}
+            <span
+              className="history-inline-chip"
+              data-tone={getStatusVariant(change.oldValue) ?? undefined}
+            >
+              {getStatusLabel(change.oldValue)}
+            </span>{' '}
+            para{' '}
+            <span
+              className="history-inline-chip"
+              data-tone={getStatusVariant(change.newValue) ?? undefined}
+            >
+              {getStatusLabel(change.newValue)}
+            </span>
+          </Text>
+        </div>
+      )
+    }
+
+    if (change.field === 'maintenanceType') {
+      return (
+        <div key={`${change.field}-${index}`} className="history-change-item">
+          <Text size="sm">
+            <span className="history-change-prefix">Manutenção:</span> de{' '}
+            <span
+              className="history-inline-chip"
+              data-tone={getMaintenanceTone(change.oldValue)}
+            >
+              {getMaintenanceTypeLabel(change.oldValue)}
+            </span>{' '}
+            para{' '}
+            <span
+              className="history-inline-chip"
+              data-tone={getMaintenanceTone(change.newValue)}
+            >
+              {getMaintenanceTypeLabel(change.newValue)}
+            </span>
+          </Text>
+        </div>
+      )
+    }
+
+    const description = formatHistoryChange(change)
+    if (!description) return null
+
+    return (
+      <div key={`${change.field}-${index}`} className="history-change-item">
+        <Text size="sm">{description}</Text>
+      </div>
+    )
+  })
 }
 
 export default function ProblemDetails() {
@@ -437,34 +544,44 @@ export default function ProblemDetails() {
             </InfoContainer>
           )}
           <HistorySection>
-            <HistoryToggle
+            <HistoryHeader
               type="button"
               onClick={() => setIsHistoryOpen((current) => !current)}
               aria-expanded={isHistoryOpen}
               aria-controls="problem-history-panel"
             >
-              <div>
-                <Text className="label" size="md">
-                  Histórico
-                </Text>
-                <Text size="sm">
+              <div className="history-title">
+                <ClockCounterClockwise
+                  className="history-icon"
+                  size={18}
+                  weight="fill"
+                  aria-hidden="true"
+                />
+                <HistorySummary>
+                  <Text className="label" size="md">
+                    Histórico
+                  </Text>
+                  <Text size="sm">
+                    Acompanhamento das alterações e observações do problema.
+                  </Text>
+                </HistorySummary>
+              </div>
+              <div className="history-header-actions">
+                <HistoryBadge>
                   {problemData.history.length} registro
                   {problemData.history.length === 1 ? '' : 's'}
-                </Text>
+                </HistoryBadge>
+                <CaretDown
+                  className="history-chevron"
+                  size={18}
+                  weight="bold"
+                />
               </div>
-              <CaretDown
-                size={18}
-                weight="bold"
-                style={{
-                  transform: isHistoryOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                  transition: 'transform 0.2s ease',
-                }}
-              />
-            </HistoryToggle>
+            </HistoryHeader>
             {isHistoryOpen && (
               <HistoryPanel id="problem-history-panel">
                 {problemData.history.length > 0 ? (
-                  <HistoryTimeline>
+                  <HistoryList>
                     {problemData.history.map((entry) => {
                       const changes = entry.changes ?? []
                       const noteChange = changes.find(
@@ -485,59 +602,68 @@ export default function ProblemDetails() {
                       const visibleChanges = changes.filter(
                         (change) => change.field !== 'note',
                       )
+                      const renderedChanges = renderHistoryChanges(changes)
+                      const absoluteDate = formatDateTime(entry.createdAt)
+                      const hasDetails =
+                        visibleChanges.length > 0 || noteText || noteWasRemoved
 
                       return (
-                        <HistoryEntry key={entry.id}>
-                          <HistoryEntryMarker aria-hidden="true" />
-                          <HistoryEntryBody>
-                            <HistoryEntryHeader>
-                              <Text size="md">
-                                {getHistoryActionLabel(entry.action)}
-                              </Text>
-                              <Text size="sm">
-                                {entry.userName} em{' '}
-                                {formatDateTime(entry.createdAt)}
-                              </Text>
-                            </HistoryEntryHeader>
-                            {(visibleChanges.length > 0 ||
-                              noteText ||
-                              noteWasRemoved) && (
-                              <HistoryChangeList>
-                                {visibleChanges.map((change, index) => {
-                                  const description =
-                                    formatHistoryChange(change)
-
-                                  if (!description) return null
-
-                                  return (
-                                    <li
-                                      key={`${entry.id}-${change.field}-${index}`}
+                        <HistoryTimelineItem key={entry.id}>
+                          <HistoryMarker aria-hidden="true" />
+                          <HistoryCard>
+                            <HistoryCardHeader>
+                              <div className="history-card-title">
+                                <div className="history-card-heading">
+                                  <span className="history-actor">
+                                    {entry.userName}
+                                  </span>
+                                  <span className="history-action-text">
+                                    {getHistoryActionLabel(entry.action)}
+                                  </span>
+                                  <span className="history-date-inline">
+                                    em {absoluteDate}
+                                  </span>
+                                </div>
+                                <HistoryMeta />
+                              </div>
+                            </HistoryCardHeader>
+                            <HistoryCardBody>
+                              {hasDetails ? (
+                                <>
+                                  {visibleChanges.length > 0 && (
+                                    <HistoryChangeList>
+                                      {renderedChanges}
+                                    </HistoryChangeList>
+                                  )}
+                                  {noteText && (
+                                    <HistoryNote key={`${entry.id}-note`}>
+                                      <Text size="sm">
+                                        {`Observações: ${noteText}`}
+                                      </Text>
+                                    </HistoryNote>
+                                  )}
+                                  {noteWasRemoved && (
+                                    <HistoryNote
+                                      key={`${entry.id}-note-removed`}
                                     >
-                                      <Text size="sm">{description}</Text>
-                                    </li>
-                                  )
-                                })}
-                                {noteText && (
-                                  <li key={`${entry.id}-note`}>
-                                    <Text size="sm">
-                                      {`Observações: ${noteText}`}
-                                    </Text>
-                                  </li>
-                                )}
-                                {noteWasRemoved && (
-                                  <li key={`${entry.id}-note-removed`}>
-                                    <Text size="sm">
-                                      Observações removidas.
-                                    </Text>
-                                  </li>
-                                )}
-                              </HistoryChangeList>
-                            )}
-                          </HistoryEntryBody>
-                        </HistoryEntry>
+                                      <Text size="sm">
+                                        Observações removidas.
+                                      </Text>
+                                    </HistoryNote>
+                                  )}
+                                </>
+                              ) : (
+                                <Text size="sm">
+                                  Nenhum detalhe adicional foi informado neste
+                                  registro.
+                                </Text>
+                              )}
+                            </HistoryCardBody>
+                          </HistoryCard>
+                        </HistoryTimelineItem>
                       )
                     })}
-                  </HistoryTimeline>
+                  </HistoryList>
                 ) : (
                   <Text size="md">
                     Nenhuma atualização registrada até o momento.

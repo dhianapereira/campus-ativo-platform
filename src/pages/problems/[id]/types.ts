@@ -7,6 +7,7 @@ export interface ProblemHistoryChange {
 export interface ProblemHistoryEntry {
   id: string
   action: string
+  userId: string
   userName: string
   note?: string | null
   changes?: ProblemHistoryChange[] | null

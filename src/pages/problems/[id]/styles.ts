@@ -191,7 +191,7 @@ export const CategoryInfo = styled('div', {
   },
 
   '& .category-icon': {
-    color: '$orange',
+    color: '$green',
     flexShrink: 0,
   },
 
@@ -287,18 +287,15 @@ export const LocationInfo = styled('div', {
 })
 
 export const HistorySection = styled('section', {
-  display: 'flex',
-  flexDirection: 'column',
-  borderRadius: '$sm',
-  border: '1px solid $lightGray',
-  backgroundColor: '$white',
+  ...detailCardBase,
+  gap: '$4',
 
   '& .label': {
     fontWeight: '$bold',
   },
 })
 
-export const HistoryToggle = styled('button', {
+export const HistoryHeader = styled('button', {
   all: 'unset',
   boxSizing: 'border-box',
   width: '100%',
@@ -306,52 +303,81 @@ export const HistoryToggle = styled('button', {
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: '$3',
-  padding: '$4',
-  backgroundColor: '$white',
+  flexWrap: 'wrap',
   cursor: 'pointer',
 
-  '&:focus': {
-    boxShadow: 'inset 0 0 0 2px $colors $greenAccent',
+  '&:focus-visible': {
+    boxShadow: '0 0 0 2px $colors $greenAccent',
+    borderRadius: '$sm',
   },
+
+  '& .history-title': {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '$2',
+    minWidth: 0,
+    flex: 1,
+  },
+
+  '& .history-icon': {
+    color: '$green',
+    flexShrink: 0,
+    marginTop: '2px',
+  },
+
+  '& .history-header-actions': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '$2',
+    flexShrink: 0,
+  },
+
+  '& .history-chevron': {
+    color: '$green',
+    transition: 'transform 0.2s ease',
+  },
+
+  '&[aria-expanded="true"] .history-chevron': {
+    transform: 'rotate(180deg)',
+  },
+})
+
+export const HistorySummary = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$1',
+  alignItems: 'flex-start',
 })
 
 export const HistoryPanel = styled('div', {
   display: 'flex',
   flexDirection: 'column',
-  gap: '$3',
-  padding: '$1 $4 $4',
-  borderTop: '1px solid $lightGray',
-  backgroundColor: '$greenishWhite',
+  gap: '$4',
+  paddingTop: '$1',
+  borderTop: '1px solid rgba(0, 0, 0, 0.06)',
 })
 
-export const HistoryTimeline = styled('div', {
+export const HistoryList = styled('div', {
   display: 'flex',
   flexDirection: 'column',
+  gap: '$3',
 })
 
-export const HistoryEntry = styled('article', {
+export const HistoryTimelineItem = styled('article', {
   position: 'relative',
   display: 'grid',
   gridTemplateColumns: '20px 1fr',
   gap: '$3',
-  padding: '$4 0',
-
-  '&:not(:last-child)': {
-    borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
-  },
+  alignItems: 'start',
 
   '&::before': {
     content: '',
     position: 'absolute',
     left: '9px',
     top: 0,
-    bottom: 0,
+    bottom: '-$3',
     width: '2px',
-    backgroundColor: '$lightGray',
-  },
-
-  '&:first-child::before': {
-    top: '$4',
+    backgroundColor: 'rgba(18, 90, 57, 0.12)',
   },
 
   '&:last-child::before': {
@@ -359,34 +385,181 @@ export const HistoryEntry = styled('article', {
   },
 })
 
-export const HistoryEntryMarker = styled('span', {
+export const HistoryMarker = styled('span', {
   position: 'relative',
   zIndex: 1,
+  display: 'block',
   width: '20px',
   height: '20px',
+  marginTop: '$4',
+  flexShrink: 0,
   borderRadius: '$full',
   backgroundColor: '$white',
   border: '2px solid $green',
-  marginTop: '$1',
+  boxShadow: '0 0 0 4px rgba(18, 90, 57, 0.08)',
 })
 
-export const HistoryEntryBody = styled('div', {
+export const HistoryCard = styled('article', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$3',
+  padding: '$4',
+  borderRadius: '$sm',
+  border: '1px solid rgba(18, 90, 57, 0.12)',
+  backgroundColor: 'rgba(245, 250, 247, 0.95)',
+
+  '& .history-card-title': {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '$2',
+  },
+
+  '& .history-card-heading': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '$2',
+    flexWrap: 'wrap',
+    color: '$gray700',
+    lineHeight: 1.4,
+  },
+
+  '& .history-actor': {
+    fontWeight: '$bold',
+    color: '$darkGray',
+  },
+
+  '& .history-action-text': {
+    color: '$gray700',
+  },
+
+  '& .history-date-inline': {
+    color: '$gray',
+    fontSize: '$sm',
+  },
+})
+
+export const HistoryCardHeader = styled('div', {
+  display: 'flex',
+  alignItems: 'flex-start',
+  justifyContent: 'space-between',
+  gap: '$3',
+  flexWrap: 'wrap',
+})
+
+export const HistoryCardBody = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$2',
   minWidth: 0,
 })
 
-export const HistoryEntryHeader = styled('div', {
+export const HistoryMeta = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   gap: '$1',
+  minWidth: 0,
 })
 
-export const HistoryChangeList = styled('ul', {
+export const HistoryBadge = styled('span', {
+  display: 'inline-flex',
+  alignItems: 'center',
+  minHeight: '32px',
+  padding: '$1 $3',
+  borderRadius: '$full',
+  backgroundColor: 'rgba(18, 90, 57, 0.08)',
+  color: '$green',
+  fontSize: '$xs',
+  fontWeight: '$bold',
+  letterSpacing: '0.02em',
+  textTransform: 'uppercase',
+})
+
+export const HistoryChangeList = styled('div', {
   margin: 0,
-  paddingLeft: '$5',
+  paddingLeft: 0,
   display: 'flex',
   flexDirection: 'column',
   gap: '$2',
+
+  '& .history-change-item': {
+    display: 'flex',
+    color: '$darkGray',
+    paddingLeft: '$1',
+
+    '& p': {
+      whiteSpace: 'pre-wrap',
+      lineHeight: '$base',
+    },
+  },
+
+  '& .history-change-prefix': {
+    fontWeight: '$bold',
+  },
+
+  '& .history-inline-chip': {
+    display: 'inline-flex',
+    alignItems: 'center',
+    minHeight: '24px',
+    padding: '0 $2',
+    borderRadius: '$full',
+    fontSize: '$xs',
+    fontWeight: '$bold',
+    letterSpacing: '0.02em',
+    verticalAlign: 'middle',
+    backgroundColor: 'rgba(18, 90, 57, 0.08)',
+    color: '$green',
+  },
+
+  '& .history-inline-chip[data-tone="toAnalysis"]': {
+    backgroundColor: '$darkBlue12Bg',
+    color: '$darkBlue',
+  },
+
+  '& .history-inline-chip[data-tone="inAnalysis"]': {
+    backgroundColor: '$blue12Bg',
+    color: '$blue',
+  },
+
+  '& .history-inline-chip[data-tone="accepted"]': {
+    backgroundColor: '$orange12Bg',
+    color: '$orange',
+  },
+
+  '& .history-inline-chip[data-tone="rejected"]': {
+    backgroundColor: '$red12Bg',
+    color: '$red',
+  },
+
+  '& .history-inline-chip[data-tone="inProgress"]': {
+    backgroundColor: '$yellow12Bg',
+    color: '$yellow',
+  },
+
+  '& .history-inline-chip[data-tone="finished"]': {
+    backgroundColor: '$lightGreen12Bg',
+    color: '$lightGreen',
+  },
+
+  '& .history-inline-chip[data-tone="maintenance-preventive"]': {
+    backgroundColor: '$lightGreen12Bg',
+    color: '$green',
+  },
+
+  '& .history-inline-chip[data-tone="maintenance-corrective"]': {
+    backgroundColor: '$orange12Bg',
+    color: '$orangeText',
+  },
+})
+
+export const HistoryNote = styled('div', {
+  padding: '$2 $3',
+  borderRadius: '$sm',
+  backgroundColor: '$gray50',
+  borderLeft: '3px solid rgba(56, 61, 59, 0.18)',
+
+  '& p': {
+    color: '$darkGray',
+    whiteSpace: 'pre-wrap',
+    lineHeight: '$base',
+  },
 })

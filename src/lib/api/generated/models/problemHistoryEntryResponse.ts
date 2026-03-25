@@ -14,6 +14,8 @@ export interface ProblemHistoryEntryResponse {
   id: string;
   /** Ação realizada no histórico do problema */
   action: ProblemHistoryEntryResponseAction;
+  /** ID do usuário que realizou a ação */
+  userId: string;
   /** Nome do usuário que realizou a ação */
   userName: string;
   /**

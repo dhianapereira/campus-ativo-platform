@@ -2041,6 +2041,11 @@
             ],
             "example": "NOTE_ADDED"
           },
+          "userId": {
+            "type": "string",
+            "description": "ID do usuário que realizou a ação",
+            "example": "123e4567-e89b-12d3-a456-426614174001"
+          },
           "userName": {
             "type": "string",
             "description": "Nome do usuário que realizou a ação",
@@ -2067,7 +2072,7 @@
             "example": "2025-01-15T10:30:00Z"
           }
         },
-        "required": ["id", "action", "userName", "createdAt"]
+        "required": ["id", "action", "userId", "userName", "createdAt"]
       },
       "ProblemResponse": {
         "type": "object",
