@@ -347,7 +347,8 @@ export default function TrashPage() {
         title: item.name,
         description: item.description,
         locationName: item.local,
-        authorId: (item as TrashItem & { reporterId?: string }).reporterId,
+        authorId: (item as TrashItem & { reporter?: { id?: string } }).reporter
+          ?.id,
         createdAt: (item as TrashItem & { createdAt?: string }).createdAt,
         deletedAt: item.deletedAt,
       }

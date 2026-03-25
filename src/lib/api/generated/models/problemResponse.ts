@@ -8,26 +8,17 @@
 import type { AttachmentInfo } from './attachmentInfo';
 import type { ProblemHistoryEntryResponse } from './problemHistoryEntryResponse';
 import type { ProblemLocationSummaryResponse } from './problemLocationSummaryResponse';
+import type { ProblemReporterResponse } from './problemReporterResponse';
 import type { ProblemResponseCategoryId } from './problemResponseCategoryId';
 import type { ProblemResponseDeletedAt } from './problemResponseDeletedAt';
 import type { ProblemResponseMaintenanceType } from './problemResponseMaintenanceType';
-import type { ProblemResponseReporterEmail } from './problemResponseReporterEmail';
-import type { ProblemResponseReporterId } from './problemResponseReporterId';
 import type { ProblemResponseStatus } from './problemResponseStatus';
 
 export interface ProblemResponse {
   /** ID do problema */
   id: string;
-  /**
-   * ID do autor do problema
-   * @nullable
-   */
-  reporterId?: ProblemResponseReporterId;
-  /**
-   * Email do autor do problema
-   * @nullable
-   */
-  reporterEmail?: ProblemResponseReporterEmail;
+  /** Dados do autor do problema */
+  reporter: ProblemReporterResponse;
   /**
    * ID da categoria do problema
    * @nullable

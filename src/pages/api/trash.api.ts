@@ -182,7 +182,7 @@ export default async function handler(
       const onlyOwnProblems = (problems: Array<Record<string, unknown>>) =>
         currentUserId
           ? problems.filter((p) => {
-              const reporterId = extractComparableId(p.reporterId)
+              const reporterId = extractComparableId(p.reporter)
               return reporterId === currentUserId
             })
           : []

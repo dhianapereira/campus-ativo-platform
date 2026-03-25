@@ -29,7 +29,10 @@ interface ProblemData {
   slug: string
   categoryId: string
   locationId?: string | null
-  reporterId?: string | null
+  reporter: {
+    id: string
+    email: string
+  }
   status: string
   createdAt: string
   attachments?: AttachmentInfo[]
@@ -82,7 +85,7 @@ export default function EditProblem() {
 
         setProblemData(problem)
 
-        const isAuthor = user?.id === problem.reporterId
+        const isAuthor = user?.id === problem.reporter.id
         const canEdit = problem.status === 'TO_ANALYSIS'
 
         if (!isAuthor) {

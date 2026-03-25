@@ -147,7 +147,7 @@ export default function ProblemDetails() {
       category: problem.categoryId ?? null,
       maintenanceType: problem.maintenanceType ?? null,
       imageUrl: firstAttachment?.url ?? null,
-      reporter: problem.reporterEmail ?? '—',
+      reporter: problem.reporter.email,
       createdAt: formatDateTime(problem.createdAt),
       updatedAt: problem.updatedAt ? formatDateTime(problem.updatedAt) : null,
       history: problem.history ?? [],
@@ -177,8 +177,7 @@ export default function ProblemDetails() {
     },
   })
 
-  const isReporter =
-    user?.id && problem?.reporterId && user.id === problem.reporterId
+  const isReporter = user?.id && problem?.reporter.id === user.id
   const isStatusToAnalysis = problem?.status === STATUS_TO_ANALYSIS_BACKEND
   const canMoveToTrash = isReporter && isStatusToAnalysis
   const canEdit = isStatusToAnalysis

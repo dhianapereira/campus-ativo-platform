@@ -87,7 +87,7 @@ export default function Problems() {
       id: problem.id || problem.slug || '',
       slug: problem.slug || problem.id || '',
       title: problem.title || '',
-      location: problem.locationName || 'Localização excluída',
+      location: problem.locationName,
       description: problem.excerpt || '',
       badgeId: backendStatusToProblemStatus[problem.status],
     }))
