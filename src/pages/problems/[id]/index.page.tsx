@@ -124,7 +124,7 @@ function getMaintenanceTone(maintenanceType?: string | null) {
     case 'corrective':
       return 'maintenance-corrective'
     default:
-      return 'default'
+      return 'maintenance-unset'
   }
 }
 

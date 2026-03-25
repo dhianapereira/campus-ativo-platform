@@ -549,6 +549,11 @@ export const HistoryChangeList = styled('div', {
     backgroundColor: '$orange12Bg',
     color: '$orangeText',
   },
+
+  '& .history-inline-chip[data-tone="maintenance-unset"]': {
+    backgroundColor: '$gray100',
+    color: '$gray600',
+  },
 })
 
 export const HistoryNote = styled('div', {
