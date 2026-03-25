@@ -1827,6 +1827,32 @@
         },
         "required": ["title", "description", "locationId"]
       },
+      "ProblemLocationSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID da localização",
+            "example": "123e4567-e89b-12d3-a456-426614174003"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome da localização",
+            "example": "Bloco A - Sala 201"
+          },
+          "code": {
+            "type": "string",
+            "description": "Código identificador da localização",
+            "example": "BLA-201"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição da localização",
+            "example": "Sala de aula localizada no primeiro andar do Bloco A"
+          }
+        },
+        "required": ["id", "name", "code", "description"]
+      },
       "AttachmentInfo": {
         "type": "object",
         "properties": {
@@ -1934,17 +1960,25 @@
             "example": "123e4567-e89b-12d3-a456-426614174001",
             "nullable": true
           },
+          "reporterEmail": {
+            "type": "object",
+            "description": "Email do autor do problema",
+            "example": "joao.silva@ifal.edu.br",
+            "nullable": true
+          },
           "categoryId": {
             "type": "object",
             "description": "ID da categoria do problema",
             "example": "123e4567-e89b-12d3-a456-426614174002",
             "nullable": true
           },
-          "locationId": {
-            "type": "object",
-            "description": "ID da localização do problema",
-            "example": "123e4567-e89b-12d3-a456-426614174003",
-            "nullable": true
+          "location": {
+            "description": "Resumo da localização do problema",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProblemLocationSummaryResponse"
+              }
+            ]
           },
           "title": {
             "type": "string",
@@ -2021,6 +2055,7 @@
         },
         "required": [
           "id",
+          "location",
           "title",
           "description",
           "slug",

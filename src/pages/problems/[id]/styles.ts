@@ -169,6 +169,77 @@ export const InfoContainer = styled('div', {
   },
 })
 
+export const LocationInfo = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$3',
+  width: '100%',
+  padding: '$4',
+  borderRadius: '$sm',
+  border: '1px solid rgba(18, 90, 57, 0.12)',
+  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+
+  '& .location-header': {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '$3',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
+
+  '& .location-title': {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '$2',
+    minWidth: 0,
+  },
+
+  '& .location-icon': {
+    color: '$green',
+    flexShrink: 0,
+  },
+
+  '& .location-name': {
+    fontWeight: '$medium',
+    color: '$darkGray',
+  },
+
+  '& .location-code': {
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: '$1 $2',
+    borderRadius: '$full',
+    backgroundColor: 'rgba(18, 90, 57, 0.08)',
+    color: '$green',
+    fontSize: '$xs',
+    fontWeight: '$bold',
+    letterSpacing: '0.02em',
+    textTransform: 'uppercase',
+  },
+
+  '& .location-description': {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '$1',
+    paddingTop: '$1',
+    borderTop: '1px solid rgba(0, 0, 0, 0.06)',
+  },
+
+  '& .location-description-label': {
+    color: '$gray',
+    fontWeight: '$bold',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+  },
+
+  '& .location-description-text': {
+    color: '$darkGray',
+    lineHeight: '$base',
+    whiteSpace: 'pre-wrap',
+  },
+})
+
 export const HistorySection = styled('section', {
   display: 'flex',
   flexDirection: 'column',

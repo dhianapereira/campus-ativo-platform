@@ -6,6 +6,7 @@ import {
   Title,
   ImageContainer,
   InfoContainer,
+  LocationInfo,
   EditButton,
   HistorySection,
   HistoryToggle,
@@ -17,7 +18,7 @@ import {
   HistoryEntryHeader,
   HistoryChangeList,
 } from './styles'
-import { ArrowLeft, CaretDown, NotePencil, Trash } from 'phosphor-react'
+import { ArrowLeft, CaretDown, MapPin, NotePencil, Trash } from 'phosphor-react'
 import { useRouter } from 'next/router'
 import type { ProblemDetailsProps, ProblemHistoryChange } from './types'
 import { Button, Text } from '@/components'
@@ -136,13 +137,17 @@ export default function ProblemDetails() {
     return {
       id: problem.id,
       title: problem.title,
-      location: problem.location?.name ?? problem.locationId ?? '—',
+      location: {
+        name: problem.location.name,
+        code: problem.location.code ?? null,
+        description: problem.location.description ?? null,
+      },
       description: problem.description,
       status: toFrontendStatus(problem.status),
       category: problem.categoryId ?? null,
       maintenanceType: problem.maintenanceType ?? null,
       imageUrl: firstAttachment?.url ?? null,
-      reporter: problem.reporterName ?? problem.reporterId ?? '—',
+      reporter: problem.reporterEmail ?? '—',
       createdAt: formatDateTime(problem.createdAt),
       updatedAt: problem.updatedAt ? formatDateTime(problem.updatedAt) : null,
       history: problem.history ?? [],
@@ -321,7 +326,36 @@ export default function ProblemDetails() {
             <Text className="label" size="md">
               Local:
             </Text>
-            <Text size="md">{problemData.location}</Text>
+            <LocationInfo>
+              <div className="location-header">
+                <div className="location-title">
+                  <MapPin
+                    className="location-icon"
+                    size={18}
+                    weight="fill"
+                    aria-hidden="true"
+                  />
+                  <Text className="location-name" size="md">
+                    {problemData.location.name}
+                  </Text>
+                </div>
+                {problemData.location.code && (
+                  <span className="location-code">
+                    Código {problemData.location.code}
+                  </span>
+                )}
+              </div>
+              {problemData.location.description && (
+                <div className="location-description">
+                  <Text className="location-description-label" size="xs">
+                    Descrição
+                  </Text>
+                  <Text className="location-description-text" size="sm">
+                    {problemData.location.description}
+                  </Text>
+                </div>
+              )}
+            </LocationInfo>
           </InfoContainer>
           <InfoContainer>
             <Text className="label" size="md">

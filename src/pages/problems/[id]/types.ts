@@ -16,7 +16,11 @@ export interface ProblemHistoryEntry {
 export interface ProblemDetailsProps {
   id: string
   title: string
-  location: string
+  location: {
+    name: string
+    code: string | null
+    description: string | null
+  }
   description: string
   status: string
   category: string | null
