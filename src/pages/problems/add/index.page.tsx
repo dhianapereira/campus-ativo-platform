@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Container, Body, Header, Input, Title } from './styles'
 import { ArrowLeft } from 'phosphor-react'
-import { Button, Text, TextArea, TextInput } from '@/components'
+import { Button, Dropdown, Text, TextArea, TextInput } from '@/components'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { problemFormSchema, ProblemFormData } from '@/validators/problem-form'
@@ -93,6 +93,19 @@ export default function AddProblem() {
 
   const categories: Category[] = categoriesData?.categories || []
   const locations: Location[] = locationsData?.locations || []
+  const categoryItems = categories.map((category) => ({
+    value: category.id,
+    name: category.name,
+    description: category.description ?? undefined,
+    label: getCategoryOptionLabel(category),
+  }))
+  const locationItems = locations.map((location) => ({
+    value: location.id,
+    name: location.name,
+    code: location.code ?? undefined,
+    description: location.description ?? undefined,
+    label: getLocationOptionLabel(location),
+  }))
 
   const handleImageSelect = async (file: File | null) => {
     setUploadError(null)
@@ -190,21 +203,6 @@ export default function AddProblem() {
     createProblemMutation.mutate(data)
   }
 
-  const selectStyles = {
-    width: '100%',
-    padding: '0.875rem 1rem',
-    borderRadius: '6px',
-    border: `1px solid ${colors.gray300}`,
-    fontSize: '1rem',
-    color: colors.gray,
-    backgroundColor: colors.white,
-    cursor: 'pointer',
-    appearance: 'none' as const,
-    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23374151' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'right 1rem center',
-  }
-
   return (
     <ProtectedRoute>
       <Container>
@@ -240,56 +238,52 @@ export default function AddProblem() {
 
           <Input>
             <Text size="md">Categoria</Text>
-            <select
-              {...register('categoryId')}
-              aria-label="Categoria do problema"
-              tabIndex={0}
-              style={selectStyles}
-              disabled={isLoadingCategories}
-            >
-              <option value="">
-                {isLoadingCategories
-                  ? 'Carregando categorias...'
-                  : 'Selecione uma categoria'}
-              </option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {getCategoryOptionLabel(category)}
-                </option>
-              ))}
-            </select>
-            {errors.categoryId && (
-              <Text className="error-message" size="sm">
-                {errors.categoryId.message}
-              </Text>
-            )}
+            <Controller
+              name="categoryId"
+              control={control}
+              render={({ field }) => (
+                <Dropdown
+                  id="categoryId"
+                  hint={
+                    isLoadingCategories
+                      ? 'Carregando categorias...'
+                      : 'Selecione uma categoria'
+                  }
+                  items={categoryItems}
+                  itemSelected={field.value}
+                  onChange={(value) => field.onChange(value)}
+                  hasError={!!errors.categoryId}
+                  errorMessage={errors.categoryId?.message}
+                  disabled={isLoadingCategories}
+                  required
+                />
+              )}
+            />
           </Input>
 
           <Input>
             <Text size="md">Localização</Text>
-            <select
-              {...register('locationId')}
-              aria-label="Localização do problema"
-              tabIndex={0}
-              style={selectStyles}
-              disabled={isLoadingLocations}
-            >
-              <option value="">
-                {isLoadingLocations
-                  ? 'Carregando localizações...'
-                  : 'Selecione uma localização'}
-              </option>
-              {locations.map((location) => (
-                <option key={location.id} value={location.id}>
-                  {getLocationOptionLabel(location)}
-                </option>
-              ))}
-            </select>
-            {errors.locationId && (
-              <Text className="error-message" size="sm">
-                {errors.locationId.message}
-              </Text>
-            )}
+            <Controller
+              name="locationId"
+              control={control}
+              render={({ field }) => (
+                <Dropdown
+                  id="locationId"
+                  hint={
+                    isLoadingLocations
+                      ? 'Carregando localizações...'
+                      : 'Selecione uma localização'
+                  }
+                  items={locationItems}
+                  itemSelected={field.value}
+                  onChange={(value) => field.onChange(value)}
+                  hasError={!!errors.locationId}
+                  errorMessage={errors.locationId?.message}
+                  disabled={isLoadingLocations}
+                  required
+                />
+              )}
+            />
           </Input>
 
           <Input>
