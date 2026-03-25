@@ -180,7 +180,7 @@ export default function ProblemDetails() {
   const isReporter = user?.id && problem?.reporter.id === user.id
   const isStatusToAnalysis = problem?.status === STATUS_TO_ANALYSIS_BACKEND
   const canMoveToTrash = isReporter && isStatusToAnalysis
-  const canEdit = isStatusToAnalysis
+  const canEdit = canMoveToTrash
   const canAccessActions = hasRole('MANAGER')
 
   if (isLoading || (id && !problem && !error)) {
