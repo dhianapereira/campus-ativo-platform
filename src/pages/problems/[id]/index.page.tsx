@@ -218,8 +218,25 @@ export default function ProblemDetails() {
     )
   }
 
+  function handleBackNavigation() {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back()
+      return
+    }
+
+    router.push('/problems')
+  }
+
   async function goToEditPage() {
-    await router.push(`/problems/${id}/edit`)
+    if (typeof id !== 'string') {
+      await router.push('/problems')
+      return
+    }
+
+    await router.push({
+      pathname: `/problems/${id}/edit`,
+      query: { from: 'details' },
+    })
   }
 
   function handleMoveToTrash() {
@@ -234,7 +251,7 @@ export default function ProblemDetails() {
           <div className="first-component">
             <ArrowLeft
               className="back-icon"
-              onClick={() => window.history.back()}
+              onClick={handleBackNavigation}
               weight="bold"
               size={24}
               aria-label="Voltar para a página anterior"

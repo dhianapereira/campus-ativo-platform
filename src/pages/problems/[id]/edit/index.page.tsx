@@ -40,11 +40,12 @@ interface ProblemData {
 
 export default function EditProblem() {
   const router = useRouter()
-  const { id } = router.query
+  const { id, from } = router.query
   const { user } = useAuth()
   const queryClient = useQueryClient()
   const problemDetailsPath =
     typeof id === 'string' ? `/problems/${id}` : '/problems'
+  const cameFromDetails = from === 'details'
 
   const [problemData, setProblemData] = useState<ProblemData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -254,6 +255,19 @@ export default function EditProblem() {
     editProblemMutation.mutate(data)
   }
 
+  function handleBackNavigation() {
+    if (
+      cameFromDetails &&
+      typeof window !== 'undefined' &&
+      window.history.length > 1
+    ) {
+      router.back()
+      return
+    }
+
+    router.replace(problemDetailsPath)
+  }
+
   if (isLoading) {
     return (
       <ProtectedRoute>
@@ -261,7 +275,7 @@ export default function EditProblem() {
           <Header>
             <ArrowLeft
               className="back-icon"
-              onClick={() => router.push(problemDetailsPath)}
+              onClick={handleBackNavigation}
               weight="bold"
               size={24}
               aria-label="Voltar para a página anterior"
@@ -289,7 +303,7 @@ export default function EditProblem() {
           <Header>
             <ArrowLeft
               className="back-icon"
-              onClick={() => router.push(problemDetailsPath)}
+              onClick={handleBackNavigation}
               weight="bold"
               size={24}
               aria-label="Voltar para a página anterior"
@@ -330,7 +344,7 @@ export default function EditProblem() {
         <Header>
           <ArrowLeft
             className="back-icon"
-            onClick={() => router.push(problemDetailsPath)}
+            onClick={handleBackNavigation}
             weight="bold"
             size={24}
             aria-label="Voltar para a página anterior"
