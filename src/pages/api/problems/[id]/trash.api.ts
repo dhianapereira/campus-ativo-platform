@@ -6,17 +6,17 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method !== 'PATCH') {
-    return res.status(405).json({ message: 'Método não permitido' })
+    return res.status(405).json({ message: 'Método não permitido.' })
   }
 
   const authToken = req.cookies['auth-token']
   if (!authToken) {
-    return res.status(401).json({ message: 'Não autenticado' })
+    return res.status(401).json({ message: 'Não autenticado.' })
   }
 
   const { id } = req.query
   if (!id || typeof id !== 'string') {
-    return res.status(400).json({ message: 'ID do problema é obrigatório' })
+    return res.status(400).json({ message: 'ID do problema é obrigatório.' })
   }
 
   try {

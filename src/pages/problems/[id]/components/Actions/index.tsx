@@ -96,7 +96,7 @@ export function Actions({
 
     if (!response.ok) {
       const responseData = await response.json().catch(() => ({}))
-      throw new Error(responseData.message || 'Falha ao salvar ações')
+      throw new Error(responseData.message || 'Falha ao salvar ações.')
     }
 
     await queryClient.invalidateQueries({
@@ -143,7 +143,7 @@ export function Actions({
       },
     )
 
-    toast.success('Operação realizada com sucesso')
+    toast.success('Operação realizada com sucesso.')
   }
 
   useEffect(() => {
@@ -165,7 +165,7 @@ export function Actions({
       toast.error(
         error instanceof Error
           ? error.message
-          : 'Falha ao atualizar histórico do problema',
+          : 'Falha ao atualizar histórico do problema.',
       )
     }
   }

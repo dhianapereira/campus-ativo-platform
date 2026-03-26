@@ -75,7 +75,7 @@ export default function AddProblem() {
       const response = await fetch('/api/categories?isActive=true', {
         credentials: 'include',
       })
-      if (!response.ok) throw new Error('Falha ao buscar categorias')
+      if (!response.ok) throw new Error('Falha ao buscar categorias.')
       return response.json()
     },
   })
@@ -86,7 +86,7 @@ export default function AddProblem() {
       const response = await fetch('/api/locations?isActive=true', {
         credentials: 'include',
       })
-      if (!response.ok) throw new Error('Falha ao buscar localizações')
+      if (!response.ok) throw new Error('Falha ao buscar localizações.')
       return response.json()
     },
   })
@@ -135,7 +135,7 @@ export default function AddProblem() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao fazer upload da imagem')
+        throw new Error(errorData.message || 'Falha ao fazer upload da imagem.')
       }
 
       const data = await response.json()
@@ -147,7 +147,7 @@ export default function AddProblem() {
           ? error.name === 'AbortError'
             ? 'Upload demorou muito. Tente novamente.'
             : error.message
-          : 'Falha ao fazer upload da imagem'
+          : 'Falha ao fazer upload da imagem.'
       setUploadError(errorMessage)
       toast.error(errorMessage)
       setAttachmentId(null)
@@ -190,7 +190,7 @@ export default function AddProblem() {
       router.push('/problems')
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao cadastrar problema')
+      toast.error(error.message || 'Falha ao cadastrar problema.')
       setError('root', {
         type: 'manual',
         message: error.message,

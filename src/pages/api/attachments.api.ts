@@ -15,13 +15,13 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Método não permitido' })
+    return res.status(405).json({ message: 'Método não permitido.' })
   }
 
   const authToken = req.cookies['auth-token']
 
   if (!authToken) {
-    return res.status(401).json({ message: 'Não autenticado' })
+    return res.status(401).json({ message: 'Não autenticado.' })
   }
 
   try {
@@ -45,7 +45,7 @@ export default async function handler(
     const maxSizeBytes = 5 * 1024 * 1024 // 5MB
     if (file.size > maxSizeBytes) {
       return res.status(400).json({
-        message: 'Arquivo muito grande. Tamanho máximo: 5MB',
+        message: 'Arquivo muito grande. Tamanho máximo: 5MB.',
       })
     }
 
@@ -74,10 +74,10 @@ export default async function handler(
     if (axios.isAxiosError(error)) {
       const status = error.response?.status || 500
       const message =
-        error.response?.data?.message || 'Erro ao fazer upload da imagem'
+        error.response?.data?.message || 'Erro ao fazer upload da imagem.'
       return res.status(status).json({ message })
     }
 
-    return res.status(500).json({ message: 'Erro ao fazer upload da imagem' })
+    return res.status(500).json({ message: 'Erro ao fazer upload da imagem.' })
   }
 }

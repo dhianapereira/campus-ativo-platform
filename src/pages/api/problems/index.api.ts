@@ -6,13 +6,13 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Método não permitido' })
+    return res.status(405).json({ message: 'Método não permitido.' })
   }
 
   const authToken = req.cookies['auth-token']
 
   if (!authToken) {
-    return res.status(401).json({ message: 'Não autenticado' })
+    return res.status(401).json({ message: 'Não autenticado.' })
   }
 
   try {

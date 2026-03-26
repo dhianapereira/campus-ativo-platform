@@ -54,7 +54,7 @@ async function fetchUserProfile(): Promise<User | null> {
   }
 
   throw new Error(
-    data?.error || 'Nao foi possivel carregar o perfil do usuario.',
+    data?.error || 'Não foi possível carregar o perfil do usuário.',
   )
 }
 
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     error instanceof Error
       ? error.message
       : error
-        ? 'Nao foi possivel carregar o perfil do usuario.'
+        ? 'Não foi possível carregar o perfil do usuário.'
         : null
 
   const retryProfileLoad = useCallback(async () => {

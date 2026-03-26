@@ -55,7 +55,7 @@ export function ViewCategoryModal({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao restaurar categoria')
+        throw new Error(errorData.message || 'Falha ao restaurar categoria.')
       }
 
       return response.json()
@@ -71,12 +71,12 @@ export function ViewCategoryModal({
       removeTrashItemsFromCache(queryClient, [
         { id: category.id, itemType: 'category' },
       ])
-      toast.success('Categoria restaurada com sucesso')
+      toast.success('Categoria restaurada com sucesso.')
       onSuccess()
       onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao restaurar categoria')
+      toast.error(error.message || 'Falha ao restaurar categoria.')
     },
   })
 
@@ -99,7 +99,7 @@ export function ViewCategoryModal({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao excluir categoria')
+        throw new Error(errorData.message || 'Falha ao excluir categoria.')
       }
 
       return response.json()
@@ -115,13 +115,13 @@ export function ViewCategoryModal({
       removeTrashItemsFromCache(queryClient, [
         { id: category.id, itemType: 'category' },
       ])
-      toast.success('Categoria excluída permanentemente')
+      toast.success('Categoria excluída permanentemente.')
       setShowDeleteConfirmationModal(false)
       onSuccess()
       onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao excluir categoria')
+      toast.error(error.message || 'Falha ao excluir categoria.')
     },
   })
 

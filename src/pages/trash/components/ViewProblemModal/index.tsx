@@ -70,7 +70,7 @@ export function ViewProblemModal({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao restaurar problema')
+        throw new Error(errorData.message || 'Falha ao restaurar problema.')
       }
 
       return response.json()
@@ -96,12 +96,12 @@ export function ViewProblemModal({
       removeTrashItemsFromCache(queryClient, [
         { id: problem.id, itemType: 'problem' },
       ])
-      toast.success('Problema restaurado com sucesso')
+      toast.success('Problema restaurado com sucesso.')
       onSuccess()
       onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao restaurar problema')
+      toast.error(error.message || 'Falha ao restaurar problema.')
     },
   })
 
@@ -128,7 +128,7 @@ export function ViewProblemModal({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao excluir problema')
+        throw new Error(errorData.message || 'Falha ao excluir problema.')
       }
 
       return response.json()
@@ -154,13 +154,13 @@ export function ViewProblemModal({
       removeTrashItemsFromCache(queryClient, [
         { id: problem.id, itemType: 'problem' },
       ])
-      toast.success('Problema excluído permanentemente')
+      toast.success('Problema excluído permanentemente.')
       setShowDeleteConfirmationModal(false)
       onSuccess()
       onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao excluir problema')
+      toast.error(error.message || 'Falha ao excluir problema.')
     },
   })
 

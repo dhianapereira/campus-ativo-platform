@@ -231,7 +231,7 @@ export default function Home() {
         const err = await res.json().catch(() => ({}))
         throw new Error(
           (err as { message?: string }).message ||
-            'Falha ao carregar o dashboard',
+            'Falha ao carregar o dashboard.',
         )
       }
       return res.json() as Promise<DashboardMetrics>

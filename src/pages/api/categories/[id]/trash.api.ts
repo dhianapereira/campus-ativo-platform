@@ -27,7 +27,7 @@ export default async function handler(
 
       return res
         .status(200)
-        .json({ message: 'Categoria movida para lixeira com sucesso' })
+        .json({ message: 'Categoria movida para a lixeira com sucesso.' })
     } catch (error) {
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as unknown as {

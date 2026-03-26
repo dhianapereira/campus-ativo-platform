@@ -14,7 +14,7 @@ export default async function handler(
 
   const authToken = req.cookies['auth-token']
   if (!authToken) {
-    return res.status(401).json({ message: 'Não autenticado' })
+    return res.status(401).json({ message: 'Não autenticado.' })
   }
 
   const { startDate, endDate } = req.query as {
@@ -25,7 +25,7 @@ export default async function handler(
   if (!startDate || !endDate) {
     return res
       .status(400)
-      .json({ message: 'startDate e endDate são obrigatórios' })
+      .json({ message: 'startDate e endDate são obrigatórios.' })
   }
 
   try {
@@ -42,7 +42,7 @@ export default async function handler(
     if (!response.ok) {
       const err = await response.json().catch(() => ({}))
       const message =
-        (err as { message?: string }).message || 'Erro ao gerar relatório'
+        (err as { message?: string }).message || 'Erro ao gerar relatório.'
       return res.status(response.status).json({ message })
     }
 

@@ -51,7 +51,7 @@ export default function Problems() {
         })
 
         if (!response.ok) {
-          throw new Error('Falha ao buscar problemas')
+          throw new Error('Falha ao buscar problemas.')
         }
 
         return response.json() as Promise<FetchProblemsControllerHandle200>

@@ -66,7 +66,7 @@ export default async function handler(
       const { name, number, description } = req.body
 
       if (!name || name.trim() === '') {
-        return res.status(400).json({ message: 'Nome é obrigatório' })
+        return res.status(400).json({ message: 'Nome é obrigatório.' })
       }
 
       const locationData = {

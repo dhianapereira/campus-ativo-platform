@@ -58,7 +58,7 @@ export default function Login() {
         if (status === 400 || status === 401) {
           setError('password', {
             type: 'manual',
-            message: 'E-mail ou senha incorretos',
+            message: 'E-mail ou senha incorretos.',
           })
         } else {
           setError('password', {

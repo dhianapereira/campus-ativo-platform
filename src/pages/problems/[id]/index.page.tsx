@@ -230,7 +230,7 @@ export default function ProblemDetails() {
           err.message ||
             (res.status === 404
               ? 'Problema não encontrado.'
-              : 'Falha ao carregar problema'),
+              : 'Falha ao carregar problema.'),
         ) as QueryError
         queryError.status = res.status
         throw queryError
@@ -301,7 +301,7 @@ export default function ProblemDetails() {
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
-        throw new Error(err.message || 'Falha ao mover para a lixeira')
+        throw new Error(err.message || 'Falha ao mover para a lixeira.')
       }
     },
     onSuccess: async () => {
@@ -319,7 +319,7 @@ export default function ProblemDetails() {
       await router.push('/problems')
     },
     onError: (err: Error) => {
-      toast.error(err.message || 'Falha ao mover para a lixeira')
+      toast.error(err.message || 'Falha ao mover para a lixeira.')
     },
   })
 

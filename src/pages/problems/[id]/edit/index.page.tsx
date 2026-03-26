@@ -204,7 +204,7 @@ export default function EditProblem() {
       const response = await fetch('/api/categories?isActive=true', {
         credentials: 'include',
       })
-      if (!response.ok) throw new Error('Falha ao buscar categorias')
+      if (!response.ok) throw new Error('Falha ao buscar categorias.')
       return response.json()
     },
   })
@@ -215,7 +215,7 @@ export default function EditProblem() {
       const response = await fetch('/api/locations?isActive=true', {
         credentials: 'include',
       })
-      if (!response.ok) throw new Error('Falha ao buscar localizações')
+      if (!response.ok) throw new Error('Falha ao buscar localizações.')
       return response.json()
     },
   })
@@ -307,7 +307,7 @@ export default function EditProblem() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao fazer upload da imagem')
+        throw new Error(errorData.message || 'Falha ao fazer upload da imagem.')
       }
 
       const data = await response.json()
@@ -318,7 +318,7 @@ export default function EditProblem() {
       const errorMessage =
         error instanceof Error
           ? error.message
-          : 'Falha ao fazer upload da imagem'
+          : 'Falha ao fazer upload da imagem.'
       setUploadError(errorMessage)
       toast.error(errorMessage)
       setNewAttachmentId(null)
@@ -380,7 +380,7 @@ export default function EditProblem() {
           )
         }
 
-        throw new Error(errorData.message || 'Falha ao editar problema')
+        throw new Error(errorData.message || 'Falha ao editar problema.')
       }
 
       return response.json()
@@ -391,7 +391,7 @@ export default function EditProblem() {
       router.push('/problems')
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao editar problema')
+      toast.error(error.message || 'Falha ao editar problema.')
     },
   })
 

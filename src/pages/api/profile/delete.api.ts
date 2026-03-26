@@ -6,20 +6,20 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method !== 'DELETE') {
-    return res.status(405).json({ message: 'Método não permitido' })
+    return res.status(405).json({ message: 'Método não permitido.' })
   }
 
   const authToken = req.cookies['auth-token']
 
   if (!authToken) {
-    return res.status(401).json({ message: 'Não autenticado' })
+    return res.status(401).json({ message: 'Não autenticado.' })
   }
 
   try {
     const { userId } = req.body
 
     if (!userId) {
-      return res.status(400).json({ message: 'ID do usuário é obrigatório' })
+      return res.status(400).json({ message: 'ID do usuário é obrigatório.' })
     }
 
     const result = await deleteUserAccountControllerHandle(userId, {

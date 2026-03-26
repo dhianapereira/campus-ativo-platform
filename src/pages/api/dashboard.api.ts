@@ -14,7 +14,7 @@ export default async function handler(
 
   const authToken = req.cookies['auth-token']
   if (!authToken) {
-    return res.status(401).json({ message: 'Não autenticado' })
+    return res.status(401).json({ message: 'Não autenticado.' })
   }
 
   try {

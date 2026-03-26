@@ -6,13 +6,13 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Método não permitido' })
+    return res.status(405).json({ message: 'Método não permitido.' })
   }
 
   const authToken = req.cookies['auth-token']
 
   if (!authToken) {
-    return res.status(401).json({ message: 'Não autenticado' })
+    return res.status(401).json({ message: 'Não autenticado.' })
   }
 
   try {
@@ -56,7 +56,7 @@ export default async function handler(
 
     return res
       .status(201)
-      .json({ message: 'Problema cadastrado com sucesso', data: result })
+      .json({ message: 'Problema cadastrado com sucesso.', data: result })
   } catch (error: unknown) {
     console.error('Erro ao cadastrar problema:', error)
     const axiosError = error as {
@@ -67,7 +67,7 @@ export default async function handler(
     const message =
       axiosError.response?.data?.message ??
       axiosError.message ??
-      'Erro ao cadastrar problema'
+      'Erro ao cadastrar problema.'
     return res.status(status).json({ message })
   }
 }

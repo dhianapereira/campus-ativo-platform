@@ -122,7 +122,7 @@ export default function SettingsPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Falha ao buscar localizações')
+        throw new Error('Falha ao buscar localizações.')
       }
 
       return response.json() as Promise<{ locations: LocationResponse[] }>
@@ -154,7 +154,7 @@ export default function SettingsPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Falha ao buscar categorias')
+        throw new Error('Falha ao buscar categorias.')
       }
 
       return response.json() as Promise<{ categories: CategoryResponse[] }>
@@ -194,7 +194,7 @@ export default function SettingsPage() {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         throw new Error(
-          errorData.message || 'Falha ao mover localizações para lixeira',
+          errorData.message || 'Falha ao mover localizações para a lixeira.',
         )
       }
 
@@ -208,10 +208,12 @@ export default function SettingsPage() {
       queryClient.invalidateQueries({ queryKey: ['locations'] })
       setSelectedItems([])
       setShowDeleteConfirmation(false)
-      toast.success(data.message || 'Localizações movidas para a lixeira')
+      toast.success(data.message || 'Localizações movidas para a lixeira.')
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao mover localizações para lixeira')
+      toast.error(
+        error.message || 'Falha ao mover localizações para a lixeira.',
+      )
     },
   })
 
@@ -227,7 +229,7 @@ export default function SettingsPage() {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         throw new Error(
-          errorData.message || 'Falha ao mover categorias para lixeira',
+          errorData.message || 'Falha ao mover categorias para a lixeira.',
         )
       }
 
@@ -241,10 +243,10 @@ export default function SettingsPage() {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       setSelectedItems([])
       setShowDeleteConfirmation(false)
-      toast.success(data.message || 'Categorias movidas para a lixeira')
+      toast.success(data.message || 'Categorias movidas para a lixeira.')
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao mover categorias para lixeira')
+      toast.error(error.message || 'Falha ao mover categorias para a lixeira.')
     },
   })
 
@@ -321,7 +323,7 @@ export default function SettingsPage() {
 
   const handleDeleteSelected = () => {
     if (selectedItems.length === 0) {
-      toast.warning('Selecione pelo menos um item para mover para a lixeira')
+      toast.warning('Selecione pelo menos um item para mover para a lixeira.')
       return
     }
     setShowDeleteConfirmation(true)

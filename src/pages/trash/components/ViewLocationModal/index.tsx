@@ -55,7 +55,7 @@ export function ViewLocationModal({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao restaurar localização')
+        throw new Error(errorData.message || 'Falha ao restaurar localização.')
       }
 
       return response.json()
@@ -71,12 +71,12 @@ export function ViewLocationModal({
       removeTrashItemsFromCache(queryClient, [
         { id: location.id, itemType: 'location' },
       ])
-      toast.success('Localização restaurada com sucesso')
+      toast.success('Localização restaurada com sucesso.')
       onSuccess()
       onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao restaurar localização')
+      toast.error(error.message || 'Falha ao restaurar localização.')
     },
   })
 
@@ -99,7 +99,7 @@ export function ViewLocationModal({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao excluir localização')
+        throw new Error(errorData.message || 'Falha ao excluir localização.')
       }
 
       return response.json()
@@ -115,13 +115,13 @@ export function ViewLocationModal({
       removeTrashItemsFromCache(queryClient, [
         { id: location.id, itemType: 'location' },
       ])
-      toast.success('Localização excluída permanentemente')
+      toast.success('Localização excluída permanentemente.')
       setShowDeleteConfirmationModal(false)
       onSuccess()
       onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao excluir localização')
+      toast.error(error.message || 'Falha ao excluir localização.')
     },
   })
 

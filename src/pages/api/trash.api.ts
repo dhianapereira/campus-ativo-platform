@@ -242,7 +242,7 @@ export default async function handler(
         currentUserId = profile?.id ?? null
         roleLevel = getRoleLevel(profile?.role || roleFromToken || '')
       } catch {
-        // Mantem a lixeira vazia em caso de erro no perfil para evitar expor itens de outros usuarios.
+        // Mantém a lixeira vazia em caso de erro no perfil para evitar expor itens de outros usuários.
       }
 
       const canSeeLocationsAndCategories = roleLevel >= 2
@@ -507,7 +507,7 @@ export default async function handler(
       if (!action || items.length === 0) {
         return res
           .status(400)
-          .json({ message: 'Ação e itens são obrigatórios' })
+          .json({ message: 'Ação e itens são obrigatórios.' })
       }
 
       if (action === 'restore' || action === 'delete') {
@@ -545,12 +545,12 @@ export default async function handler(
           action === 'restore' ? 'restoredCount' : 'deletedCount'
         const successMessage =
           action === 'restore'
-            ? 'Itens restaurados com sucesso'
-            : 'Itens excluídos permanentemente'
+            ? 'Itens restaurados com sucesso.'
+            : 'Itens excluídos permanentemente.'
         const partialMessage =
           action === 'restore'
-            ? 'Alguns itens nao puderam ser restaurados'
-            : 'Alguns itens nao puderam ser excluidos'
+            ? 'Alguns itens não puderam ser restaurados.'
+            : 'Alguns itens não puderam ser excluídos.'
 
         if (successCount === 0) {
           return res.status(400).json({
@@ -568,7 +568,7 @@ export default async function handler(
           [successKey]: successCount,
         })
       } else {
-        return res.status(400).json({ message: 'Ação inválida' })
+        return res.status(400).json({ message: 'Ação inválida.' })
       }
     } catch (error) {
       if (error && typeof error === 'object' && 'response' in error) {

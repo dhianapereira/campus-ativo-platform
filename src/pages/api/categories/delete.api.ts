@@ -6,13 +6,13 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method !== 'DELETE') {
-    return res.status(405).json({ message: 'Método não permitido' })
+    return res.status(405).json({ message: 'Método não permitido.' })
   }
 
   const authToken = req.cookies['auth-token']
 
   if (!authToken) {
-    return res.status(401).json({ message: 'Não autenticado' })
+    return res.status(401).json({ message: 'Não autenticado.' })
   }
 
   try {
@@ -21,7 +21,7 @@ export default async function handler(
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
       return res
         .status(400)
-        .json({ message: 'IDs das categorias são obrigatórios' })
+        .json({ message: 'IDs das categorias são obrigatórios.' })
     }
 
     const trashPromises = ids.map((id: string) =>
@@ -37,11 +37,11 @@ export default async function handler(
     return res.status(200).json({
       message:
         ids.length === 1
-          ? 'Categoria movida para a lixeira'
-          : `${ids.length} categorias movidas para a lixeira`,
+          ? 'Categoria movida para a lixeira.'
+          : `${ids.length} categorias movidas para a lixeira.`,
     })
   } catch (error: any) {
-    console.error('Erro ao mover categorias para lixeira:', error)
+    console.error('Erro ao mover categorias para a lixeira:', error)
     return res.status(error.status || 500).json({
       message: error.message || 'Erro ao mover categorias para a lixeira',
     })

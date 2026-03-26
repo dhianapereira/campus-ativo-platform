@@ -27,15 +27,15 @@ import { toast } from 'sonner'
 const locationSchema = z.object({
   name: z
     .string()
-    .min(1, 'Nome é obrigatório')
-    .max(100, 'Nome deve ter no máximo 100 caracteres'),
+    .min(1, 'Nome é obrigatório.')
+    .max(100, 'Nome deve ter no máximo 100 caracteres.'),
   number: z
     .string()
-    .max(20, 'Número deve ter no máximo 20 caracteres')
+    .max(20, 'Número deve ter no máximo 20 caracteres.')
     .optional(),
   description: z
     .string()
-    .max(500, 'Descrição deve ter no máximo 500 caracteres')
+    .max(500, 'Descrição deve ter no máximo 500 caracteres.')
     .optional(),
 })
 

@@ -21,7 +21,7 @@ export default async function handler(
     if (!name || !position || !email || !password) {
       return res.status(400).json({
         success: false,
-        error: 'Todos os campos são obrigatórios',
+        error: 'Todos os campos são obrigatórios.',
       })
     }
 
@@ -50,7 +50,7 @@ export default async function handler(
 
     const genericMessage =
       'Não foi possível completar o cadastro. Verifique suas informações.'
-    let message = backendError || 'Erro interno do servidor'
+    let message = backendError || 'Erro interno do servidor.'
 
     // Não revelar detalhes (ex.: e-mail já cadastrado) por segurança
     if (status === 400 || status === 409) {

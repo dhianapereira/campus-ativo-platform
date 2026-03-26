@@ -37,15 +37,15 @@ import {
 const locationSchema = z.object({
   name: z
     .string()
-    .min(1, 'Nome é obrigatório')
-    .max(100, 'Nome deve ter no máximo 100 caracteres'),
+    .min(1, 'Nome é obrigatório.')
+    .max(100, 'Nome deve ter no máximo 100 caracteres.'),
   code: z
     .string()
-    .max(20, 'Número deve ter no máximo 20 caracteres')
+    .max(20, 'Número deve ter no máximo 20 caracteres.')
     .optional(),
   description: z
     .string()
-    .max(500, 'Descrição deve ter no máximo 500 caracteres')
+    .max(500, 'Descrição deve ter no máximo 500 caracteres.')
     .optional(),
 })
 
@@ -138,7 +138,7 @@ function EditLocationModalContent({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao atualizar localização')
+        throw new Error(errorData.message || 'Falha ao atualizar localização.')
       }
 
       return response.json()
@@ -189,7 +189,7 @@ function EditLocationModalContent({
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         throw new Error(
-          errorData.message || 'Falha ao mover localização para lixeira',
+          errorData.message || 'Falha ao mover localização para a lixeira.',
         )
       }
 
@@ -203,12 +203,12 @@ function EditLocationModalContent({
         queryKey: ['locations'],
         refetchType: 'all',
       })
-      toast.success('Localização movida para lixeira')
+      toast.success('Localização movida para a lixeira.')
       onSuccess()
       onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao mover para lixeira')
+      toast.error(error.message || 'Falha ao mover para a lixeira.')
     },
   })
 

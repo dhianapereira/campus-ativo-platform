@@ -90,7 +90,7 @@ export default async function handler(
 
     const isAuthError = status === 400 || status === 401
     const message = isAuthError
-      ? 'E-mail ou senha incorretos'
+      ? 'E-mail ou senha incorretos.'
       : backendError || 'Internal server error'
 
     return res.status(status).json({

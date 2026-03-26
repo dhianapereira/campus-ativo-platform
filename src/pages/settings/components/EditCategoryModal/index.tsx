@@ -37,11 +37,11 @@ import {
 const categorySchema = z.object({
   name: z
     .string()
-    .min(1, 'Nome é obrigatório')
-    .max(100, 'Nome deve ter no máximo 100 caracteres'),
+    .min(1, 'Nome é obrigatório.')
+    .max(100, 'Nome deve ter no máximo 100 caracteres.'),
   description: z
     .string()
-    .max(500, 'Descrição deve ter no máximo 500 caracteres')
+    .max(500, 'Descrição deve ter no máximo 500 caracteres.')
     .optional(),
 })
 
@@ -131,7 +131,7 @@ function EditCategoryModalContent({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao atualizar categoria')
+        throw new Error(errorData.message || 'Falha ao atualizar categoria.')
       }
 
       return response.json()
@@ -182,7 +182,7 @@ function EditCategoryModalContent({
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         throw new Error(
-          errorData.message || 'Falha ao mover categoria para lixeira',
+          errorData.message || 'Falha ao mover categoria para a lixeira.',
         )
       }
 
@@ -196,12 +196,12 @@ function EditCategoryModalContent({
         queryKey: ['categories'],
         refetchType: 'all',
       })
-      toast.success('Categoria movida para lixeira')
+      toast.success('Categoria movida para a lixeira.')
       onSuccess()
       onClose()
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao mover para lixeira')
+      toast.error(error.message || 'Falha ao mover para a lixeira.')
     },
   })
 

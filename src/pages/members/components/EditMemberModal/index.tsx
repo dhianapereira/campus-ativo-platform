@@ -40,16 +40,16 @@ import { ConfirmationModal } from '@/components/ConfirmationModal'
 const memberSchema = z.object({
   name: z
     .string()
-    .min(1, 'Nome é obrigatório')
-    .max(100, 'Nome deve ter no máximo 100 caracteres'),
+    .min(1, 'Nome é obrigatório.')
+    .max(100, 'Nome deve ter no máximo 100 caracteres.'),
   email: z
     .string()
-    .min(1, 'Email é obrigatório')
-    .email('Email deve ser válido'),
+    .min(1, 'Email é obrigatório.')
+    .email('Email deve ser válido.'),
   position: z
     .string()
-    .min(1, 'Cargo é obrigatório')
-    .max(100, 'Cargo deve ter no máximo 100 caracteres'),
+    .min(1, 'Cargo é obrigatório.')
+    .max(100, 'Cargo deve ter no máximo 100 caracteres.'),
   permissions: z.string(),
 })
 
@@ -185,7 +185,7 @@ export function EditMemberModal({
         const firstError = responses.find((response) => !response.ok)
         if (firstError) {
           const errorData = await firstError.json().catch(() => ({}))
-          throw new Error(errorData.message || 'Falha ao atualizar usuário')
+          throw new Error(errorData.message || 'Falha ao atualizar usuário.')
         }
       }
 
@@ -210,7 +210,7 @@ export function EditMemberModal({
     } catch (error) {
       setIsSubmitting(false)
       const errorMessage =
-        error instanceof Error ? error.message : 'Falha ao atualizar usuário'
+        error instanceof Error ? error.message : 'Falha ao atualizar usuário.'
       toast.error(errorMessage)
     }
   }

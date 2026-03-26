@@ -1967,7 +1967,7 @@
           "name": {
             "type": "string",
             "description": "Nome da categoria",
-            "example": "Climatizacao"
+            "example": "Climatização"
           },
           "description": {
             "type": "object",

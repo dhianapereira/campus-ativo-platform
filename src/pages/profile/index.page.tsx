@@ -96,7 +96,7 @@ function ProfileContent({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao atualizar perfil')
+        throw new Error(errorData.message || 'Falha ao atualizar perfil.')
       }
 
       return response.json()
@@ -112,10 +112,10 @@ function ProfileContent({
         name: nextName,
         position: nextPosition,
       })
-      toast.success('Perfil atualizado com sucesso')
+      toast.success('Perfil atualizado com sucesso.')
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao atualizar perfil')
+      toast.error(error.message || 'Falha ao atualizar perfil.')
     },
   })
 
@@ -134,7 +134,7 @@ function ProfileContent({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao alterar senha')
+        throw new Error(errorData.message || 'Falha ao alterar senha.')
       }
 
       return response.json()
@@ -144,10 +144,10 @@ function ProfileContent({
       setNewPassword('')
       setConfirmPassword('')
       setPasswordError('')
-      toast.success('Senha alterada com sucesso')
+      toast.success('Senha alterada com sucesso.')
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao alterar senha')
+      toast.error(error.message || 'Falha ao alterar senha.')
     },
   })
 
@@ -164,20 +164,20 @@ function ProfileContent({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao excluir conta')
+        throw new Error(errorData.message || 'Falha ao excluir conta.')
       }
 
       return response.json()
     },
     onSuccess: async () => {
-      toast.success('Conta excluída com sucesso')
+      toast.success('Conta excluída com sucesso.')
       // Wait a bit for the toast to be visible, then sign out
       setTimeout(async () => {
         await signOut()
       }, 1500)
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao excluir conta')
+      toast.error(error.message || 'Falha ao excluir conta.')
     },
   })
 
@@ -185,7 +185,7 @@ function ProfileContent({
     e.preventDefault()
 
     if (!name.trim() || !position.trim()) {
-      toast.error('Nome e cargo são obrigatórios')
+      toast.error('Nome e cargo são obrigatórios.')
       return
     }
 
@@ -206,7 +206,7 @@ function ProfileContent({
       setName(user.name)
       setPosition(user.position)
       setShowProfileDiscardConfirmation(false)
-      toast.info('Alterações descartadas')
+      toast.info('Alterações descartadas.')
     }
   }
 
@@ -215,22 +215,22 @@ function ProfileContent({
     setPasswordError('')
 
     if (!oldPassword || !newPassword || !confirmPassword) {
-      setPasswordError('Todos os campos são obrigatórios')
+      setPasswordError('Todos os campos são obrigatórios.')
       return
     }
 
     if (newPassword.length < 6) {
-      setPasswordError('A nova senha deve ter no mínimo 6 caracteres')
+      setPasswordError('A nova senha deve ter no mínimo 6 caracteres.')
       return
     }
 
     if (newPassword !== confirmPassword) {
-      setPasswordError('As senhas não coincidem')
+      setPasswordError('As senhas não coincidem.')
       return
     }
 
     if (oldPassword === newPassword) {
-      setPasswordError('A nova senha deve ser diferente da senha atual')
+      setPasswordError('A nova senha deve ser diferente da senha atual.')
       return
     }
 

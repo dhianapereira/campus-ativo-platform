@@ -181,7 +181,7 @@ export default function TrashPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Falha ao buscar itens da lixeira')
+        throw new Error('Falha ao buscar itens da lixeira.')
       }
 
       return response.json()
@@ -206,7 +206,7 @@ export default function TrashPage() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Falha ao restaurar itens')
+        throw new Error(errorData.message || 'Falha ao restaurar itens.')
       }
 
       return response.json()
@@ -270,10 +270,10 @@ export default function TrashPage() {
         return
       }
 
-      toast.success(data?.message || 'Itens restaurados com sucesso')
+      toast.success(data?.message || 'Itens restaurados com sucesso.')
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao restaurar itens')
+      toast.error(error.message || 'Falha ao restaurar itens.')
     },
   })
 
@@ -294,7 +294,7 @@ export default function TrashPage() {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         throw new Error(
-          errorData.message || 'Falha ao excluir itens permanentemente',
+          errorData.message || 'Falha ao excluir itens permanentemente.',
         )
       }
 
@@ -317,10 +317,10 @@ export default function TrashPage() {
         return
       }
 
-      toast.success(data?.message || 'Itens excluídos permanentemente')
+      toast.success(data?.message || 'Itens excluídos permanentemente.')
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao excluir itens')
+      toast.error(error.message || 'Falha ao excluir itens.')
     },
   })
 
@@ -400,14 +400,14 @@ export default function TrashPage() {
 
   const handleRestore = () => {
     if (selectedTrashItems.length === 0) {
-      toast.warning('Selecione pelo menos um item para restaurar')
+      toast.warning('Selecione pelo menos um item para restaurar.')
       return
     }
 
     const payload = getBulkActionPayload()
 
     if (!payload) {
-      toast.warning('Selecione pelo menos um item para restaurar')
+      toast.warning('Selecione pelo menos um item para restaurar.')
       return
     }
 
@@ -416,14 +416,14 @@ export default function TrashPage() {
 
   const handleDeletePermanently = () => {
     if (selectedTrashItems.length === 0) {
-      toast.warning('Selecione pelo menos um item para excluir')
+      toast.warning('Selecione pelo menos um item para excluir.')
       return
     }
 
     const payload = getBulkActionPayload()
 
     if (!payload) {
-      toast.warning('Selecione pelo menos um item para excluir')
+      toast.warning('Selecione pelo menos um item para excluir.')
       return
     }
 
@@ -434,7 +434,7 @@ export default function TrashPage() {
     const payload = getBulkActionPayload()
 
     if (!payload) {
-      toast.warning('Selecione pelo menos um item para excluir')
+      toast.warning('Selecione pelo menos um item para excluir.')
       return
     }
 
@@ -469,7 +469,7 @@ export default function TrashPage() {
         toast.error(
           error instanceof Error
             ? error.message
-            : 'Falha ao carregar detalhes da localização',
+            : 'Falha ao carregar detalhes da localização.',
         )
       }
     } else if (item.itemType === 'category') {
@@ -499,7 +499,7 @@ export default function TrashPage() {
         toast.error(
           error instanceof Error
             ? error.message
-            : 'Falha ao carregar detalhes da categoria',
+            : 'Falha ao carregar detalhes da categoria.',
         )
       }
     } else if (item.itemType === 'problem') {
@@ -815,7 +815,7 @@ export default function TrashPage() {
             <EmptyState>
               <EmptyStateTitle>A lixeira está vazia</EmptyStateTitle>
               <EmptyStateMessage>
-                Os items que você mover para a lixeira aparecerão aqui. Quando
+                Os itens que você mover para a lixeira aparecerão aqui. Quando
                 isso acontecer, você poderá restaurá-los ou excluí-los
                 permanentemente.
               </EmptyStateMessage>

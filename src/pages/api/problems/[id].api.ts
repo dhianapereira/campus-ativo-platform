@@ -11,13 +11,13 @@ export default async function handler(
   const authToken = req.cookies['auth-token']
 
   if (!authToken) {
-    return res.status(401).json({ message: 'Não autenticado' })
+    return res.status(401).json({ message: 'Não autenticado.' })
   }
 
   const { id } = req.query
 
   if (!id || typeof id !== 'string') {
-    return res.status(400).json({ message: 'ID do problema é obrigatório' })
+    return res.status(400).json({ message: 'ID do problema é obrigatório.' })
   }
 
   if (req.method === 'GET') {
@@ -53,7 +53,7 @@ export default async function handler(
       if (!title || !description || !categoryId || !locationId) {
         return res.status(400).json({
           message:
-            'Título, descrição, categoria e localização são obrigatórios',
+            'Título, descrição, categoria e localização são obrigatórios.',
         })
       }
 
@@ -74,7 +74,7 @@ export default async function handler(
         },
       )
 
-      return res.status(200).json({ message: 'Problema editado com sucesso' })
+      return res.status(200).json({ message: 'Problema editado com sucesso.' })
     } catch (error) {
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as {
@@ -82,12 +82,12 @@ export default async function handler(
         }
         const status = axiosError.response?.status || 500
         const message =
-          axiosError.response?.data?.message || 'Erro ao editar problema'
+          axiosError.response?.data?.message || 'Erro ao editar problema.'
 
         return res.status(status).json({ message })
       }
 
-      return res.status(500).json({ message: 'Erro ao editar problema' })
+      return res.status(500).json({ message: 'Erro ao editar problema.' })
     }
   }
 
@@ -121,9 +121,9 @@ export default async function handler(
 
       return res
         .status(500)
-        .json({ message: 'Erro ao atualizar histórico do problema' })
+        .json({ message: 'Erro ao atualizar histórico do problema.' })
     }
   }
 
-  return res.status(405).json({ message: 'Método não permitido' })
+  return res.status(405).json({ message: 'Método não permitido.' })
 }
