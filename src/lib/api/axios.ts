@@ -29,7 +29,6 @@ AXIOS_INSTANCE.interceptors.request.use(
   },
 )
 
-// Function to translate axios error messages
 function translateAxiosError(error: AxiosError): string {
   if (error.message.includes('Network Error')) {
     return 'Erro de conexão. Verifique sua internet.'
@@ -70,10 +69,8 @@ function translateAxiosError(error: AxiosError): string {
 AXIOS_INSTANCE.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {
-    // Translate error message
     const translatedMessage = translateAxiosError(error)
 
-    // Create new error with translated message
     const translatedError = new Error(translatedMessage) as AxiosError
     translatedError.response = error.response
     translatedError.config = error.config

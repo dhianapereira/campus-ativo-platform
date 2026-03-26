@@ -78,7 +78,6 @@ export default function Problems() {
     badgeId: ProblemStatus
   }
 
-  // Transform API data to match current component structure.
   // Link to detail uses slug (backend GET problem expects slug).
   const problems = useMemo<ProblemItem[]>(() => {
     if (!data?.problems) return []
@@ -93,7 +92,6 @@ export default function Problems() {
     }))
   }, [data])
 
-  // Apply status filters on client side
   const filteredProblems = useMemo(() => {
     const activeFilterIds = activeFilters
       .filter((f) => f.checked)

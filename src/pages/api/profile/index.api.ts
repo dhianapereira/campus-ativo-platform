@@ -26,7 +26,6 @@ export default async function handler(
     }
 
     if (req.method === 'PATCH') {
-      // Update user profile
       const { userId, name, position } = req.body
 
       if (!userId) {

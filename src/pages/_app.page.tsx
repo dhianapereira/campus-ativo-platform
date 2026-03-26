@@ -32,12 +32,10 @@ export default function App({ Component, pageProps }: AppProps) {
         defaultOptions: {
           queries: {
             retry: (failureCount, error: unknown) => {
-              // Don't retry on authentication errors
               const errorStatus = (error as { status?: number })?.status
               if (errorStatus === 401 || errorStatus === 403) {
                 return false
               }
-              // Retry up to 2 times for other errors
               return failureCount < 2
             },
             refetchOnWindowFocus: false,
@@ -46,12 +44,10 @@ export default function App({ Component, pageProps }: AppProps) {
           },
           mutations: {
             retry: (failureCount, error: unknown) => {
-              // Don't retry authentication/authorization errors
               const errorStatus = (error as { status?: number })?.status
               if (errorStatus === 401 || errorStatus === 403) {
                 return false
               }
-              // Don't retry client errors (4xx) except for rate limiting
               if (
                 errorStatus &&
                 errorStatus >= 400 &&
@@ -60,7 +56,6 @@ export default function App({ Component, pageProps }: AppProps) {
               ) {
                 return false
               }
-              // Retry up to 1 time for server errors
               return failureCount < 1
             },
             onError: (error: unknown) => {

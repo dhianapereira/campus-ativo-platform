@@ -164,7 +164,6 @@ export default function SettingsPage() {
     staleTime: 30000, // 30 seconds
   })
 
-  // Store the filtered data to avoid unnecessary recalculations.
   const filteredLocations = useMemo(
     () => (locationsData?.locations || []).filter((item) => item.id),
     [locationsData],

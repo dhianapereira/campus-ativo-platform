@@ -175,7 +175,6 @@ export default function MembersPage() {
         </PaginationButton>,
       )
 
-    // Only show Previous if not on first page
     if (effectiveCurrentPage > 1) {
       buttons.push(
         <PaginationButton
@@ -208,7 +207,6 @@ export default function MembersPage() {
       addPageButton(totalPages)
     }
 
-    // Only show Next if not on last page
     if (effectiveCurrentPage < totalPages) {
       buttons.push(
         <PaginationButton

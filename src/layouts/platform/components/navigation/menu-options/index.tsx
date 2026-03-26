@@ -117,7 +117,6 @@ export const createMenuOptions = ({
   return options
 }
 
-/** Path associado a cada item do menu (para estado ativo) */
 export const MENU_OPTION_PATHS: Record<string, string> = {
   dashboard: '/home',
   problems: '/problems',

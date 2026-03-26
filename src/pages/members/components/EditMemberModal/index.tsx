@@ -241,11 +241,10 @@ export function EditMemberModal({
     canManageUserRole(opt.value as ChangeUserRoleControllerHandleBodyRole),
   )
 
-  // Always ensure the current member's role is visible in the dropdown
+  // Keep the current role visible even when the acting user can no longer assign it.
   const finalPermissionOptions = (() => {
     if (!member?.role) return visiblePermissionOptions
 
-    // Check if current role is already in visible options
     const hasCurrentRole = visiblePermissionOptions.some(
       (opt) => opt.value === member.role,
     )
@@ -254,7 +253,6 @@ export function EditMemberModal({
       return visiblePermissionOptions
     }
 
-    // Add current role to options
     const currentRoleOption = permissionOptions.find(
       (opt) => opt.value === member.role,
     )

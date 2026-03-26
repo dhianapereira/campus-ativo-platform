@@ -171,7 +171,6 @@ function ProfileContent({
     },
     onSuccess: async () => {
       toast.success('Conta excluída com sucesso.')
-      // Wait a bit for the toast to be visible, then sign out
       setTimeout(async () => {
         await signOut()
       }, 1500)
