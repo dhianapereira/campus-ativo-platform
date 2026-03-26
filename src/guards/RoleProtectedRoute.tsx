@@ -1,5 +1,5 @@
 import { ReactNode, useEffect } from 'react'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthPermissions, useAuthSession } from '@/contexts/auth-context'
 import { useAuthRedirect } from '@/hooks/use-auth-redirect'
 import { useRouter } from 'next/router'
 import { AuthGuardFeedback } from './AuthGuardFeedback'
@@ -20,12 +20,11 @@ export function RoleProtectedRoute({
   const {
     isAuthenticated,
     isLoading,
-    hasRole,
-    hasRoleLevel,
     profileError,
     retryProfileLoad,
     isProfileLoading,
-  } = useAuth()
+  } = useAuthSession()
+  const { hasRole, hasRoleLevel } = useAuthPermissions()
   const router = useRouter()
   const hasProfileError = !!profileError
 

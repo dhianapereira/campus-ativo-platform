@@ -29,7 +29,7 @@ import {
 import { X } from 'phosphor-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthPermissions, useAuthSession } from '@/contexts/auth-context'
 import { useInvalidateUser } from '@/hooks/use-invalidate-user'
 import type {
   FetchUsersControllerHandle200UsersItem,
@@ -75,7 +75,8 @@ export function EditMemberModal({
   onSuccess,
   member,
 }: EditMemberModalProps) {
-  const { user, canManageUserRole } = useAuth()
+  const { user } = useAuthSession()
+  const { canManageUserRole } = useAuthPermissions()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isActive, setIsActive] = useState(true)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)

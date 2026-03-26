@@ -8,7 +8,7 @@ import { LogoutConfirmationModal } from '../../LogoutModal'
 import { IProps } from './index.d'
 import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 import { X } from 'phosphor-react'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthPermissions } from '@/contexts/auth-context'
 
 interface DrawerProps extends IProps {
   onLogoutClick: () => Promise<void>
@@ -22,7 +22,7 @@ export default function Drawer({
   const router = useRouter()
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
   const { canAccessUserManagement, canAccessSettings, canAccessTrash } =
-    useAuth()
+    useAuthPermissions()
 
   const menuOptions = createMenuOptions({
     router,

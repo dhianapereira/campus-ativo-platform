@@ -14,13 +14,13 @@ import { loginFormSchema, LoginFormData } from '@/validators/login-form'
 import Image from 'next/image'
 import illustrationLogin from '../../assets/illustration-login.png'
 import ifalLogo from '../../assets/ifal-logo.png'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthSession } from '@/contexts/auth-context'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { colors } from '@/styles/tokens'
 
 export default function Login() {
-  const { signIn, isAuthenticated, isLoading } = useAuth()
+  const { signIn, isAuthenticated, isLoading } = useAuthSession()
   const router = useRouter()
   const {
     register,

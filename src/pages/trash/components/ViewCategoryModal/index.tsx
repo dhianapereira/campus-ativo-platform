@@ -14,7 +14,10 @@ import { toast } from 'sonner'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { useState } from 'react'
 import type { CategoryResponse } from '@/lib/api/generated/models/categoryResponse'
-import { removeTrashItemsFromCache } from '../../trash-cache'
+import {
+  removeTrashDetailsFromCache,
+  removeTrashItemsFromCache,
+} from '../../trash-cache'
 
 interface ViewCategoryModalProps {
   isOpen: boolean
@@ -57,8 +60,14 @@ export function ViewCategoryModal({
 
       return response.json()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['categories'],
+        refetchType: 'all',
+      })
+      removeTrashDetailsFromCache(queryClient, [
+        { id: category.id, itemType: 'category' },
+      ])
       removeTrashItemsFromCache(queryClient, [
         { id: category.id, itemType: 'category' },
       ])
@@ -95,8 +104,14 @@ export function ViewCategoryModal({
 
       return response.json()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['categories'],
+        refetchType: 'all',
+      })
+      removeTrashDetailsFromCache(queryClient, [
+        { id: category.id, itemType: 'category' },
+      ])
       removeTrashItemsFromCache(queryClient, [
         { id: category.id, itemType: 'category' },
       ])

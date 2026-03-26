@@ -14,7 +14,10 @@ import { toast } from 'sonner'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { useState } from 'react'
 import type { LocationResponse } from '@/lib/api/generated/models/locationResponse'
-import { removeTrashItemsFromCache } from '../../trash-cache'
+import {
+  removeTrashDetailsFromCache,
+  removeTrashItemsFromCache,
+} from '../../trash-cache'
 
 interface ViewLocationModalProps {
   isOpen: boolean
@@ -57,8 +60,14 @@ export function ViewLocationModal({
 
       return response.json()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['locations'] })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['locations'],
+        refetchType: 'all',
+      })
+      removeTrashDetailsFromCache(queryClient, [
+        { id: location.id, itemType: 'location' },
+      ])
       removeTrashItemsFromCache(queryClient, [
         { id: location.id, itemType: 'location' },
       ])
@@ -95,8 +104,14 @@ export function ViewLocationModal({
 
       return response.json()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['locations'] })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['locations'],
+        refetchType: 'all',
+      })
+      removeTrashDetailsFromCache(queryClient, [
+        { id: location.id, itemType: 'location' },
+      ])
       removeTrashItemsFromCache(queryClient, [
         { id: location.id, itemType: 'location' },
       ])

@@ -11,7 +11,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { createMenuOptions, MENU_OPTION_PATHS } from '../menu-options'
 import { LogoutConfirmationModal } from '../../LogoutModal'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthPermissions } from '@/contexts/auth-context'
 import whiteIfalLogo from '@/assets/white-ifal-logo.png'
 
 interface MenuProps {
@@ -23,7 +23,7 @@ export default function Menu({ onLogoutClick }: MenuProps) {
   const pathname = router.pathname
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false)
   const { canAccessUserManagement, canAccessSettings, canAccessTrash } =
-    useAuth()
+    useAuthPermissions()
 
   const menuOptions = createMenuOptions({
     router,

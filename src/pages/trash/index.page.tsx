@@ -49,7 +49,7 @@ import {
 import { colors } from '@/styles/tokens'
 import PlatformLayout from '@/layouts/platform/layout'
 import { RoleProtectedRoute } from '@/guards/RoleProtectedRoute'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthPermissions } from '@/contexts/auth-context'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
@@ -59,6 +59,8 @@ import { ViewCategoryModal } from './components/ViewCategoryModal'
 import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
 import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
 import {
+  removeTrashDetailsFromCache,
+  getTrashDetailQueryKey,
   removeTrashItemsFromCache,
   TRASH_QUERY_KEY,
   type TrashItemType,
@@ -116,7 +118,7 @@ interface BulkTrashItemPayload {
 
 export default function TrashPage() {
   const queryClient = useQueryClient()
-  const { hasRoleLevel } = useAuth()
+  const { hasRoleLevel } = useAuthPermissions()
   const canSeeLocationsAndCategories = hasRoleLevel(2)
   const currentYear = new Date().getFullYear()
   const [searchTerm, setSearchTerm] = useState('')
@@ -209,11 +211,54 @@ export default function TrashPage() {
 
       return response.json()
     },
-    onSuccess: (data?: {
+    onSuccess: async (data?: {
       message?: string
       restoredCount?: number
       failedCount?: number
     }) => {
+      const restoredTypes = new Set(
+        selectedTrashItems.map((item) => item.itemType),
+      )
+
+      const invalidations: Promise<unknown>[] = []
+
+      if (restoredTypes.has('location')) {
+        invalidations.push(
+          queryClient.invalidateQueries({
+            queryKey: ['locations'],
+            refetchType: 'all',
+          }),
+        )
+      }
+
+      if (restoredTypes.has('category')) {
+        invalidations.push(
+          queryClient.invalidateQueries({
+            queryKey: ['categories'],
+            refetchType: 'all',
+          }),
+        )
+      }
+
+      if (restoredTypes.has('problem')) {
+        invalidations.push(
+          queryClient.invalidateQueries({
+            queryKey: ['problems'],
+            refetchType: 'all',
+          }),
+          queryClient.invalidateQueries({
+            queryKey: ['problem'],
+            refetchType: 'all',
+          }),
+          queryClient.invalidateQueries({
+            queryKey: ['dashboard'],
+            refetchType: 'all',
+          }),
+        )
+      }
+
+      await Promise.all(invalidations)
+      removeTrashDetailsFromCache(queryClient, selectedTrashItems)
       removeTrashItemsFromCache(queryClient, selectedTrashItems)
       setSelectedItems([])
       if (data?.failedCount) {
@@ -399,41 +444,63 @@ export default function TrashPage() {
   const handleItemClick = async (item: TrashItem) => {
     if (item.itemType === 'location') {
       try {
-        const response = await fetch(
-          `/api/locations/${item.id}?includeDeleted=true`,
-          {
-            credentials: 'include',
+        const location = await queryClient.fetchQuery({
+          queryKey: getTrashDetailQueryKey('location', item.id),
+          queryFn: async () => {
+            const response = await fetch(
+              `/api/locations/${item.id}?includeDeleted=true`,
+              {
+                credentials: 'include',
+              },
+            )
+
+            if (!response.ok) {
+              throw new Error('Localização não encontrada')
+            }
+
+            return response.json() as Promise<LocationResponse>
           },
-        )
-        if (response.ok) {
-          const location = await response.json()
-          setSelectedLocationForView(location)
-          setIsViewLocationModalOpen(true)
-        } else {
-          toast.error('Localização não encontrada')
-        }
+          staleTime: 5 * 60 * 1000,
+        })
+
+        setSelectedLocationForView(location)
+        setIsViewLocationModalOpen(true)
       } catch (error) {
-        console.error('Erro ao carregar localização:', error)
-        toast.error('Falha ao carregar detalhes da localização')
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : 'Falha ao carregar detalhes da localização',
+        )
       }
     } else if (item.itemType === 'category') {
       try {
-        const response = await fetch(
-          `/api/categories/${item.id}?includeDeleted=true`,
-          {
-            credentials: 'include',
+        const category = await queryClient.fetchQuery({
+          queryKey: getTrashDetailQueryKey('category', item.id),
+          queryFn: async () => {
+            const response = await fetch(
+              `/api/categories/${item.id}?includeDeleted=true`,
+              {
+                credentials: 'include',
+              },
+            )
+
+            if (!response.ok) {
+              throw new Error('Categoria não encontrada')
+            }
+
+            return response.json() as Promise<CategoryResponse>
           },
-        )
-        if (response.ok) {
-          const category = await response.json()
-          setSelectedCategoryForView(category)
-          setIsViewCategoryModalOpen(true)
-        } else {
-          toast.error('Categoria não encontrada')
-        }
+          staleTime: 5 * 60 * 1000,
+        })
+
+        setSelectedCategoryForView(category)
+        setIsViewCategoryModalOpen(true)
       } catch (error) {
-        console.error('Erro ao carregar categoria:', error)
-        toast.error('Falha ao carregar detalhes da categoria')
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : 'Falha ao carregar detalhes da categoria',
+        )
       }
     } else if (item.itemType === 'problem') {
       const problemData: ProblemData = {

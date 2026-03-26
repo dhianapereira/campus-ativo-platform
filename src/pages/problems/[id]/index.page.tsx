@@ -43,10 +43,14 @@ import { NoImage } from '@/layouts/platform/components/NoImage'
 import { ProtectedRoute } from '@/guards/ProtectedRoute'
 import PlatformLayout from '@/layouts/platform/layout'
 import Head from 'next/head'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthPermissions, useAuthSession } from '@/contexts/auth-context'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { PageContainer } from '@/pages/error-page.styles'
+import {
+  createTrashItemFromProblem,
+  upsertTrashItemsInCache,
+} from '@/pages/trash/trash-cache'
 import {
   getHistoryActionLabel,
   getMaintenanceTypeLabel,
@@ -202,7 +206,8 @@ export default function ProblemDetails() {
   const router = useRouter()
   const { id } = router.query
   const queryClient = useQueryClient()
-  const { user, hasRole } = useAuth()
+  const { user } = useAuthSession()
+  const { hasRole } = useAuthPermissions()
 
   const [imageError, setImageError] = useState(false)
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
@@ -300,16 +305,16 @@ export default function ProblemDetails() {
       }
     },
     onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: ['problems'],
-          refetchType: 'all',
-        }),
-        queryClient.invalidateQueries({
-          queryKey: ['trash'],
-          refetchType: 'all',
-        }),
-      ])
+      if (problem) {
+        upsertTrashItemsInCache(queryClient, [
+          createTrashItemFromProblem(problem),
+        ])
+      }
+
+      await queryClient.invalidateQueries({
+        queryKey: ['problems'],
+        refetchType: 'all',
+      })
       toast.success('Problema movido para a lixeira.')
       await router.push('/problems')
     },

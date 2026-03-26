@@ -11,7 +11,7 @@ import {
 } from '@/validators/edit-problem-form'
 import { useRouter } from 'next/router'
 import { ProtectedRoute } from '@/guards/ProtectedRoute'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthSession } from '@/contexts/auth-context'
 import { toast } from 'sonner'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ImageUpload from '../../components/ImageUpload'
@@ -77,7 +77,7 @@ function buildUnavailableLabel(label: string) {
 export default function EditProblem() {
   const router = useRouter()
   const { id, from } = router.query
-  const { user } = useAuth()
+  const { user } = useAuthSession()
   const queryClient = useQueryClient()
   const problemDetailsPath =
     typeof id === 'string' ? `/problems/${id}` : '/problems'

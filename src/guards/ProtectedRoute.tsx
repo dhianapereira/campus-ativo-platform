@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthSession } from '@/contexts/auth-context'
 import { useAuthRedirect } from '@/hooks/use-auth-redirect'
 import { AuthGuardFeedback } from './AuthGuardFeedback'
 
@@ -14,7 +14,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
     profileError,
     retryProfileLoad,
     isProfileLoading,
-  } = useAuth()
+  } = useAuthSession()
   const hasProfileError = !!profileError
 
   useAuthRedirect({

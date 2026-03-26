@@ -11,10 +11,13 @@ import {
 import { ArrowCounterClockwise, Trash } from 'phosphor-react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthSession } from '@/contexts/auth-context'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { useState } from 'react'
-import { removeTrashItemsFromCache } from '../../trash-cache'
+import {
+  removeTrashDetailsFromCache,
+  removeTrashItemsFromCache,
+} from '../../trash-cache'
 
 interface ProblemData {
   id: string
@@ -42,7 +45,7 @@ export function ViewProblemModal({
   problem,
 }: ViewProblemModalProps) {
   const queryClient = useQueryClient()
-  const { user } = useAuth()
+  const { user } = useAuthSession()
   const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
     useState(false)
 
@@ -72,8 +75,24 @@ export function ViewProblemModal({
 
       return response.json()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['problems'] })
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['problems'],
+          refetchType: 'all',
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['problem'],
+          refetchType: 'all',
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['dashboard'],
+          refetchType: 'all',
+        }),
+      ])
+      removeTrashDetailsFromCache(queryClient, [
+        { id: problem.id, itemType: 'problem' },
+      ])
       removeTrashItemsFromCache(queryClient, [
         { id: problem.id, itemType: 'problem' },
       ])
@@ -114,8 +133,24 @@ export function ViewProblemModal({
 
       return response.json()
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['problems'] })
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ['problems'],
+          refetchType: 'all',
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['problem'],
+          refetchType: 'all',
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ['dashboard'],
+          refetchType: 'all',
+        }),
+      ])
+      removeTrashDetailsFromCache(queryClient, [
+        { id: problem.id, itemType: 'problem' },
+      ])
       removeTrashItemsFromCache(queryClient, [
         { id: problem.id, itemType: 'problem' },
       ])

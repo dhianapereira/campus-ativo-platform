@@ -29,6 +29,10 @@ import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { LocationResponse } from '../../../../lib/api/generated/models/locationResponse'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
+import {
+  createTrashItemFromLocation,
+  upsertTrashItemsInCache,
+} from '@/pages/trash/trash-cache'
 
 const locationSchema = z.object({
   name: z
@@ -192,16 +196,13 @@ function EditLocationModalContent({
       return response.json()
     },
     onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: ['locations'],
-          refetchType: 'all',
-        }),
-        queryClient.invalidateQueries({
-          queryKey: ['trash'],
-          refetchType: 'all',
-        }),
+      upsertTrashItemsInCache(queryClient, [
+        createTrashItemFromLocation(location),
       ])
+      await queryClient.invalidateQueries({
+        queryKey: ['locations'],
+        refetchType: 'all',
+      })
       toast.success('Localização movida para lixeira')
       onSuccess()
       onClose()

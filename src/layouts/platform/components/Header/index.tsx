@@ -19,7 +19,7 @@ import {
 import Drawer from '../navigation/Drawer'
 import { LogoutConfirmationModal } from '../LogoutModal'
 import { truncateUserName } from './truncate-name'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthSession } from '@/contexts/auth-context'
 import { Text, Avatar, Heading } from '@/components'
 import { useRouter } from 'next/router'
 
@@ -30,7 +30,7 @@ export default function Header({
   position,
   showLoadingState = false,
 }: IProps) {
-  const { signOut, profileError, retryProfileLoad } = useAuth()
+  const { signOut, profileError, retryProfileLoad } = useAuthSession()
   const router = useRouter()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)

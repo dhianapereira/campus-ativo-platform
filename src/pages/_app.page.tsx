@@ -16,7 +16,7 @@ function shouldUsePlatformLayout(pathname: string) {
 
   return (
     pathname.startsWith('/members') ||
-    pathname.startsWith('/problems') ||
+    pathname === '/problems' ||
     pathname.startsWith('/profile') ||
     pathname.startsWith('/settings') ||
     pathname.startsWith('/trash') ||

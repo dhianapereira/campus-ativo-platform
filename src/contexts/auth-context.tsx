@@ -1,4 +1,10 @@
-import { createContext, useCallback, useContext, useMemo } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  type ReactNode,
+} from 'react'
 import { useRouter } from 'next/router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { AuthenticateRequest, UserResponse } from '../lib/api/generated/models'
@@ -6,7 +12,7 @@ import { getRoleLevel, hasRequiredRole } from '@/contexts/auth/role-mapping'
 
 type User = UserResponse & { position: string }
 
-interface AuthContextData {
+interface AuthSessionData {
   user: User | null
   isAuthenticated: boolean
   isLoading: boolean
@@ -15,6 +21,9 @@ interface AuthContextData {
   signIn: (credentials: AuthenticateRequest) => Promise<void>
   signOut: () => Promise<void>
   retryProfileLoad: () => Promise<void>
+}
+
+interface AuthPermissionsData {
   hasRole: (requiredRole: string) => boolean
   hasRoleLevel: (requiredLevel: number) => boolean
   canAccessUserManagement: () => boolean
@@ -24,10 +33,12 @@ interface AuthContextData {
 }
 
 interface AuthProviderProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
-const AuthContext = createContext<AuthContextData>({} as AuthContextData)
+const AuthSessionContext = createContext<AuthSessionData | null>(null)
+const AuthPermissionsContext = createContext<AuthPermissionsData | null>(null)
+
 export const USER_PROFILE_QUERY_KEY = ['user', 'profile'] as const
 
 async function fetchUserProfile(): Promise<User | null> {
@@ -116,38 +127,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await router.replace('/login')
 
     if (typeof window !== 'undefined') {
-      // Prevent going back into protected pages
       window.history.replaceState(null, '', '/login')
     }
   }, [queryClient, router])
 
-  const contextValue = useMemo(() => {
-    const hasRole = (requiredRole: string): boolean => {
-      if (!user?.role) return false
-      return hasRequiredRole(user.role, requiredRole)
-    }
-
-    const hasRoleLevel = (requiredLevel: number): boolean => {
-      if (!user?.role) return false
-      return getRoleLevel(user.role) >= requiredLevel
-    }
-
-    const canManageUserRole = (targetUserRole: string): boolean => {
-      if (!user?.role) return false
-
-      const currentLevel = getRoleLevel(user.role)
-      const targetLevel = getRoleLevel(targetUserRole)
-
-      if (currentLevel === 4) return true
-
-      if (currentLevel === 3) {
-        return targetLevel <= 2
-      }
-
-      return false
-    }
-
-    return {
+  const sessionValue = useMemo<AuthSessionData>(
+    () => ({
       user: user ?? null,
       isAuthenticated,
       isLoading: !isFetched && isLoading,
@@ -156,36 +141,88 @@ export function AuthProvider({ children }: AuthProviderProps) {
       signIn,
       signOut,
       retryProfileLoad,
+    }),
+    [
+      isAuthenticated,
+      isFetched,
+      isLoading,
+      isProfileLoading,
+      profileError,
+      retryProfileLoad,
+      signIn,
+      signOut,
+      user,
+    ],
+  )
+
+  const permissionsValue = useMemo<AuthPermissionsData>(() => {
+    const role = user?.role ?? null
+
+    const hasRole = (requiredRole: string): boolean => {
+      if (!role) return false
+      return hasRequiredRole(role, requiredRole)
+    }
+
+    const hasRoleLevel = (requiredLevel: number): boolean => {
+      if (!role) return false
+      return getRoleLevel(role) >= requiredLevel
+    }
+
+    return {
       hasRole,
       hasRoleLevel,
       canAccessUserManagement: () => hasRoleLevel(3),
       canAccessSettings: () => hasRoleLevel(2),
       canAccessTrash: () => !!user,
-      canManageUserRole,
+      canManageUserRole: (targetUserRole: string): boolean => {
+        if (!role) return false
+
+        const currentLevel = getRoleLevel(role)
+        const targetLevel = getRoleLevel(targetUserRole)
+
+        if (currentLevel === 4) return true
+
+        if (currentLevel === 3) {
+          return targetLevel <= 2
+        }
+
+        return false
+      },
     }
-  }, [
-    isAuthenticated,
-    isFetched,
-    isLoading,
-    isProfileLoading,
-    profileError,
-    retryProfileLoad,
-    signIn,
-    signOut,
-    user,
-  ])
+  }, [user])
 
   return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    <AuthSessionContext.Provider value={sessionValue}>
+      <AuthPermissionsContext.Provider value={permissionsValue}>
+        {children}
+      </AuthPermissionsContext.Provider>
+    </AuthSessionContext.Provider>
   )
 }
 
-export function useAuth() {
-  const context = useContext(AuthContext)
+export function useAuthSession() {
+  const context = useContext(AuthSessionContext)
 
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    throw new Error('useAuthSession must be used within an AuthProvider')
   }
 
   return context
+}
+
+export function useAuthPermissions() {
+  const context = useContext(AuthPermissionsContext)
+
+  if (!context) {
+    throw new Error('useAuthPermissions must be used within an AuthProvider')
+  }
+
+  return context
+}
+
+export function useAuth() {
+  return {
+    ...useAuthSession(),
+    ...useAuthPermissions(),
+  }
 }

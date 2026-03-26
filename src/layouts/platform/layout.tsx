@@ -3,12 +3,13 @@ import Header from './components/Header'
 import Menu from './components/navigation/Menu'
 import { Container, Body, Content } from './styles'
 import { ProtectedRoute } from '@/guards/ProtectedRoute'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthSession } from '@/contexts/auth-context'
 
 const PlatformLayoutContext = createContext(false)
 
 function PlatformLayoutShell({ children }: { children: ReactNode }) {
-  const { user, signOut, isLoading, isProfileLoading, profileError } = useAuth()
+  const { user, signOut, isLoading, isProfileLoading, profileError } =
+    useAuthSession()
 
   const handleLogout = async () => {
     await signOut()

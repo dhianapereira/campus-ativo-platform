@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useSyncExternalStore } from 'react'
 import { NotFoundState } from '@/components'
-import { useAuth } from '@/contexts/auth-context'
+import { useAuthSession } from '@/contexts/auth-context'
 import PlatformLayout from '@/layouts/platform/layout'
 import { PageContainer } from '@/pages/error-page.styles'
 
@@ -25,7 +25,7 @@ function NotFoundContent({ withLayout }: { withLayout: boolean }) {
 }
 
 export default function NotFoundPage() {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isAuthenticated, isLoading } = useAuthSession()
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,

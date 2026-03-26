@@ -27,12 +27,12 @@ import {
 } from './styles'
 import PlatformLayout from '@/layouts/platform/layout'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
-import { USER_PROFILE_QUERY_KEY, useAuth } from '@/contexts/auth-context'
+import { USER_PROFILE_QUERY_KEY, useAuthSession } from '@/contexts/auth-context'
 
-type AuthUser = NonNullable<ReturnType<typeof useAuth>['user']>
+type AuthUser = NonNullable<ReturnType<typeof useAuthSession>['user']>
 
 export default function ProfilePage() {
-  const { user, isProfileLoading: isLoading, signOut } = useAuth()
+  const { user, isProfileLoading: isLoading, signOut } = useAuthSession()
 
   if (isLoading || !user) {
     return (
