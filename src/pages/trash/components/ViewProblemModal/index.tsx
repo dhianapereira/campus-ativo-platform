@@ -7,9 +7,8 @@ import {
   Label,
   Value,
   DescriptionValue,
-  WarningMessage,
 } from '../TrashItemModal/styles'
-import { ArrowCounterClockwise, Warning, Trash } from 'phosphor-react'
+import { ArrowCounterClockwise, Trash } from 'phosphor-react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { useAuth } from '@/contexts/auth-context'
@@ -169,13 +168,6 @@ export function ViewProblemModal({
           ) : undefined
         }
       >
-        {!isAuthor && problem.authorId && (
-          <WarningMessage>
-            <Warning size={20} weight="fill" />
-            <span>Apenas quem cadastrou este problema pode restaurá-lo.</span>
-          </WarningMessage>
-        )}
-
         <InfoGroup>
           <InfoItem>
             <Label>Título</Label>

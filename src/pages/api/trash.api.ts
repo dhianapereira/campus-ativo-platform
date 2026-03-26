@@ -246,14 +246,13 @@ export default async function handler(
       }
 
       const canSeeLocationsAndCategories = roleLevel >= 2
-      const canViewAllProblems = roleLevel >= 2
       const onlyOwnProblems = (problems: Array<Record<string, unknown>>) =>
-        !canViewAllProblems && currentUserId
+        currentUserId
           ? problems.filter((p) => {
               const reporterId = extractComparableId(p.reporterId)
               return reporterId === currentUserId
             })
-          : problems
+          : []
 
       const results: {
         items: unknown[]
