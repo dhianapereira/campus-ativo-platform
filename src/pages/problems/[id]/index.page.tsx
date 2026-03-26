@@ -35,7 +35,7 @@ import {
 } from 'phosphor-react'
 import { useRouter } from 'next/router'
 import type { ProblemDetailsProps, ProblemHistoryChange } from './types'
-import { Button, Text } from '@/components'
+import { Button, ConfirmationModal, Text } from '@/components'
 import { TrashActionButton } from './components/TrashActionButton'
 import { Actions } from './components/Actions'
 import { ImageError } from '@/layouts/platform/components/ImageError'
@@ -199,6 +199,8 @@ export default function ProblemDetails() {
 
   const [imageError, setImageError] = useState(false)
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
+  const [showTrashConfirmationModal, setShowTrashConfirmationModal] =
+    useState(false)
 
   const {
     data: apiResponse,
@@ -366,332 +368,351 @@ export default function ProblemDetails() {
 
   function handleMoveToTrash() {
     if (!canMoveToTrash) return
+    setShowTrashConfirmationModal(true)
+  }
+
+  function confirmMoveToTrash() {
     moveToTrashMutation.mutate()
+    setShowTrashConfirmationModal(false)
   }
 
   return (
     <ProtectedRoute>
-      <Container>
-        <Header>
-          <div className="first-component">
-            <ArrowLeft
-              className="back-icon"
-              onClick={handleBackNavigation}
-              weight="bold"
-              size={24}
-              aria-label="Voltar para a página anterior"
-              tabIndex={0}
-              role="button"
-            />
-            <Title as="h2" size="md">
-              {problemData.title}
-            </Title>
-          </div>
-          <div
-            style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}
-          >
-            {canMoveToTrash && (
-              <>
-                <TrashActionButton
-                  className="desktop"
-                  variant="danger"
-                  onClick={handleMoveToTrash}
-                  disabled={moveToTrashMutation.isPending}
-                  aria-label="Mover para a lixeira"
-                  tabIndex={0}
-                >
-                  <Trash weight="bold" size={24} />
-                  <span className="label">Mover para lixeira</span>
-                </TrashActionButton>
-                <TrashActionButton
-                  className="mobile"
-                  variant="danger"
-                  mobileBehavior="iconOnly"
-                  onClick={handleMoveToTrash}
-                  disabled={moveToTrashMutation.isPending}
-                  aria-label="Mover para a lixeira"
-                  tabIndex={0}
-                  role="button"
-                >
-                  <Trash weight="bold" size={24} />
-                  <span className="label">Mover para lixeira</span>
-                </TrashActionButton>
-              </>
-            )}
-            {canEdit && (
-              <>
-                <Button
-                  className="desktop"
-                  variant="secondary"
-                  onClick={goToEditPage}
-                  aria-label="Editar problema"
-                  tabIndex={0}
-                >
-                  <NotePencil weight="bold" size={24} />
-                  Editar
-                </Button>
-                <EditButton
-                  className="mobile"
-                  onClick={goToEditPage}
-                  aria-label="Editar problema"
-                  tabIndex={0}
-                  role="button"
-                >
-                  <NotePencil weight="bold" size={24} />
-                </EditButton>
-              </>
-            )}
-          </div>
-        </Header>
-        <Body>
-          {!problemData.imageUrl ? (
-            <NoImage />
-          ) : !imageError ? (
-            <ImageContainer
-              src={problemData.imageUrl}
-              height={331}
-              width={839}
-              alt={problemData.title}
-              onError={() => setImageError(true)}
-            />
-          ) : (
-            <ImageError />
-          )}
-          <InfoContainer>
-            <Text className="label" size="md">
-              Título:
-            </Text>
-            <Text size="md">{problemData.title}</Text>
-          </InfoContainer>
-          <InfoContainer>
-            <Text className="label" size="md">
-              Categoria:
-            </Text>
-            <CategoryInfo>
-              <div className="category-header">
-                <Tag
-                  className="category-icon"
-                  size={18}
-                  weight="fill"
-                  aria-hidden="true"
-                />
-                <Text className="category-name" size="md">
-                  {problemData.category.name}
-                </Text>
-              </div>
-              {problemData.category.description && (
-                <div className="category-description">
-                  <Text className="category-description-label" size="xs">
-                    Descrição
-                  </Text>
-                  <Text className="category-description-text" size="sm">
-                    {problemData.category.description}
-                  </Text>
-                </div>
+      <>
+        <Container>
+          <Header>
+            <div className="first-component">
+              <ArrowLeft
+                className="back-icon"
+                onClick={handleBackNavigation}
+                weight="bold"
+                size={24}
+                aria-label="Voltar para a página anterior"
+                tabIndex={0}
+                role="button"
+              />
+              <Title as="h2" size="md">
+                Detalhes do problema
+              </Title>
+            </div>
+            <div
+              style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}
+            >
+              {canMoveToTrash && (
+                <>
+                  <TrashActionButton
+                    className="desktop"
+                    variant="danger"
+                    onClick={handleMoveToTrash}
+                    disabled={moveToTrashMutation.isPending}
+                    aria-label="Mover para a lixeira"
+                    tabIndex={0}
+                  >
+                    <Trash weight="bold" size={24} />
+                    <span className="label">Mover para lixeira</span>
+                  </TrashActionButton>
+                  <TrashActionButton
+                    className="mobile"
+                    variant="danger"
+                    mobileBehavior="iconOnly"
+                    onClick={handleMoveToTrash}
+                    disabled={moveToTrashMutation.isPending}
+                    aria-label="Mover para a lixeira"
+                    tabIndex={0}
+                    role="button"
+                  >
+                    <Trash weight="bold" size={24} />
+                    <span className="label">Mover para lixeira</span>
+                  </TrashActionButton>
+                </>
               )}
-            </CategoryInfo>
-          </InfoContainer>
-          <InfoContainer>
-            <Text className="label" size="md">
-              Local:
-            </Text>
-            <LocationInfo>
-              <div className="location-header">
-                <div className="location-title">
-                  <MapPin
-                    className="location-icon"
+              {canEdit && (
+                <>
+                  <Button
+                    className="desktop"
+                    variant="secondary"
+                    onClick={goToEditPage}
+                    aria-label="Editar problema"
+                    tabIndex={0}
+                  >
+                    <NotePencil weight="bold" size={24} />
+                    Editar
+                  </Button>
+                  <EditButton
+                    className="mobile"
+                    onClick={goToEditPage}
+                    aria-label="Editar problema"
+                    tabIndex={0}
+                    role="button"
+                  >
+                    <NotePencil weight="bold" size={24} />
+                  </EditButton>
+                </>
+              )}
+            </div>
+          </Header>
+          <Body>
+            {!problemData.imageUrl ? (
+              <NoImage />
+            ) : !imageError ? (
+              <ImageContainer
+                src={problemData.imageUrl}
+                height={331}
+                width={839}
+                alt={problemData.title}
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              <ImageError />
+            )}
+            <InfoContainer>
+              <Text className="label" size="md">
+                Título:
+              </Text>
+              <Text size="md">{problemData.title}</Text>
+            </InfoContainer>
+            <InfoContainer>
+              <Text className="label" size="md">
+                Categoria:
+              </Text>
+              <CategoryInfo>
+                <div className="category-header">
+                  <Tag
+                    className="category-icon"
                     size={18}
                     weight="fill"
                     aria-hidden="true"
                   />
-                  <Text className="location-name" size="md">
-                    {problemData.location.name}
+                  <Text className="category-name" size="md">
+                    {problemData.category.name}
                   </Text>
                 </div>
-                {problemData.location.code && (
-                  <span className="location-code">
-                    Código {problemData.location.code}
-                  </span>
+                {problemData.category.description && (
+                  <div className="category-description">
+                    <Text className="category-description-label" size="xs">
+                      Descrição
+                    </Text>
+                    <Text className="category-description-text" size="sm">
+                      {problemData.category.description}
+                    </Text>
+                  </div>
                 )}
-              </div>
-              {problemData.location.description && (
-                <div className="location-description">
-                  <Text className="location-description-label" size="xs">
-                    Descrição
-                  </Text>
-                  <Text className="location-description-text" size="sm">
-                    {problemData.location.description}
-                  </Text>
-                </div>
-              )}
-            </LocationInfo>
-          </InfoContainer>
-          <InfoContainer>
-            <Text className="label" size="md">
-              Descrição:
-            </Text>
-            <Text size="md">{problemData.description}</Text>
-          </InfoContainer>
-          <InfoContainer>
-            <Text className="label" size="md">
-              Relator:
-            </Text>
-            <Text size="md">{problemData.reporter}</Text>
-          </InfoContainer>
-          <InfoContainer>
-            <Text className="label" size="md">
-              Cadastrado em:
-            </Text>
-            <Text size="md">{problemData.createdAt}</Text>
-          </InfoContainer>
-          {problemData.updatedAt && (
+              </CategoryInfo>
+            </InfoContainer>
             <InfoContainer>
               <Text className="label" size="md">
-                Última atualização:
+                Local:
               </Text>
-              <Text size="md">{problemData.updatedAt}</Text>
-            </InfoContainer>
-          )}
-          <HistorySection>
-            <HistoryHeader
-              type="button"
-              onClick={() => setIsHistoryOpen((current) => !current)}
-              aria-expanded={isHistoryOpen}
-              aria-controls="problem-history-panel"
-            >
-              <div className="history-title">
-                <ClockCounterClockwise
-                  className="history-icon"
-                  size={18}
-                  weight="fill"
-                  aria-hidden="true"
-                />
-                <HistorySummary>
-                  <Text className="label" size="md">
-                    Histórico
-                  </Text>
-                  <Text size="sm">
-                    Acompanhamento das alterações e observações do problema.
-                  </Text>
-                </HistorySummary>
-              </div>
-              <div className="history-header-actions">
-                <HistoryBadge>
-                  {problemData.history.length} registro
-                  {problemData.history.length === 1 ? '' : 's'}
-                </HistoryBadge>
-                <CaretDown
-                  className="history-chevron"
-                  size={18}
-                  weight="bold"
-                />
-              </div>
-            </HistoryHeader>
-            {isHistoryOpen && (
-              <HistoryPanel id="problem-history-panel">
-                {problemData.history.length > 0 ? (
-                  <HistoryList>
-                    {problemData.history.map((entry) => {
-                      const changes = entry.changes ?? []
-                      const noteChange = changes.find(
-                        (change) => change.field === 'note',
-                      )
-                      const noteText =
-                        typeof noteChange?.newValue === 'string'
-                          ? noteChange.newValue
-                          : typeof entry.note === 'string'
-                            ? entry.note
-                            : null
-                      const noteWasRemoved =
-                        !!noteChange &&
-                        !(
-                          typeof noteChange.newValue === 'string' &&
-                          noteChange.newValue.trim()
-                        )
-                      const visibleChanges = changes.filter(
-                        (change) => change.field !== 'note',
-                      )
-                      const renderedChanges = renderHistoryChanges(changes)
-                      const absoluteDate = formatDateTime(entry.createdAt)
-                      const hasDetails =
-                        visibleChanges.length > 0 || noteText || noteWasRemoved
-
-                      return (
-                        <HistoryTimelineItem key={entry.id}>
-                          <HistoryMarker aria-hidden="true" />
-                          <HistoryCard>
-                            <HistoryCardHeader>
-                              <div className="history-card-title">
-                                <div className="history-card-heading">
-                                  <span className="history-actor">
-                                    {entry.userName}
-                                  </span>
-                                  <span className="history-action-text">
-                                    {getHistoryActionLabel(entry.action)}
-                                  </span>
-                                  <span className="history-date-inline">
-                                    em {absoluteDate}
-                                  </span>
-                                </div>
-                                <HistoryMeta />
-                              </div>
-                            </HistoryCardHeader>
-                            <HistoryCardBody>
-                              {hasDetails ? (
-                                <>
-                                  {visibleChanges.length > 0 && (
-                                    <HistoryChangeList>
-                                      {renderedChanges}
-                                    </HistoryChangeList>
-                                  )}
-                                  {noteText && (
-                                    <HistoryNote key={`${entry.id}-note`}>
-                                      <Text size="sm">
-                                        {`Observações: ${noteText}`}
-                                      </Text>
-                                    </HistoryNote>
-                                  )}
-                                  {noteWasRemoved && (
-                                    <HistoryNote
-                                      key={`${entry.id}-note-removed`}
-                                    >
-                                      <Text size="sm">
-                                        Observações removidas.
-                                      </Text>
-                                    </HistoryNote>
-                                  )}
-                                </>
-                              ) : (
-                                <Text size="sm">
-                                  Nenhum detalhe adicional foi informado neste
-                                  registro.
-                                </Text>
-                              )}
-                            </HistoryCardBody>
-                          </HistoryCard>
-                        </HistoryTimelineItem>
-                      )
-                    })}
-                  </HistoryList>
-                ) : (
-                  <Text size="md">
-                    Nenhuma atualização registrada até o momento.
-                  </Text>
+              <LocationInfo>
+                <div className="location-header">
+                  <div className="location-title">
+                    <MapPin
+                      className="location-icon"
+                      size={18}
+                      weight="fill"
+                      aria-hidden="true"
+                    />
+                    <Text className="location-name" size="md">
+                      {problemData.location.name}
+                    </Text>
+                  </div>
+                  {problemData.location.code && (
+                    <span className="location-code">
+                      Código {problemData.location.code}
+                    </span>
+                  )}
+                </div>
+                {problemData.location.description && (
+                  <div className="location-description">
+                    <Text className="location-description-label" size="xs">
+                      Descrição
+                    </Text>
+                    <Text className="location-description-text" size="sm">
+                      {problemData.location.description}
+                    </Text>
+                  </div>
                 )}
-              </HistoryPanel>
+              </LocationInfo>
+            </InfoContainer>
+            <InfoContainer>
+              <Text className="label" size="md">
+                Descrição:
+              </Text>
+              <Text size="md">{problemData.description}</Text>
+            </InfoContainer>
+            <InfoContainer>
+              <Text className="label" size="md">
+                Relator:
+              </Text>
+              <Text size="md">{problemData.reporter}</Text>
+            </InfoContainer>
+            <InfoContainer>
+              <Text className="label" size="md">
+                Cadastrado em:
+              </Text>
+              <Text size="md">{problemData.createdAt}</Text>
+            </InfoContainer>
+            {problemData.updatedAt && (
+              <InfoContainer>
+                <Text className="label" size="md">
+                  Última atualização:
+                </Text>
+                <Text size="md">{problemData.updatedAt}</Text>
+              </InfoContainer>
             )}
-          </HistorySection>
-          {canAccessActions && (
-            <Actions
-              problemId={problemData.id}
-              problemQueryKey={problemQueryKey}
-              initialStatus={problemData.status}
-              initialMaintenanceType={problemData.maintenanceType}
-              initialNote={problemData.latestNote}
-            />
-          )}
-        </Body>
-      </Container>
+            <HistorySection>
+              <HistoryHeader
+                type="button"
+                onClick={() => setIsHistoryOpen((current) => !current)}
+                aria-expanded={isHistoryOpen}
+                aria-controls="problem-history-panel"
+              >
+                <div className="history-title">
+                  <ClockCounterClockwise
+                    className="history-icon"
+                    size={18}
+                    weight="fill"
+                    aria-hidden="true"
+                  />
+                  <HistorySummary>
+                    <Text className="label" size="md">
+                      Histórico
+                    </Text>
+                    <Text size="sm">
+                      Acompanhamento das alterações e observações do problema.
+                    </Text>
+                  </HistorySummary>
+                </div>
+                <div className="history-header-actions">
+                  <HistoryBadge>
+                    {problemData.history.length} registro
+                    {problemData.history.length === 1 ? '' : 's'}
+                  </HistoryBadge>
+                  <CaretDown
+                    className="history-chevron"
+                    size={18}
+                    weight="bold"
+                  />
+                </div>
+              </HistoryHeader>
+              {isHistoryOpen && (
+                <HistoryPanel id="problem-history-panel">
+                  {problemData.history.length > 0 ? (
+                    <HistoryList>
+                      {problemData.history.map((entry) => {
+                        const changes = entry.changes ?? []
+                        const noteChange = changes.find(
+                          (change) => change.field === 'note',
+                        )
+                        const noteText =
+                          typeof noteChange?.newValue === 'string'
+                            ? noteChange.newValue
+                            : typeof entry.note === 'string'
+                              ? entry.note
+                              : null
+                        const noteWasRemoved =
+                          !!noteChange &&
+                          !(
+                            typeof noteChange.newValue === 'string' &&
+                            noteChange.newValue.trim()
+                          )
+                        const visibleChanges = changes.filter(
+                          (change) => change.field !== 'note',
+                        )
+                        const renderedChanges = renderHistoryChanges(changes)
+                        const absoluteDate = formatDateTime(entry.createdAt)
+                        const hasDetails =
+                          visibleChanges.length > 0 ||
+                          noteText ||
+                          noteWasRemoved
+
+                        return (
+                          <HistoryTimelineItem key={entry.id}>
+                            <HistoryMarker aria-hidden="true" />
+                            <HistoryCard>
+                              <HistoryCardHeader>
+                                <div className="history-card-title">
+                                  <div className="history-card-heading">
+                                    <span className="history-actor">
+                                      {entry.userName}
+                                    </span>
+                                    <span className="history-action-text">
+                                      {getHistoryActionLabel(entry.action)}
+                                    </span>
+                                    <span className="history-date-inline">
+                                      em {absoluteDate}
+                                    </span>
+                                  </div>
+                                  <HistoryMeta />
+                                </div>
+                              </HistoryCardHeader>
+                              <HistoryCardBody>
+                                {hasDetails ? (
+                                  <>
+                                    {visibleChanges.length > 0 && (
+                                      <HistoryChangeList>
+                                        {renderedChanges}
+                                      </HistoryChangeList>
+                                    )}
+                                    {noteText && (
+                                      <HistoryNote key={`${entry.id}-note`}>
+                                        <Text size="sm">
+                                          {`Observações: ${noteText}`}
+                                        </Text>
+                                      </HistoryNote>
+                                    )}
+                                    {noteWasRemoved && (
+                                      <HistoryNote
+                                        key={`${entry.id}-note-removed`}
+                                      >
+                                        <Text size="sm">
+                                          Observações removidas.
+                                        </Text>
+                                      </HistoryNote>
+                                    )}
+                                  </>
+                                ) : (
+                                  <Text size="sm">
+                                    Nenhum detalhe adicional foi informado neste
+                                    registro.
+                                  </Text>
+                                )}
+                              </HistoryCardBody>
+                            </HistoryCard>
+                          </HistoryTimelineItem>
+                        )
+                      })}
+                    </HistoryList>
+                  ) : (
+                    <Text size="md">
+                      Nenhuma atualização registrada até o momento.
+                    </Text>
+                  )}
+                </HistoryPanel>
+              )}
+            </HistorySection>
+            {canAccessActions && (
+              <Actions
+                problemId={problemData.id}
+                problemQueryKey={problemQueryKey}
+                initialStatus={problemData.status}
+                initialMaintenanceType={problemData.maintenanceType}
+                initialNote={problemData.latestNote}
+              />
+            )}
+          </Body>
+        </Container>
+
+        <ConfirmationModal
+          isOpen={showTrashConfirmationModal}
+          onClose={() => setShowTrashConfirmationModal(false)}
+          onConfirm={confirmMoveToTrash}
+          title="Mover para lixeira?"
+          message="Este problema será movido para a lixeira. Você poderá restaurá-lo depois se necessário."
+          confirmText="Mover para lixeira"
+          cancelText="Cancelar"
+        />
+      </>
     </ProtectedRoute>
   )
 }
