@@ -169,54 +169,54 @@ export function ViewProblemModal({
           ) : undefined
         }
       >
-          {!isAuthor && problem.authorId && (
-            <WarningMessage>
-              <Warning size={20} weight="fill" />
-              <span>Apenas quem cadastrou este problema pode restaurá-lo.</span>
-            </WarningMessage>
+        {!isAuthor && problem.authorId && (
+          <WarningMessage>
+            <Warning size={20} weight="fill" />
+            <span>Apenas quem cadastrou este problema pode restaurá-lo.</span>
+          </WarningMessage>
+        )}
+
+        <InfoGroup>
+          <InfoItem>
+            <Label>Título</Label>
+            <Value>{problem.title}</Value>
+          </InfoItem>
+
+          {problem.locationName && (
+            <InfoItem>
+              <Label>Local</Label>
+              <Value>{problem.locationName}</Value>
+            </InfoItem>
           )}
 
-          <InfoGroup>
+          {problem.categoryName && (
             <InfoItem>
-              <Label>Título</Label>
-              <Value>{problem.title}</Value>
+              <Label>Categoria</Label>
+              <Value>{problem.categoryName}</Value>
             </InfoItem>
+          )}
 
-            {problem.locationName && (
-              <InfoItem>
-                <Label>Local</Label>
-                <Value>{problem.locationName}</Value>
-              </InfoItem>
-            )}
+          {problem.description && (
+            <InfoItem>
+              <Label>Descrição</Label>
+              <DescriptionValue>{problem.description}</DescriptionValue>
+            </InfoItem>
+          )}
 
-            {problem.categoryName && (
-              <InfoItem>
-                <Label>Categoria</Label>
-                <Value>{problem.categoryName}</Value>
-              </InfoItem>
-            )}
+          {problem.createdAt && (
+            <InfoItem>
+              <Label>Cadastrado em</Label>
+              <Value>{formatDate(problem.createdAt)}</Value>
+            </InfoItem>
+          )}
 
-            {problem.description && (
-              <InfoItem>
-                <Label>Descrição</Label>
-                <DescriptionValue>{problem.description}</DescriptionValue>
-              </InfoItem>
-            )}
-
-            {problem.createdAt && (
-              <InfoItem>
-                <Label>Cadastrado em</Label>
-                <Value>{formatDate(problem.createdAt)}</Value>
-              </InfoItem>
-            )}
-
-            {problem.deletedAt && (
-              <InfoItem>
-                <Label>Movido para lixeira em</Label>
-                <Value>{formatDate(problem.deletedAt)}</Value>
-              </InfoItem>
-            )}
-          </InfoGroup>
+          {problem.deletedAt && (
+            <InfoItem>
+              <Label>Movido para lixeira em</Label>
+              <Value>{formatDate(problem.deletedAt)}</Value>
+            </InfoItem>
+          )}
+        </InfoGroup>
       </TrashItemModal>
 
       <ConfirmationModal

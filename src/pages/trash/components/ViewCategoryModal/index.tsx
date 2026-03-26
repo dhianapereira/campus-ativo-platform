@@ -136,7 +136,9 @@ export function ViewCategoryModal({
               disabled={restoreCategoryMutation.isPending}
             >
               <ArrowCounterClockwise size={20} weight="bold" />
-              {restoreCategoryMutation.isPending ? 'Restaurando...' : 'Restaurar'}
+              {restoreCategoryMutation.isPending
+                ? 'Restaurando...'
+                : 'Restaurar'}
             </RestoreButton>
           </div>
         }

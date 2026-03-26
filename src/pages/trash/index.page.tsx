@@ -18,6 +18,7 @@ import {
   SearchIcon,
   SearchInput,
   ActionsContainer,
+  SelectionToolbar,
   ActionButton,
   DesktopTableWrapper,
   TableWrapper,
@@ -243,6 +244,8 @@ export default function TrashPage() {
   const totalPages = Math.ceil(totalItems / itemsPerPage)
   const effectiveCurrentPage =
     totalPages > 0 ? Math.min(currentPage, totalPages) : currentPage
+  const bulkActionIsPending =
+    restoreMutation.isPending || deletePermanentlyMutation.isPending
 
   const handleSearch = (query: string) => {
     setSearchTerm(query)
@@ -609,15 +612,6 @@ export default function TrashPage() {
                   <option value="thisyear">{`Este ano (${currentYear})`}</option>
                 </select>
               </FiltersContainer>
-
-              <ActionButton
-                variant="danger"
-                onClick={handleDeletePermanently}
-                disabled={selectedItems.length === 0}
-              >
-                <Trash size={20} weight="bold" />
-                <span>Excluir permanentemente</span>
-              </ActionButton>
             </FiltersAndActionRow>
           </SearchActionsContainer>
 
@@ -627,7 +621,7 @@ export default function TrashPage() {
           </ItemsCount>
 
           {selectedItems.length > 0 && (
-            <>
+            <SelectionToolbar>
               <SelectedCount>
                 Itens selecionados ({selectedItems.length})
               </SelectedCount>
@@ -635,13 +629,29 @@ export default function TrashPage() {
                 <ActionButton
                   variant="primary"
                   onClick={handleRestore}
-                  disabled={selectedItems.length === 0}
+                  disabled={selectedItems.length === 0 || bulkActionIsPending}
                 >
                   <ArrowCounterClockwise size={20} weight="bold" />
-                  <span>Restaurar</span>
+                  <span>
+                    {restoreMutation.isPending
+                      ? 'Restaurando...'
+                      : 'Restaurar selecionados'}
+                  </span>
+                </ActionButton>
+                <ActionButton
+                  variant="danger"
+                  onClick={handleDeletePermanently}
+                  disabled={selectedItems.length === 0 || bulkActionIsPending}
+                >
+                  <Trash size={20} weight="bold" />
+                  <span>
+                    {deletePermanentlyMutation.isPending
+                      ? 'Excluindo...'
+                      : 'Excluir permanentemente'}
+                  </span>
                 </ActionButton>
               </ActionsContainer>
-            </>
+            </SelectionToolbar>
           )}
 
           {isLoading ? (

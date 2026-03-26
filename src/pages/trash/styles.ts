@@ -179,14 +179,42 @@ export const SearchInput = styled('input', {
 })
 
 export const ActionsContainer = styled('div', {
-  display: 'none',
-  gap: '0.5rem',
-  justifyContent: 'center',
+  display: 'flex',
+  gap: '0.75rem',
+  justifyContent: 'flex-end',
   flexWrap: 'wrap',
+  flex: 1,
+
+  '@media(max-width: 768px)': {
+    flex: '0 1 auto',
+    justifyContent: 'flex-end',
+  },
+
+  '@media(max-width: 480px)': {
+    width: '100%',
+    justifyContent: 'stretch',
+  },
+})
+
+export const SelectionToolbar = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '1rem',
+  flexWrap: 'wrap',
+  backgroundColor: '$surfaceMuted',
+  border: '1px solid $borderLight',
+  borderRadius: '14px',
+  padding: '1rem 1.25rem',
   marginBottom: '1.5rem',
 
   '@media(max-width: 768px)': {
-    display: 'flex',
+    alignItems: 'center',
+    padding: '1rem',
+  },
+
+  '@media(max-width: 480px)': {
+    alignItems: 'stretch',
   },
 })
 
@@ -211,18 +239,17 @@ export const ActionButton = styled('button', {
   },
 
   '@media(max-width: 768px)': {
-    padding: '0.625rem',
-    minWidth: '44px',
-    minHeight: '44px',
+    padding: '0.625rem 1rem',
+    minWidth: 0,
+    minHeight: '40px',
+    width: 'auto',
     borderRadius: '$card',
+  },
 
-    '& svg': {
-      margin: 0,
-    },
-
-    '& span': {
-      display: 'none',
-    },
+  '@media(max-width: 480px)': {
+    padding: '0.75rem 1rem',
+    minHeight: '44px',
+    width: '100%',
   },
 
   variants: {
@@ -265,7 +292,7 @@ export const SelectedCount = styled('p', {
   fontSize: '0.875rem',
   fontWeight: 600,
   color: '$darkGray',
-  marginBottom: '1rem',
+  marginBottom: 0,
 })
 
 export const DesktopTableWrapper = styled('div', {
@@ -381,7 +408,7 @@ export const Checkbox = styled('input', {
 export const MobileCardsWrapper = styled('div', {
   display: 'none',
 
-  '@media(max-width: 768px)': {
+  '@media(max-width: 640px)': {
     display: 'flex',
     flexDirection: 'column',
     gap: '0.75rem',

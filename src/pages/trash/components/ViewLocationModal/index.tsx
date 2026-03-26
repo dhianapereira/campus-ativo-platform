@@ -136,7 +136,9 @@ export function ViewLocationModal({
               disabled={restoreLocationMutation.isPending}
             >
               <ArrowCounterClockwise size={20} weight="bold" />
-              {restoreLocationMutation.isPending ? 'Restaurando...' : 'Restaurar'}
+              {restoreLocationMutation.isPending
+                ? 'Restaurando...'
+                : 'Restaurar'}
             </RestoreButton>
           </div>
         }
