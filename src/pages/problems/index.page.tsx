@@ -78,7 +78,8 @@ export default function Problems() {
     badgeId: ProblemStatus
   }
 
-  // Link to detail uses slug (backend GET problem expects slug).
+  // The detail route resolves by slug, so legacy responses without `id` still
+  // need a stable fallback for list rendering and navigation.
   const problems = useMemo<ProblemItem[]>(() => {
     if (!data?.problems) return []
 

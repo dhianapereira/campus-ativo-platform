@@ -241,7 +241,8 @@ export function EditMemberModal({
     canManageUserRole(opt.value as ChangeUserRoleControllerHandleBodyRole),
   )
 
-  // Keep the current role visible even when the acting user can no longer assign it.
+  // Keep the saved role visible even when the acting user can no longer assign
+  // it, so the form can display the current state without mutating it first.
   const finalPermissionOptions = (() => {
     if (!member?.role) return visiblePermissionOptions
 

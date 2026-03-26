@@ -2,9 +2,7 @@ import { ProblemStatus } from '@/constants/problems/status'
 import { z } from 'zod'
 
 /**
- * This list contains the statuses required to carry out
- * certain actions, such as filling in the notes field
- * and the maintenance type field.
+ * Statuses that require a maintenance type before the action can be submitted.
  */
 const requiredStatus = [
   ProblemStatus.Accepted,

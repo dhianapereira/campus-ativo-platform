@@ -54,8 +54,8 @@ export default async function handler(
       id: profileData.id,
       name: profileData.name,
       email: profileData.email,
-      // IMPORTANT: Prioritize the profile role (always up-to-date)
-      // instead of the token (static).
+      // The profile endpoint reflects current permissions, while the token may
+      // still contain an outdated role until the next login.
       role: profileData.role || roleFromToken,
       position: profileData.position || 'Não informado',
     }

@@ -52,7 +52,8 @@ export default async function handler(
       'Não foi possível completar o cadastro. Verifique suas informações.'
     let message = backendError || 'Erro interno do servidor.'
 
-    // Não revelar detalhes (ex.: e-mail já cadastrado) por segurança
+    // Keep signup errors generic so the endpoint cannot be used to confirm
+    // whether an email is already registered.
     if (status === 400 || status === 409) {
       message = genericMessage
     }

@@ -242,7 +242,8 @@ export default async function handler(
         currentUserId = profile?.id ?? null
         roleLevel = getRoleLevel(profile?.role || roleFromToken || '')
       } catch {
-        // Mantém a lixeira vazia em caso de erro no perfil para evitar expor itens de outros usuários.
+        // Fail closed: if profile resolution fails, return an empty trash view
+        // instead of risking exposure of items owned by other users.
       }
 
       const canSeeLocationsAndCategories = roleLevel >= 2
