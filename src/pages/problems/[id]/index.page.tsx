@@ -35,15 +35,18 @@ import {
 } from 'phosphor-react'
 import { useRouter } from 'next/router'
 import type { ProblemDetailsProps, ProblemHistoryChange } from './types'
-import { Button, ConfirmationModal, Text } from '@/components'
+import { Button, ConfirmationModal, NotFoundState, Text } from '@/components'
 import { TrashActionButton } from './components/TrashActionButton'
 import { Actions } from './components/Actions'
 import { ImageError } from '@/layouts/platform/components/ImageError'
 import { NoImage } from '@/layouts/platform/components/NoImage'
 import { ProtectedRoute } from '@/guards/ProtectedRoute'
+import PlatformLayout from '@/layouts/platform/layout'
+import Head from 'next/head'
 import { useAuth } from '@/contexts/auth-context'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
+import { PageContainer } from '@/pages/error-page.styles'
 import {
   getHistoryActionLabel,
   getMaintenanceTypeLabel,
@@ -52,6 +55,10 @@ import {
 } from '../problem-mapping'
 
 const STATUS_TO_ANALYSIS_BACKEND = 'TO_ANALYSIS'
+
+type QueryError = Error & {
+  status?: number
+}
 
 function formatDateTime(isoString?: string | null): string {
   if (!isoString) return '—'
@@ -206,7 +213,7 @@ export default function ProblemDetails() {
     data: apiResponse,
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<unknown, QueryError>({
     queryKey: ['problem', id],
     queryFn: async () => {
       const res = await fetch(`/api/problems/${id}`, {
@@ -214,7 +221,14 @@ export default function ProblemDetails() {
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
-        throw new Error(err.message || 'Falha ao carregar problema')
+        const queryError = new Error(
+          err.message ||
+            (res.status === 404
+              ? 'Problema não encontrado.'
+              : 'Falha ao carregar problema'),
+        ) as QueryError
+        queryError.status = res.status
+        throw queryError
       }
       return res.json()
     },
@@ -323,6 +337,25 @@ export default function ProblemDetails() {
   }
 
   if (error || !problemData) {
+    if (error?.status === 404) {
+      return (
+        <ProtectedRoute>
+          <PlatformLayout>
+            <Head>
+              <title>Página não encontrada • Campus Ativo</title>
+            </Head>
+            <PageContainer withLayout>
+              <NotFoundState
+                message="O problema que você tentou acessar pode ter sido removido ou o endereço informado não existe mais."
+                onBack={handleBackNavigation}
+                onGoToProblems={() => void router.replace('/problems')}
+              />
+            </PageContainer>
+          </PlatformLayout>
+        </ProtectedRoute>
+      )
+    }
+
     return (
       <ProtectedRoute>
         <Container>

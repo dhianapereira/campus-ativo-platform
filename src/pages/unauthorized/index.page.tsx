@@ -1,17 +1,8 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { ForbiddenState } from '@/components/ForbiddenState'
 import PlatformLayout from '@/layouts/platform/layout'
-import {
-  ActionRow,
-  Card,
-  Code,
-  Message,
-  PageContainer,
-  PrimaryButton,
-  SecondaryButton,
-  StatusBadge,
-  Title,
-} from '@/pages/error-page.styles'
+import { PageContainer } from '@/pages/error-page.styles'
 
 export default function UnauthorizedPage() {
   const router = useRouter()
@@ -35,23 +26,11 @@ export default function UnauthorizedPage() {
         <title>Acesso negado • Campus Ativo</title>
       </Head>
       <PageContainer withLayout>
-        <Card role="region" aria-label="Acesso negado">
-          <StatusBadge>Permissão restrita</StatusBadge>
-          <Code>403</Code>
-          <Title>Acesso negado</Title>
-          <Message>
-            Você não possui as permissões necessárias para acessar esta página.
-            Volte para a tela anterior ou siga para a lista de problemas.
-          </Message>
-          <ActionRow>
-            <PrimaryButton type="button" onClick={handleBack}>
-              Voltar
-            </PrimaryButton>
-            <SecondaryButton type="button" onClick={handleGoToProblems}>
-              Ir para problemas
-            </SecondaryButton>
-          </ActionRow>
-        </Card>
+        <ForbiddenState
+          message="Você não possui as permissões necessárias para acessar esta página. Volte para a tela anterior ou siga para a lista de problemas."
+          onBack={handleBack}
+          onGoToProblems={handleGoToProblems}
+        />
       </PageContainer>
     </PlatformLayout>
   )

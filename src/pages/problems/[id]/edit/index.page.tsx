@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Container, Body, Header, Input, Title } from './styles'
 import { ArrowLeft, X } from 'phosphor-react'
+import Head from 'next/head'
 import { Button, Dropdown, Text, TextArea, TextInput } from '@/components'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
@@ -15,6 +16,9 @@ import { toast } from 'sonner'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import ImageUpload from '../../components/ImageUpload'
 import { colors } from '@/styles/tokens'
+import PlatformLayout from '@/layouts/platform/layout'
+import { ForbiddenState } from '@/components/ForbiddenState'
+import { PageContainer } from '@/pages/error-page.styles'
 import {
   getCategoryOptionLabel,
   getLocationOptionLabel,
@@ -439,41 +443,21 @@ export default function EditProblem() {
   if (hasPermission === false) {
     return (
       <ProtectedRoute>
-        <Container>
-          <Header>
-            <ArrowLeft
-              className="back-icon"
-              onClick={handleBackNavigation}
-              weight="bold"
-              size={24}
-              aria-label="Voltar para a página anterior"
-              tabIndex={0}
-              role="button"
+        <PlatformLayout>
+          <Head>
+            <title>Acesso negado • Campus Ativo</title>
+          </Head>
+          <PageContainer withLayout>
+            <ForbiddenState
+              message={
+                permissionError ??
+                'Você não possui as permissões necessárias para acessar esta página.'
+              }
+              onBack={handleBackNavigation}
+              onGoToProblems={() => void router.push('/problems')}
             />
-            <Title as="h2" size="md">
-              Acesso negado
-            </Title>
-          </Header>
-          <Body as="div">
-            <Text
-              size="md"
-              css={{
-                textAlign: 'center',
-                padding: '2rem',
-                color: colors.red,
-              }}
-            >
-              {permissionError}
-            </Text>
-            <Button
-              variant="primary"
-              onClick={() => router.push('/problems')}
-              css={{ marginTop: '1rem' }}
-            >
-              Voltar para problemas
-            </Button>
-          </Body>
-        </Container>
+          </PageContainer>
+        </PlatformLayout>
       </ProtectedRoute>
     )
   }
