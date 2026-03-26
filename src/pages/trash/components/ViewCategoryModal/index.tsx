@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { useState } from 'react'
 import type { CategoryResponse } from '@/lib/api/generated/models/categoryResponse'
+import { removeTrashItemsFromCache } from '../../trash-cache'
 
 interface ViewCategoryModalProps {
   isOpen: boolean
@@ -58,7 +59,9 @@ export function ViewCategoryModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      removeTrashItemsFromCache(queryClient, [
+        { id: category.id, itemType: 'category' },
+      ])
       toast.success('Categoria restaurada com sucesso')
       onSuccess()
       onClose()
@@ -94,7 +97,9 @@ export function ViewCategoryModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] })
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      removeTrashItemsFromCache(queryClient, [
+        { id: category.id, itemType: 'category' },
+      ])
       toast.success('Categoria excluída permanentemente')
       setShowDeleteConfirmationModal(false)
       onSuccess()

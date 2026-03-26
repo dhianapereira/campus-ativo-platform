@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import { createContext, useCallback, useContext, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { AuthenticateRequest, UserResponse } from '../lib/api/generated/models'
@@ -28,6 +28,7 @@ interface AuthProviderProps {
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
+export const USER_PROFILE_QUERY_KEY = ['user', 'profile'] as const
 
 async function fetchUserProfile(): Promise<User | null> {
   const response = await fetch('/api/auth/me')
@@ -49,8 +50,6 @@ async function fetchUserProfile(): Promise<User | null> {
 export function AuthProvider({ children }: AuthProviderProps) {
   const router = useRouter()
   const queryClient = useQueryClient()
-
-  // Use TanStack Query to manage user profile with automatic revalidation
   const {
     data: user,
     isLoading,
@@ -58,16 +57,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     error,
     refetch,
   } = useQuery({
-    queryKey: ['user', 'profile'],
+    queryKey: USER_PROFILE_QUERY_KEY,
     queryFn: fetchUserProfile,
-    staleTime: 10 * 1000, // Consider data stale after 10 seconds
-    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
-    refetchInterval: 30 * 1000, // Refetch every 30 seconds
-    refetchIntervalInBackground: true,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     retry: false,
-    enabled: true,
   })
 
   const isAuthenticated = !!user
@@ -79,36 +75,38 @@ export function AuthProvider({ children }: AuthProviderProps) {
         ? 'Nao foi possivel carregar o perfil do usuario.'
         : null
 
-  async function retryProfileLoad() {
+  const retryProfileLoad = useCallback(async () => {
     await refetch()
-  }
+  }, [refetch])
 
-  async function signIn({ email, password }: AuthenticateRequest) {
-    const response = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    })
-    const data = await response.json()
+  const signIn = useCallback(
+    async ({ email, password }: AuthenticateRequest) => {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+      const data = await response.json()
 
-    if (!response.ok || !data.success) {
-      type ErrorWithStatus = Error & { status?: number }
-      const err: ErrorWithStatus = new Error(
-        data.error || 'Authentication failed',
-      )
-      err.status = response.status
-      throw err
-    }
+      if (!response.ok || !data.success) {
+        type ErrorWithStatus = Error & { status?: number }
+        const err: ErrorWithStatus = new Error(
+          data.error || 'Authentication failed',
+        )
+        err.status = response.status
+        throw err
+      }
 
-    await queryClient.invalidateQueries({ queryKey: ['user', 'profile'] })
-    await refetch()
+      queryClient.setQueryData(USER_PROFILE_QUERY_KEY, data.user ?? null)
 
-    await router.push('/')
-  }
+      await router.push('/')
+    },
+    [queryClient, router],
+  )
 
-  async function signOut() {
+  const signOut = useCallback(async () => {
     try {
       await fetch('/api/auth/logout', { method: 'POST' })
     } catch {}
@@ -121,66 +119,64 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Prevent going back into protected pages
       window.history.replaceState(null, '', '/login')
     }
-  }
+  }, [queryClient, router])
 
-  function hasRole(requiredRole: string): boolean {
-    if (!user?.role) return false
-    return hasRequiredRole(user.role, requiredRole)
-  }
-
-  function hasRoleLevel(requiredLevel: number): boolean {
-    if (!user?.role) return false
-    return getRoleLevel(user.role) >= requiredLevel
-  }
-
-  function canAccessUserManagement(): boolean {
-    return hasRoleLevel(3)
-  }
-
-  function canAccessSettings(): boolean {
-    return hasRoleLevel(2)
-  }
-
-  function canAccessTrash(): boolean {
-    return !!user
-  }
-
-  function canManageUserRole(targetUserRole: string): boolean {
-    if (!user?.role) return false
-
-    const currentLevel = getRoleLevel(user.role)
-    const targetLevel = getRoleLevel(targetUserRole)
-
-    if (currentLevel === 4) return true
-
-    if (currentLevel === 3) {
-      return targetLevel <= 2
+  const contextValue = useMemo(() => {
+    const hasRole = (requiredRole: string): boolean => {
+      if (!user?.role) return false
+      return hasRequiredRole(user.role, requiredRole)
     }
 
-    return false
-  }
+    const hasRoleLevel = (requiredLevel: number): boolean => {
+      if (!user?.role) return false
+      return getRoleLevel(user.role) >= requiredLevel
+    }
+
+    const canManageUserRole = (targetUserRole: string): boolean => {
+      if (!user?.role) return false
+
+      const currentLevel = getRoleLevel(user.role)
+      const targetLevel = getRoleLevel(targetUserRole)
+
+      if (currentLevel === 4) return true
+
+      if (currentLevel === 3) {
+        return targetLevel <= 2
+      }
+
+      return false
+    }
+
+    return {
+      user: user ?? null,
+      isAuthenticated,
+      isLoading: !isFetched && isLoading,
+      isProfileLoading,
+      profileError,
+      signIn,
+      signOut,
+      retryProfileLoad,
+      hasRole,
+      hasRoleLevel,
+      canAccessUserManagement: () => hasRoleLevel(3),
+      canAccessSettings: () => hasRoleLevel(2),
+      canAccessTrash: () => !!user,
+      canManageUserRole,
+    }
+  }, [
+    isAuthenticated,
+    isFetched,
+    isLoading,
+    isProfileLoading,
+    profileError,
+    retryProfileLoad,
+    signIn,
+    signOut,
+    user,
+  ])
 
   return (
-    <AuthContext.Provider
-      value={{
-        user: user ?? null,
-        isAuthenticated,
-        isLoading: !isFetched && isLoading,
-        isProfileLoading,
-        profileError,
-        signIn,
-        signOut,
-        retryProfileLoad,
-        hasRole,
-        hasRoleLevel,
-        canAccessUserManagement,
-        canAccessSettings,
-        canAccessTrash,
-        canManageUserRole,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   )
 }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { User, LockKey, Trash, FloppyDisk } from 'phosphor-react'
 import {
@@ -27,17 +27,12 @@ import {
 } from './styles'
 import PlatformLayout from '@/layouts/platform/layout'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
-import { useAuth } from '@/contexts/auth-context'
+import { USER_PROFILE_QUERY_KEY, useAuth } from '@/contexts/auth-context'
 
 type AuthUser = NonNullable<ReturnType<typeof useAuth>['user']>
 
 export default function ProfilePage() {
-  const {
-    user,
-    isProfileLoading: isLoading,
-    retryProfileLoad,
-    signOut,
-  } = useAuth()
+  const { user, isProfileLoading: isLoading, signOut } = useAuth()
 
   if (isLoading || !user) {
     return (
@@ -55,7 +50,6 @@ export default function ProfilePage() {
     <ProfileContent
       key={`${user.id}:${user.name}:${user.position}`}
       user={user}
-      retryProfileLoad={retryProfileLoad}
       signOut={signOut}
     />
   )
@@ -63,13 +57,12 @@ export default function ProfilePage() {
 
 function ProfileContent({
   user,
-  retryProfileLoad,
   signOut,
 }: {
   user: AuthUser
-  retryProfileLoad: () => Promise<void>
   signOut: () => Promise<void>
 }) {
+  const queryClient = useQueryClient()
   const [oldPassword, setOldPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -108,12 +101,17 @@ function ProfileContent({
 
       return response.json()
     },
-    onSuccess: async (data) => {
-      if (data?.user) {
-        setName(data.user.name)
-        setPosition(data.user.position)
-      }
-      await retryProfileLoad()
+    onSuccess: () => {
+      const nextName = name.trim()
+      const nextPosition = position.trim()
+
+      setName(nextName)
+      setPosition(nextPosition)
+      queryClient.setQueryData<AuthUser>(USER_PROFILE_QUERY_KEY, {
+        ...user,
+        name: nextName,
+        position: nextPosition,
+      })
       toast.success('Perfil atualizado com sucesso')
     },
     onError: (error: Error) => {

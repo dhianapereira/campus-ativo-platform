@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   MagnifyingGlass,
   Trash,
@@ -58,6 +58,11 @@ import { ViewLocationModal } from './components/ViewLocationModal'
 import { ViewCategoryModal } from './components/ViewCategoryModal'
 import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
 import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
+import {
+  removeTrashItemsFromCache,
+  TRASH_QUERY_KEY,
+  type TrashItemType,
+} from './trash-cache'
 
 interface ProblemData {
   id: string
@@ -90,7 +95,7 @@ function useDebounce<T>(value: T, delay: number): T {
 interface TrashItem {
   id: string
   name: string
-  itemType: 'location' | 'category' | 'problem'
+  itemType: TrashItemType
   code?: string
   description?: string
   local?: string
@@ -101,12 +106,12 @@ interface TrashItem {
 
 interface BulkActionPayload {
   ids: string[]
-  type: TrashItem['itemType']
+  type: TrashItemType
 }
 
 interface BulkTrashItemPayload {
   id: string
-  type: TrashItem['itemType']
+  type: TrashItemType
 }
 
 export default function TrashPage() {
@@ -144,7 +149,7 @@ export default function TrashPage() {
     refetch,
   } = useQuery({
     queryKey: [
-      'trash',
+      ...TRASH_QUERY_KEY,
       debouncedSearchTerm,
       currentPage,
       typeFilter,
@@ -179,6 +184,7 @@ export default function TrashPage() {
 
       return response.json()
     },
+    placeholderData: (previousData) => previousData,
     retry: false,
   })
 
@@ -208,7 +214,7 @@ export default function TrashPage() {
       restoredCount?: number
       failedCount?: number
     }) => {
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      removeTrashItemsFromCache(queryClient, selectedTrashItems)
       setSelectedItems([])
       if (data?.failedCount) {
         toast.success(
@@ -254,7 +260,7 @@ export default function TrashPage() {
       deletedCount?: number
       failedCount?: number
     }) => {
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      removeTrashItemsFromCache(queryClient, selectedTrashItems)
       setSelectedItems([])
       setShowDeleteConfirmation(false)
       if (data?.failedCount) {
@@ -273,12 +279,9 @@ export default function TrashPage() {
     },
   })
 
-  const items: TrashItem[] = useMemo(() => {
-    return trashData?.items || []
-  }, [trashData])
-  const selectedTrashItems = useMemo(
-    () => items.filter((item) => selectedItems.includes(item.id)),
-    [items, selectedItems],
+  const items: TrashItem[] = trashData?.items || []
+  const selectedTrashItems = items.filter((item) =>
+    selectedItems.includes(item.id),
   )
   const totalItems = trashData?.total || 0
   const totalPages = Math.ceil(totalItems / itemsPerPage)
@@ -450,7 +453,6 @@ export default function TrashPage() {
   const handleViewLocationSuccess = () => {
     setIsViewLocationModalOpen(false)
     setSelectedLocationForView(null)
-    queryClient.invalidateQueries({ queryKey: ['trash'] })
   }
 
   const handleViewLocationClose = () => {
@@ -461,7 +463,6 @@ export default function TrashPage() {
   const handleViewCategorySuccess = () => {
     setIsViewCategoryModalOpen(false)
     setSelectedCategoryForView(null)
-    queryClient.invalidateQueries({ queryKey: ['trash'] })
   }
 
   const handleViewCategoryClose = () => {
@@ -472,7 +473,6 @@ export default function TrashPage() {
   const handleViewProblemSuccess = () => {
     setIsViewProblemModalOpen(false)
     setSelectedProblemForView(null)
-    queryClient.invalidateQueries({ queryKey: ['trash'] })
   }
 
   const handleViewProblemClose = () => {

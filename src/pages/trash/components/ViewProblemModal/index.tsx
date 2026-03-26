@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 import { useAuth } from '@/contexts/auth-context'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { useState } from 'react'
+import { removeTrashItemsFromCache } from '../../trash-cache'
 
 interface ProblemData {
   id: string
@@ -73,7 +74,9 @@ export function ViewProblemModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['problems'] })
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      removeTrashItemsFromCache(queryClient, [
+        { id: problem.id, itemType: 'problem' },
+      ])
       toast.success('Problema restaurado com sucesso')
       onSuccess()
       onClose()
@@ -113,7 +116,9 @@ export function ViewProblemModal({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['problems'] })
-      queryClient.invalidateQueries({ queryKey: ['trash'] })
+      removeTrashItemsFromCache(queryClient, [
+        { id: problem.id, itemType: 'problem' },
+      ])
       toast.success('Problema excluído permanentemente')
       setShowDeleteConfirmationModal(false)
       onSuccess()
