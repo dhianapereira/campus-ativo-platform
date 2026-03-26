@@ -4,10 +4,28 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import { AuthProvider } from '@/contexts/auth-context'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
+import PlatformLayout from '@/layouts/platform/layout'
 
 globalStyles()
 
+function shouldUsePlatformLayout(pathname: string) {
+  if (pathname === '/' || pathname === '/home') {
+    return true
+  }
+
+  return (
+    pathname.startsWith('/members') ||
+    pathname.startsWith('/problems') ||
+    pathname.startsWith('/profile') ||
+    pathname.startsWith('/settings') ||
+    pathname.startsWith('/trash') ||
+    pathname.startsWith('/unauthorized')
+  )
+}
+
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter()
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -58,10 +76,17 @@ export default function App({ Component, pageProps }: AppProps) {
       }),
   )
 
+  const page = <Component {...pageProps} />
+  const content = shouldUsePlatformLayout(router.pathname) ? (
+    <PlatformLayout>{page}</PlatformLayout>
+  ) : (
+    page
+  )
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Component {...pageProps} />
+        {content}
         <Toaster richColors position="top-center" />
       </AuthProvider>
     </QueryClientProvider>
