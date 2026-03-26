@@ -18,6 +18,12 @@ import { getUserProfileControllerHandle } from '../../lib/api/generated/user-pro
 import { getRoleLevel } from '../../contexts/auth/role-mapping'
 
 const TRASH_PAGE_SIZE = 20
+type TrashItemType = 'location' | 'category' | 'problem'
+
+interface BulkTrashItemPayload {
+  id: string
+  type: TrashItemType
+}
 
 function filterByDeletedDate(
   items: Array<{ deletedAt?: string | null }>,
@@ -140,6 +146,67 @@ async function fetchAllPages<T>(
   }
 
   return items
+}
+
+function normalizeBulkItems(
+  body: NextApiRequest['body'],
+): BulkTrashItemPayload[] {
+  const items = Array.isArray(body?.items) ? body.items : null
+
+  if (items) {
+    return items.filter(
+      (item): item is BulkTrashItemPayload =>
+        !!item &&
+        typeof item === 'object' &&
+        typeof item.id === 'string' &&
+        (item.type === 'location' ||
+          item.type === 'category' ||
+          item.type === 'problem'),
+    )
+  }
+
+  const ids = Array.isArray(body?.ids) ? body.ids : []
+  const type = body?.type
+
+  if (type !== 'location' && type !== 'category' && type !== 'problem') {
+    return []
+  }
+
+  return ids
+    .filter((id): id is string => typeof id === 'string')
+    .map((id) => ({ id, type }))
+}
+
+async function executeTrashAction(
+  action: 'restore' | 'delete',
+  item: BulkTrashItemPayload,
+  authToken: string,
+) {
+  const request = {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  }
+
+  if (action === 'restore') {
+    if (item.type === 'location') {
+      return restoreLocationControllerHandle(item.id, request)
+    }
+    if (item.type === 'category') {
+      return restoreCategoryControllerHandle(item.id, request)
+    }
+
+    return restoreProblemControllerHandle(item.id, request)
+  }
+
+  if (item.type === 'location') {
+    return deleteLocationControllerHandle(item.id, request)
+  }
+  if (item.type === 'category') {
+    return deleteCategoryControllerHandle(item.id, request)
+  }
+
+  return deleteProblemControllerHandle(item.id, request)
 }
 
 export default async function handler(
@@ -435,68 +502,72 @@ export default async function handler(
     }
   } else if (req.method === 'POST') {
     try {
-      const { action, ids, type } = req.body
+      const { action } = req.body
+      const items = normalizeBulkItems(req.body)
 
-      if (!action || !ids || !Array.isArray(ids) || ids.length === 0) {
-        return res.status(400).json({ message: 'Ação e IDs são obrigatórios' })
+      if (!action || items.length === 0) {
+        return res
+          .status(400)
+          .json({ message: 'Ação e itens são obrigatórios' })
       }
 
-      if (action === 'restore') {
-        const promises = ids.map((id: string) => {
-          if (type === 'location') {
-            return restoreLocationControllerHandle(id, {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            })
-          } else if (type === 'category') {
-            return restoreCategoryControllerHandle(id, {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            })
-          } else if (type === 'problem') {
-            return restoreProblemControllerHandle(id, {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            })
+      if (action === 'restore' || action === 'delete') {
+        const results = await Promise.allSettled(
+          items.map((item) => executeTrashAction(action, item, authToken)),
+        )
+
+        const failedItems = results.flatMap((result, index) => {
+          if (result.status === 'fulfilled') {
+            return []
           }
-          return Promise.resolve()
+
+          const error =
+            result.reason &&
+            typeof result.reason === 'object' &&
+            'response' in result.reason
+              ? (result.reason as {
+                  response?: { data?: { message?: string }; status?: number }
+                })
+              : undefined
+
+          return [
+            {
+              id: items[index].id,
+              type: items[index].type,
+              status: error?.response?.status ?? 500,
+              message:
+                error?.response?.data?.message || 'Internal server error',
+            },
+          ]
         })
 
-        await Promise.all(promises)
-        return res
-          .status(200)
-          .json({ message: 'Itens restaurados com sucesso' })
-      } else if (action === 'delete') {
-        const promises = ids.map((id: string) => {
-          if (type === 'location') {
-            return deleteLocationControllerHandle(id, {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            })
-          } else if (type === 'category') {
-            return deleteCategoryControllerHandle(id, {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            })
-          } else if (type === 'problem') {
-            return deleteProblemControllerHandle(id, {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            })
-          }
-          return Promise.resolve()
-        })
+        const successCount = results.length - failedItems.length
+        const successKey =
+          action === 'restore' ? 'restoredCount' : 'deletedCount'
+        const successMessage =
+          action === 'restore'
+            ? 'Itens restaurados com sucesso'
+            : 'Itens excluídos permanentemente'
+        const partialMessage =
+          action === 'restore'
+            ? 'Alguns itens nao puderam ser restaurados'
+            : 'Alguns itens nao puderam ser excluidos'
 
-        await Promise.all(promises)
-        return res
-          .status(200)
-          .json({ message: 'Itens excluídos permanentemente' })
+        if (successCount === 0) {
+          return res.status(400).json({
+            message: failedItems[0]?.message || partialMessage,
+            failedCount: failedItems.length,
+            failedItems,
+            [successKey]: 0,
+          })
+        }
+
+        return res.status(200).json({
+          message: failedItems.length > 0 ? partialMessage : successMessage,
+          failedCount: failedItems.length,
+          failedItems,
+          [successKey]: successCount,
+        })
       } else {
         return res.status(400).json({ message: 'Ação inválida' })
       }

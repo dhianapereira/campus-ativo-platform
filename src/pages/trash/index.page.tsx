@@ -99,6 +99,16 @@ interface TrashItem {
   createdAt?: string
 }
 
+interface BulkActionPayload {
+  ids: string[]
+  type: TrashItem['itemType']
+}
+
+interface BulkTrashItemPayload {
+  id: string
+  type: TrashItem['itemType']
+}
+
 export default function TrashPage() {
   const queryClient = useQueryClient()
   const { hasRoleLevel } = useAuth()
@@ -173,16 +183,16 @@ export default function TrashPage() {
   })
 
   const restoreMutation = useMutation({
-    mutationFn: async (ids: string[]) => {
+    mutationFn: async (
+      payload: BulkActionPayload | { items: BulkTrashItemPayload[] },
+    ) => {
       const response = await fetch('/api/trash', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
           action: 'restore',
-          ids,
-          type:
-            typeFilter !== 'all' ? typeFilter : trashData?.items[0]?.itemType,
+          ...payload,
         }),
       })
 
@@ -193,10 +203,23 @@ export default function TrashPage() {
 
       return response.json()
     },
-    onSuccess: () => {
+    onSuccess: (data?: {
+      message?: string
+      restoredCount?: number
+      failedCount?: number
+    }) => {
       queryClient.invalidateQueries({ queryKey: ['trash'] })
       setSelectedItems([])
-      toast.success('Itens restaurados com sucesso')
+      if (data?.failedCount) {
+        toast.success(
+          data.restoredCount
+            ? `${data.restoredCount} item(ns) restaurado(s). ${data.failedCount} falharam.`
+            : 'Nenhum item pôde ser restaurado.',
+        )
+        return
+      }
+
+      toast.success(data?.message || 'Itens restaurados com sucesso')
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Falha ao restaurar itens')
@@ -204,16 +227,16 @@ export default function TrashPage() {
   })
 
   const deletePermanentlyMutation = useMutation({
-    mutationFn: async (ids: string[]) => {
+    mutationFn: async (
+      payload: BulkActionPayload | { items: BulkTrashItemPayload[] },
+    ) => {
       const response = await fetch('/api/trash', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
           action: 'delete',
-          ids,
-          type:
-            typeFilter !== 'all' ? typeFilter : trashData?.items[0]?.itemType,
+          ...payload,
         }),
       })
 
@@ -226,11 +249,24 @@ export default function TrashPage() {
 
       return response.json()
     },
-    onSuccess: () => {
+    onSuccess: (data?: {
+      message?: string
+      deletedCount?: number
+      failedCount?: number
+    }) => {
       queryClient.invalidateQueries({ queryKey: ['trash'] })
       setSelectedItems([])
       setShowDeleteConfirmation(false)
-      toast.success('Itens excluídos permanentemente')
+      if (data?.failedCount) {
+        toast.success(
+          data.deletedCount
+            ? `${data.deletedCount} item(ns) excluído(s). ${data.failedCount} falharam.`
+            : 'Nenhum item pôde ser excluído.',
+        )
+        return
+      }
+
+      toast.success(data?.message || 'Itens excluídos permanentemente')
     },
     onError: (error: Error) => {
       toast.error(error.message || 'Falha ao excluir itens')
@@ -240,12 +276,39 @@ export default function TrashPage() {
   const items: TrashItem[] = useMemo(() => {
     return trashData?.items || []
   }, [trashData])
+  const selectedTrashItems = useMemo(
+    () => items.filter((item) => selectedItems.includes(item.id)),
+    [items, selectedItems],
+  )
   const totalItems = trashData?.total || 0
   const totalPages = Math.ceil(totalItems / itemsPerPage)
   const effectiveCurrentPage =
     totalPages > 0 ? Math.min(currentPage, totalPages) : currentPage
   const bulkActionIsPending =
     restoreMutation.isPending || deletePermanentlyMutation.isPending
+
+  const getBulkActionPayload = ():
+    | BulkActionPayload
+    | { items: BulkTrashItemPayload[] }
+    | null => {
+    if (selectedTrashItems.length === 0) {
+      return null
+    }
+
+    if (typeFilter !== 'all') {
+      return {
+        ids: selectedTrashItems.map((item) => item.id),
+        type: selectedTrashItems[0].itemType,
+      }
+    }
+
+    return {
+      items: selectedTrashItems.map((item) => ({
+        id: item.id,
+        type: item.itemType,
+      })),
+    }
+  }
 
   const handleSearch = (query: string) => {
     setSearchTerm(query)
@@ -279,32 +342,55 @@ export default function TrashPage() {
     }
   }
 
-  const handleSelectItem = (id: string, checked: boolean) => {
+  const handleSelectItem = (item: TrashItem, checked: boolean) => {
     if (checked) {
-      setSelectedItems([...selectedItems, id])
+      setSelectedItems([...selectedItems, item.id])
     } else {
-      setSelectedItems(selectedItems.filter((itemId) => itemId !== id))
+      setSelectedItems(selectedItems.filter((itemId) => itemId !== item.id))
     }
   }
 
   const handleRestore = () => {
-    if (selectedItems.length === 0) {
+    if (selectedTrashItems.length === 0) {
       toast.warning('Selecione pelo menos um item para restaurar')
       return
     }
-    restoreMutation.mutate(selectedItems)
+
+    const payload = getBulkActionPayload()
+
+    if (!payload) {
+      toast.warning('Selecione pelo menos um item para restaurar')
+      return
+    }
+
+    restoreMutation.mutate(payload)
   }
 
   const handleDeletePermanently = () => {
-    if (selectedItems.length === 0) {
+    if (selectedTrashItems.length === 0) {
       toast.warning('Selecione pelo menos um item para excluir')
       return
     }
+
+    const payload = getBulkActionPayload()
+
+    if (!payload) {
+      toast.warning('Selecione pelo menos um item para excluir')
+      return
+    }
+
     setShowDeleteConfirmation(true)
   }
 
   const confirmDelete = () => {
-    deletePermanentlyMutation.mutate(selectedItems)
+    const payload = getBulkActionPayload()
+
+    if (!payload) {
+      toast.warning('Selecione pelo menos um item para excluir')
+      return
+    }
+
+    deletePermanentlyMutation.mutate(payload)
   }
 
   const handleItemClick = async (item: TrashItem) => {
@@ -686,7 +772,7 @@ export default function TrashPage() {
                               type="checkbox"
                               checked={selectedItems.includes(item.id)}
                               onChange={(e) =>
-                                handleSelectItem(item.id, e.target.checked)
+                                handleSelectItem(item, e.target.checked)
                               }
                             />
                           </TableCell>
@@ -716,7 +802,7 @@ export default function TrashPage() {
                       checked={selectedItems.includes(item.id)}
                       onChange={(e) => {
                         e.stopPropagation()
-                        handleSelectItem(item.id, e.target.checked)
+                        handleSelectItem(item, e.target.checked)
                       }}
                     />
                     <CardTitle>{item.name}</CardTitle>
