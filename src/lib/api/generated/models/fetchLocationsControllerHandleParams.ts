@@ -12,6 +12,10 @@ export type FetchLocationsControllerHandleParams = {
  */
 page?: number;
 /**
+ * Quantidade de itens por página
+ */
+pageSize?: number;
+/**
  * Incluir localizações deletadas (na lixeira)
  */
 includeDeleted?: boolean;

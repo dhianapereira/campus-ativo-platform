@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { fetchProblemsControllerHandle } from '../../../lib/api/generated/problems/problems'
+import { AXIOS_INSTANCE } from '../../../lib/api/axios'
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,20 +16,29 @@ export default async function handler(
   }
 
   try {
-    const { page, query } = req.query
+    const { page, pageSize, query, statuses, includeDeleted } = req.query
 
     const params = {
       page: page ? parseInt(page as string, 10) : undefined,
+      pageSize: pageSize ? parseInt(pageSize as string, 10) : undefined,
       query: query as string | undefined,
+      statuses: statuses as string | undefined,
+      includeDeleted:
+        includeDeleted === 'true'
+          ? true
+          : includeDeleted === 'false'
+            ? false
+            : undefined,
     }
 
-    const result = await fetchProblemsControllerHandle(params, {
+    const result = await AXIOS_INSTANCE.get('/problems', {
+      params,
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     })
 
-    return res.status(200).json(result)
+    return res.status(200).json(result.data)
   } catch (error: any) {
     console.error('Erro ao buscar problemas:', error)
     return res.status(error.status || 500).json({

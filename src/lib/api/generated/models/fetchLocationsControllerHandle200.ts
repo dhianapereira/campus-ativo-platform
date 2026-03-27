@@ -9,4 +9,7 @@ import type { LocationResponse } from './locationResponse';
 
 export type FetchLocationsControllerHandle200 = {
   locations?: LocationResponse[];
+  total?: number;
+  page?: number;
+  pageSize?: number;
 };

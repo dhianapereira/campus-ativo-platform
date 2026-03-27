@@ -55,6 +55,15 @@ import { invalidateTrashQueries } from '@/pages/trash/trash-cache'
 
 type LocationItem = LocationResponse
 type CategoryItem = CategoryResponse
+type SettingsListResponse<T> = {
+  page: number
+  pageSize: number
+  total: number
+  locations?: T[]
+  categories?: T[]
+}
+
+const SETTINGS_ITEMS_PER_PAGE = 10
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
@@ -92,7 +101,6 @@ export default function SettingsPage() {
   const [selectedCategoryForEdit, setSelectedCategoryForEdit] =
     useState<CategoryItem | null>(null)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
-  const itemsPerPage = 10
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
@@ -102,10 +110,13 @@ export default function SettingsPage() {
     error: locationsError,
     refetch: refetchLocations,
     isRefetching: isRefetchingLocations,
-  } = useQuery({
-    queryKey: ['locations', debouncedSearchTerm, statusFilter],
+  } = useQuery<SettingsListResponse<LocationResponse>>({
+    queryKey: ['locations', debouncedSearchTerm, statusFilter, currentPage],
     queryFn: async () => {
       const params = new URLSearchParams()
+
+      params.append('page', currentPage.toString())
+      params.append('pageSize', SETTINGS_ITEMS_PER_PAGE.toString())
 
       if (debouncedSearchTerm) {
         params.append('query', debouncedSearchTerm)
@@ -123,9 +134,10 @@ export default function SettingsPage() {
         throw new Error('Falha ao buscar localizações.')
       }
 
-      return response.json() as Promise<{ locations: LocationResponse[] }>
+      return response.json() as Promise<SettingsListResponse<LocationResponse>>
     },
     retry: false,
+    enabled: activeTab === 'localizacao',
     placeholderData: (previousData) => previousData,
     staleTime: 30000, // 30 seconds
   })
@@ -136,10 +148,13 @@ export default function SettingsPage() {
     error: categoriesError,
     refetch: refetchCategories,
     isRefetching: isRefetchingCategories,
-  } = useQuery({
-    queryKey: ['categories', debouncedSearchTerm, statusFilter],
+  } = useQuery<SettingsListResponse<CategoryResponse>>({
+    queryKey: ['categories', debouncedSearchTerm, statusFilter, currentPage],
     queryFn: async () => {
       const params = new URLSearchParams()
+
+      params.append('page', currentPage.toString())
+      params.append('pageSize', SETTINGS_ITEMS_PER_PAGE.toString())
 
       if (debouncedSearchTerm) {
         params.append('query', debouncedSearchTerm)
@@ -157,9 +172,10 @@ export default function SettingsPage() {
         throw new Error('Falha ao buscar categorias.')
       }
 
-      return response.json() as Promise<{ categories: CategoryResponse[] }>
+      return response.json() as Promise<SettingsListResponse<CategoryResponse>>
     },
     retry: false,
+    enabled: activeTab === 'categoria',
     placeholderData: (previousData) => previousData,
     staleTime: 30000, // 30 seconds
   })
@@ -236,7 +252,7 @@ export default function SettingsPage() {
     },
   })
 
-  const currentData: (LocationItem | CategoryItem)[] = useMemo(() => {
+  const currentItems: (LocationItem | CategoryItem)[] = useMemo(() => {
     if (activeTab === 'localizacao') {
       return filteredLocations
     } else {
@@ -252,14 +268,13 @@ export default function SettingsPage() {
   const isRefetching =
     activeTab === 'localizacao' ? isRefetchingLocations : isRefetchingCategories
 
-  const totalPages = Math.ceil(currentData.length / itemsPerPage)
+  const totalItems =
+    activeTab === 'localizacao'
+      ? (locationsData?.total ?? 0)
+      : (categoriesData?.total ?? 0)
+  const totalPages = Math.ceil(totalItems / SETTINGS_ITEMS_PER_PAGE)
   const effectiveCurrentPage =
     totalPages > 0 ? Math.min(currentPage, totalPages) : 1
-  const startIndex = (effectiveCurrentPage - 1) * itemsPerPage
-  const currentItems: (LocationItem | CategoryItem)[] = currentData.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  )
 
   const handleTabChange = (tab: 'localizacao' | 'categoria') => {
     setActiveTab(tab)

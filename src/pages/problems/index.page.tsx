@@ -12,6 +12,9 @@ import {
   MainContainer,
   EmptyStateContainer,
   EmptyStateImage,
+  PaginationContainer,
+  PaginationButton,
+  PaginationDots,
 } from './styles'
 import ProblemCard from './components/ProblemCard'
 import { FilterButton } from './components/FilterButton'
@@ -23,7 +26,9 @@ import {
   backendStatusToProblemStatus,
   ProblemStatus,
 } from '@/constants/problems/status'
+import { toBackendStatus } from './problem-mapping'
 import { useQuery } from '@tanstack/react-query'
+import { ArrowLeft, ArrowRight } from 'phosphor-react'
 import NoProblemSvg from '@/assets/no-problem.svg'
 import Image from 'next/image'
 import type {
@@ -31,20 +36,35 @@ import type {
   ProblemWithDetailsResponse,
 } from '@/lib/api/generated/models'
 
+const PROBLEMS_ITEMS_PER_PAGE = 9
+
 export default function Problems() {
   const router = useRouter()
   const [searchValue, setSearchValue] = useState('')
-  const [page, setPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1)
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
 
+  const activeBackendStatuses = useMemo(
+    () =>
+      activeFilters
+        .filter((filter) => filter.checked)
+        .map((filter) => toBackendStatus(filter.id))
+        .filter((status): status is string => Boolean(status)),
+    [activeFilters],
+  )
+
   const { data, isLoading, error, refetch, isRefetching } =
     useQuery<FetchProblemsControllerHandle200>({
-      queryKey: ['problems', page, searchValue],
+      queryKey: ['problems', currentPage, searchValue, activeBackendStatuses],
       queryFn: async () => {
         const params = new URLSearchParams()
-        if (page) params.append('page', page.toString())
+        if (currentPage) params.append('page', currentPage.toString())
+        params.append('pageSize', PROBLEMS_ITEMS_PER_PAGE.toString())
         if (searchValue) params.append('query', searchValue)
+        if (activeBackendStatuses.length > 0) {
+          params.append('statuses', activeBackendStatuses.join(','))
+        }
 
         const response = await fetch(`/api/problems?${params.toString()}`, {
           credentials: 'include',
@@ -57,6 +77,8 @@ export default function Problems() {
         return response.json() as Promise<FetchProblemsControllerHandle200>
       },
       retry: false,
+      placeholderData: (previousData) => previousData,
+      staleTime: 30000,
     })
 
   const filterOptions: FilterOption[] = [
@@ -92,27 +114,13 @@ export default function Problems() {
     }))
   }, [data])
 
-  const filteredProblems = useMemo(() => {
-    const activeFilterIds = activeFilters
-      .filter((f) => f.checked)
-      .map((f) => f.id)
-
-    if (activeFilterIds.length === 0) {
-      return problems
-    }
-
-    return problems.filter((problem) =>
-      activeFilterIds.includes(problem.badgeId),
-    )
-  }, [problems, activeFilters])
-
   async function goToAddProblem() {
     await router.push('/problems/add')
   }
 
   const handleSearch = (query: string) => {
     setSearchValue(query)
-    setPage(1) // Reset to first page on new search
+    setCurrentPage(1)
   }
 
   const handleInputChange = (value: string) => {
@@ -121,6 +129,7 @@ export default function Problems() {
 
   const handleFilterApply = (filters: FilterOption[]) => {
     setActiveFilters(filters)
+    setCurrentPage(1)
   }
 
   const openFilterDialog = () => {
@@ -135,10 +144,88 @@ export default function Problems() {
     return activeFilters.filter((f) => f.checked).length
   }
 
+  const totalItems = data?.total ?? 0
+  const totalPages = Math.ceil(totalItems / PROBLEMS_ITEMS_PER_PAGE)
+  const effectiveCurrentPage =
+    totalPages > 0 ? Math.min(currentPage, totalPages) : 1
+
   const currentFilterOptions = filterOptions.map((option) => {
     const activeFilter = activeFilters.find((f) => f.id === option.id)
     return activeFilter || option
   })
+
+  const handlePageChange = (page: number) => {
+    if (totalPages === 0) return
+    const next = Math.max(1, Math.min(page, totalPages))
+    setCurrentPage(next)
+  }
+
+  const renderPaginationButtons = () => {
+    const buttons: React.ReactNode[] = []
+
+    const addPageButton = (page: number) =>
+      buttons.push(
+        <PaginationButton
+          key={page}
+          onClick={() => handlePageChange(page)}
+          isActive={effectiveCurrentPage === page}
+          variant="number"
+        >
+          {page}
+        </PaginationButton>,
+      )
+
+    if (effectiveCurrentPage > 1) {
+      buttons.push(
+        <PaginationButton
+          key="prev"
+          onClick={() => handlePageChange(effectiveCurrentPage - 1)}
+          variant="nav"
+          aria-label="Página anterior"
+        >
+          <ArrowLeft size={22} weight="bold" />
+          Anterior
+        </PaginationButton>,
+      )
+    }
+
+    if (totalPages <= 7) {
+      for (let p = 1; p <= totalPages; p++) addPageButton(p)
+    } else {
+      const left = Math.max(2, effectiveCurrentPage - 1)
+      const right = Math.min(totalPages - 1, effectiveCurrentPage + 1)
+
+      addPageButton(1)
+
+      if (left > 2) {
+        buttons.push(<PaginationDots key="dots-left">...</PaginationDots>)
+      }
+
+      for (let p = left; p <= right; p++) addPageButton(p)
+
+      if (right < totalPages - 1) {
+        buttons.push(<PaginationDots key="dots-right">...</PaginationDots>)
+      }
+
+      addPageButton(totalPages)
+    }
+
+    if (effectiveCurrentPage < totalPages) {
+      buttons.push(
+        <PaginationButton
+          key="next"
+          onClick={() => handlePageChange(effectiveCurrentPage + 1)}
+          variant="nav"
+          aria-label="Próxima página"
+        >
+          Próximo
+          <ArrowRight size={22} weight="bold" />
+        </PaginationButton>,
+      )
+    }
+
+    return buttons
+  }
 
   return (
     <PlatformLayout>
@@ -169,7 +256,7 @@ export default function Problems() {
         </HeaderContainer>
 
         <ResultsCounter>
-          <Text size="sm">{filteredProblems.length} problemas ao total</Text>
+          <Text size="sm">{totalItems} problemas ao total</Text>
           {getActiveFiltersCount() > 0 && (
             <FilterBadge size="sm">
               {getActiveFiltersCount()} filtro(s) ativo(s)
@@ -197,7 +284,7 @@ export default function Problems() {
           />
         )}
 
-        {!isLoading && !error && filteredProblems.length === 0 && (
+        {!isLoading && !error && problems.length === 0 && (
           <EmptyStateContainer>
             <EmptyStateImage>
               <Image
@@ -211,12 +298,16 @@ export default function Problems() {
           </EmptyStateContainer>
         )}
 
-        {!isLoading && !error && filteredProblems.length > 0 && (
+        {!isLoading && !error && problems.length > 0 && (
           <GridView>
-            {filteredProblems.map((problem: ProblemItem) => (
+            {problems.map((problem: ProblemItem) => (
               <ProblemCard key={problem.id} {...problem} />
             ))}
           </GridView>
+        )}
+
+        {!isLoading && !error && totalPages > 1 && (
+          <PaginationContainer>{renderPaginationButtons()}</PaginationContainer>
         )}
       </MainContainer>
 

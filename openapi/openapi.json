@@ -123,6 +123,26 @@
         "operationId": "FetchUsersController_handle",
         "parameters": [
           {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Número da página (começa em 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
             "name": "query",
             "required": false,
             "in": "query",
@@ -189,6 +209,18 @@
                           }
                         }
                       }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 42
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "pageSize": {
+                      "type": "number",
+                      "example": 20
                     }
                   }
                 }
@@ -620,6 +652,16 @@
             }
           },
           {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
             "name": "includeDeleted",
             "required": false,
             "in": "query",
@@ -627,6 +669,16 @@
             "schema": {
               "example": false,
               "type": "boolean"
+            }
+          },
+          {
+            "name": "statuses",
+            "required": false,
+            "in": "query",
+            "description": "Lista de status separada por vírgula para filtrar problemas",
+            "schema": {
+              "example": "TO_ANALYSIS,IN_PROGRESS",
+              "type": "string"
             }
           },
           {
@@ -653,6 +705,18 @@
                       "items": {
                         "$ref": "#/components/schemas/ProblemWithDetailsResponse"
                       }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 42
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "pageSize": {
+                      "type": "number",
+                      "example": 20
                     }
                   }
                 }
@@ -726,6 +790,16 @@
             }
           },
           {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
             "name": "includeDeleted",
             "required": false,
             "in": "query",
@@ -769,6 +843,18 @@
                       "items": {
                         "$ref": "#/components/schemas/CategoryResponse"
                       }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 42
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "pageSize": {
+                      "type": "number",
+                      "example": 20
                     }
                   }
                 }
@@ -1050,6 +1136,16 @@
             }
           },
           {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "Quantidade de itens por página",
+            "schema": {
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
             "name": "includeDeleted",
             "required": false,
             "in": "query",
@@ -1093,6 +1189,18 @@
                       "items": {
                         "$ref": "#/components/schemas/LocationResponse"
                       }
+                    },
+                    "total": {
+                      "type": "number",
+                      "example": 42
+                    },
+                    "page": {
+                      "type": "number",
+                      "example": 1
+                    },
+                    "pageSize": {
+                      "type": "number",
+                      "example": 20
                     }
                   }
                 }

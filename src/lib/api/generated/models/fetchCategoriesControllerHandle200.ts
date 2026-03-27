@@ -9,4 +9,7 @@ import type { CategoryResponse } from './categoryResponse';
 
 export type FetchCategoriesControllerHandle200 = {
   categories?: CategoryResponse[];
+  total?: number;
+  page?: number;
+  pageSize?: number;
 };

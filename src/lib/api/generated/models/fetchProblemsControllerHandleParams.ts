@@ -12,9 +12,17 @@ export type FetchProblemsControllerHandleParams = {
  */
 page?: number;
 /**
+ * Quantidade de itens por página
+ */
+pageSize?: number;
+/**
  * Incluir problemas deletados (na lixeira)
  */
 includeDeleted?: boolean;
+/**
+ * Lista de status separada por vírgula para filtrar problemas
+ */
+statuses?: string;
 /**
  * Termo de busca para filtrar problemas por título ou descrição
  */

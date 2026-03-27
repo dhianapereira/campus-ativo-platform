@@ -9,4 +9,7 @@ import type { FetchUsersControllerHandle200UsersItem } from './fetchUsersControl
 
 export type FetchUsersControllerHandle200 = {
   users?: FetchUsersControllerHandle200UsersItem[];
+  total?: number;
+  page?: number;
+  pageSize?: number;
 };

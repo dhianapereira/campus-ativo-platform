@@ -9,4 +9,7 @@ import type { ProblemWithDetailsResponse } from './problemWithDetailsResponse';
 
 export type FetchProblemsControllerHandle200 = {
   problems?: ProblemWithDetailsResponse[];
+  total?: number;
+  page?: number;
+  pageSize?: number;
 };

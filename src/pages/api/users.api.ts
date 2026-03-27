@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { fetchUsersControllerHandle } from '../../lib/api/generated/user-management/user-management'
+import { AXIOS_INSTANCE } from '../../lib/api/axios'
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,6 +19,14 @@ export default async function handler(
 
     const query =
       typeof req.query.query === 'string' ? req.query.query : undefined
+    const page =
+      typeof req.query.page === 'string'
+        ? parseInt(req.query.page, 10)
+        : undefined
+    const pageSize =
+      typeof req.query.pageSize === 'string'
+        ? parseInt(req.query.pageSize, 10)
+        : undefined
     const isActiveParam = req.query.isActive
     const isActive =
       isActiveParam === 'true'
@@ -28,16 +36,20 @@ export default async function handler(
           : undefined
 
     const params =
-      query !== undefined || isActive !== undefined
-        ? { query, isActive }
+      query !== undefined ||
+      isActive !== undefined ||
+      page !== undefined ||
+      pageSize !== undefined
+        ? { query, isActive, page, pageSize }
         : undefined
 
-    const result = await fetchUsersControllerHandle(params, {
+    const result = await AXIOS_INSTANCE.get('/users', {
+      params,
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
     })
-    return res.status(200).json(result)
+    return res.status(200).json(result.data)
   } catch (error) {
     console.error('[API /users] Error:', error)
 

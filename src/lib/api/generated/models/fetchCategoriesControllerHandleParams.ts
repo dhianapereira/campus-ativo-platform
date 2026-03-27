@@ -12,6 +12,10 @@ export type FetchCategoriesControllerHandleParams = {
  */
 page?: number;
 /**
+ * Quantidade de itens por página
+ */
+pageSize?: number;
+/**
  * Incluir categorias deletadas (na lixeira)
  */
 includeDeleted?: boolean;

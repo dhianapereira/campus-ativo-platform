@@ -8,6 +8,14 @@
 
 export type FetchUsersControllerHandleParams = {
 /**
+ * Número da página (começa em 1)
+ */
+page?: number;
+/**
+ * Quantidade de itens por página
+ */
+pageSize?: number;
+/**
  * Termo de busca para filtrar usuários por nome ou email
  */
 query?: string;

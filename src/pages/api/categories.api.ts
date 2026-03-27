@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { fetchCategoriesControllerHandle } from '../../lib/api/generated/fetch-categories/fetch-categories'
 import { AXIOS_INSTANCE } from '../../lib/api/axios'
 
 export default async function handler(
@@ -14,12 +13,13 @@ export default async function handler(
 
   if (req.method === 'GET') {
     try {
-      const { query, isActive, page, includeDeleted } = req.query
+      const { query, isActive, page, pageSize, includeDeleted } = req.query
 
       const params: {
         query?: string
         isActive?: boolean
         page?: number
+        pageSize?: number
         includeDeleted?: boolean
       } = {}
 
@@ -35,17 +35,22 @@ export default async function handler(
         params.page = parseInt(page, 10)
       }
 
+      if (pageSize && typeof pageSize === 'string') {
+        params.pageSize = parseInt(pageSize, 10)
+      }
+
       if (includeDeleted !== undefined) {
         params.includeDeleted = includeDeleted === 'true'
       }
 
-      const result = await fetchCategoriesControllerHandle(params, {
+      const result = await AXIOS_INSTANCE.get('/categories', {
+        params,
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       })
 
-      return res.status(200).json(result)
+      return res.status(200).json(result.data)
     } catch (error) {
       if (error && typeof error === 'object' && 'response' in error) {
         const axiosError = error as unknown as {

@@ -33,6 +33,15 @@ import type { FetchUsersControllerHandle200UsersItem } from '../../lib/api/gener
 import { EditMemberModal } from './components/EditMemberModal'
 import { LoadErrorState } from '@/components'
 
+type MembersListResponse = {
+  users: FetchUsersControllerHandle200UsersItem[]
+  total: number
+  page: number
+  pageSize: number
+}
+
+const MEMBERS_ITEMS_PER_PAGE = 10
+
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
 
@@ -58,7 +67,6 @@ export default function MembersPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [selectedMember, setSelectedMember] =
     useState<FetchUsersControllerHandle200UsersItem | null>(null)
-  const itemsPerPage = 10
 
   const { hasRoleLevel } = useAuthPermissions()
   const { isLoading: isAuthLoading } = useAuthSession()
@@ -92,57 +100,50 @@ export default function MembersPage() {
     }
   }, [canLoad, router, isAuthLoading])
 
-  const { data, isLoading, error, refetch, isRefetching } = useQuery({
-    queryKey: ['users', debouncedSearchTerm, statusFilter],
-    queryFn: async () => {
-      const params = new URLSearchParams()
+  const { data, isLoading, error, refetch, isRefetching } =
+    useQuery<MembersListResponse>({
+      queryKey: ['users', debouncedSearchTerm, statusFilter, currentPage],
+      queryFn: async () => {
+        const params = new URLSearchParams()
 
-      if (debouncedSearchTerm) {
-        params.append('query', debouncedSearchTerm)
-      }
+        params.append('page', currentPage.toString())
+        params.append('pageSize', MEMBERS_ITEMS_PER_PAGE.toString())
 
-      if (statusFilter === 'active') {
-        params.append('isActive', 'true')
-      } else if (statusFilter === 'inactive') {
-        params.append('isActive', 'false')
-      }
+        if (debouncedSearchTerm) {
+          params.append('query', debouncedSearchTerm)
+        }
 
-      const url = `/api/users${params.toString() ? `?${params.toString()}` : ''}`
+        if (statusFilter === 'active') {
+          params.append('isActive', 'true')
+        } else if (statusFilter === 'inactive') {
+          params.append('isActive', 'false')
+        }
 
-      const response = await fetch(url, {
-        credentials: 'include',
-      })
-      if (!response.ok) {
-        const text = await response.text().catch(() => '')
-        throw new Error(
-          `Falha ao buscar usuários: ${response.status} ${response.statusText} ${text}`,
-        )
-      }
-      return response.json()
-    },
-    enabled: !isAuthLoading && canLoad,
-    retry: false,
-    placeholderData: (previousData) => previousData,
-  })
+        const url = `/api/users${params.toString() ? `?${params.toString()}` : ''}`
 
-  const usersData: FetchUsersControllerHandle200UsersItem[] = useMemo(() => {
-    if (!data) return []
-    if (Array.isArray(data)) {
-      return data as FetchUsersControllerHandle200UsersItem[]
-    }
-    const maybeObj = data as unknown as { users?: unknown }
-    if (Array.isArray(maybeObj.users)) {
-      return maybeObj.users as FetchUsersControllerHandle200UsersItem[]
-    }
-    return []
-  }, [data])
+        const response = await fetch(url, {
+          credentials: 'include',
+        })
+        if (!response.ok) {
+          const text = await response.text().catch(() => '')
+          throw new Error(
+            `Falha ao buscar usuários: ${response.status} ${response.statusText} ${text}`,
+          )
+        }
+        return response.json()
+      },
+      enabled: !isAuthLoading && canLoad,
+      retry: false,
+      placeholderData: (previousData) => previousData,
+    })
 
-  const totalItems = usersData.length
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const usersData = useMemo(() => data?.users ?? [], [data])
+
+  const totalItems = data?.total ?? 0
+  const totalPages = Math.ceil(totalItems / MEMBERS_ITEMS_PER_PAGE)
   const effectiveCurrentPage =
     totalPages > 0 ? Math.min(currentPage, totalPages) : 1
-  const startIndex = (effectiveCurrentPage - 1) * itemsPerPage
-  const currentUsers = usersData.slice(startIndex, startIndex + itemsPerPage)
+  const currentUsers = usersData
 
   const handleInputChange = (value: string) => {
     setSearchTerm(value)

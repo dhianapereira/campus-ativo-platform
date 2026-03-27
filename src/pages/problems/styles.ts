@@ -291,3 +291,106 @@ export const EmptyStateImage = styled('div', {
     },
   },
 })
+
+export const PaginationContainer = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  gap: '0.5rem',
+  marginTop: '2rem',
+  padding: '1rem 0',
+
+  '@media (max-width: 768px)': {
+    gap: '0.25rem',
+    marginTop: '1.5rem',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+})
+
+export const PaginationButton = styled('button', {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minWidth: '2.5rem',
+  height: '2.5rem',
+  padding: '0.5rem',
+  border: 'none',
+  borderRadius: '0.375rem',
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+
+  variants: {
+    variant: {
+      text: {
+        color: '$lightGray',
+        backgroundColor: 'transparent',
+
+        '&:hover:not(:disabled)': {
+          color: '$textNeutral',
+          backgroundColor: '$surfaceMuted',
+        },
+
+        '&:disabled': {
+          color: '$textDisabled',
+          cursor: 'not-allowed',
+        },
+      },
+      nav: {
+        background: 'transparent',
+        color: '$textStrong',
+        fontSize: '1.05rem',
+        fontWeight: 600,
+        minWidth: 'auto',
+        height: 'auto',
+        padding: '0.25rem 0.5rem',
+        borderRadius: 0,
+        gap: '0.5rem',
+        '&:hover:not(:disabled)': {
+          color: '$darkGray',
+        },
+        '&:disabled': {
+          opacity: 0.35,
+          cursor: 'not-allowed',
+        },
+      },
+      number: {
+        color: '$textNeutral',
+        backgroundColor: 'white',
+        border: '1px solid $borderDefault',
+
+        '&:hover': {
+          backgroundColor: '$surfaceMuted',
+        },
+      },
+    },
+    isActive: {
+      true: {
+        backgroundColor: '$green',
+        color: 'white',
+        border: '1px solid $green',
+      },
+    },
+  },
+
+  '@media (max-width: 768px)': {
+    minWidth: '2rem',
+    height: '2rem',
+    fontSize: '0.75rem',
+  },
+})
+
+export const PaginationDots = styled('span', {
+  display: 'flex',
+  alignItems: 'center',
+  padding: '0.5rem',
+  color: '$textDisabled',
+  fontSize: '0.875rem',
+
+  '@media (max-width: 768px)': {
+    fontSize: '0.75rem',
+    padding: '0.25rem',
+  },
+})
