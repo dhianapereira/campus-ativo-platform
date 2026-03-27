@@ -151,21 +151,28 @@ async function fetchAllPages<T>(
 function normalizeBulkItems(
   body: NextApiRequest['body'],
 ): BulkTrashItemPayload[] {
-  const items = Array.isArray(body?.items) ? body.items : null
+  const items = Array.isArray(body?.items) ? (body.items as unknown[]) : null
 
   if (items) {
     return items.filter(
-      (item): item is BulkTrashItemPayload =>
-        !!item &&
-        typeof item === 'object' &&
-        typeof item.id === 'string' &&
-        (item.type === 'location' ||
-          item.type === 'category' ||
-          item.type === 'problem'),
+      (item: unknown): item is BulkTrashItemPayload => {
+        if (!item || typeof item !== 'object') {
+          return false
+        }
+
+        const record = item as Record<string, unknown>
+
+        return (
+          typeof record.id === 'string' &&
+          (record.type === 'location' ||
+            record.type === 'category' ||
+            record.type === 'problem')
+        )
+      },
     )
   }
 
-  const ids = Array.isArray(body?.ids) ? body.ids : []
+  const ids = Array.isArray(body?.ids) ? (body.ids as unknown[]) : []
   const type = body?.type
 
   if (type !== 'location' && type !== 'category' && type !== 'problem') {
@@ -173,8 +180,8 @@ function normalizeBulkItems(
   }
 
   return ids
-    .filter((id): id is string => typeof id === 'string')
-    .map((id) => ({ id, type }))
+    .filter((id: unknown): id is string => typeof id === 'string')
+    .map((id: string) => ({ id, type }))
 }
 
 async function executeTrashAction(

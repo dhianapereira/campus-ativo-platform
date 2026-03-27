@@ -47,6 +47,7 @@ import { useAuthPermissions, useAuthSession } from '@/contexts/auth-context'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { PageContainer } from '@/pages/error-page.styles'
+import type { GetProblemBySlugControllerHandle200 } from '@/lib/api/generated/models/getProblemBySlugControllerHandle200'
 import {
   createTrashItemFromProblem,
   upsertTrashItemsInCache,
@@ -62,6 +63,10 @@ const STATUS_TO_ANALYSIS_BACKEND = 'TO_ANALYSIS'
 
 type QueryError = Error & {
   status?: number
+}
+
+function normalizeNullableString(value: unknown): string | null {
+  return typeof value === 'string' ? value : null
 }
 
 function formatDateTime(isoString?: string | null): string {
@@ -218,7 +223,7 @@ export default function ProblemDetails() {
     data: apiResponse,
     isLoading,
     error,
-  } = useQuery<unknown, QueryError>({
+  } = useQuery<GetProblemBySlugControllerHandle200, QueryError>({
     queryKey: ['problem', id],
     queryFn: async () => {
       const res = await fetch(`/api/problems/${id}`, {
@@ -248,10 +253,24 @@ export default function ProblemDetails() {
     if (!problem) return null
 
     const firstAttachment = problem.attachments?.[0]
+    const history = (problem.history ?? []).map((entry) => ({
+      id: entry.id,
+      action: entry.action,
+      userId: entry.userId,
+      userName: entry.userName,
+      note: normalizeNullableString(entry.note),
+      createdAt: entry.createdAt,
+      changes:
+        entry.changes?.map((change) => ({
+          field: change.field,
+          oldValue: normalizeNullableString(change.oldValue),
+          newValue: normalizeNullableString(change.newValue),
+        })) ?? null,
+    }))
     const latestNote = (() => {
-      for (const entry of problem.history ?? []) {
+      for (const entry of history) {
         const noteChange = (entry.changes ?? []).find(
-          (change: ProblemHistoryChange) => change.field === 'note',
+          (change) => change.field === 'note',
         )
 
         if (noteChange) {
@@ -273,12 +292,12 @@ export default function ProblemDetails() {
       title: problem.title,
       category: {
         name: problem.category.name,
-        description: problem.category.description ?? null,
+        description: normalizeNullableString(problem.category.description),
       },
       location: {
         name: problem.location.name,
-        code: problem.location.code ?? null,
-        description: problem.location.description ?? null,
+        code: normalizeNullableString(problem.location.code),
+        description: normalizeNullableString(problem.location.description),
       },
       description: problem.description,
       status: toFrontendStatus(problem.status),
@@ -287,7 +306,7 @@ export default function ProblemDetails() {
       reporter: problem.reporter.email,
       createdAt: formatDateTime(problem.createdAt),
       updatedAt: problem.updatedAt ? formatDateTime(problem.updatedAt) : null,
-      history: problem.history ?? [],
+      history,
       latestNote,
     }
   }, [problem])
@@ -307,7 +326,19 @@ export default function ProblemDetails() {
     onSuccess: async () => {
       if (problem) {
         upsertTrashItemsInCache(queryClient, [
-          createTrashItemFromProblem(problem),
+          createTrashItemFromProblem({
+            id: problem.id,
+            title: problem.title,
+            description: problem.description,
+            location: {
+              name: problem.location?.name ?? null,
+            },
+            reporter: {
+              id: problem.reporter?.id ?? null,
+            },
+            createdAt: problem.createdAt,
+            deletedAt: normalizeNullableString(problem.deletedAt),
+          }),
         ])
       }
 
@@ -732,7 +763,7 @@ export default function ProblemDetails() {
             {canAccessActions && (
               <Actions
                 problemId={problemData.id}
-                problemQueryKey={problemQueryKey}
+                problemQueryKey={problemQueryKey ?? problemData.id}
                 initialStatus={problemData.status}
                 initialMaintenanceType={problemData.maintenanceType}
                 initialNote={problemData.latestNote}

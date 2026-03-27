@@ -61,6 +61,8 @@ export function ViewLocationModal({
       return response.json()
     },
     onSuccess: async () => {
+      if (!location?.id) return
+
       await queryClient.invalidateQueries({
         queryKey: ['locations'],
         refetchType: 'all',
@@ -105,6 +107,8 @@ export function ViewLocationModal({
       return response.json()
     },
     onSuccess: async () => {
+      if (!location?.id) return
+
       await queryClient.invalidateQueries({
         queryKey: ['locations'],
         refetchType: 'all',

@@ -61,6 +61,8 @@ export function ViewCategoryModal({
       return response.json()
     },
     onSuccess: async () => {
+      if (!category?.id) return
+
       await queryClient.invalidateQueries({
         queryKey: ['categories'],
         refetchType: 'all',
@@ -105,6 +107,8 @@ export function ViewCategoryModal({
       return response.json()
     },
     onSuccess: async () => {
+      if (!category?.id) return
+
       await queryClient.invalidateQueries({
         queryKey: ['categories'],
         refetchType: 'all',

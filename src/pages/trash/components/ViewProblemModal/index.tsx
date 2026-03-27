@@ -76,6 +76,8 @@ export function ViewProblemModal({
       return response.json()
     },
     onSuccess: async () => {
+      if (!problem?.id) return
+
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: ['problems'],
@@ -134,6 +136,8 @@ export function ViewProblemModal({
       return response.json()
     },
     onSuccess: async () => {
+      if (!problem?.id) return
+
       await Promise.all([
         queryClient.invalidateQueries({
           queryKey: ['problems'],
