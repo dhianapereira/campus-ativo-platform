@@ -40,12 +40,17 @@ const AuthSessionContext = createContext<AuthSessionData | null>(null)
 const AuthPermissionsContext = createContext<AuthPermissionsData | null>(null)
 
 export const USER_PROFILE_QUERY_KEY = ['user', 'profile'] as const
+const SESSION_REVALIDATION_INTERVAL = 60 * 1000
 
 async function fetchUserProfile(): Promise<User | null> {
   const response = await fetch('/api/auth/me')
   const data = await response.json().catch(() => null)
 
   if (response.status === 401) {
+    if (data?.error !== 'No authentication token found') {
+      await fetch('/api/auth/logout', { method: 'POST' }).catch(() => null)
+    }
+
     return null
   }
 
@@ -72,8 +77,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     queryFn: fetchUserProfile,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchInterval: (query) =>
+      query.state.data ? SESSION_REVALIDATION_INTERVAL : false,
+    refetchOnWindowFocus: (query) => (query.state.data ? 'always' : false),
+    refetchOnReconnect: (query) => (query.state.data ? 'always' : false),
+    refetchOnMount: true,
     retry: false,
   })
 
