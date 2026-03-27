@@ -40,11 +40,6 @@ import {
   EmptyState,
   EmptyStateTitle,
   EmptyStateMessage,
-  ErrorState,
-  ErrorStateIcon,
-  ErrorStateTitle,
-  ErrorStateMessage,
-  RetryButton,
 } from './styles'
 import { colors } from '@/styles/tokens'
 import PlatformLayout from '@/layouts/platform/layout'
@@ -53,6 +48,7 @@ import { useAuthPermissions } from '@/contexts/auth-context'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
+import { LoadErrorState } from '@/components'
 import { ViewProblemModal } from './components/ViewProblemModal'
 import { ViewLocationModal } from './components/ViewLocationModal'
 import { ViewCategoryModal } from './components/ViewCategoryModal'
@@ -149,6 +145,7 @@ export default function TrashPage() {
     isLoading,
     error,
     refetch,
+    isRefetching,
   } = useQuery({
     queryKey: [
       ...TRASH_QUERY_KEY,
@@ -660,20 +657,17 @@ export default function TrashPage() {
             <HeaderContainer>
               <PageTitle>Lixeira</PageTitle>
             </HeaderContainer>
-            <ErrorState>
-              <ErrorStateIcon>
-                <Trash size={64} weight="duotone" />
-              </ErrorStateIcon>
-              <ErrorStateTitle>Erro ao carregar lixeira</ErrorStateTitle>
-              <ErrorStateMessage>
-                Não foi possível buscar as informações no momento.
-                <br />
-                Por favor, tente novamente mais tarde.
-              </ErrorStateMessage>
-              <RetryButton onClick={() => refetch()}>
-                Tentar novamente
-              </RetryButton>
-            </ErrorState>
+            <LoadErrorState
+              badge="Lixeira indisponível"
+              title="Não conseguimos abrir a lixeira agora"
+              description="Os itens removidos temporariamente não puderam ser carregados neste momento. Assim que a conexão com o servidor voltar, você poderá revisar e restaurar os registros normalmente."
+              onRetry={() => refetch()}
+              isRetrying={isRefetching}
+              tips={[
+                'Se o servidor acabou de voltar, aguarde alguns segundos antes de tentar novamente.',
+                'Se a instabilidade continuar, atualize a página para refazer a sincronização.',
+              ]}
+            />
           </MainContainer>
         </PlatformLayout>
       </RoleProtectedRoute>

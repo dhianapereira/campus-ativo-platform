@@ -31,7 +31,7 @@ import { useAuthPermissions, useAuthSession } from '@/contexts/auth-context'
 import { useQuery } from '@tanstack/react-query'
 import type { FetchUsersControllerHandle200UsersItem } from '../../lib/api/generated/models'
 import { EditMemberModal } from './components/EditMemberModal'
-import { colors } from '@/styles/tokens'
+import { LoadErrorState } from '@/components'
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
@@ -92,7 +92,7 @@ export default function MembersPage() {
     }
   }, [canLoad, router, isAuthLoading])
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch, isRefetching } = useQuery({
     queryKey: ['users', debouncedSearchTerm, statusFilter],
     queryFn: async () => {
       const params = new URLSearchParams()
@@ -256,24 +256,20 @@ export default function MembersPage() {
     return (
       <PlatformLayout>
         <MainContainer>
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <p>Não foi possível buscar as informações no momento.</p>
-            <p>Por favor, tente novamente mais tarde.</p>
-            <button
-              onClick={() => refetch()}
-              style={{
-                marginTop: '1rem',
-                padding: '0.5rem 1rem',
-                backgroundColor: colors.greenMuted,
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
-            >
-              Recarregar
-            </button>
-          </div>
+          <HeaderContainer>
+            <SectionTitle>Gerenciamento de membros</SectionTitle>
+          </HeaderContainer>
+          <LoadErrorState
+            badge="Equipe indisponível"
+            title="Não conseguimos carregar os membros agora"
+            description="A lista de usuários não pôde ser atualizada neste momento. Se o servidor acabou de reiniciar, aguarde alguns segundos e tente novamente."
+            onRetry={() => refetch()}
+            isRetrying={isRefetching}
+            tips={[
+              'Quando a conexão voltar, você poderá continuar editando os membros sem perder a navegação.',
+              'Se a falha persistir, atualize a página para refazer a autenticação e a busca.',
+            ]}
+          />
         </MainContainer>
       </PlatformLayout>
     )

@@ -50,7 +50,7 @@ import { toast } from 'sonner'
 import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
 import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
-import { colors } from '@/styles/tokens'
+import { LoadErrorState } from '@/components'
 import {
   createTrashItemFromCategory,
   createTrashItemFromLocation,
@@ -104,6 +104,8 @@ export default function SettingsPage() {
     data: locationsData,
     isLoading: locationsLoading,
     error: locationsError,
+    refetch: refetchLocations,
+    isRefetching: isRefetchingLocations,
   } = useQuery({
     queryKey: ['locations', debouncedSearchTerm, statusFilter],
     queryFn: async () => {
@@ -136,6 +138,8 @@ export default function SettingsPage() {
     data: categoriesData,
     isLoading: categoriesLoading,
     error: categoriesError,
+    refetch: refetchCategories,
+    isRefetching: isRefetchingCategories,
   } = useQuery({
     queryKey: ['categories', debouncedSearchTerm, statusFilter],
     queryFn: async () => {
@@ -260,6 +264,10 @@ export default function SettingsPage() {
   const isLoading =
     activeTab === 'localizacao' ? locationsLoading : categoriesLoading
   const error = activeTab === 'localizacao' ? locationsError : categoriesError
+  const refetch =
+    activeTab === 'localizacao' ? refetchLocations : refetchCategories
+  const isRefetching =
+    activeTab === 'localizacao' ? isRefetchingLocations : isRefetchingCategories
 
   const totalPages = Math.ceil(currentData.length / itemsPerPage)
   const effectiveCurrentPage =
@@ -463,24 +471,50 @@ export default function SettingsPage() {
       <RoleProtectedRoute requiredLevel={2}>
         <PlatformLayout>
           <MainContainer>
-            <div style={{ padding: '2rem', textAlign: 'center' }}>
-              <p>Não foi possível buscar as informações no momento.</p>
-              <p>Por favor, tente novamente mais tarde.</p>
-              <button
-                onClick={() => window.location.reload()}
-                style={{
-                  marginTop: '1rem',
-                  padding: '0.5rem 1rem',
-                  backgroundColor: colors.greenMuted,
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                }}
-              >
-                Recarregar
-              </button>
-            </div>
+            <HeaderContainer>
+              <TabsContainer>
+                <Tab
+                  isActive={activeTab === 'localizacao'}
+                  onClick={() => handleTabChange('localizacao')}
+                >
+                  Localização
+                </Tab>
+                <Tab
+                  isActive={activeTab === 'categoria'}
+                  onClick={() => handleTabChange('categoria')}
+                >
+                  Categoria
+                </Tab>
+              </TabsContainer>
+            </HeaderContainer>
+
+            <PageTitle>
+              {activeTab === 'localizacao' ? 'Localização' : 'Categoria'}
+            </PageTitle>
+
+            <LoadErrorState
+              badge={
+                activeTab === 'localizacao'
+                  ? 'Localizações indisponíveis'
+                  : 'Categorias indisponíveis'
+              }
+              title={
+                activeTab === 'localizacao'
+                  ? 'Não conseguimos carregar as localizações agora'
+                  : 'Não conseguimos carregar as categorias agora'
+              }
+              description={
+                activeTab === 'localizacao'
+                  ? 'As localizações não puderam ser buscadas neste momento. Isso normalmente acontece quando o servidor está temporariamente indisponível.'
+                  : 'As categorias não puderam ser buscadas neste momento. Isso normalmente acontece quando o servidor está temporariamente indisponível.'
+              }
+              onRetry={() => refetch()}
+              isRetrying={isRefetching}
+              tips={[
+                'Assim que a conexão voltar, você poderá retomar a gestão sem precisar reconfigurar a aba atual.',
+                'Se o servidor acabou de reiniciar, aguarde alguns segundos antes de tentar de novo.',
+              ]}
+            />
           </MainContainer>
         </PlatformLayout>
       </RoleProtectedRoute>

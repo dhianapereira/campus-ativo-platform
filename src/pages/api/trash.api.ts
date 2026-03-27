@@ -154,22 +154,20 @@ function normalizeBulkItems(
   const items = Array.isArray(body?.items) ? (body.items as unknown[]) : null
 
   if (items) {
-    return items.filter(
-      (item: unknown): item is BulkTrashItemPayload => {
-        if (!item || typeof item !== 'object') {
-          return false
-        }
+    return items.filter((item: unknown): item is BulkTrashItemPayload => {
+      if (!item || typeof item !== 'object') {
+        return false
+      }
 
-        const record = item as Record<string, unknown>
+      const record = item as Record<string, unknown>
 
-        return (
-          typeof record.id === 'string' &&
-          (record.type === 'location' ||
-            record.type === 'category' ||
-            record.type === 'problem')
-        )
-      },
-    )
+      return (
+        typeof record.id === 'string' &&
+        (record.type === 'location' ||
+          record.type === 'category' ||
+          record.type === 'problem')
+      )
+    })
   }
 
   const ids = Array.isArray(body?.ids) ? (body.ids as unknown[]) : []

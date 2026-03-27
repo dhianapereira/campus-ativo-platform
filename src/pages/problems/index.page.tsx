@@ -15,7 +15,7 @@ import {
 } from './styles'
 import ProblemCard from './components/ProblemCard'
 import { FilterButton } from './components/FilterButton'
-import { FilterDialog, Text } from '@/components'
+import { FilterDialog, LoadErrorState, Text } from '@/components'
 import type { FilterOption } from '@/components'
 import { useRouter } from 'next/router'
 import { useState, useMemo } from 'react'
@@ -38,8 +38,8 @@ export default function Problems() {
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
 
-  const { data, isLoading, error } = useQuery<FetchProblemsControllerHandle200>(
-    {
+  const { data, isLoading, error, refetch, isRefetching } =
+    useQuery<FetchProblemsControllerHandle200>({
       queryKey: ['problems', page, searchValue],
       queryFn: async () => {
         const params = new URLSearchParams()
@@ -57,8 +57,7 @@ export default function Problems() {
         return response.json() as Promise<FetchProblemsControllerHandle200>
       },
       retry: false,
-    },
-  )
+    })
 
   const filterOptions: FilterOption[] = [
     { id: ProblemStatus.ToAnalysis, label: 'Para análise', checked: false },
@@ -185,9 +184,17 @@ export default function Problems() {
         )}
 
         {error && (
-          <div style={{ padding: '2rem', textAlign: 'center' }}>
-            <Text>Erro ao carregar problemas. Tente novamente mais tarde.</Text>
-          </div>
+          <LoadErrorState
+            badge="Lista indisponível"
+            title="Não conseguimos carregar os problemas agora"
+            description="A lista de problemas não pôde ser buscada neste momento. Quando a conexão com o servidor voltar, os registros aparecerão normalmente."
+            onRetry={() => refetch()}
+            isRetrying={isRefetching}
+            tips={[
+              'Confira se o servidor já voltou a responder.',
+              'Se você aplicou filtros ou busca, eles serão mantidos ao tentar de novo.',
+            ]}
+          />
         )}
 
         {!isLoading && !error && filteredProblems.length === 0 && (

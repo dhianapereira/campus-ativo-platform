@@ -79,7 +79,6 @@ function formatCompactLocation(
   return `${locationName} (${locationCode})`
 }
 
-
 function drawPageHeader(
   doc: jsPDF,
   data: DashboardReportData,

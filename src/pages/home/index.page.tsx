@@ -35,9 +35,6 @@ import {
   ChartBarWrapper,
   ChartBar,
   ChartMonthLabel,
-  ErrorState,
-  ErrorTitle,
-  ErrorMessage,
 } from './styles'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
@@ -47,7 +44,7 @@ import type {
   DashboardTopLocation,
 } from './types'
 import { DashboardShimmer } from '@/layouts/platform/components/DashboardShimmer'
-import { Button } from '@/components'
+import { Button, LoadErrorState } from '@/components'
 import { colors } from '@/styles/tokens'
 import { FileText, MagnifyingGlass, Gear } from 'phosphor-react'
 import { ReportModal } from '@/layouts/platform/components/ReportModal'
@@ -296,21 +293,17 @@ export default function Home() {
           <DashboardHeader>
             <DashboardTitle>Dashboard</DashboardTitle>
           </DashboardHeader>
-          <ErrorState>
-            <ErrorTitle>Erro ao carregar o dashboard</ErrorTitle>
-            <ErrorMessage>
-              {error instanceof Error
-                ? error.message
-                : 'Não foi possível carregar os dados. Tente novamente mais tarde.'}
-            </ErrorMessage>
-            <Button
-              variant="primary"
-              onClick={() => refetch()}
-              disabled={isRefetching}
-            >
-              {isRefetching ? 'Carregando...' : 'Tentar novamente'}
-            </Button>
-          </ErrorState>
+          <LoadErrorState
+            badge="Dashboard indisponível"
+            title="Não conseguimos carregar o dashboard agora"
+            description="Os indicadores não puderam ser atualizados neste momento. Isso costuma acontecer quando o servidor está reiniciando ou a conexão caiu por alguns instantes."
+            onRetry={() => refetch()}
+            isRetrying={isRefetching}
+            tips={[
+              'Se você acabou de religar o servidor, aguarde alguns segundos antes de tentar de novo.',
+              'Quando a conexão voltar, os dados do painel serão carregados normalmente.',
+            ]}
+          />
         </MainContainer>
       </PlatformLayout>
     )

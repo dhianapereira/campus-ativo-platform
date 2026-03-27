@@ -34,7 +34,7 @@ import {
   Trash,
 } from 'phosphor-react'
 import { useRouter } from 'next/router'
-import type { ProblemDetailsProps, ProblemHistoryChange } from './types'
+import type { ProblemDetailsProps } from './types'
 import { Button, ConfirmationModal, NotFoundState, Text } from '@/components'
 import { TrashActionButton } from './components/TrashActionButton'
 import { Actions } from './components/Actions'
