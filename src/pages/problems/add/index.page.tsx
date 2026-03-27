@@ -338,6 +338,7 @@ export default function AddProblem() {
           <Button
             variant="primary"
             type="submit"
+            css={{ width: '100%' }}
             disabled={
               isSubmitting ||
               !isFormValid ||
