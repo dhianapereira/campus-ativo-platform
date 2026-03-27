@@ -30,7 +30,7 @@ import type {
   DeleteUserAccountControllerHandle200,
   EditUserProfileControllerHandle200,
   EditUserProfileControllerHandleBody,
-  UserResponse
+  UserProfileResponse
 } from '../models';
 
 import { axiosInstance } from '../../axios';
@@ -51,7 +51,7 @@ export const getUserProfileControllerHandle = (
 ) => {
       
       
-      return axiosInstance<UserResponse>(
+      return axiosInstance<UserProfileResponse>(
       {url: `/profile`, method: 'GET', signal
     },
       options);

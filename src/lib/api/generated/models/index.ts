@@ -73,5 +73,6 @@ export * from './syncGoogleSheetControllerHandle200';
 export * from './syncGoogleSheetControllerHandleBody';
 export * from './uploadAttachmentControllerHandle201';
 export * from './uploadAttachmentControllerHandleBody';
+export * from './userProfileResponse';
 export * from './userResponse';
 export * from './userResponseRole';
