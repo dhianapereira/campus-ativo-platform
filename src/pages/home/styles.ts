@@ -155,6 +155,10 @@ export const Card = styled('div', {
   },
 })
 
+export const TopCard = styled(Card, {
+  justifyContent: 'flex-start',
+})
+
 export const CardTitle = styled('h3', {
   margin: '0 0 0.5rem',
   fontSize: '10px',
@@ -170,19 +174,110 @@ export const CardTitle = styled('h3', {
 
 export const TopList = styled('ol', {
   margin: 0,
-  paddingLeft: '1.25rem',
-  listStyle: 'decimal',
+  padding: 0,
+  listStyle: 'none',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.75rem',
 })
 
 export const TopListItem = styled('li', {
-  fontSize: '9px',
+  display: 'grid',
+  gridTemplateColumns: 'auto 1fr',
+  gap: '0.75rem',
+  alignItems: 'flex-start',
+  padding: '0.75rem',
+  borderRadius: '12px',
+  backgroundColor: '$greenishWhite',
+  border: '1px solid $borderDefault',
+
+  '@media(min-width: 641px)': {
+    padding: '0.875rem 1rem',
+  },
+})
+
+export const TopItemRank = styled('span', {
+  width: '1.5rem',
+  height: '1.5rem',
+  borderRadius: '999px',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '$green',
+  color: '$white',
+  fontSize: '0.75rem',
+  fontWeight: 700,
+  flexShrink: 0,
+})
+
+export const TopItemContent = styled('div', {
+  minWidth: 0,
+})
+
+export const TopItemHeader = styled('div', {
+  display: 'flex',
+  alignItems: 'flex-start',
+  justifyContent: 'space-between',
+  gap: '0.75rem',
+  marginBottom: '0.35rem',
+})
+
+export const TopItemName = styled('strong', {
+  display: 'block',
+  fontSize: '0.875rem',
+  lineHeight: 1.4,
   color: '$gray',
-  marginBottom: '0.25rem',
-  lineHeight: 1.5,
 
   '@media(min-width: 641px)': {
     fontSize: '0.9375rem',
-    marginBottom: '0.5rem',
+  },
+})
+
+export const TopItemCount = styled('span', {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  whiteSpace: 'nowrap',
+  padding: '0.2rem 0.5rem',
+  borderRadius: '999px',
+  backgroundColor: '$blue12Bg',
+  color: '$darkBlue',
+  fontSize: '0.75rem',
+  fontWeight: 600,
+})
+
+export const TopItemMetaRow = styled('div', {
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '0.4rem',
+  marginBottom: '0.35rem',
+})
+
+export const TopItemTag = styled('span', {
+  display: 'inline-flex',
+  alignItems: 'center',
+  padding: '0.2rem 0.45rem',
+  borderRadius: '999px',
+  backgroundColor: '$white',
+  border: '1px solid $borderDefault',
+  color: '$textNeutral',
+  fontSize: '0.75rem',
+  fontWeight: 600,
+})
+
+export const TopItemDescription = styled('p', {
+  margin: 0,
+  fontSize: '0.75rem',
+  lineHeight: 1.5,
+  color: '$lightGray',
+  display: '-webkit-box',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  WebkitBoxOrient: 'vertical',
+  WebkitLineClamp: 2,
+
+  '@media(min-width: 641px)': {
+    fontSize: '0.8125rem',
   },
 })
 

@@ -10,10 +10,18 @@ import {
   MetricValue,
   MetricLabel,
   TopGrid,
-  Card,
+  TopCard,
   CardTitle,
   TopList,
   TopListItem,
+  TopItemRank,
+  TopItemContent,
+  TopItemHeader,
+  TopItemName,
+  TopItemCount,
+  TopItemMetaRow,
+  TopItemTag,
+  TopItemDescription,
   EmptyTopMessage,
   ChartCard,
   ChartTitleRow,
@@ -33,7 +41,11 @@ import {
 } from './styles'
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import type { DashboardMetrics } from './types'
+import type {
+  DashboardMetrics,
+  DashboardTopCategory,
+  DashboardTopLocation,
+} from './types'
 import { DashboardShimmer } from '@/layouts/platform/components/DashboardShimmer'
 import { Button } from '@/components'
 import { colors } from '@/styles/tokens'
@@ -42,6 +54,56 @@ import { ReportModal } from '@/layouts/platform/components/ReportModal'
 
 const EMPTY_TOP_MESSAGE =
   'Não há dados suficientes ainda para exibir esta lista.'
+
+function formatTopCount(count: number) {
+  return `${count} ${count === 1 ? 'registro' : 'registros'}`
+}
+
+function renderTopLocationItem(item: DashboardTopLocation, index: number) {
+  const name = item.name?.trim() || 'Localização sem nome'
+  const description = item.description?.trim()
+  const code = item.code?.trim()
+
+  return (
+    <TopListItem key={item.locationId ?? `${item.name}-${index}`}>
+      <TopItemRank>{index + 1}</TopItemRank>
+      <TopItemContent>
+        <TopItemHeader>
+          <TopItemName>{name}</TopItemName>
+          <TopItemCount>{formatTopCount(item.count)}</TopItemCount>
+        </TopItemHeader>
+        {code ? (
+          <TopItemMetaRow>
+            <TopItemTag>Código: {code}</TopItemTag>
+          </TopItemMetaRow>
+        ) : null}
+        {description ? (
+          <TopItemDescription>{description}</TopItemDescription>
+        ) : null}
+      </TopItemContent>
+    </TopListItem>
+  )
+}
+
+function renderTopCategoryItem(item: DashboardTopCategory, index: number) {
+  const name = item.name?.trim() || 'Categoria sem nome'
+  const description = item.description?.trim()
+
+  return (
+    <TopListItem key={item.categoryId ?? `${item.name}-${index}`}>
+      <TopItemRank>{index + 1}</TopItemRank>
+      <TopItemContent>
+        <TopItemHeader>
+          <TopItemName>{name}</TopItemName>
+          <TopItemCount>{formatTopCount(item.count)}</TopItemCount>
+        </TopItemHeader>
+        {description ? (
+          <TopItemDescription>{description}</TopItemDescription>
+        ) : null}
+      </TopItemContent>
+    </TopListItem>
+  )
+}
 
 function DashboardContent({
   data,
@@ -128,34 +190,22 @@ function DashboardContent({
       </MetricsGrid>
 
       <TopGrid>
-        <Card>
+        <TopCard>
           <CardTitle>Top 3 setores mais afetados</CardTitle>
           {data.top3Locations.length > 0 ? (
-            <TopList>
-              {data.top3Locations.map((item, index) => (
-                <TopListItem key={`${item.name}-${index}`}>
-                  {item.name}
-                </TopListItem>
-              ))}
-            </TopList>
+            <TopList>{data.top3Locations.map(renderTopLocationItem)}</TopList>
           ) : (
             <EmptyTopMessage>{EMPTY_TOP_MESSAGE}</EmptyTopMessage>
           )}
-        </Card>
-        <Card>
+        </TopCard>
+        <TopCard>
           <CardTitle>Top 3 categorias mais reportadas</CardTitle>
           {data.top3Categories.length > 0 ? (
-            <TopList>
-              {data.top3Categories.map((item, index) => (
-                <TopListItem key={`${item.name}-${index}`}>
-                  {item.name}
-                </TopListItem>
-              ))}
-            </TopList>
+            <TopList>{data.top3Categories.map(renderTopCategoryItem)}</TopList>
           ) : (
             <EmptyTopMessage>{EMPTY_TOP_MESSAGE}</EmptyTopMessage>
           )}
-        </Card>
+        </TopCard>
       </TopGrid>
 
       <ChartCard>

@@ -1,11 +1,26 @@
+export type DashboardTopLocation = {
+  locationId: string | null
+  name: string
+  code: string | null
+  description: string | null
+  count: number
+}
+
+export type DashboardTopCategory = {
+  categoryId: string | null
+  name: string
+  description: string | null
+  count: number
+}
+
 export type DashboardMetrics = {
   toAnalysisCount: number
   inAnalysisCount: number
   inProgressCount: number
   totalProblems: number
   recentProblems: number
-  top3Locations: { name: string; count: number }[]
-  top3Categories: { name: string; count: number }[]
+  top3Locations: DashboardTopLocation[]
+  top3Categories: DashboardTopCategory[]
   maintenanceByMonth: {
     month: string
     label: string
