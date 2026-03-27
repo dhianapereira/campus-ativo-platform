@@ -64,7 +64,12 @@ export default function Menu({ onLogoutClick }: MenuProps) {
         <MenuNav>
           {navOptions.map((option) => {
             const path = MENU_OPTION_PATHS[option.id]
-            const isActive = path ? pathname === path : false
+            const isActive =
+              option.id === 'dashboard'
+                ? pathname === '/' || pathname === '/home'
+                : path
+                  ? pathname === path
+                  : false
             return (
               <MenuItem
                 key={option.id}

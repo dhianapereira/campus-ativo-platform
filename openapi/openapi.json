@@ -28,9 +28,7 @@
           }
         },
         "summary": "Criar conta",
-        "tags": [
-          "Authentication"
-        ]
+        "tags": ["Authentication"]
       }
     },
     "/sessions": {
@@ -67,9 +65,7 @@
           }
         },
         "summary": "Autenticar usuário",
-        "tags": [
-          "Authentication"
-        ]
+        "tags": ["Authentication"]
       }
     },
     "/sessions/logout": {
@@ -86,9 +82,7 @@
           }
         },
         "summary": "Logout do usuário",
-        "tags": [
-          "Authentication"
-        ]
+        "tags": ["Authentication"]
       }
     },
     "/profile": {
@@ -120,9 +114,7 @@
           }
         ],
         "summary": "Obter perfil do usuário",
-        "tags": [
-          "User Profile"
-        ]
+        "tags": ["User Profile"]
       }
     },
     "/users": {
@@ -216,9 +208,7 @@
           }
         ],
         "summary": "Listar usuários",
-        "tags": [
-          "User Management"
-        ]
+        "tags": ["User Management"]
       }
     },
     "/users/{id}/role": {
@@ -247,18 +237,11 @@
                 "properties": {
                   "role": {
                     "type": "string",
-                    "enum": [
-                      "REPORTER",
-                      "MANAGER",
-                      "DIRECTOR",
-                      "ADMIN"
-                    ],
+                    "enum": ["REPORTER", "MANAGER", "DIRECTOR", "ADMIN"],
                     "example": "MANAGER"
                   }
                 },
-                "required": [
-                  "role"
-                ]
+                "required": ["role"]
               }
             }
           }
@@ -299,9 +282,7 @@
           }
         ],
         "summary": "Alterar role do usuário",
-        "tags": [
-          "User Management"
-        ]
+        "tags": ["User Management"]
       }
     },
     "/users/{id}/status": {
@@ -334,9 +315,7 @@
                     "description": "true para ativar, false para desativar"
                   }
                 },
-                "required": [
-                  "isActive"
-                ]
+                "required": ["isActive"]
               }
             }
           }
@@ -377,9 +356,7 @@
           }
         ],
         "summary": "Alterar status do usuário",
-        "tags": [
-          "User Management"
-        ]
+        "tags": ["User Management"]
       }
     },
     "/users/{id}/profile": {
@@ -417,10 +394,7 @@
                     "description": "Cargo do usuário"
                   }
                 },
-                "required": [
-                  "name",
-                  "position"
-                ]
+                "required": ["name", "position"]
               }
             }
           }
@@ -461,9 +435,7 @@
           }
         ],
         "summary": "Editar perfil do usuário",
-        "tags": [
-          "User Profile"
-        ]
+        "tags": ["User Profile"]
       }
     },
     "/users/{id}/password": {
@@ -503,10 +475,7 @@
                     "minLength": 6
                   }
                 },
-                "required": [
-                  "oldPassword",
-                  "newPassword"
-                ]
+                "required": ["oldPassword", "newPassword"]
               }
             }
           }
@@ -547,9 +516,7 @@
           }
         ],
         "summary": "Alterar senha do usuário",
-        "tags": [
-          "User Profile"
-        ]
+        "tags": ["User Profile"]
       }
     },
     "/users/{id}": {
@@ -601,9 +568,7 @@
           }
         ],
         "summary": "Deletar conta do usuário",
-        "tags": [
-          "User Profile"
-        ]
+        "tags": ["User Profile"]
       }
     },
     "/problems": {
@@ -638,9 +603,7 @@
           }
         ],
         "summary": "Criar problema",
-        "tags": [
-          "Problems"
-        ]
+        "tags": ["Problems"]
       },
       "get": {
         "description": "Retorna uma lista paginada de problemas reportados no sistema com informações de localização",
@@ -701,9 +664,7 @@
           }
         },
         "summary": "Buscar problemas",
-        "tags": [
-          "Problems"
-        ]
+        "tags": ["Problems"]
       }
     },
     "/problems/{slug}": {
@@ -746,9 +707,7 @@
           }
         },
         "summary": "Buscar problema por slug",
-        "tags": [
-          "Problems"
-        ]
+        "tags": ["Problems"]
       }
     },
     "/categories": {
@@ -824,9 +783,7 @@
           }
         },
         "summary": "Buscar categorias",
-        "tags": [
-          "Categories"
-        ]
+        "tags": ["Categories"]
       },
       "post": {
         "description": "Cria uma nova categoria de problema (requer role MANAGER+)",
@@ -862,9 +819,7 @@
           }
         ],
         "summary": "Criar categoria",
-        "tags": [
-          "Categories"
-        ]
+        "tags": ["Categories"]
       }
     },
     "/categories/{id}": {
@@ -916,9 +871,7 @@
           }
         ],
         "summary": "Editar categoria",
-        "tags": [
-          "Categories"
-        ]
+        "tags": ["Categories"]
       },
       "delete": {
         "description": "Deleta permanentemente uma categoria do sistema (requer role MANAGER+)",
@@ -958,9 +911,7 @@
           }
         ],
         "summary": "Deletar categoria",
-        "tags": [
-          "Categories"
-        ]
+        "tags": ["Categories"]
       }
     },
     "/categories/{id}/trash": {
@@ -1002,9 +953,7 @@
           }
         ],
         "summary": "Mover categoria para lixeira",
-        "tags": [
-          "Categories"
-        ]
+        "tags": ["Categories"]
       }
     },
     "/categories/{id}/restore": {
@@ -1046,9 +995,7 @@
           }
         ],
         "summary": "Restaurar categoria da lixeira",
-        "tags": [
-          "Categories"
-        ]
+        "tags": ["Categories"]
       }
     },
     "/locations": {
@@ -1086,9 +1033,7 @@
           }
         ],
         "summary": "Criar localização",
-        "tags": [
-          "Locations"
-        ]
+        "tags": ["Locations"]
       },
       "get": {
         "description": "Retorna uma lista paginada de localizações disponíveis no sistema",
@@ -1162,9 +1107,7 @@
           }
         },
         "summary": "Buscar localizações",
-        "tags": [
-          "Locations"
-        ]
+        "tags": ["Locations"]
       }
     },
     "/locations/{id}": {
@@ -1216,9 +1159,7 @@
           }
         ],
         "summary": "Editar localização",
-        "tags": [
-          "Locations"
-        ]
+        "tags": ["Locations"]
       },
       "delete": {
         "description": "Deleta permanentemente uma localização do sistema (requer role MANAGER+)",
@@ -1258,9 +1199,7 @@
           }
         ],
         "summary": "Deletar localização",
-        "tags": [
-          "Locations"
-        ]
+        "tags": ["Locations"]
       }
     },
     "/locations/{id}/trash": {
@@ -1302,9 +1241,7 @@
           }
         ],
         "summary": "Mover localização para lixeira",
-        "tags": [
-          "Locations"
-        ]
+        "tags": ["Locations"]
       }
     },
     "/locations/{id}/restore": {
@@ -1346,9 +1283,7 @@
           }
         ],
         "summary": "Restaurar localização da lixeira",
-        "tags": [
-          "Locations"
-        ]
+        "tags": ["Locations"]
       }
     },
     "/problems/{id}": {
@@ -1397,9 +1332,7 @@
           }
         ],
         "summary": "Editar problema",
-        "tags": [
-          "Problems"
-        ]
+        "tags": ["Problems"]
       },
       "delete": {
         "description": "Deleta um problema do sistema. Apenas o criador do problema pode deletá-lo.",
@@ -1436,9 +1369,7 @@
           }
         ],
         "summary": "Deletar problema",
-        "tags": [
-          "Problems"
-        ]
+        "tags": ["Problems"]
       },
       "patch": {
         "description": "Atualiza status, tipo de manutenção e adiciona observações ao histórico do problema.",
@@ -1488,9 +1419,7 @@
           }
         ],
         "summary": "Gerenciar problema",
-        "tags": [
-          "Problems"
-        ]
+        "tags": ["Problems"]
       }
     },
     "/problems/{id}/trash": {
@@ -1529,9 +1458,7 @@
           }
         ],
         "summary": "Mover problema para lixeira",
-        "tags": [
-          "Problems"
-        ]
+        "tags": ["Problems"]
       }
     },
     "/problems/{id}/restore": {
@@ -1570,9 +1497,7 @@
           }
         ],
         "summary": "Restaurar problema da lixeira",
-        "tags": [
-          "Problems"
-        ]
+        "tags": ["Problems"]
       }
     },
     "/attachments": {
@@ -1631,9 +1556,7 @@
           }
         ],
         "summary": "Upload de imagem",
-        "tags": [
-          "Attachments"
-        ]
+        "tags": ["Attachments"]
       }
     },
     "/integrations/google-sheet/sync": {
@@ -1657,9 +1580,7 @@
                     "description": "Nome da aba (padrão: Formulário 1)"
                   }
                 },
-                "required": [
-                  "spreadsheetId"
-                ]
+                "required": ["spreadsheetId"]
               }
             }
           }
@@ -1702,9 +1623,7 @@
           }
         ],
         "summary": "Sincronizar problemas do Google Sheets",
-        "tags": [
-          "Integrations"
-        ]
+        "tags": ["Integrations"]
       }
     },
     "/dashboard/metrics": {
@@ -1726,9 +1645,7 @@
           }
         ],
         "summary": "Métricas do dashboard",
-        "tags": [
-          "Dashboard"
-        ]
+        "tags": ["Dashboard"]
       }
     },
     "/dashboard/report": {
@@ -1774,9 +1691,7 @@
           }
         ],
         "summary": "Dados para relatório em PDF",
-        "tags": [
-          "Dashboard"
-        ]
+        "tags": ["Dashboard"]
       }
     }
   },
@@ -1823,12 +1738,7 @@
             "minLength": 6
           }
         },
-        "required": [
-          "name",
-          "position",
-          "email",
-          "password"
-        ]
+        "required": ["name", "position", "email", "password"]
       },
       "AuthenticateRequest": {
         "type": "object",
@@ -1844,10 +1754,7 @@
             "example": "123456789"
           }
         },
-        "required": [
-          "email",
-          "password"
-        ]
+        "required": ["email", "password"]
       },
       "AuthenticateResponse": {
         "type": "object",
@@ -1858,9 +1765,7 @@
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
           }
         },
-        "required": [
-          "access_token"
-        ]
+        "required": ["access_token"]
       },
       "UserProfileResponse": {
         "type": "object",
@@ -1886,12 +1791,7 @@
             "example": "Técnico em Informática"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "email",
-          "position"
-        ]
+        "required": ["id", "name", "email", "position"]
       },
       "CreateProblemRequest": {
         "type": "object",
@@ -1918,21 +1818,14 @@
           },
           "attachmentIds": {
             "description": "IDs dos anexos (retornados pelo upload)",
-            "example": [
-              "123e4567-e89b-12d3-a456-426614174002"
-            ],
+            "example": ["123e4567-e89b-12d3-a456-426614174002"],
             "type": "array",
             "items": {
               "type": "string"
             }
           }
         },
-        "required": [
-          "title",
-          "description",
-          "categoryId",
-          "locationId"
-        ]
+        "required": ["title", "description", "categoryId", "locationId"]
       },
       "ProblemReporterResponse": {
         "type": "object",
@@ -1948,10 +1841,7 @@
             "example": "joao.silva@ifal.edu.br"
           }
         },
-        "required": [
-          "id",
-          "email"
-        ]
+        "required": ["id", "email"]
       },
       "AttachmentInfo": {
         "type": "object",
@@ -1972,11 +1862,7 @@
             "example": "https://i.ibb.co/xxxxx/foto-ar-condicionado.jpg"
           }
         },
-        "required": [
-          "id",
-          "title",
-          "url"
-        ]
+        "required": ["id", "title", "url"]
       },
       "ProblemWithDetailsResponse": {
         "type": "object",
@@ -2084,10 +1970,7 @@
             "nullable": true
           }
         },
-        "required": [
-          "id",
-          "name"
-        ]
+        "required": ["id", "name"]
       },
       "ProblemLocationSummaryResponse": {
         "type": "object",
@@ -2113,12 +1996,7 @@
             "example": "Sala de aula localizada no primeiro andar do Bloco A"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "code",
-          "description"
-        ]
+        "required": ["id", "name", "code", "description"]
       },
       "ProblemHistoryChangeResponse": {
         "type": "object",
@@ -2126,11 +2004,7 @@
           "field": {
             "type": "string",
             "description": "Campo alterado no registro de histórico",
-            "enum": [
-              "status",
-              "maintenanceType",
-              "note"
-            ],
+            "enum": ["status", "maintenanceType", "note"],
             "example": "status"
           },
           "oldValue": {
@@ -2146,9 +2020,7 @@
             "example": "IN_ANALYSIS"
           }
         },
-        "required": [
-          "field"
-        ]
+        "required": ["field"]
       },
       "ProblemHistoryEntryResponse": {
         "type": "object",
@@ -2200,13 +2072,7 @@
             "example": "2025-01-15T10:30:00Z"
           }
         },
-        "required": [
-          "id",
-          "action",
-          "userId",
-          "userName",
-          "createdAt"
-        ]
+        "required": ["id", "action", "userId", "userName", "createdAt"]
       },
       "ProblemResponse": {
         "type": "object",
@@ -2276,10 +2142,7 @@
           "maintenanceType": {
             "type": "string",
             "description": "Tipo de manutenção",
-            "enum": [
-              "PREVENTIVE",
-              "CORRECTIVE"
-            ],
+            "enum": ["PREVENTIVE", "CORRECTIVE"],
             "example": "CORRECTIVE",
             "nullable": true
           },
@@ -2343,10 +2206,7 @@
             "example": "Problemas relacionados a ar condicionado, ventilação e climatização"
           }
         },
-        "required": [
-          "name",
-          "description"
-        ]
+        "required": ["name", "description"]
       },
       "EditCategoryRequest": {
         "type": "object",
@@ -2387,11 +2247,7 @@
             "example": "BLA-201"
           }
         },
-        "required": [
-          "name",
-          "description",
-          "code"
-        ]
+        "required": ["name", "description", "code"]
       },
       "EditLocationRequest": {
         "type": "object",
@@ -2443,21 +2299,14 @@
           },
           "attachmentIds": {
             "description": "IDs dos anexos. Envie array vazio para remover todos os anexos.",
-            "example": [
-              "123e4567-e89b-12d3-a456-426614174002"
-            ],
+            "example": ["123e4567-e89b-12d3-a456-426614174002"],
             "type": "array",
             "items": {
               "type": "string"
             }
           }
         },
-        "required": [
-          "title",
-          "description",
-          "categoryId",
-          "locationId"
-        ]
+        "required": ["title", "description", "categoryId", "locationId"]
       },
       "ManageProblemRequest": {
         "type": "object",
@@ -2478,10 +2327,7 @@
           "maintenanceType": {
             "type": "string",
             "description": "Tipo de manutenção",
-            "enum": [
-              "PREVENTIVE",
-              "CORRECTIVE"
-            ],
+            "enum": ["PREVENTIVE", "CORRECTIVE"],
             "example": "CORRECTIVE"
           },
           "note": {

@@ -42,7 +42,7 @@ export default function Login() {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.push('/problems')
+      router.push('/')
     }
   }, [isAuthenticated, isLoading, router])
 
