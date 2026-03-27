@@ -15,8 +15,8 @@ import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { useState } from 'react'
 import type { CategoryResponse } from '@/lib/api/generated/models/categoryResponse'
 import {
+  invalidateTrashQueries,
   removeTrashDetailsFromCache,
-  removeTrashItemsFromCache,
 } from '../../trash-cache'
 
 interface ViewCategoryModalProps {
@@ -70,9 +70,7 @@ export function ViewCategoryModal({
       removeTrashDetailsFromCache(queryClient, [
         { id: category.id, itemType: 'category' },
       ])
-      removeTrashItemsFromCache(queryClient, [
-        { id: category.id, itemType: 'category' },
-      ])
+      await invalidateTrashQueries(queryClient)
       toast.success('Categoria restaurada com sucesso.')
       onSuccess()
       onClose()
@@ -116,9 +114,7 @@ export function ViewCategoryModal({
       removeTrashDetailsFromCache(queryClient, [
         { id: category.id, itemType: 'category' },
       ])
-      removeTrashItemsFromCache(queryClient, [
-        { id: category.id, itemType: 'category' },
-      ])
+      await invalidateTrashQueries(queryClient)
       toast.success('Categoria excluída permanentemente.')
       setShowDeleteConfirmationModal(false)
       onSuccess()

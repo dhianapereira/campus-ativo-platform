@@ -15,8 +15,8 @@ import { useAuthSession } from '@/contexts/auth-context'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { useState } from 'react'
 import {
+  invalidateTrashQueries,
   removeTrashDetailsFromCache,
-  removeTrashItemsFromCache,
 } from '../../trash-cache'
 
 interface ProblemData {
@@ -95,9 +95,7 @@ export function ViewProblemModal({
       removeTrashDetailsFromCache(queryClient, [
         { id: problem.id, itemType: 'problem' },
       ])
-      removeTrashItemsFromCache(queryClient, [
-        { id: problem.id, itemType: 'problem' },
-      ])
+      await invalidateTrashQueries(queryClient)
       toast.success('Problema restaurado com sucesso.')
       onSuccess()
       onClose()
@@ -155,9 +153,7 @@ export function ViewProblemModal({
       removeTrashDetailsFromCache(queryClient, [
         { id: problem.id, itemType: 'problem' },
       ])
-      removeTrashItemsFromCache(queryClient, [
-        { id: problem.id, itemType: 'problem' },
-      ])
+      await invalidateTrashQueries(queryClient)
       toast.success('Problema excluído permanentemente.')
       setShowDeleteConfirmationModal(false)
       onSuccess()

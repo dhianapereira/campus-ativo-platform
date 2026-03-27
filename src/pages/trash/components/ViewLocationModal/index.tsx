@@ -15,8 +15,8 @@ import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { useState } from 'react'
 import type { LocationResponse } from '@/lib/api/generated/models/locationResponse'
 import {
+  invalidateTrashQueries,
   removeTrashDetailsFromCache,
-  removeTrashItemsFromCache,
 } from '../../trash-cache'
 
 interface ViewLocationModalProps {
@@ -70,9 +70,7 @@ export function ViewLocationModal({
       removeTrashDetailsFromCache(queryClient, [
         { id: location.id, itemType: 'location' },
       ])
-      removeTrashItemsFromCache(queryClient, [
-        { id: location.id, itemType: 'location' },
-      ])
+      await invalidateTrashQueries(queryClient)
       toast.success('Localização restaurada com sucesso.')
       onSuccess()
       onClose()
@@ -116,9 +114,7 @@ export function ViewLocationModal({
       removeTrashDetailsFromCache(queryClient, [
         { id: location.id, itemType: 'location' },
       ])
-      removeTrashItemsFromCache(queryClient, [
-        { id: location.id, itemType: 'location' },
-      ])
+      await invalidateTrashQueries(queryClient)
       toast.success('Localização excluída permanentemente.')
       setShowDeleteConfirmationModal(false)
       onSuccess()

@@ -29,10 +29,7 @@ import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { CategoryResponse } from '../../../../lib/api/generated/models/categoryResponse'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
-import {
-  createTrashItemFromCategory,
-  upsertTrashItemsInCache,
-} from '@/pages/trash/trash-cache'
+import { invalidateTrashQueries } from '@/pages/trash/trash-cache'
 
 const categorySchema = z.object({
   name: z
@@ -189,9 +186,7 @@ function EditCategoryModalContent({
       return response.json()
     },
     onSuccess: async () => {
-      upsertTrashItemsInCache(queryClient, [
-        createTrashItemFromCategory(category),
-      ])
+      await invalidateTrashQueries(queryClient)
       await queryClient.invalidateQueries({
         queryKey: ['categories'],
         refetchType: 'all',

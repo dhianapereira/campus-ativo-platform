@@ -55,9 +55,9 @@ import { ViewCategoryModal } from './components/ViewCategoryModal'
 import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
 import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
 import {
+  invalidateTrashQueries,
   removeTrashDetailsFromCache,
   getTrashDetailQueryKey,
-  removeTrashItemsFromCache,
   TRASH_QUERY_KEY,
   type TrashItemType,
 } from './trash-cache'
@@ -256,7 +256,7 @@ export default function TrashPage() {
 
       await Promise.all(invalidations)
       removeTrashDetailsFromCache(queryClient, selectedTrashItems)
-      removeTrashItemsFromCache(queryClient, selectedTrashItems)
+      await invalidateTrashQueries(queryClient)
       setSelectedItems([])
       if (data?.failedCount) {
         toast.success(
@@ -297,12 +297,12 @@ export default function TrashPage() {
 
       return response.json()
     },
-    onSuccess: (data?: {
+    onSuccess: async (data?: {
       message?: string
       deletedCount?: number
       failedCount?: number
     }) => {
-      removeTrashItemsFromCache(queryClient, selectedTrashItems)
+      await invalidateTrashQueries(queryClient)
       setSelectedItems([])
       setShowDeleteConfirmation(false)
       if (data?.failedCount) {
@@ -362,6 +362,8 @@ export default function TrashPage() {
 
   const handleInputChange = (value: string) => {
     setSearchTerm(value)
+    setCurrentPage(1)
+    setSelectedItems([])
   }
 
   const handleFilterChange = (
@@ -377,6 +379,7 @@ export default function TrashPage() {
   ) => {
     setDateFilter(filter)
     setCurrentPage(1)
+    setSelectedItems([])
   }
 
   const handleSelectAll = (checked: boolean) => {
@@ -547,6 +550,7 @@ export default function TrashPage() {
   const handlePageChange = (page: number) => {
     if (totalPages === 0) return
     const next = Math.max(1, Math.min(page, totalPages))
+    setSelectedItems([])
     setCurrentPage(next)
   }
 

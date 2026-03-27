@@ -48,10 +48,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { PageContainer } from '@/pages/error-page.styles'
 import type { GetProblemBySlugControllerHandle200 } from '@/lib/api/generated/models/getProblemBySlugControllerHandle200'
-import {
-  createTrashItemFromProblem,
-  upsertTrashItemsInCache,
-} from '@/pages/trash/trash-cache'
+import { invalidateTrashQueries } from '@/pages/trash/trash-cache'
 import {
   getHistoryActionLabel,
   getMaintenanceTypeLabel,
@@ -324,24 +321,7 @@ export default function ProblemDetails() {
       }
     },
     onSuccess: async () => {
-      if (problem) {
-        upsertTrashItemsInCache(queryClient, [
-          createTrashItemFromProblem({
-            id: problem.id,
-            title: problem.title,
-            description: problem.description,
-            location: {
-              name: problem.location?.name ?? null,
-            },
-            reporter: {
-              id: problem.reporter?.id ?? null,
-            },
-            createdAt: problem.createdAt,
-            deletedAt: normalizeNullableString(problem.deletedAt),
-          }),
-        ])
-      }
-
+      await invalidateTrashQueries(queryClient)
       await queryClient.invalidateQueries({
         queryKey: ['problems'],
         refetchType: 'all',

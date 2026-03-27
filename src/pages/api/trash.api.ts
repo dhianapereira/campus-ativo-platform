@@ -17,7 +17,8 @@ import {
 import { getUserProfileControllerHandle } from '../../lib/api/generated/user-profile/user-profile'
 import { getRoleLevel } from '../../contexts/auth/role-mapping'
 
-const TRASH_PAGE_SIZE = 20
+const TRASH_SOURCE_PAGE_SIZE = 20
+const TRASH_ITEMS_PER_PAGE = 10
 type TrashItemType = 'location' | 'category' | 'problem'
 
 interface BulkTrashItemPayload {
@@ -138,7 +139,7 @@ async function fetchAllPages<T>(
 
     items.push(...currentPageItems)
 
-    if (currentPageItems.length < TRASH_PAGE_SIZE) {
+    if (currentPageItems.length < TRASH_SOURCE_PAGE_SIZE) {
       break
     }
 
@@ -180,6 +181,28 @@ function normalizeBulkItems(
   return ids
     .filter((id: unknown): id is string => typeof id === 'string')
     .map((id: string) => ({ id, type }))
+}
+
+function getPageFromQuery(page: NextApiRequest['query']['page']): number {
+  if (typeof page !== 'string') {
+    return 1
+  }
+
+  const parsedPage = Number.parseInt(page, 10)
+
+  if (!Number.isFinite(parsedPage) || parsedPage < 1) {
+    return 1
+  }
+
+  return parsedPage
+}
+
+function paginateItems<T>(items: T[], page: number): T[] {
+  const totalPages = Math.max(1, Math.ceil(items.length / TRASH_ITEMS_PER_PAGE))
+  const safePage = Math.min(page, totalPages)
+  const startIndex = (safePage - 1) * TRASH_ITEMS_PER_PAGE
+
+  return items.slice(startIndex, startIndex + TRASH_ITEMS_PER_PAGE)
 }
 
 async function executeTrashAction(
@@ -226,7 +249,7 @@ export default async function handler(
 
   if (req.method === 'GET') {
     try {
-      const { query, type, dateFilter } = req.query
+      const { query, type, dateFilter, page: pageParam } = req.query
 
       const searchQuery = query && typeof query === 'string' ? query : undefined
 
@@ -234,6 +257,7 @@ export default async function handler(
 
       const dateFilterValue =
         dateFilter && typeof dateFilter === 'string' ? dateFilter : undefined
+      const page = getPageFromQuery(pageParam)
 
       let currentUserId: string | null = null
       let roleLevel = 0
@@ -362,8 +386,8 @@ export default async function handler(
           }),
         ]
 
-        results.items = allItems
         results.total = allItems.length
+        results.items = paginateItems(allItems, page)
       } else if (itemType === 'location') {
         if (!canSeeLocationsAndCategories) {
           results.items = []
@@ -398,11 +422,14 @@ export default async function handler(
 
         const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
 
-        results.items = filteredItems.map((item) => ({
-          ...(item as Record<string, unknown>),
-          itemType: 'location',
-        }))
         results.total = filteredItems.length
+        results.items = paginateItems(
+          filteredItems.map((item) => ({
+            ...(item as Record<string, unknown>),
+            itemType: 'location',
+          })),
+          page,
+        )
         results.type = 'location'
       } else if (itemType === 'category') {
         if (!canSeeLocationsAndCategories) {
@@ -438,11 +465,14 @@ export default async function handler(
 
         const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
 
-        results.items = filteredItems.map((item) => ({
-          ...(item as Record<string, unknown>),
-          itemType: 'category',
-        }))
         results.total = filteredItems.length
+        results.items = paginateItems(
+          filteredItems.map((item) => ({
+            ...(item as Record<string, unknown>),
+            itemType: 'category',
+          })),
+          page,
+        )
         results.type = 'category'
       } else if (itemType === 'problem') {
         const data = await fetchAllPages(async (page) => {
@@ -473,20 +503,23 @@ export default async function handler(
           dateFilterValue,
         )
 
-        results.items = filteredItems.map((item) => {
-          const prob = item as Record<string, unknown> & {
-            location?: { name?: string }
-          }
-
-          return {
-            ...prob,
-            itemType: 'problem',
-            name: prob.title,
-            local: prob.location?.name ?? prob.locationName,
-            description: prob.excerpt || prob.description,
-          }
-        })
         results.total = filteredItems.length
+        results.items = paginateItems(
+          filteredItems.map((item) => {
+            const prob = item as Record<string, unknown> & {
+              location?: { name?: string }
+            }
+
+            return {
+              ...prob,
+              itemType: 'problem',
+              name: prob.title,
+              local: prob.location?.name ?? prob.locationName,
+              description: prob.excerpt || prob.description,
+            }
+          }),
+          page,
+        )
         results.type = 'problem'
       }
 

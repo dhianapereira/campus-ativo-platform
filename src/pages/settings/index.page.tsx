@@ -51,11 +51,7 @@ import type { LocationResponse } from '../../lib/api/generated/models/locationRe
 import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { LoadErrorState } from '@/components'
-import {
-  createTrashItemFromCategory,
-  createTrashItemFromLocation,
-  upsertTrashItemsInCache,
-} from '@/pages/trash/trash-cache'
+import { invalidateTrashQueries } from '@/pages/trash/trash-cache'
 
 type LocationItem = LocationResponse
 type CategoryItem = CategoryResponse
@@ -178,13 +174,6 @@ export default function SettingsPage() {
     [categoriesData],
   )
 
-  const selectedLocationItems = filteredLocations.filter(
-    (item) => item.id && selectedItems.includes(item.id),
-  )
-  const selectedCategoryItems = filteredCategories.filter(
-    (item) => item.id && selectedItems.includes(item.id),
-  )
-
   const deleteLocationsMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const response = await fetch('/api/locations/delete', {
@@ -203,11 +192,8 @@ export default function SettingsPage() {
 
       return response.json()
     },
-    onSuccess: (data) => {
-      upsertTrashItemsInCache(
-        queryClient,
-        selectedLocationItems.map((item) => createTrashItemFromLocation(item)),
-      )
+    onSuccess: async (data) => {
+      await invalidateTrashQueries(queryClient)
       queryClient.invalidateQueries({ queryKey: ['locations'] })
       setSelectedItems([])
       setShowDeleteConfirmation(false)
@@ -238,11 +224,8 @@ export default function SettingsPage() {
 
       return response.json()
     },
-    onSuccess: (data) => {
-      upsertTrashItemsInCache(
-        queryClient,
-        selectedCategoryItems.map((item) => createTrashItemFromCategory(item)),
-      )
+    onSuccess: async (data) => {
+      await invalidateTrashQueries(queryClient)
       queryClient.invalidateQueries({ queryKey: ['categories'] })
       setSelectedItems([])
       setShowDeleteConfirmation(false)

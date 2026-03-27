@@ -29,10 +29,7 @@ import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { LocationResponse } from '../../../../lib/api/generated/models/locationResponse'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
-import {
-  createTrashItemFromLocation,
-  upsertTrashItemsInCache,
-} from '@/pages/trash/trash-cache'
+import { invalidateTrashQueries } from '@/pages/trash/trash-cache'
 
 const locationSchema = z.object({
   name: z
@@ -196,9 +193,7 @@ function EditLocationModalContent({
       return response.json()
     },
     onSuccess: async () => {
-      upsertTrashItemsInCache(queryClient, [
-        createTrashItemFromLocation(location),
-      ])
+      await invalidateTrashQueries(queryClient)
       await queryClient.invalidateQueries({
         queryKey: ['locations'],
         refetchType: 'all',
