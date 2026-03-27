@@ -23,7 +23,6 @@ import { actionsFormSchema, ActionsFormData } from '@/validators/actions-form'
 import { problemStatusOptions } from '@/constants/problems/status'
 import { maintenanceTypeOptions } from '@/constants/problems/maintenance-types'
 import { useQueryClient } from '@tanstack/react-query'
-import type { FetchProblemsControllerHandle200 } from '@/lib/api/generated/models'
 import { toast } from 'sonner'
 import {
   toBackendMaintenanceType,
@@ -104,32 +103,11 @@ export function Actions({
     })
     await queryClient.invalidateQueries({
       queryKey: ['problems'],
+      refetchType: 'all',
     })
     await queryClient.invalidateQueries({
       queryKey: ['dashboard'],
     })
-
-    queryClient.setQueriesData<FetchProblemsControllerHandle200>(
-      { queryKey: ['problems'] },
-      (currentData) => {
-        if (!currentData?.problems) {
-          return currentData
-        }
-
-        return {
-          ...currentData,
-          problems: currentData.problems.map((problem) =>
-            problem.id === problemId
-              ? {
-                  ...problem,
-                  status: (nextBackendStatus ??
-                    problem.status) as typeof problem.status,
-                }
-              : problem,
-          ),
-        }
-      },
-    )
 
     reset(
       {
