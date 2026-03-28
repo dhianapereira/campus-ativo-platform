@@ -9,8 +9,6 @@ import {
 import {
   MainContainer,
   HeaderContainer,
-  TabsContainer,
-  Tab,
   PageTitle,
   SearchActionsContainer,
   SearchAndFiltersRow,
@@ -30,36 +28,35 @@ import {
   TableCell,
   Checkbox,
   MobileCardsWrapper,
-  CategoryCard,
+  LocationCard,
   CardTitle,
+  CardInfo,
   CardDescription,
   PaginationContainer,
   PaginationButton,
   PaginationDots,
-} from './styles'
+} from '../settings/styles'
 import { useAuthPermissions } from '@/contexts/auth-context'
 import PlatformLayout from '@/layouts/platform/layout'
 import { RoleProtectedRoute } from '@/guards/RoleProtectedRoute'
-import { AddCategoryModal } from './components/AddCategoryModal'
-import { EditCategoryModal } from './components/EditCategoryModal'
-import { ImportCsvPanel } from '@/pages/problems/components/ImportCsvModal'
+import { AddLocationModal } from '@/pages/settings/components/AddLocationModal'
+import { EditLocationModal } from '@/pages/settings/components/EditLocationModal'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import type { CategoryResponse } from '../../lib/api/generated/models/categoryResponse'
+import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { LoadErrorState } from '@/components'
 import { invalidateTrashQueries } from '@/pages/trash/trash-cache'
 
-type CategoryItem = CategoryResponse
-type SettingsTab = 'categoria' | 'importacao'
-type SettingsListResponse<T> = {
+type LocationItem = LocationResponse
+type LocationsListResponse<T> = {
   page: number
   pageSize: number
   total: number
-  categories?: T[]
+  locations?: T[]
 }
 
-const SETTINGS_ITEMS_PER_PAGE = 10
+const ITEMS_PER_PAGE = 10
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)
@@ -77,37 +74,36 @@ function useDebounce<T>(value: T, delay: number): T {
   return debouncedValue
 }
 
-export default function SettingsPage() {
+export default function LocationsPage() {
   const queryClient = useQueryClient()
-  const { canAccessSettings } = useAuthPermissions()
-  const [activeTab, setActiveTab] = useState<SettingsTab>('categoria')
+  const { canAccessLocations } = useAuthPermissions()
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<
     'all' | 'active' | 'inactive'
   >('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedItems, setSelectedItems] = useState<string[]>([])
-  const [isAddCategoryModalOpen, setIsAddCategoryModalOpen] = useState(false)
-  const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false)
-  const [selectedCategoryForEdit, setSelectedCategoryForEdit] =
-    useState<CategoryItem | null>(null)
+  const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false)
+  const [isEditLocationModalOpen, setIsEditLocationModalOpen] = useState(false)
+  const [selectedLocationForEdit, setSelectedLocationForEdit] =
+    useState<LocationItem | null>(null)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
 
   const {
-    data: categoriesData,
-    isLoading: categoriesLoading,
-    error: categoriesError,
-    refetch: refetchCategories,
-    isRefetching: isRefetchingCategories,
-  } = useQuery<SettingsListResponse<CategoryResponse>>({
-    queryKey: ['categories', debouncedSearchTerm, statusFilter, currentPage],
+    data: locationsData,
+    isLoading,
+    error,
+    refetch,
+    isRefetching,
+  } = useQuery<LocationsListResponse<LocationResponse>>({
+    queryKey: ['locations', debouncedSearchTerm, statusFilter, currentPage],
     queryFn: async () => {
       const params = new URLSearchParams()
 
       params.append('page', currentPage.toString())
-      params.append('pageSize', SETTINGS_ITEMS_PER_PAGE.toString())
+      params.append('pageSize', ITEMS_PER_PAGE.toString())
 
       if (debouncedSearchTerm) {
         params.append('query', debouncedSearchTerm)
@@ -117,31 +113,30 @@ export default function SettingsPage() {
         params.append('isActive', statusFilter === 'active' ? 'true' : 'false')
       }
 
-      const url = `/api/categories${params.toString() ? `?${params.toString()}` : ''}`
+      const url = `/api/locations${params.toString() ? `?${params.toString()}` : ''}`
       const response = await fetch(url, {
         credentials: 'include',
       })
 
       if (!response.ok) {
-        throw new Error('Falha ao buscar categorias.')
+        throw new Error('Falha ao buscar localizações.')
       }
 
-      return response.json() as Promise<SettingsListResponse<CategoryResponse>>
+      return response.json() as Promise<LocationsListResponse<LocationResponse>>
     },
     retry: false,
-    enabled: activeTab === 'categoria',
     placeholderData: (previousData) => previousData,
     staleTime: 30000,
   })
 
-  const filteredCategories = useMemo(
-    () => (categoriesData?.categories || []).filter((item) => item.id),
-    [categoriesData],
+  const filteredLocations = useMemo(
+    () => (locationsData?.locations || []).filter((item) => item.id),
+    [locationsData],
   )
 
-  const deleteCategoriesMutation = useMutation({
+  const deleteLocationsMutation = useMutation({
     mutationFn: async (ids: string[]) => {
-      const response = await fetch('/api/categories/delete', {
+      const response = await fetch('/api/locations/delete', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -151,7 +146,7 @@ export default function SettingsPage() {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         throw new Error(
-          errorData.message || 'Falha ao mover categorias para a lixeira.',
+          errorData.message || 'Falha ao mover localizações para a lixeira.',
         )
       }
 
@@ -159,33 +154,22 @@ export default function SettingsPage() {
     },
     onSuccess: async (data) => {
       await invalidateTrashQueries(queryClient)
-      queryClient.invalidateQueries({ queryKey: ['categories'] })
+      queryClient.invalidateQueries({ queryKey: ['locations'] })
       setSelectedItems([])
       setShowDeleteConfirmation(false)
-      toast.success(data.message || 'Categorias movidas para a lixeira.')
+      toast.success(data.message || 'Localizações movidas para a lixeira.')
     },
     onError: (error: Error) => {
-      toast.error(error.message || 'Falha ao mover categorias para a lixeira.')
+      toast.error(
+        error.message || 'Falha ao mover localizações para a lixeira.',
+      )
     },
   })
 
-  const currentItems = filteredCategories
-  const isLoading = activeTab === 'categoria' ? categoriesLoading : false
-  const error = activeTab === 'categoria' ? categoriesError : null
-  const refetch = refetchCategories
-  const isRefetching = isRefetchingCategories
-  const totalItems = categoriesData?.total ?? 0
-  const totalPages = Math.ceil(totalItems / SETTINGS_ITEMS_PER_PAGE)
+  const totalItems = locationsData?.total ?? 0
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
   const effectiveCurrentPage =
     totalPages > 0 ? Math.min(currentPage, totalPages) : 1
-
-  const handleTabChange = (tab: SettingsTab) => {
-    setActiveTab(tab)
-    setSearchTerm('')
-    setStatusFilter('all')
-    setCurrentPage(1)
-    setSelectedItems([])
-  }
 
   const handleSearch = () => {
     setCurrentPage(1)
@@ -203,7 +187,7 @@ export default function SettingsPage() {
   }
 
   const handleSelectAll = () => {
-    const currentItemIds = currentItems
+    const currentItemIds = filteredLocations
       .map((item) => item.id)
       .filter((id): id is string => id !== undefined)
 
@@ -224,8 +208,8 @@ export default function SettingsPage() {
   }
 
   const isAllCurrentSelected =
-    currentItems.length > 0 &&
-    currentItems.every((item) =>
+    filteredLocations.length > 0 &&
+    filteredLocations.every((item) =>
       item.id ? selectedItems.includes(item.id) : false,
     )
 
@@ -238,19 +222,19 @@ export default function SettingsPage() {
     setShowDeleteConfirmation(true)
   }
 
-  const handleEditCategory = (category: CategoryItem) => {
-    setSelectedCategoryForEdit(category)
-    setIsEditCategoryModalOpen(true)
+  const handleEditLocation = (location: LocationItem) => {
+    setSelectedLocationForEdit(location)
+    setIsEditLocationModalOpen(true)
   }
 
-  const handleEditCategorySuccess = () => {
-    setIsEditCategoryModalOpen(false)
-    setSelectedCategoryForEdit(null)
+  const handleEditLocationSuccess = () => {
+    setIsEditLocationModalOpen(false)
+    setSelectedLocationForEdit(null)
   }
 
-  const handleEditCategoryClose = () => {
-    setIsEditCategoryModalOpen(false)
-    setSelectedCategoryForEdit(null)
+  const handleEditLocationClose = () => {
+    setIsEditLocationModalOpen(false)
+    setSelectedLocationForEdit(null)
   }
 
   const handlePageChange = (page: number) => {
@@ -327,7 +311,7 @@ export default function SettingsPage() {
 
   if (isLoading) {
     return (
-      <RoleProtectedRoute canAccess={canAccessSettings()}>
+      <RoleProtectedRoute canAccess={canAccessLocations()}>
         <PlatformLayout>
           <MainContainer>
             <div style={{ padding: '2rem', textAlign: 'center' }}>
@@ -341,40 +325,21 @@ export default function SettingsPage() {
 
   if (error) {
     return (
-      <RoleProtectedRoute canAccess={canAccessSettings()}>
+      <RoleProtectedRoute canAccess={canAccessLocations()}>
         <PlatformLayout>
           <MainContainer>
             <HeaderContainer>
-              <TabsContainer>
-                <Tab
-                  isActive={activeTab === 'categoria'}
-                  onClick={() => handleTabChange('categoria')}
-                >
-                  Categoria
-                </Tab>
-                <Tab
-                  isActive={activeTab === 'importacao'}
-                  onClick={() => handleTabChange('importacao')}
-                >
-                  Importação
-                </Tab>
-              </TabsContainer>
+              <PageTitle>Localização</PageTitle>
             </HeaderContainer>
 
-            <PageTitle>
-              {activeTab === 'categoria'
-                ? 'Categoria'
-                : 'Importar problemas por CSV'}
-            </PageTitle>
-
             <LoadErrorState
-              badge="Categorias indisponíveis"
-              title="Não conseguimos carregar as categorias agora"
-              description="As categorias não puderam ser buscadas neste momento. Isso normalmente acontece quando o servidor está temporariamente indisponível."
+              badge="Localizações indisponíveis"
+              title="Não conseguimos carregar as localizações agora"
+              description="As localizações não puderam ser buscadas neste momento. Isso normalmente acontece quando o servidor está temporariamente indisponível."
               onRetry={() => refetch()}
               isRetrying={isRefetching}
               tips={[
-                'Assim que a conexão voltar, você poderá retomar a gestão sem precisar reconfigurar a aba atual.',
+                'Assim que a conexão voltar, você poderá retomar a gestão sem precisar reconfigurar os filtros atuais.',
                 'Se o servidor acabou de reiniciar, aguarde alguns segundos antes de tentar de novo.',
               ]}
             />
@@ -385,112 +350,89 @@ export default function SettingsPage() {
   }
 
   return (
-    <RoleProtectedRoute canAccess={canAccessSettings()}>
+    <RoleProtectedRoute canAccess={canAccessLocations()}>
       <PlatformLayout>
         <MainContainer>
           <HeaderContainer>
-            <TabsContainer>
-              <Tab
-                isActive={activeTab === 'categoria'}
-                onClick={() => handleTabChange('categoria')}
-              >
-                Categoria
-              </Tab>
-              <Tab
-                isActive={activeTab === 'importacao'}
-                onClick={() => handleTabChange('importacao')}
-              >
-                Importação
-              </Tab>
-            </TabsContainer>
+            <PageTitle>Localização</PageTitle>
           </HeaderContainer>
 
-          <PageTitle>
-            {activeTab === 'categoria'
-              ? 'Categoria'
-              : 'Importar problemas por CSV'}
-          </PageTitle>
-
-          {activeTab === 'importacao' ? (
-            <ImportCsvPanel />
-          ) : (
-            <SearchActionsContainer>
-              <SearchAndFiltersRow>
-                <SearchContainer>
-                  <SearchInputContainer>
-                    <SearchIcon>
-                      <MagnifyingGlass size={20} weight="regular" />
-                    </SearchIcon>
-                    <SearchInput
-                      type="text"
-                      placeholder="Busque pelo nome ou descrição..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                    />
-                  </SearchInputContainer>
-                  <ActionButton
-                    variant="mobile-add"
-                    onClick={() => setIsAddCategoryModalOpen(true)}
-                  >
-                    <Plus size={16} />
-                  </ActionButton>
-                </SearchContainer>
-
-                <ActionsContainer>
-                  <ActionButton
-                    variant="delete"
-                    onClick={handleDeleteSelected}
-                    disabled={selectedItems.length === 0}
-                  >
-                    <Trash size={20} weight="bold" />
-                    <span>Mover para lixeira</span>
-                  </ActionButton>
-                  <ActionButton
-                    variant="add"
-                    onClick={() => setIsAddCategoryModalOpen(true)}
-                  >
-                    <Plus size={16} />
-                    Adicionar Categoria
-                  </ActionButton>
-                </ActionsContainer>
-              </SearchAndFiltersRow>
-
-              <FiltersContainer>
-                <FilterButton
-                  isActive={statusFilter === 'all'}
-                  onClick={() => handleStatusFilterChange('all')}
+          <SearchActionsContainer>
+            <SearchAndFiltersRow>
+              <SearchContainer>
+                <SearchInputContainer>
+                  <SearchIcon>
+                    <MagnifyingGlass size={20} weight="regular" />
+                  </SearchIcon>
+                  <SearchInput
+                    type="text"
+                    placeholder="Busque por nome, número ou descrição..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                  />
+                </SearchInputContainer>
+                <ActionButton
+                  variant="mobile-add"
+                  onClick={() => setIsAddLocationModalOpen(true)}
                 >
-                  Todos
-                </FilterButton>
-                <FilterButton
-                  isActive={statusFilter === 'active'}
-                  onClick={() => handleStatusFilterChange('active')}
-                >
-                  Ativos
-                </FilterButton>
-                <FilterButton
-                  isActive={statusFilter === 'inactive'}
-                  onClick={() => handleStatusFilterChange('inactive')}
-                >
-                  Inativos
-                </FilterButton>
-              </FiltersContainer>
-            </SearchActionsContainer>
-          )}
+                  <Plus size={16} />
+                </ActionButton>
+              </SearchContainer>
 
-          {activeTab === 'categoria' && currentItems.length === 0 && (
+              <ActionsContainer>
+                <ActionButton
+                  variant="delete"
+                  onClick={handleDeleteSelected}
+                  disabled={selectedItems.length === 0}
+                >
+                  <Trash size={20} weight="bold" />
+                  <span>Mover para lixeira</span>
+                </ActionButton>
+                <ActionButton
+                  variant="add"
+                  onClick={() => setIsAddLocationModalOpen(true)}
+                >
+                  <Plus size={16} />
+                  Adicionar Localização
+                </ActionButton>
+              </ActionsContainer>
+            </SearchAndFiltersRow>
+
+            <FiltersContainer>
+              <FilterButton
+                isActive={statusFilter === 'all'}
+                onClick={() => handleStatusFilterChange('all')}
+              >
+                Todos
+              </FilterButton>
+              <FilterButton
+                isActive={statusFilter === 'active'}
+                onClick={() => handleStatusFilterChange('active')}
+              >
+                Ativos
+              </FilterButton>
+              <FilterButton
+                isActive={statusFilter === 'inactive'}
+                onClick={() => handleStatusFilterChange('inactive')}
+              >
+                Inativos
+              </FilterButton>
+            </FiltersContainer>
+          </SearchActionsContainer>
+
+          {filteredLocations.length === 0 && (
             <div style={{ padding: '2rem', textAlign: 'center' }}>
               <p>Nenhum resultado encontrado</p>
               <p style={{ color: '#666', fontSize: '0.9em' }}>
                 {searchTerm
                   ? 'Tente ajustar sua busca e tente novamente.'
-                  : 'Não há categorias cadastradas ainda.'}
+                  : 'Não há localizações cadastradas ainda.'}
               </p>
             </div>
           )}
 
-          {activeTab === 'categoria' && currentItems.length > 0 && (
+          {filteredLocations.length > 0 && (
             <DesktopTableWrapper>
               <TableWrapper>
                 <Table>
@@ -504,11 +446,12 @@ export default function SettingsPage() {
                         />
                       </TableHeader>
                       <TableHeader>Nome</TableHeader>
+                      <TableHeader>Número</TableHeader>
                       <TableHeader>Descrição</TableHeader>
                     </TableRow>
                   </thead>
                   <tbody>
-                    {currentItems.map((item) => {
+                    {filteredLocations.map((item) => {
                       if (!item.id) return null
 
                       return (
@@ -516,7 +459,7 @@ export default function SettingsPage() {
                           key={item.id}
                           isHeader={false}
                           style={{ cursor: 'pointer' }}
-                          onClick={() => handleEditCategory(item)}
+                          onClick={() => handleEditLocation(item)}
                         >
                           <TableCell onClick={(e) => e.stopPropagation()}>
                             <Checkbox
@@ -526,6 +469,7 @@ export default function SettingsPage() {
                             />
                           </TableCell>
                           <TableCell>{item.name}</TableCell>
+                          <TableCell>{item.code}</TableCell>
                           <TableCell>{item.description}</TableCell>
                         </TableRow>
                       )
@@ -536,58 +480,61 @@ export default function SettingsPage() {
             </DesktopTableWrapper>
           )}
 
-          {activeTab === 'categoria' && currentItems.length > 0 && (
+          {filteredLocations.length > 0 && (
             <MobileCardsWrapper>
-              {currentItems.map((item) => {
+              {filteredLocations.map((item) => {
                 if (!item.id) return null
 
                 return (
                   <div key={item.id}>
-                    <CategoryCard
+                    <LocationCard
                       style={{ cursor: 'pointer' }}
-                      onClick={() => handleEditCategory(item)}
+                      onClick={() => handleEditLocation(item)}
                     >
                       <div>
                         <CardTitle>
                           <strong>Nome:</strong> {item.name}
                         </CardTitle>
+                        <CardInfo>
+                          <strong>Número:</strong> {item.code}
+                        </CardInfo>
                         <CardDescription>
                           <strong>Descrição</strong>
                           <br />
                           {item.description}
                         </CardDescription>
                       </div>
-                    </CategoryCard>
+                    </LocationCard>
                   </div>
                 )
               })}
             </MobileCardsWrapper>
           )}
 
-          {activeTab === 'categoria' && totalPages > 1 && (
+          {totalPages > 1 && (
             <PaginationContainer>
               {renderPaginationButtons()}
             </PaginationContainer>
           )}
 
-          <AddCategoryModal
-            isOpen={isAddCategoryModalOpen}
-            onClose={() => setIsAddCategoryModalOpen(false)}
-            onSuccess={() => setIsAddCategoryModalOpen(false)}
+          <AddLocationModal
+            isOpen={isAddLocationModalOpen}
+            onClose={() => setIsAddLocationModalOpen(false)}
+            onSuccess={() => setIsAddLocationModalOpen(false)}
           />
 
-          <EditCategoryModal
-            isOpen={isEditCategoryModalOpen}
-            onClose={handleEditCategoryClose}
-            onSuccess={handleEditCategorySuccess}
-            category={selectedCategoryForEdit}
+          <EditLocationModal
+            isOpen={isEditLocationModalOpen}
+            onClose={handleEditLocationClose}
+            onSuccess={handleEditLocationSuccess}
+            location={selectedLocationForEdit}
           />
 
           <ConfirmationModal
             isOpen={showDeleteConfirmation}
             onClose={() => setShowDeleteConfirmation(false)}
-            onConfirm={() => deleteCategoriesMutation.mutate(selectedItems)}
-            title="Mover categorias para a lixeira?"
+            onConfirm={() => deleteLocationsMutation.mutate(selectedItems)}
+            title="Mover localizações para a lixeira?"
             message={`${selectedItems.length} ${selectedItems.length === 1 ? 'item será movido' : 'itens serão movidos'} para a lixeira. Você poderá restaurá-${selectedItems.length === 1 ? 'lo' : 'los'} posteriormente.`}
             confirmText="Mover para lixeira"
             cancelText="Cancelar"

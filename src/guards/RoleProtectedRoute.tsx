@@ -8,6 +8,7 @@ interface RoleProtectedRouteProps {
   children: ReactNode
   requiredRole?: string
   requiredLevel?: number
+  canAccess?: boolean
   fallbackPath?: string
 }
 
@@ -15,6 +16,7 @@ export function RoleProtectedRoute({
   children,
   requiredRole,
   requiredLevel,
+  canAccess = true,
   fallbackPath = '/problems',
 }: RoleProtectedRouteProps) {
   const {
@@ -37,6 +39,7 @@ export function RoleProtectedRoute({
   })
 
   const hasPermission =
+    canAccess &&
     (!requiredRole || hasRole(requiredRole)) &&
     (!requiredLevel || hasRoleLevel(requiredLevel))
 

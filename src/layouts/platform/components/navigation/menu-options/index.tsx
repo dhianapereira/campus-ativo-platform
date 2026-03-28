@@ -6,6 +6,7 @@ import {
   Users,
   Gear,
   Trash,
+  MapPin,
 } from 'phosphor-react'
 import { NextRouter } from 'next/router'
 import { IOption } from './index.d'
@@ -17,6 +18,7 @@ interface MenuOptionsConfig {
   openLogoutModal?: () => void
   onRetryProfile?: () => void
   canAccessUserManagement?: boolean
+  canAccessLocations?: boolean
   canAccessSettings?: boolean
   canAccessTrash?: boolean
 }
@@ -28,6 +30,7 @@ export const createMenuOptions = ({
   openLogoutModal,
   onRetryProfile,
   canAccessUserManagement = false,
+  canAccessLocations = false,
   canAccessSettings = false,
   canAccessTrash = false,
 }: MenuOptionsConfig): IOption[] => {
@@ -51,6 +54,18 @@ export const createMenuOptions = ({
       },
     },
   ]
+
+  if (canAccessLocations) {
+    options.push({
+      id: 'locations',
+      name: 'Localizações',
+      icon: <MapPin weight="bold" />,
+      onClick: () => {
+        router.push('/locations')
+        onClose?.()
+      },
+    })
+  }
 
   if (canAccessUserManagement) {
     options.push({
@@ -120,6 +135,7 @@ export const createMenuOptions = ({
 export const MENU_OPTION_PATHS: Record<string, string> = {
   dashboard: '/',
   problems: '/problems',
+  locations: '/locations',
   members: '/members',
   settings: '/settings',
   trash: '/trash',
