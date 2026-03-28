@@ -2,7 +2,7 @@ import { MainContainer, HeaderContainer, PageTitle } from './styles'
 import { useAuthPermissions } from '@/contexts/auth-context'
 import PlatformLayout from '@/layouts/platform/layout'
 import { RoleProtectedRoute } from '@/guards/RoleProtectedRoute'
-import { ImportCsvPanel } from '@/pages/problems/components/ImportCsvModal'
+import { Text } from '@/components'
 
 export default function SettingsPage() {
   const { canAccessSettings } = useAuthPermissions()
@@ -12,10 +12,12 @@ export default function SettingsPage() {
       <PlatformLayout>
         <MainContainer>
           <HeaderContainer>
-            <PageTitle>Importação</PageTitle>
+            <PageTitle>Configurações</PageTitle>
           </HeaderContainer>
 
-          <ImportCsvPanel />
+          <Text css={{ color: '$textSecondary' }}>
+            A importação via CSV foi movida para Problemas / Importar CSV.
+          </Text>
         </MainContainer>
       </PlatformLayout>
     </RoleProtectedRoute>

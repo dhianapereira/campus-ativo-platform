@@ -28,22 +28,25 @@ import {
 } from '@/constants/problems/status'
 import { toBackendStatus } from './problem-mapping'
 import { useQuery } from '@tanstack/react-query'
-import { ArrowLeft, ArrowRight } from 'phosphor-react'
+import { ArrowLeft, ArrowRight, UploadSimple } from 'phosphor-react'
 import NoProblemSvg from '@/assets/no-problem.svg'
 import Image from 'next/image'
 import type {
   FetchProblemsControllerHandle200,
   ProblemWithDetailsResponse,
 } from '@/lib/api/generated/models'
+import { useAuthPermissions } from '@/contexts/auth-context'
 
 const PROBLEMS_ITEMS_PER_PAGE = 9
 
 export default function Problems() {
   const router = useRouter()
+  const { hasRoleLevel } = useAuthPermissions()
   const [searchValue, setSearchValue] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [isFilterDialogOpen, setIsFilterDialogOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([])
+  const canImportCsv = hasRoleLevel(2)
 
   const activeBackendStatuses = useMemo(
     () =>
@@ -242,6 +245,19 @@ export default function Problems() {
               <FilterGroup>
                 <FilterButton onClick={openFilterDialog} />
               </FilterGroup>
+
+              {canImportCsv && (
+                <AddButton
+                  type="button"
+                  onClick={() => router.push('/problems/import-csv')}
+                  variant="secondary"
+                  aria-label="Importar problemas via CSV"
+                  tabIndex={0}
+                >
+                  <UploadSimple size={16} weight="bold" />
+                  Importar CSV
+                </AddButton>
+              )}
 
               <AddButton
                 type="button"

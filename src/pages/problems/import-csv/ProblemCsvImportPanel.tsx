@@ -207,7 +207,7 @@ function resolvePreviewRows(
   })
 }
 
-export function ImportCsvPanel() {
+export function ProblemCsvImportPanel() {
   const queryClient = useQueryClient()
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [selectedFileName, setSelectedFileName] = useState('')
@@ -255,17 +255,18 @@ export function ImportCsvPanel() {
     staleTime: 60000,
   })
 
-  const categories = categoriesData?.categories ?? []
-  const locations = locationsData?.locations ?? []
   const isReferenceDataLoading = isLoadingCategories || isLoadingLocations
 
-  const previewRows = useMemo(
-    () =>
-      parsedRows.length === 0 || isReferenceDataLoading
-        ? []
-        : resolvePreviewRows(parsedRows, categories, locations),
-    [parsedRows, isReferenceDataLoading, categories, locations],
-  )
+  const previewRows = useMemo(() => {
+    if (parsedRows.length === 0 || isReferenceDataLoading) {
+      return []
+    }
+
+    const categories = categoriesData?.categories ?? []
+    const locations = locationsData?.locations ?? []
+
+    return resolvePreviewRows(parsedRows, categories, locations)
+  }, [parsedRows, isReferenceDataLoading, categoriesData, locationsData])
 
   const previewCounts = useMemo(
     () => ({
