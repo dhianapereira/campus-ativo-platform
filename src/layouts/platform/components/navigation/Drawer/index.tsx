@@ -24,6 +24,7 @@ export default function Drawer({
   const {
     canAccessUserManagement,
     canAccessLocations,
+    canAccessCategories,
     canAccessSettings,
     canAccessTrash,
   } = useAuthPermissions()
@@ -36,6 +37,7 @@ export default function Drawer({
     onRetryProfile,
     canAccessUserManagement: canAccessUserManagement(),
     canAccessLocations: canAccessLocations(),
+    canAccessCategories: canAccessCategories(),
     canAccessSettings: canAccessSettings(),
     canAccessTrash: canAccessTrash(),
   })

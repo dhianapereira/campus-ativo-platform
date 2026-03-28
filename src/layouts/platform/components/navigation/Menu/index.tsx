@@ -25,6 +25,7 @@ export default function Menu({ onLogoutClick }: MenuProps) {
   const {
     canAccessUserManagement,
     canAccessLocations,
+    canAccessCategories,
     canAccessSettings,
     canAccessTrash,
   } = useAuthPermissions()
@@ -35,6 +36,7 @@ export default function Menu({ onLogoutClick }: MenuProps) {
     openLogoutModal: () => setIsLogoutModalOpen(true),
     canAccessUserManagement: canAccessUserManagement(),
     canAccessLocations: canAccessLocations(),
+    canAccessCategories: canAccessCategories(),
     canAccessSettings: canAccessSettings(),
     canAccessTrash: canAccessTrash(),
   })
@@ -96,7 +98,7 @@ export default function Menu({ onLogoutClick }: MenuProps) {
             <LogoutButton
               type="button"
               onClick={logoutOption.onClick}
-              aria-label="Sair do sistema"
+              aria-label="Sair da plataforma"
             >
               {logoutOption.icon}
               {logoutOption.name}
