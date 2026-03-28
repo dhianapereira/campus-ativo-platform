@@ -20,7 +20,6 @@ function shouldUsePlatformLayout(pathname: string) {
     pathname.startsWith('/categories') ||
     pathname === '/problems' ||
     pathname.startsWith('/profile') ||
-    pathname.startsWith('/settings') ||
     pathname.startsWith('/trash') ||
     pathname.startsWith('/unauthorized')
   )

@@ -34,7 +34,7 @@ import {
   PaginationContainer,
   PaginationButton,
   PaginationDots,
-} from '../settings/styles'
+} from './styles'
 import { useAuthPermissions } from '@/contexts/auth-context'
 import PlatformLayout from '@/layouts/platform/layout'
 import { RoleProtectedRoute } from '@/guards/RoleProtectedRoute'

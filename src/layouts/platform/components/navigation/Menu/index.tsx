@@ -26,7 +26,6 @@ export default function Menu({ onLogoutClick }: MenuProps) {
     canAccessUserManagement,
     canAccessLocations,
     canAccessCategories,
-    canAccessSettings,
     canAccessTrash,
   } = useAuthPermissions()
 
@@ -37,7 +36,6 @@ export default function Menu({ onLogoutClick }: MenuProps) {
     canAccessUserManagement: canAccessUserManagement(),
     canAccessLocations: canAccessLocations(),
     canAccessCategories: canAccessCategories(),
-    canAccessSettings: canAccessSettings(),
     canAccessTrash: canAccessTrash(),
   })
 

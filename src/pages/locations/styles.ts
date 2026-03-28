@@ -231,11 +231,6 @@ export const ActionButton = styled('button', {
   transition: 'all 0.2s ease',
   whiteSpace: 'nowrap',
 
-  '&:disabled': {
-    opacity: 0.5,
-    cursor: 'not-allowed',
-  },
-
   variants: {
     variant: {
       delete: {
@@ -285,6 +280,11 @@ export const ActionButton = styled('button', {
     },
   },
 
+  '&:disabled': {
+    opacity: 0.5,
+    cursor: 'not-allowed',
+  },
+
   '@media(max-width: 640px)': {
     width: '100%',
     justifyContent: 'center',
@@ -293,7 +293,8 @@ export const ActionButton = styled('button', {
 
 export const DesktopTableWrapper = styled('div', {
   width: '100%',
-  '@media (max-width: 640px)': {
+
+  '@media(max-width: 640px)': {
     display: 'none',
   },
 })
@@ -310,6 +311,10 @@ export const TableWrapper = styled('div', {
   '@media (max-width: 768px)': {
     padding: '0 1.25rem',
   },
+
+  '@media (max-width: 640px)': {
+    display: 'none',
+  },
 })
 
 export const Table = styled('table', {
@@ -325,19 +330,18 @@ export const Table = styled('table', {
 
 export const TableHeader = styled('th', {
   background: '$white',
-  padding: '1.25rem 0',
   textAlign: 'left',
+  padding: '1.25rem 0',
   fontWeight: 600,
   fontSize: '1rem',
   color: '$textPrimary',
   position: 'relative',
   borderBottom: '2px solid $green',
 
-  '&:first-child': {
-    width: '60px',
-    minWidth: '60px',
-    maxWidth: '60px',
-  },
+  '&:first-child': { width: '18%' },
+  '&:nth-child(2)': { width: '28%' },
+  '&:nth-child(3)': { width: '18%' },
+  '&:nth-child(4)': { width: '36%' },
 
   '@media (max-width: 768px)': {
     padding: '1rem 0',
@@ -356,6 +360,7 @@ export const TableRow = styled('tr', {
         borderBottom: 'none',
       },
       false: {
+        cursor: 'pointer',
         '&:hover': {
           backgroundColor: '$surfaceMuted',
         },
@@ -373,13 +378,6 @@ export const TableCell = styled('td', {
   fontSize: '0.95rem',
   lineHeight: 1.5,
   verticalAlign: 'middle',
-  fontWeight: 400,
-
-  '&:first-child': {
-    width: '60px',
-    minWidth: '60px',
-    maxWidth: '60px',
-  },
 
   '@media (max-width: 768px)': {
     padding: '1rem 0',
@@ -388,105 +386,52 @@ export const TableCell = styled('td', {
 })
 
 export const Checkbox = styled('input', {
-  width: '1.125rem',
-  height: '1.125rem',
-  borderRadius: '0.25rem',
-  border: '1px solid $borderDefault',
+  width: '1rem',
+  height: '1rem',
   cursor: 'pointer',
-  accentColor: '$green',
-
-  '&:focus': {
-    outline: '2px solid $green',
-    outlineOffset: '2px',
-  },
 })
 
 export const MobileCardsWrapper = styled('div', {
   display: 'none',
+  gap: '$3',
 
-  '@media (max-width: 640px)': {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-    width: '100%',
+  '@media(max-width: 768px)': {
+    display: 'grid',
   },
 })
 
-export const LocationCard = styled('div', {
-  background: '$white',
-  borderRadius: '16px',
-  padding: '1.25rem',
-  boxShadow: '0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)',
-  display: 'flex',
-  gap: '1rem',
-  alignItems: 'flex-start',
-  transition: 'all 0.2s ease',
-  border: '1px solid $borderDefault',
-  width: '100%',
-  boxSizing: 'border-box',
-
-  '&:hover': {
-    boxShadow: '0 8px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)',
-    transform: 'translateY(-1px)',
-  },
+export const LocationCard = styled('article', {
+  backgroundColor: '$white',
+  border: '1px solid $borderLight',
+  borderRadius: '$lg',
+  padding: '$4',
+  display: 'grid',
+  gap: '$2',
 })
 
-export const CategoryCard = styled('div', {
-  background: '$white',
-  borderRadius: '16px',
-  padding: '1.25rem',
-  boxShadow: '0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)',
-  display: 'flex',
-  gap: '1rem',
-  alignItems: 'flex-start',
-  transition: 'all 0.2s ease',
-  border: '1px solid $borderDefault',
-  width: '100%',
-  boxSizing: 'border-box',
-
-  '&:hover': {
-    boxShadow: '0 8px 24px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.06)',
-    transform: 'translateY(-1px)',
-  },
-})
-
-export const CardTitle = styled('h3', {
-  margin: '0 0 0.5rem 0',
-  fontSize: '0.875rem',
-  lineHeight: 1.4,
-  fontWeight: 400,
-  color: '$darkGray',
-  '& strong': {
-    fontWeight: 700,
-    color: '$darkGray',
-  },
+export const CardTitle = styled('h2', {
+  margin: 0,
+  fontSize: '$4',
+  fontWeight: '$medium',
+  color: '$textBody',
 })
 
 export const CardInfo = styled('p', {
-  margin: '0 0 0.5rem 0',
-  fontSize: '0.875rem',
-  lineHeight: 1.5,
-  fontWeight: 500,
-  color: '$textNeutral',
+  margin: 0,
+  fontSize: '$2',
+  color: '$textSecondary',
 })
 
-export const CardDescription = styled('div', {
+export const CardDescription = styled('p', {
   margin: 0,
-  fontSize: '0.875rem',
-  lineHeight: 1.5,
-  fontWeight: 400,
-  color: '$darkGray',
-
-  '& strong': {
-    color: '$darkGray',
-    fontWeight: 700,
-  },
+  fontSize: '$3',
+  color: '$textBody',
 })
 
 export const PaginationContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'flex-end',
+  justifyContent: 'center',
   gap: '0.5rem',
   marginTop: '2rem',
   padding: '1rem 0',
@@ -495,7 +440,6 @@ export const PaginationContainer = styled('div', {
     gap: '0.25rem',
     marginTop: '1.5rem',
     flexWrap: 'wrap',
-    justifyContent: 'center',
   },
 })
 
@@ -525,11 +469,9 @@ export const PaginationButton = styled('button', {
         padding: '0.25rem 0.5rem',
         borderRadius: 0,
         gap: '0.5rem',
-
         '&:hover:not(:disabled)': {
           color: '$darkGray',
         },
-
         '&:disabled': {
           opacity: 0.35,
           cursor: 'not-allowed',

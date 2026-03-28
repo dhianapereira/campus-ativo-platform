@@ -4,7 +4,6 @@ import {
   SignOut,
   ArrowClockwise,
   Users,
-  Gear,
   Trash,
   MapPin,
   Tag,
@@ -21,7 +20,6 @@ interface MenuOptionsConfig {
   canAccessUserManagement?: boolean
   canAccessLocations?: boolean
   canAccessCategories?: boolean
-  canAccessSettings?: boolean
   canAccessTrash?: boolean
 }
 
@@ -34,7 +32,6 @@ export const createMenuOptions = ({
   canAccessUserManagement = false,
   canAccessLocations = false,
   canAccessCategories = false,
-  canAccessSettings = false,
   canAccessTrash = false,
 }: MenuOptionsConfig): IOption[] => {
   const options: IOption[] = [
@@ -94,18 +91,6 @@ export const createMenuOptions = ({
     })
   }
 
-  if (canAccessSettings) {
-    options.push({
-      id: 'settings',
-      name: 'Configurações',
-      icon: <Gear weight="bold" />,
-      onClick: () => {
-        router.push('/settings')
-        onClose?.()
-      },
-    })
-  }
-
   if (canAccessTrash) {
     options.push({
       id: 'trash',
@@ -153,6 +138,5 @@ export const MENU_OPTION_PATHS: Record<string, string> = {
   locations: '/locations',
   categories: '/categories',
   members: '/members',
-  settings: '/settings',
   trash: '/trash',
 }
