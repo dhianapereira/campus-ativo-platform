@@ -63,26 +63,29 @@ export const SearchContainer = styled('div', {
 
 export const ControlsContainer = styled('div', {
   display: 'flex',
-  justifyContent: 'space-between',
+  justifyContent: 'flex-start',
   alignItems: 'center',
   gap: '$4',
   flexWrap: 'nowrap',
+  flex: '0 0 auto',
 
   '@media(max-width: 1024px)': {
-    flex: 'nowrap',
     width: '100%',
+    flexWrap: 'nowrap',
   },
 
   '@media(max-width: 853px)': {
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     gap: '$4',
     width: '100%',
+    flexWrap: 'wrap',
   },
 
   '@media(max-width: 640px)': {
     gap: '$4',
     width: '100%',
+    flexWrap: 'wrap',
   },
 
   '@media(max-width: 480px)': {
@@ -98,22 +101,24 @@ export const FilterGroup = styled('div', {
   flex: '0 0 auto',
 
   '@media(max-width: 1024px)': {
-    flex: '1 1 auto',
+    flex: '0 0 auto',
   },
 
   '@media(max-width: 853px)': {
-    flex: '1 1 auto',
+    flex: '0 0 auto',
     width: 'auto',
   },
 
   '@media(max-width: 640px)': {
     gap: '$2',
-    flex: '1 1 auto',
+    flex: '1 1 100%',
+    width: '100%',
   },
 
   '@media(max-width: 480px)': {
     gap: '$1',
-    flex: '1 1 auto',
+    flex: '1 1 100%',
+    width: '100%',
   },
 })
 
@@ -126,24 +131,25 @@ export const AddButton = styled(Button, {
 
   '@media(max-width: 1024px)': {
     padding: '$3 $4',
-    flex: '1 1 auto',
+    flex: '0 0 auto',
   },
 
   '@media(max-width: 853px)': {
-    flex: '1 1 auto',
+    flex: '0 0 auto',
     width: 'auto',
   },
 
   '@media(max-width: 640px)': {
     padding: '$2 $3',
     fontSize: '$3',
-    flex: '1 1 auto',
+    flex: '1 1 calc(50% - $2)',
+    minWidth: 0,
   },
 
   '@media(max-width: 480px)': {
     padding: '$2',
     fontSize: '$2',
-    flex: '1 1 auto',
+    flex: '1 1 100%',
   },
 })
 
@@ -213,6 +219,8 @@ export const ResponsiveGridView = styled('div', {
 
 export const ResponsiveSearchBar = styled(SearchBar, {
   width: '100%',
+  flex: '1 1 auto',
+  minWidth: 0,
 
   '& input': {
     fontSize: '$4',

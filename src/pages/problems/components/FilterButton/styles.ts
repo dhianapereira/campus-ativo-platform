@@ -33,4 +33,9 @@ export const FilterBtn = styled('button', {
   '&:active': {
     transform: 'translateY(1px)',
   },
+
+  '@media(max-width: 640px)': {
+    width: '100%',
+    minWidth: 0,
+  },
 })

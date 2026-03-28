@@ -244,6 +244,7 @@ export default function Problems() {
               </FilterGroup>
 
               <AddButton
+                type="button"
                 onClick={() => goToAddProblem()}
                 variant="primary"
                 aria-label="Adicionar novo problema"

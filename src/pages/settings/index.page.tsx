@@ -45,6 +45,7 @@ import { AddCategoryModal } from './components/AddCategoryModal'
 import { AddLocationModal } from './components/AddLocationModal'
 import { EditLocationModal } from './components/EditLocationModal'
 import { EditCategoryModal } from './components/EditCategoryModal'
+import { ImportCsvPanel } from '@/pages/problems/components/ImportCsvModal'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import type { LocationResponse } from '../../lib/api/generated/models/locationResponse'
@@ -55,6 +56,7 @@ import { invalidateTrashQueries } from '@/pages/trash/trash-cache'
 
 type LocationItem = LocationResponse
 type CategoryItem = CategoryResponse
+type SettingsTab = 'localizacao' | 'categoria' | 'importacao'
 type SettingsListResponse<T> = {
   page: number
   pageSize: number
@@ -83,9 +85,7 @@ function useDebounce<T>(value: T, delay: number): T {
 
 export default function SettingsPage() {
   const queryClient = useQueryClient()
-  const [activeTab, setActiveTab] = useState<'localizacao' | 'categoria'>(
-    'localizacao',
-  )
+  const [activeTab, setActiveTab] = useState<SettingsTab>('localizacao')
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<
     'all' | 'active' | 'inactive'
@@ -255,14 +255,25 @@ export default function SettingsPage() {
   const currentItems: (LocationItem | CategoryItem)[] = useMemo(() => {
     if (activeTab === 'localizacao') {
       return filteredLocations
-    } else {
+    } else if (activeTab === 'categoria') {
       return filteredCategories
     }
+
+    return []
   }, [activeTab, filteredLocations, filteredCategories])
 
   const isLoading =
-    activeTab === 'localizacao' ? locationsLoading : categoriesLoading
-  const error = activeTab === 'localizacao' ? locationsError : categoriesError
+    activeTab === 'localizacao'
+      ? locationsLoading
+      : activeTab === 'categoria'
+        ? categoriesLoading
+        : false
+  const error =
+    activeTab === 'localizacao'
+      ? locationsError
+      : activeTab === 'categoria'
+        ? categoriesError
+        : null
   const refetch =
     activeTab === 'localizacao' ? refetchLocations : refetchCategories
   const isRefetching =
@@ -276,7 +287,7 @@ export default function SettingsPage() {
   const effectiveCurrentPage =
     totalPages > 0 ? Math.min(currentPage, totalPages) : 1
 
-  const handleTabChange = (tab: 'localizacao' | 'categoria') => {
+  const handleTabChange = (tab: SettingsTab) => {
     setActiveTab(tab)
     setSearchTerm('')
     setStatusFilter('all')
@@ -483,11 +494,21 @@ export default function SettingsPage() {
                 >
                   Categoria
                 </Tab>
+                <Tab
+                  isActive={activeTab === 'importacao'}
+                  onClick={() => handleTabChange('importacao')}
+                >
+                  Importação
+                </Tab>
               </TabsContainer>
             </HeaderContainer>
 
             <PageTitle>
-              {activeTab === 'localizacao' ? 'Localização' : 'Categoria'}
+              {activeTab === 'localizacao'
+                ? 'Localização'
+                : activeTab === 'categoria'
+                  ? 'Categoria'
+                  : 'Importar problemas por CSV'}
             </PageTitle>
 
             <LoadErrorState
@@ -537,78 +558,92 @@ export default function SettingsPage() {
               >
                 Categoria
               </Tab>
+              <Tab
+                isActive={activeTab === 'importacao'}
+                onClick={() => handleTabChange('importacao')}
+              >
+                Importação
+              </Tab>
             </TabsContainer>
           </HeaderContainer>
 
           <PageTitle>
-            {activeTab === 'localizacao' ? 'Localização' : 'Categoria'}
+            {activeTab === 'localizacao'
+              ? 'Localização'
+              : activeTab === 'categoria'
+                ? 'Categoria'
+                : 'Importar problemas por CSV'}
           </PageTitle>
 
-          <SearchActionsContainer>
-            <SearchAndFiltersRow>
-              <SearchContainer>
-                <SearchInputContainer>
-                  <SearchIcon>
-                    <MagnifyingGlass size={20} weight="regular" />
-                  </SearchIcon>
-                  <SearchInput
-                    type="text"
-                    placeholder={
-                      activeTab === 'localizacao'
-                        ? 'Busque por nome, número ou descrição...'
-                        : 'Busque pelo nome ou descrição...'
-                    }
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                  />
-                </SearchInputContainer>
-                <ActionButton variant="mobile-add" onClick={handleAddNew}>
-                  <Plus size={16} />
-                </ActionButton>
-              </SearchContainer>
+          {activeTab === 'importacao' ? (
+            <ImportCsvPanel />
+          ) : (
+            <SearchActionsContainer>
+              <SearchAndFiltersRow>
+                <SearchContainer>
+                  <SearchInputContainer>
+                    <SearchIcon>
+                      <MagnifyingGlass size={20} weight="regular" />
+                    </SearchIcon>
+                    <SearchInput
+                      type="text"
+                      placeholder={
+                        activeTab === 'localizacao'
+                          ? 'Busque por nome, número ou descrição...'
+                          : 'Busque pelo nome ou descrição...'
+                      }
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                    />
+                  </SearchInputContainer>
+                  <ActionButton variant="mobile-add" onClick={handleAddNew}>
+                    <Plus size={16} />
+                  </ActionButton>
+                </SearchContainer>
 
-              <ActionsContainer>
-                <ActionButton
-                  variant="delete"
-                  onClick={handleDeleteSelected}
-                  disabled={selectedItems.length === 0}
+                <ActionsContainer>
+                  <ActionButton
+                    variant="delete"
+                    onClick={handleDeleteSelected}
+                    disabled={selectedItems.length === 0}
+                  >
+                    <Trash size={20} weight="bold" />
+                    <span>Mover para lixeira</span>
+                  </ActionButton>
+                  <ActionButton variant="add" onClick={handleAddNew}>
+                    <Plus size={16} />
+                    {activeTab === 'localizacao'
+                      ? 'Adicionar Localização'
+                      : 'Adicionar Categoria'}
+                  </ActionButton>
+                </ActionsContainer>
+              </SearchAndFiltersRow>
+
+              <FiltersContainer>
+                <FilterButton
+                  isActive={statusFilter === 'all'}
+                  onClick={() => handleStatusFilterChange('all')}
                 >
-                  <Trash size={20} weight="bold" />
-                  <span>Mover para lixeira</span>
-                </ActionButton>
-                <ActionButton variant="add" onClick={handleAddNew}>
-                  <Plus size={16} />
-                  {activeTab === 'localizacao'
-                    ? 'Adicionar Localização'
-                    : 'Adicionar Categoria'}
-                </ActionButton>
-              </ActionsContainer>
-            </SearchAndFiltersRow>
+                  Todos
+                </FilterButton>
+                <FilterButton
+                  isActive={statusFilter === 'active'}
+                  onClick={() => handleStatusFilterChange('active')}
+                >
+                  Ativos
+                </FilterButton>
+                <FilterButton
+                  isActive={statusFilter === 'inactive'}
+                  onClick={() => handleStatusFilterChange('inactive')}
+                >
+                  Inativos
+                </FilterButton>
+              </FiltersContainer>
+            </SearchActionsContainer>
+          )}
 
-            <FiltersContainer>
-              <FilterButton
-                isActive={statusFilter === 'all'}
-                onClick={() => handleStatusFilterChange('all')}
-              >
-                Todos
-              </FilterButton>
-              <FilterButton
-                isActive={statusFilter === 'active'}
-                onClick={() => handleStatusFilterChange('active')}
-              >
-                Ativos
-              </FilterButton>
-              <FilterButton
-                isActive={statusFilter === 'inactive'}
-                onClick={() => handleStatusFilterChange('inactive')}
-              >
-                Inativos
-              </FilterButton>
-            </FiltersContainer>
-          </SearchActionsContainer>
-
-          {currentItems.length === 0 && (
+          {activeTab !== 'importacao' && currentItems.length === 0 && (
             <div style={{ padding: '2rem', textAlign: 'center' }}>
               <p>Nenhum resultado encontrado</p>
               <p style={{ color: '#666', fontSize: '0.9em' }}>
@@ -621,7 +656,7 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {currentItems.length > 0 && (
+          {activeTab !== 'importacao' && currentItems.length > 0 && (
             <DesktopTableWrapper>
               <TableWrapper>
                 <Table>
@@ -679,7 +714,7 @@ export default function SettingsPage() {
             </DesktopTableWrapper>
           )}
 
-          {currentItems.length > 0 && (
+          {activeTab !== 'importacao' && currentItems.length > 0 && (
             <MobileCardsWrapper>
               {currentItems.map((item: LocationItem | CategoryItem) => {
                 if (!item.id) return null
@@ -728,7 +763,7 @@ export default function SettingsPage() {
             </MobileCardsWrapper>
           )}
 
-          {totalPages > 1 && (
+          {activeTab !== 'importacao' && totalPages > 1 && (
             <PaginationContainer>
               {renderPaginationButtons()}
             </PaginationContainer>

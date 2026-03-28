@@ -30,6 +30,8 @@ import type {
   FetchProblemsControllerHandle200,
   FetchProblemsControllerHandleParams,
   GetProblemBySlugControllerHandle200,
+  ImportProblemsCsvRequest,
+  ImportProblemsCsvResponse,
   ManageProblemRequest
 } from '../models';
 
@@ -603,5 +605,69 @@ export const useRestoreProblemControllerHandle = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getRestoreProblemControllerHandleMutationOptions(options), queryClient);
+    }
+    /**
+ * Recebe linhas já extraídas de um CSV, valida os dados e importa apenas os problemas válidos e não duplicados.
+ * @summary Importar problemas via CSV
+ */
+export const importProblemsFromCsvControllerHandle = (
+    importProblemsCsvRequest: BodyType<ImportProblemsCsvRequest>,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+      
+      
+      return axiosInstance<ImportProblemsCsvResponse>(
+      {url: `/problems/import`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: importProblemsCsvRequest, signal
+    },
+      options);
+    }
+  
+
+
+export const getImportProblemsFromCsvControllerHandleMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof importProblemsFromCsvControllerHandle>>, TError,{data: BodyType<ImportProblemsCsvRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof importProblemsFromCsvControllerHandle>>, TError,{data: BodyType<ImportProblemsCsvRequest>}, TContext> => {
+
+const mutationKey = ['importProblemsFromCsvControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof importProblemsFromCsvControllerHandle>>, {data: BodyType<ImportProblemsCsvRequest>}> = (props) => {
+          const {data} = props ?? {};
+
+          return  importProblemsFromCsvControllerHandle(data,requestOptions)
+        }
+
+
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ImportProblemsFromCsvControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof importProblemsFromCsvControllerHandle>>>
+    export type ImportProblemsFromCsvControllerHandleMutationBody = BodyType<ImportProblemsCsvRequest>
+    export type ImportProblemsFromCsvControllerHandleMutationError = ErrorType<void>
+
+    /**
+ * @summary Importar problemas via CSV
+ */
+export const useImportProblemsFromCsvControllerHandle = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof importProblemsFromCsvControllerHandle>>, TError,{data: BodyType<ImportProblemsCsvRequest>}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof importProblemsFromCsvControllerHandle>>,
+        TError,
+        {data: BodyType<ImportProblemsCsvRequest>},
+        TContext
+      > => {
+      return useMutation(getImportProblemsFromCsvControllerHandleMutationOptions(options), queryClient);
     }
     
