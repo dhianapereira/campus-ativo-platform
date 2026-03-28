@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm, useWatch, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import {
@@ -145,7 +145,7 @@ function EditCategoryModalContent({
     },
   })
 
-  const onSubmit = async (data: CategoryFormData) => {
+  const onSubmit: SubmitHandler<CategoryFormData> = async (data) => {
     if (!category?.id) return
 
     setIsSubmitting(true)

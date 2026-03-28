@@ -1,7 +1,7 @@
 import { defineConfig } from 'orval'
 
 export default defineConfig({
-  ifalbackend: {
+  backend: {
     input: {
       target: './openapi/openapi.json',
     },

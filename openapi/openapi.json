@@ -1804,8 +1804,8 @@
     }
   },
   "info": {
-    "title": "IFAL Arapiraca Backend API",
-    "description": "API para gerenciamento de problemas de infraestrutura do IFAL Arapiraca",
+    "title": "Campus Ativo API",
+    "description": "API para gerenciamento de problemas de infraestrutura",
     "version": "1.0.0",
     "contact": {}
   },

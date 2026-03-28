@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm, useWatch, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import {
@@ -100,16 +100,16 @@ function EditLocationModalContent({
     resolver: zodResolver(locationSchema),
     defaultValues: {
       name: location.name,
-      code: location.code,
-      description: location.description,
+      code: location.code ?? '',
+      description: location.description ?? '',
     },
   })
 
   const watchedFields = useWatch({ control })
   const hasUnsavedChanges =
     watchedFields.name !== location.name ||
-    watchedFields.code !== location.code ||
-    watchedFields.description !== location.description ||
+    watchedFields.code !== (location.code ?? '') ||
+    watchedFields.description !== (location.description ?? '') ||
     isActive !== (location.isActive ?? true)
 
   const updateLocationMutation = useMutation({
@@ -152,7 +152,7 @@ function EditLocationModalContent({
     },
   })
 
-  const onSubmit = async (data: LocationFormData) => {
+  const onSubmit: SubmitHandler<LocationFormData> = async (data) => {
     if (!location?.id) return
 
     setIsSubmitting(true)

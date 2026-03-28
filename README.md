@@ -1,4 +1,4 @@
-# IFAL Arapiraca Frontend
+# Campus Ativo Platform
 
 Aplicação em Next.js do Campus Ativo, responsável pela interface de autenticação, acompanhamento de problemas, dashboard e áreas administrativas.
 

@@ -122,7 +122,7 @@ Caso seja exigida alguma alteração, você pode realizar as correções seguind
 
 ## Sugerir melhorias ou correções
 
-Caso você ainda não sinta segurança em contribuir com código ou encontrou um problema/situação de melhoria e quer reportar, crie uma [_issue_](https://github.com/campusativo/ifal-arapiraca-frontend/issues/new).
+Caso você ainda não sinta segurança em contribuir com código ou encontrou um problema/situação de melhoria e quer reportar, crie uma [_issue_](https://github.com/dhianapereira/campus-ativo-platform/issues/new).
 
 Utilize [este guia](https://docs.github.com/pt/issues/tracking-your-work-with-issues/creating-an-issue) para reportar um problema ou indicar uma melhoria através de _issues_.
 
