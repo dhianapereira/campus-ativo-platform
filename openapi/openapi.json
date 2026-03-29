@@ -2446,9 +2446,14 @@
             "description": "Nome da categoria conforme cadastrada no sistema.",
             "example": "Climatização"
           },
-          "location": {
+          "locationName": {
             "type": "string",
-            "description": "Nome ou código da localização conforme cadastrada no sistema.",
+            "description": "Nome da localização conforme cadastrada no sistema.",
+            "example": "Bloco A - Sala 201"
+          },
+          "locationCode": {
+            "type": "string",
+            "description": "Código da localização conforme cadastrada no sistema.",
             "example": "BLA-201"
           }
         },
@@ -2457,7 +2462,7 @@
           "title",
           "description",
           "category",
-          "location"
+          "locationName"
         ]
       },
       "ImportProblemsCsvRequest": {

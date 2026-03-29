@@ -48,6 +48,14 @@ interface LocationOption {
   code?: string | null
 }
 
+interface PaginatedReferenceResponse<T> {
+  total: number
+  page: number
+  pageSize: number
+  categories?: T[]
+  locations?: T[]
+}
+
 interface PreviewRow extends ParsedProblemCsvRow {
   status: 'ready' | 'duplicate' | 'invalid'
   message: string
@@ -69,9 +77,22 @@ interface ImportResponse {
 
 const TITLE_MAX_LENGTH = 100
 const DESCRIPTION_MAX_LENGTH = 500
+const REFERENCE_PAGE_SIZE = 100
 
 function normalizeText(value: string) {
-  return value.trim().toLowerCase()
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+}
+
+function pickLocationInput(row: ParsedProblemCsvRow) {
+  return {
+    locationName: row.locationName.trim(),
+    locationCode: row.locationCode.trim(),
+  }
 }
 
 function buildFingerprint({
@@ -101,12 +122,18 @@ function resolvePreviewRows(
   const categoryMap = new Map(
     categories.map((category) => [normalizeText(category.name), category]),
   )
-  const locationMap = new Map<string, LocationOption>()
+  const locationCodeMap = new Map<string, LocationOption>()
+  const locationNameMap = new Map<string, LocationOption[]>()
 
   locations.forEach((location) => {
-    locationMap.set(normalizeText(location.name), location)
+    const normalizedName = normalizeText(location.name)
+    const locationsWithSameName = locationNameMap.get(normalizedName) ?? []
+
+    locationsWithSameName.push(location)
+    locationNameMap.set(normalizedName, locationsWithSameName)
+
     if (location.code) {
-      locationMap.set(normalizeText(location.code), location)
+      locationCodeMap.set(normalizeText(location.code), location)
     }
   })
 
@@ -116,7 +143,7 @@ function resolvePreviewRows(
     const title = row.title.trim()
     const description = row.description.trim()
     const categoryValue = row.category.trim()
-    const locationValue = row.location.trim()
+    const locationInput = pickLocationInput(row)
 
     if (!title) {
       return { ...row, status: 'invalid', message: 'Título é obrigatório.' }
@@ -154,7 +181,7 @@ function resolvePreviewRows(
       }
     }
 
-    if (!locationValue) {
+    if (!locationInput.locationName && !locationInput.locationCode) {
       return {
         ...row,
         status: 'invalid',
@@ -172,15 +199,21 @@ function resolvePreviewRows(
       }
     }
 
-    const location = locationMap.get(normalizeText(locationValue))
+    const locationResolution = resolveLocationForPreview(
+      locationInput,
+      locationCodeMap,
+      locationNameMap,
+    )
 
-    if (!location) {
+    if ('message' in locationResolution) {
       return {
         ...row,
         status: 'invalid',
-        message: `Localização "${locationValue}" não foi encontrada.`,
+        message: locationResolution.message,
       }
     }
+
+    const location = locationResolution.location
 
     const fingerprint = buildFingerprint({
       title,
@@ -207,6 +240,98 @@ function resolvePreviewRows(
   })
 }
 
+async function fetchAllReferenceItems<T>({
+  endpoint,
+  key,
+}: {
+  endpoint: string
+  key: 'categories' | 'locations'
+}) {
+  const items: T[] = []
+  let page = 1
+
+  while (true) {
+    const response = await fetch(
+      `${endpoint}?isActive=true&page=${page}&pageSize=${REFERENCE_PAGE_SIZE}`,
+      {
+        credentials: 'include',
+      },
+    )
+
+    if (!response.ok) {
+      throw new Error(
+        key === 'categories'
+          ? 'Falha ao carregar categorias ativas.'
+          : 'Falha ao carregar localizações ativas.',
+      )
+    }
+
+    const data = (await response.json()) as PaginatedReferenceResponse<T>
+    const pageItems = data[key] ?? []
+
+    items.push(...pageItems)
+
+    if (items.length >= data.total) {
+      return items
+    }
+
+    page++
+  }
+}
+
+function resolveLocationForPreview(
+  row: {
+    locationName: string
+    locationCode: string
+  },
+  locationCodeMap: Map<string, LocationOption>,
+  locationNameMap: Map<string, LocationOption[]>,
+): { location: LocationOption } | { message: string } {
+  if (row.locationCode) {
+    const locationByCode = locationCodeMap.get(normalizeText(row.locationCode))
+
+    if (!locationByCode) {
+      return {
+        message: `Código de localização "${row.locationCode}" não foi encontrado.`,
+      }
+    }
+
+    if (
+      row.locationName &&
+      normalizeText(locationByCode.name) !== normalizeText(row.locationName)
+    ) {
+      return {
+        message: `O código "${row.locationCode}" não corresponde à localização "${row.locationName}".`,
+      }
+    }
+
+    return { location: locationByCode }
+  }
+
+  if (!row.locationName) {
+    return {
+      message: 'Localização é obrigatória.',
+    }
+  }
+
+  const locationsByName =
+    locationNameMap.get(normalizeText(row.locationName)) ?? []
+
+  if (locationsByName.length === 0) {
+    return {
+      message: `Localização "${row.locationName}" não foi encontrada.`,
+    }
+  }
+
+  if (locationsByName.length > 1) {
+    return {
+      message: `A localização "${row.locationName}" está ambígua. Informe também o código da localização.`,
+    }
+  }
+
+  return { location: locationsByName[0] }
+}
+
 export function ProblemCsvImportPanel() {
   const queryClient = useQueryClient()
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -217,40 +342,24 @@ export function ProblemCsvImportPanel() {
 
   const { data: categoriesData, isLoading: isLoadingCategories } = useQuery({
     queryKey: ['categories', 'csv-import'],
-    queryFn: async () => {
-      const response = await fetch(
-        '/api/categories?isActive=true&pageSize=500',
-        {
-          credentials: 'include',
-        },
-      )
-
-      if (!response.ok) {
-        throw new Error('Falha ao carregar categorias ativas.')
-      }
-
-      return response.json() as Promise<{ categories: CategoryOption[] }>
-    },
+    queryFn: async () => ({
+      categories: await fetchAllReferenceItems<CategoryOption>({
+        endpoint: '/api/categories',
+        key: 'categories',
+      }),
+    }),
     enabled: true,
     staleTime: 60000,
   })
 
   const { data: locationsData, isLoading: isLoadingLocations } = useQuery({
     queryKey: ['locations', 'csv-import'],
-    queryFn: async () => {
-      const response = await fetch(
-        '/api/locations?isActive=true&pageSize=500',
-        {
-          credentials: 'include',
-        },
-      )
-
-      if (!response.ok) {
-        throw new Error('Falha ao carregar localizações ativas.')
-      }
-
-      return response.json() as Promise<{ locations: LocationOption[] }>
-    },
+    queryFn: async () => ({
+      locations: await fetchAllReferenceItems<LocationOption>({
+        endpoint: '/api/locations',
+        key: 'locations',
+      }),
+    }),
     enabled: true,
     staleTime: 60000,
   })
@@ -308,7 +417,7 @@ export function ProblemCsvImportPanel() {
           `${data.imported} ${data.imported === 1 ? 'problema importado' : 'problemas importados'} com sucesso.`,
         )
       } else {
-        toast.message('Nenhum problema novo foi importado.')
+        toast.warning('Nenhum problema novo foi importado.')
       }
     },
     onError: (error: Error) => {
@@ -384,17 +493,18 @@ export function ProblemCsvImportPanel() {
           <InfoCard>
             <CardTitle>Formato esperado</CardTitle>
             <Text size="sm" css={{ color: '$textSecondary' }}>
-              O arquivo precisa ter cabeçalho com estas colunas:
+              O arquivo precisa ter estas colunas:
             </Text>
             <ColumnExample>
               <ColumnChip>titulo</ColumnChip>
               <ColumnChip>descricao</ColumnChip>
               <ColumnChip>categoria</ColumnChip>
-              <ColumnChip>localizacao</ColumnChip>
+              <ColumnChip>localizacao_nome</ColumnChip>
+              <ColumnChip>localizacao_codigo</ColumnChip>
             </ColumnExample>
             <Text size="sm" css={{ color: '$textSecondary' }}>
-              A categoria deve usar o nome cadastrado no sistema. A localização
-              pode usar o nome ou o código.
+              A categoria deve usar o nome cadastrado no sistema. Para
+              localizações com nomes repetidos, informe o código.
             </Text>
           </InfoCard>
 
@@ -466,7 +576,7 @@ export function ProblemCsvImportPanel() {
               </CardTitle>
               <ResultsMeta size="sm">
                 {importResult
-                  ? 'As linhas válidas foram processadas; duplicadas e inválidas foram ignoradas.'
+                  ? 'As linhas foram processadas e o resultado final ficou listado abaixo.'
                   : 'As linhas sem erro serão importadas quando você confirmar.'}
               </ResultsMeta>
             </ResultsHeader>
@@ -519,28 +629,27 @@ export function ProblemCsvImportPanel() {
                 onClick={resetState}
                 disabled={importMutation.isPending}
               >
-                {importResult ? 'Nova importação' : 'Limpar'}
+                Limpar
               </SecondaryButton>
-              {!importResult ? (
-                <PrimaryButton
-                  type="button"
-                  variant="primary"
-                  onClick={() => importMutation.mutate()}
-                  disabled={
-                    importMutation.isPending ||
-                    isReferenceDataLoading ||
-                    parsedRows.length === 0 ||
-                    summary.ready === 0
-                  }
-                >
-                  <DownloadSimple size={18} weight="bold" />
-                  {importMutation.isPending
-                    ? 'Importando...'
-                    : `Importar ${summary.ready} ${
-                        summary.ready === 1 ? 'item' : 'itens'
-                      }`}
-                </PrimaryButton>
-              ) : null}
+              <PrimaryButton
+                type="button"
+                variant="primary"
+                onClick={() => importMutation.mutate()}
+                disabled={
+                  !!importResult ||
+                  importMutation.isPending ||
+                  isReferenceDataLoading ||
+                  parsedRows.length === 0 ||
+                  summary.ready === 0
+                }
+              >
+                <DownloadSimple size={18} weight="bold" />
+                {importMutation.isPending
+                  ? 'Importando...'
+                  : `Importar ${summary.ready} ${
+                      summary.ready === 1 ? 'item' : 'itens'
+                    }`}
+              </PrimaryButton>
             </FooterActions>
           </ModalFooter>
         ) : null}

@@ -3,14 +3,26 @@ export interface ParsedProblemCsvRow {
   title: string
   description: string
   category: string
-  location: string
+  locationName: string
+  locationCode: string
 }
 
 const HEADER_ALIASES = {
   title: ['title', 'titulo'],
   description: ['description', 'descricao'],
   category: ['category', 'categoria'],
-  location: ['location', 'localizacao'],
+  locationName: [
+    'location_name',
+    'localizacao_nome',
+    'nome_localizacao',
+    'locationname',
+  ],
+  locationCode: [
+    'location_code',
+    'localizacao_codigo',
+    'codigo_localizacao',
+    'locationcode',
+  ],
 } as const
 
 function normalizeHeader(value: string) {
@@ -108,16 +120,22 @@ export function parseProblemsCsv(content: string): ParsedProblemCsvRow[] {
   const titleIndex = findHeaderIndex(headers, HEADER_ALIASES.title)
   const descriptionIndex = findHeaderIndex(headers, HEADER_ALIASES.description)
   const categoryIndex = findHeaderIndex(headers, HEADER_ALIASES.category)
-  const locationIndex = findHeaderIndex(headers, HEADER_ALIASES.location)
-
+  const locationNameIndex = findHeaderIndex(
+    headers,
+    HEADER_ALIASES.locationName,
+  )
+  const locationCodeIndex = findHeaderIndex(
+    headers,
+    HEADER_ALIASES.locationCode,
+  )
   if (
     titleIndex === -1 ||
     descriptionIndex === -1 ||
     categoryIndex === -1 ||
-    locationIndex === -1
+    locationNameIndex === -1
   ) {
     throw new Error(
-      'Cabeçalho inválido. Use as colunas titulo, descricao, categoria e localizacao.',
+      'Cabeçalho inválido. Use titulo, descricao, categoria, localizacao_nome e localizacao_codigo.',
     )
   }
 
@@ -126,6 +144,8 @@ export function parseProblemsCsv(content: string): ParsedProblemCsvRow[] {
     title: row[titleIndex]?.trim() ?? '',
     description: row[descriptionIndex]?.trim() ?? '',
     category: row[categoryIndex]?.trim() ?? '',
-    location: row[locationIndex]?.trim() ?? '',
+    locationName: row[locationNameIndex]?.trim() ?? '',
+    locationCode:
+      locationCodeIndex !== -1 ? (row[locationCodeIndex]?.trim() ?? '') : '',
   }))
 }

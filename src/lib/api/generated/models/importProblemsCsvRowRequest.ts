@@ -15,6 +15,8 @@ export interface ImportProblemsCsvRowRequest {
   description: string;
   /** Nome da categoria conforme cadastrada no sistema. */
   category: string;
-  /** Nome ou código da localização conforme cadastrada no sistema. */
-  location: string;
+  /** Nome da localização conforme cadastrada no sistema. */
+  locationName: string;
+  /** Código da localização conforme cadastrada no sistema. */
+  locationCode?: string;
 }

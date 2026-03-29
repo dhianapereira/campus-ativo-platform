@@ -18,7 +18,7 @@ export const ModalContent = styled('div', {
   maxHeight: 'min(88vh, 920px)',
   overflow: 'hidden',
   borderRadius: '$card',
-  background: '$surfaceBase',
+  background: '$surfaceWarning',
   boxShadow: '0 24px 64px rgba(18, 18, 20, 0.18)',
   display: 'flex',
   flexDirection: 'column',
@@ -281,12 +281,12 @@ export const StatusBadge = styled('span', {
   variants: {
     status: {
       ready: {
-        backgroundColor: '$blue12Bg',
-        color: '$blue',
+        backgroundColor: '$lightGreen12Bg',
+        color: '$lightGreen',
       },
       imported: {
-        backgroundColor: '$surfaceSuccess',
-        color: '$textSuccess',
+        backgroundColor: '$blue12Bg',
+        color: '$blue',
       },
       duplicate: {
         backgroundColor: '$surfaceWarning',
