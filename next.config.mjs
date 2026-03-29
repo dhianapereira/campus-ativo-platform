@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [{ hostname: 'imgs.search.brave.com' }],
+    qualities: [100, 75],
+    remotePatterns: [
+      { hostname: 'imgs.search.brave.com' },
+      { hostname: 'i.ibb.co' },
+    ],
   },
   pageExtensions: ['page.tsx', 'api.ts'],
   async headers() {
