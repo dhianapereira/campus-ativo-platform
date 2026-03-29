@@ -14,7 +14,10 @@ export default function ProblemCard({
   const router = useRouter()
 
   async function goToDetails() {
-    await router.push(`/problems/${slug}/`)
+    await router.push({
+      pathname: '/problems/[id]',
+      query: { id: slug },
+    })
   }
 
   return (

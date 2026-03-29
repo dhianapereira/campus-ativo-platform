@@ -79,8 +79,6 @@ export default function EditProblem() {
   const { id, from } = router.query
   const { user } = useAuthSession()
   const queryClient = useQueryClient()
-  const problemDetailsPath =
-    typeof id === 'string' ? `/problems/${id}` : '/problems'
   const cameFromDetails = from === 'details'
 
   const [problemData, setProblemData] = useState<ProblemData | null>(null)
@@ -409,7 +407,15 @@ export default function EditProblem() {
       return
     }
 
-    router.replace(problemDetailsPath)
+    if (typeof id === 'string') {
+      router.replace({
+        pathname: '/problems/[id]',
+        query: { id },
+      })
+      return
+    }
+
+    router.replace('/problems')
   }
 
   if (isLoading) {

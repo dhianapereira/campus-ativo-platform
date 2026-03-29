@@ -410,8 +410,8 @@ export default function ProblemDetails() {
     }
 
     await router.push({
-      pathname: `/problems/${id}/edit`,
-      query: { from: 'details' },
+      pathname: '/problems/[id]/edit',
+      query: { id, from: 'details' },
     })
   }
 
