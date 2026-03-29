@@ -29,7 +29,7 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * Faz upload de uma imagem para o ImgBB e retorna o ID do attachment criado
+ * Faz upload de uma imagem para o S3 privado e retorna o ID do attachment criado
  * @summary Upload de imagem
  */
 export const uploadAttachmentControllerHandle = (

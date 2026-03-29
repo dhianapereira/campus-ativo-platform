@@ -9,6 +9,6 @@
 export type UploadAttachmentControllerHandle201 = {
   /** ID do attachment criado */
   attachmentId?: string;
-  /** URL da imagem no ImgBB */
+  /** URL assinada da imagem no S3 */
   url?: string;
 };
