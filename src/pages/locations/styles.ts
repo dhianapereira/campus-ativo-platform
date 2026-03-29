@@ -431,7 +431,7 @@ export const CardDescription = styled('p', {
 export const PaginationContainer = styled('div', {
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'flex-end',
   gap: '0.5rem',
   marginTop: '2rem',
   padding: '1rem 0',
@@ -440,6 +440,7 @@ export const PaginationContainer = styled('div', {
     gap: '0.25rem',
     marginTop: '1.5rem',
     flexWrap: 'wrap',
+    justifyContent: 'center',
   },
 })
 
