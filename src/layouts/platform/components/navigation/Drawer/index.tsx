@@ -66,6 +66,7 @@ export default function Drawer({
           height={68}
           width={193}
           quality={100}
+          loading="eager"
           alt="Logo do Instituto Federal de Alagoas."
         />
         <DrawerOptions>
