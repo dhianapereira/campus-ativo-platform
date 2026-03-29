@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { UserResponse } from '../../../lib/api/generated/models'
+import { UserProfileResponse } from '../../../lib/api/generated/models'
 import { getUserProfileControllerHandle } from '../../../lib/api/generated/user-profile/user-profile'
 
 interface MeResponse {
@@ -38,9 +38,9 @@ export default async function handler(
       },
     })
 
-    const profileData: UserResponse =
-      (userProfile as { profile?: UserResponse })?.profile ||
-      (userProfile as UserResponse)
+    const profileData: UserProfileResponse =
+      (userProfile as { profile?: UserProfileResponse })?.profile ||
+      (userProfile as UserProfileResponse)
 
     let roleFromToken = null
     try {
@@ -54,9 +54,7 @@ export default async function handler(
       id: profileData.id,
       name: profileData.name,
       email: profileData.email,
-      // The profile endpoint reflects current permissions, while the token may
-      // still contain an outdated role until the next login.
-      role: profileData.role || roleFromToken,
+      role: roleFromToken || 'REPORTER',
       position: profileData.position || 'Não informado',
     }
 

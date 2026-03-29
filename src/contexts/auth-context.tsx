@@ -7,10 +7,16 @@ import {
 } from 'react'
 import { useRouter } from 'next/router'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { AuthenticateRequest, UserResponse } from '../lib/api/generated/models'
+import { AuthenticateRequest } from '../lib/api/generated/models'
 import { getRoleLevel, hasRequiredRole } from '@/contexts/auth/role-mapping'
 
-type User = UserResponse & { position: string }
+type User = {
+  id: string
+  name: string
+  email: string
+  role: string
+  position: string
+}
 
 interface AuthSessionData {
   user: User | null

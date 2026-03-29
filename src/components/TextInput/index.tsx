@@ -1,8 +1,8 @@
-import { ComponentProps, ElementRef, forwardRef } from 'react'
+import { ComponentProps, ElementRef, ReactElement, forwardRef } from 'react'
 import { Input, Suffix, TextInputContainer, CharCounter } from './styles'
 
 export interface TextInputProps extends ComponentProps<typeof Input> {
-  suffix?: JSX.Element
+  suffix?: ReactElement
   hasError?: boolean
   isAutocomplete?: boolean
   maxLength?: number

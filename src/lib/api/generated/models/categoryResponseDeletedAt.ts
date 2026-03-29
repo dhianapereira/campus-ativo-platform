@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type DeleteUserAccountControllerHandle200 = {
-  message?: string;
-};
+/**
+ * Data de exclusão (null se não deletado)
+ * @nullable
+ */
+export type CategoryResponseDeletedAt = { [key: string]: unknown } | null;

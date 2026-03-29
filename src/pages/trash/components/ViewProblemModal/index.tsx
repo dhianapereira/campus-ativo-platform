@@ -168,7 +168,17 @@ export function ViewProblemModal({
     deleteProblemMutation.mutate()
   }
 
-  const formatDate = (dateString?: string) => {
+  const formatDate = (dateValue?: unknown) => {
+    const dateString =
+      typeof dateValue === 'string'
+        ? dateValue
+        : dateValue && typeof dateValue === 'object'
+          ? Object.values(dateValue as Record<string, unknown>).find(
+              (value): value is string =>
+                typeof value === 'string' && value.trim() !== '',
+            )
+          : undefined
+
     if (!dateString) return '-'
     return new Date(dateString).toLocaleDateString('pt-BR', {
       day: '2-digit',

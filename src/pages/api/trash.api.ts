@@ -27,7 +27,7 @@ interface BulkTrashItemPayload {
 }
 
 function filterByDeletedDate(
-  items: Array<{ deletedAt?: string | null }>,
+  items: Array<{ deletedAt?: unknown }>,
   dateFilter?: string,
 ) {
   if (!dateFilter || dateFilter === 'all') {
@@ -38,9 +38,11 @@ function filterByDeletedDate(
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
   return items.filter((item) => {
-    if (!item.deletedAt) return false
+    const deletedAt = extractDeletedAt(item.deletedAt)
 
-    const deletedDate = new Date(item.deletedAt)
+    if (!deletedAt) return false
+
+    const deletedDate = new Date(deletedAt)
 
     switch (dateFilter) {
       case 'today': {
@@ -63,6 +65,30 @@ function filterByDeletedDate(
         return true
     }
   })
+}
+
+function extractDeletedAt(value: unknown): string | null {
+  if (!value) return null
+
+  if (typeof value === 'string') {
+    return value
+  }
+
+  if (typeof value === 'object') {
+    const record = value as Record<string, unknown>
+
+    for (const candidate of Object.values(record)) {
+      if (typeof candidate === 'string' && candidate.trim() !== '') {
+        return candidate
+      }
+    }
+  }
+
+  return null
+}
+
+function hasDeletedAt(item: { deletedAt?: unknown }) {
+  return extractDeletedAt(item.deletedAt) !== null
 }
 
 function extractComparableId(value: unknown): string | null {
@@ -334,19 +360,11 @@ export default async function handler(
         const problemsData =
           problemsResult.status === 'fulfilled' ? problemsResult.value : []
 
-        const deletedLocations =
-          locationsData.filter(
-            (loc: { deletedAt?: string | null }) =>
-              loc.deletedAt !== null && loc.deletedAt !== undefined,
-          ) || []
-        const deletedCategories =
-          categoriesData.filter(
-            (cat: { deletedAt?: string | null }) =>
-              cat.deletedAt !== null && cat.deletedAt !== undefined,
-          ) || []
+        const deletedLocations = locationsData.filter(hasDeletedAt) || []
+        const deletedCategories = categoriesData.filter(hasDeletedAt) || []
         const deletedProblemsRaw =
           (problemsData as unknown as Array<Record<string, unknown>>).filter(
-            (prob) => prob.deletedAt !== null && prob.deletedAt !== undefined,
+            (prob) => hasDeletedAt(prob),
           ) || []
         const deletedProblems = onlyOwnProblems(deletedProblemsRaw)
 
@@ -359,7 +377,7 @@ export default async function handler(
           dateFilterValue,
         )
         const filteredProblems = filterByDeletedDate(
-          deletedProblems as Array<{ deletedAt?: string | null }>,
+          deletedProblems as Array<{ deletedAt?: unknown }>,
           dateFilterValue,
         )
 
@@ -414,11 +432,7 @@ export default async function handler(
           return response?.locations || []
         })
 
-        const deletedItems =
-          data.filter(
-            (loc: { deletedAt?: string | null }) =>
-              loc.deletedAt !== null && loc.deletedAt !== undefined,
-          ) || []
+        const deletedItems = data.filter(hasDeletedAt) || []
 
         const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
 
@@ -457,11 +471,7 @@ export default async function handler(
           return response?.categories || []
         })
 
-        const deletedItems =
-          data.filter(
-            (cat: { deletedAt?: string | null }) =>
-              cat.deletedAt !== null && cat.deletedAt !== undefined,
-          ) || []
+        const deletedItems = data.filter(hasDeletedAt) || []
 
         const filteredItems = filterByDeletedDate(deletedItems, dateFilterValue)
 
@@ -493,13 +503,13 @@ export default async function handler(
         })
 
         const deletedItemsRaw =
-          (data as unknown as Array<Record<string, unknown>>).filter(
-            (prob) => prob.deletedAt !== null && prob.deletedAt !== undefined,
+          (data as unknown as Array<Record<string, unknown>>).filter((prob) =>
+            hasDeletedAt(prob),
           ) || []
         const deletedItems = onlyOwnProblems(deletedItemsRaw)
 
         const filteredItems = filterByDeletedDate(
-          deletedItems as Array<{ deletedAt?: string | null }>,
+          deletedItems as Array<{ deletedAt?: unknown }>,
           dateFilterValue,
         )
 

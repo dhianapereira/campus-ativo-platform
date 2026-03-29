@@ -244,7 +244,7 @@ export default function LocationsPage() {
   }
 
   const renderPaginationButtons = () => {
-    const buttons: JSX.Element[] = []
+    const buttons: React.ReactElement[] = []
 
     const addPageButton = (page: number) =>
       buttons.push(

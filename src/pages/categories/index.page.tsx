@@ -243,7 +243,7 @@ export default function CategoriesPage() {
   }
 
   const renderPaginationButtons = () => {
-    const buttons: JSX.Element[] = []
+    const buttons: React.ReactElement[] = []
 
     const addPageButton = (page: number) =>
       buttons.push(

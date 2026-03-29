@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { serialize } from 'cookie'
 import {
   AuthenticateRequest,
-  UserResponse,
+  UserProfileResponse,
 } from '../../../lib/api/generated/models'
 import { authenticateControllerHandle } from '../../../lib/api/generated/authentication/authentication'
 import { getUserProfileControllerHandle } from '../../../lib/api/generated/user-profile/user-profile'
@@ -45,9 +45,9 @@ export default async function handler(
       },
     })
 
-    const profileData: UserResponse =
-      (userProfile as { profile?: UserResponse })?.profile ||
-      (userProfile as UserResponse)
+    const profileData: UserProfileResponse =
+      (userProfile as { profile?: UserProfileResponse })?.profile ||
+      (userProfile as UserProfileResponse)
 
     const cookie = serialize('auth-token', access_token, {
       httpOnly: true,
@@ -72,7 +72,7 @@ export default async function handler(
         id: profileData.id,
         name: profileData.name,
         email,
-        role: roleFromToken || profileData.role,
+        role: roleFromToken || 'REPORTER',
         position: profileData.position || 'Não informado',
       },
     })
