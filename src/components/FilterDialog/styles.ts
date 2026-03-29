@@ -16,7 +16,7 @@ export const DialogOverlay = styled('div', {
 
 export const DialogContent = styled('div', {
   backgroundColor: '$white',
-  borderRadius: '$lg',
+  borderRadius: '$card',
   padding: '$6',
   maxWidth: '500px',
   width: '100%',

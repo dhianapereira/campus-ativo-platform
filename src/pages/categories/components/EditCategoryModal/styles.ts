@@ -22,7 +22,7 @@ export const ModalOverlay = styled('div', {
 
 export const ModalContent = styled('div', {
   backgroundColor: 'white',
-  borderRadius: '24px',
+  borderRadius: '$card',
   boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
   width: '100%',
   maxWidth: '600px',
@@ -32,7 +32,7 @@ export const ModalContent = styled('div', {
   '@media (max-width: 48rem)': {
     width: 'calc(100vw - 2rem)',
     maxWidth: 'calc(100vw - 2rem)',
-    borderRadius: '1rem',
+    borderRadius: '$card',
     maxHeight: 'none',
     height: 'auto',
   },

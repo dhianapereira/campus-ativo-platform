@@ -13,7 +13,7 @@ export const ModalOverlay = styled('div', {
 
 export const ModalContent = styled('div', {
   backgroundColor: '$white',
-  borderRadius: '12px',
+  borderRadius: '$card',
   boxShadow: '0 12px 36px rgba(0, 0, 0, 0.28)',
   width: '100%',
   maxWidth: '460px',
@@ -25,7 +25,7 @@ export const ModalContent = styled('div', {
   '@media (max-width: 640px)': {
     padding: '18px 16px 16px 16px',
     maxWidth: '90%',
-    borderRadius: '12px',
+    borderRadius: '$card',
   },
 })
 
