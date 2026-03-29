@@ -1,10 +1,13 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Container,
   Body,
   Header,
   Title,
+  ImageButton,
+  ImageActionArea,
   ImageContainer,
+  ImageHint,
   InfoContainer,
   CategoryInfo,
   LocationInfo,
@@ -23,15 +26,24 @@ import {
   HistoryBadge,
   HistoryNote,
   HistoryChangeList,
+  ImageViewerOverlay,
+  ImageViewerContent,
+  ImageViewerHeader,
+  ImageViewerTitle,
+  ImageViewerCloseButton,
+  ImageViewerFrame,
+  ImageViewerImage,
 } from './styles'
 import {
   ArrowLeft,
   CaretDown,
   ClockCounterClockwise,
+  MagnifyingGlassPlus,
   MapPin,
   NotePencil,
   Tag,
   Trash,
+  X,
 } from 'phosphor-react'
 import { useRouter } from 'next/router'
 import type { ProblemDetailsProps } from './types'
@@ -212,9 +224,30 @@ export default function ProblemDetails() {
   const { hasRole } = useAuthPermissions()
 
   const [imageError, setImageError] = useState(false)
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false)
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
   const [showTrashConfirmationModal, setShowTrashConfirmationModal] =
     useState(false)
+
+  useEffect(() => {
+    if (!isImageViewerOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsImageViewerOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isImageViewerOpen])
 
   const {
     data: apiResponse,
@@ -425,6 +458,13 @@ export default function ProblemDetails() {
     setShowTrashConfirmationModal(false)
   }
 
+  const imageUrl = problemData?.imageUrl ?? null
+
+  function handleOpenImageViewer() {
+    if (!imageUrl || imageError) return
+    setIsImageViewerOpen(true)
+  }
+
   return (
     <ProtectedRoute>
       <>
@@ -501,16 +541,29 @@ export default function ProblemDetails() {
             </div>
           </Header>
           <Body>
-            {!problemData.imageUrl ? (
+            {!imageUrl ? (
               <NoImage />
             ) : !imageError ? (
-              <ImageContainer
-                src={problemData.imageUrl}
-                height={331}
-                width={839}
-                alt={problemData.title}
-                onError={() => setImageError(true)}
-              />
+              <ImageButton>
+                <ImageContainer
+                  src={imageUrl}
+                  height={331}
+                  width={839}
+                  alt={problemData.title}
+                  onError={() => setImageError(true)}
+                />
+                <ImageActionArea
+                  type="button"
+                  onClick={handleOpenImageViewer}
+                  aria-label="Abrir imagem em tamanho completo"
+                />
+                <ImageHint className="image-hint">
+                  <MagnifyingGlassPlus size={18} weight="bold" />
+                  <Text as="span" size="sm">
+                    Clique para ampliar
+                  </Text>
+                </ImageHint>
+              </ImageButton>
             ) : (
               <ImageError />
             )}
@@ -761,6 +814,43 @@ export default function ProblemDetails() {
           confirmText="Mover para lixeira"
           cancelText="Cancelar"
         />
+
+        {isImageViewerOpen && imageUrl && (
+          <ImageViewerOverlay
+            onClick={() => setIsImageViewerOpen(false)}
+            role="presentation"
+          >
+            <ImageViewerContent
+              onClick={(event) => event.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="problem-image-viewer-title"
+            >
+              <ImageViewerHeader>
+                <ImageViewerTitle>
+                  <Text
+                    id="problem-image-viewer-title"
+                    size="md"
+                    style={{ fontWeight: 700 }}
+                  >
+                    {problemData.title}
+                  </Text>
+                </ImageViewerTitle>
+                <ImageViewerCloseButton
+                  type="button"
+                  onClick={() => setIsImageViewerOpen(false)}
+                  aria-label="Fechar visualização da imagem"
+                >
+                  <X size={22} weight="bold" />
+                </ImageViewerCloseButton>
+              </ImageViewerHeader>
+
+              <ImageViewerFrame>
+                <ImageViewerImage src={imageUrl} alt={problemData.title} />
+              </ImageViewerFrame>
+            </ImageViewerContent>
+          </ImageViewerOverlay>
+        )}
       </>
     </ProtectedRoute>
   )

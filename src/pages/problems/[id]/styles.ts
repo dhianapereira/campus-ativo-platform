@@ -147,14 +147,70 @@ export const Body = styled('div', {
   },
 })
 
+export const ImageButton = styled('div', {
+  width: '100%',
+  display: 'block',
+  position: 'relative',
+  borderRadius: '$sm',
+  boxShadow: '0 10px 30px rgba(18, 90, 57, 0.08)',
+
+  '&:hover .image-hint': {
+    opacity: 1,
+    transform: 'translateY(0)',
+  },
+})
+
+export const ImageActionArea = styled('button', {
+  all: 'unset',
+  position: 'absolute',
+  inset: 0,
+  cursor: 'zoom-in',
+
+  '&:focus-visible': {
+    boxShadow: 'inset 0 0 0 3px rgba(18, 90, 57, 0.18)',
+  },
+})
+
 export const ImageContainer = styled('img', {
   width: '100%',
   height: 331,
-  margin: '0 $4',
+  display: 'block',
   objectFit: 'cover',
 
   '@media (max-width: 768px)': {
     height: 242,
+  },
+})
+
+export const ImageHint = styled('div', {
+  position: 'absolute',
+  right: '$3',
+  bottom: '$3',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '$2',
+  padding: '$2 $3',
+  borderRadius: '$full',
+  backgroundColor: 'rgba(15, 23, 42, 0.82)',
+  color: '$white',
+  backdropFilter: 'blur(4px)',
+  textShadow: '0 1px 2px rgba(0, 0, 0, 0.28)',
+  opacity: 0.94,
+  transform: 'translateY(0)',
+  transition: 'opacity 0.2s ease, transform 0.2s ease',
+
+  '@media (hover: hover)': {
+    opacity: 0,
+    transform: 'translateY(6px)',
+  },
+
+  '@media (max-width: 768px)': {
+    opacity: 1,
+    transform: 'translateY(0)',
+  },
+
+  '& span': {
+    color: '$white',
   },
 })
 
@@ -567,4 +623,90 @@ export const HistoryNote = styled('div', {
     whiteSpace: 'pre-wrap',
     lineHeight: '$base',
   },
+})
+
+export const ImageViewerOverlay = styled('div', {
+  position: 'fixed',
+  inset: 0,
+  zIndex: 1100,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '$4',
+  backgroundColor: 'rgba(15, 23, 42, 0.72)',
+  backdropFilter: 'blur(2px)',
+})
+
+export const ImageViewerContent = styled('div', {
+  position: 'relative',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$3',
+  width: '100%',
+  maxWidth: 'min(1120px, 100%)',
+  maxHeight: '100%',
+  padding: '$4',
+  borderRadius: '$card',
+  backgroundColor: 'rgba(255, 255, 255, 0.98)',
+  boxShadow: '0 20px 60px rgba(0, 0, 0, 0.28)',
+
+  '@media (max-width: 768px)': {
+    padding: '$3',
+  },
+})
+
+export const ImageViewerHeader = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '$3',
+})
+
+export const ImageViewerTitle = styled('div', {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '$1',
+  minWidth: 0,
+})
+
+export const ImageViewerCloseButton = styled('button', {
+  all: 'unset',
+  boxSizing: 'border-box',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '44px',
+  height: '44px',
+  borderRadius: '$full',
+  color: '$darkGray',
+  cursor: 'pointer',
+  flexShrink: 0,
+
+  '&:hover': {
+    backgroundColor: 'rgba(18, 90, 57, 0.08)',
+  },
+
+  '&:focus-visible': {
+    boxShadow: '0 0 0 3px rgba(18, 90, 57, 0.18)',
+  },
+})
+
+export const ImageViewerFrame = styled('div', {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: 0,
+  overflow: 'auto',
+  borderRadius: '$sm',
+  backgroundColor: 'rgba(248, 250, 252, 0.96)',
+})
+
+export const ImageViewerImage = styled('img', {
+  display: 'block',
+  width: 'auto',
+  maxWidth: '100%',
+  maxHeight: 'calc(100vh - 180px)',
+  height: 'auto',
+  objectFit: 'contain',
+  borderRadius: '$sm',
 })
