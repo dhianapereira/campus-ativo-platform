@@ -2,13 +2,13 @@
 
 Aplicação em Next.js do Campus Ativo, responsável pela interface de autenticação, acompanhamento de problemas, dashboard e áreas administrativas.
 
-Se você vai contribuir com o projeto, consulte o [CONTRIBUTING.md](./.github/docs/CONTRIBUTING.md).
+Se você vai contribuir com o projeto, consulte o [guia de contribuição](./.github/docs/CONTRIBUTING.md).
 
 ## Stack
 
 - Node.js `22.18.0` via `.nvmrc`
 - Next.js `16`
-- React `18`
+- React `19`
 - TypeScript
 - React Query
 - React Hook Form
@@ -20,6 +20,7 @@ Se você vai contribuir com o projeto, consulte o [CONTRIBUTING.md](./.github/do
 
 - login e cadastro
 - abertura e acompanhamento de problemas
+- importação de problemas por CSV
 - dashboard e relatório
 - gestão de categorias e localizações
 - administração de membros
@@ -28,7 +29,7 @@ Se você vai contribuir com o projeto, consulte o [CONTRIBUTING.md](./.github/do
 
 O design foi desenvolvido no Figma. Para acessar, [clique aqui](https://www.figma.com/design/uRxcTWge7V9l36AfLkKclf/Campus-Ativo).
 
-## Estrutura resumida
+## Estrutura
 
 ```text
 src/
@@ -40,6 +41,21 @@ src/
   styles/               estilos globais
   validators/           schemas de formulário
 ```
+
+## Pré-requisitos
+
+- Node.js `22.18.0`
+- npm
+- backend `campus-ativo` rodando e acessível
+
+## Como o frontend conversa com o backend
+
+O projeto usa duas camadas:
+
+- páginas React em `src/pages/**/*.page.tsx`
+- rotas de API do Next em `src/pages/api/**/*.api.ts`
+
+Essas rotas `/api` do Next intermediam autenticação, cookies e algumas chamadas ao backend. Por isso, o frontend depende da URL base do backend configurada em `NEXT_PUBLIC_SERVER_URL`.
 
 ## Variáveis de ambiente
 
@@ -53,6 +69,12 @@ Valores usados no desenvolvimento local:
 
 - `NEXT_PUBLIC_SERVER_URL=http://localhost:3333`
 - `NODE_ENV=development`
+
+### Variável principal
+
+- `NEXT_PUBLIC_SERVER_URL`: URL base da API NestJS. Em ambiente local, normalmente `http://localhost:3333`.
+
+Se o backend estiver em outra porta ou host, ajuste essa variável antes de iniciar o frontend.
 
 ## Rodando localmente
 
@@ -78,9 +100,24 @@ npm run dev
 
 Por padrão, o frontend sobe em `http://localhost:3000`.
 
+## Autenticação local
+
+O login é feito por rotas de API do próprio Next, que armazenam o token em cookie `httpOnly`.
+
+Durante desenvolvimento local:
+
+- o frontend roda em `http://localhost:3000`
+- o backend normalmente roda em `http://localhost:3333`
+- os cookies usam comportamento apropriado para `NODE_ENV=development`
+
 ## Cliente da API
 
 O projeto usa Orval para gerar o cliente a partir de [`openapi/openapi.json`](./openapi/openapi.json).
+
+Arquivos gerados são enviados para:
+
+- `src/lib/api/generated`
+- `src/lib/api/generated/models`
 
 Para regenerar:
 
@@ -89,6 +126,8 @@ npm run generate:api
 ```
 
 Evite editar manualmente arquivos em `src/lib/api/generated`.
+
+Quando o backend mudar contratos ou endpoints, atualize primeiro o `openapi.json` e depois regenere o cliente aqui.
 
 ## Scripts
 
