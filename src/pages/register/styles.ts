@@ -2,10 +2,14 @@ import { styled } from '@/styles'
 import { Heading, LinkButton, Text } from '@/components'
 
 export const PageWrapper = styled('div', {
-  width: '100vw',
+  width: '100%',
   height: '100vh',
   overflow: 'auto',
   position: 'relative',
+
+  '@supports (height: 100dvh)': {
+    height: '100dvh',
+  },
 })
 
 export const Container = styled('main', {
@@ -18,6 +22,10 @@ export const Container = styled('main', {
   minHeight: '100vh',
   height: 'auto',
   overflowY: 'auto',
+
+  '@supports (min-height: 100dvh)': {
+    minHeight: '100dvh',
+  },
 
   '@media(max-width: 820px)': {
     margin: '$4 auto $4',

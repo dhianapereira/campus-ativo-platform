@@ -13,10 +13,14 @@ export const Container = styled('div', {
 export const Body = styled('main', {
   display: 'flex',
   flexDirection: 'column',
-  width: '100vw',
+  width: '100%',
   height: '100vh',
   overflow: 'auto',
   backgroundColor: '$greenishWhite',
+
+  '@supports (height: 100dvh)': {
+    height: '100dvh',
+  },
 })
 
 export const Content = styled('div', {

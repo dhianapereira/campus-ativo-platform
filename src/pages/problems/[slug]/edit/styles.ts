@@ -9,6 +9,10 @@ export const Container = styled('div', {
   overflowY: 'auto',
   overflowX: 'hidden',
   backgroundColor: '$greenishWhite',
+
+  '@supports (height: 100dvh)': {
+    height: '100dvh',
+  },
 })
 
 export const Header = styled('header', {

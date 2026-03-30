@@ -2,10 +2,14 @@ import { styled } from '@/styles'
 import { Heading, LinkButton, Text } from '@/components'
 
 export const PageWrapper = styled('div', {
-  width: '100vw',
+  width: '100%',
   height: '100vh',
   overflow: 'auto',
   position: 'relative',
+
+  '@supports (height: 100dvh)': {
+    height: '100dvh',
+  },
 })
 
 export const Container = styled('main', {

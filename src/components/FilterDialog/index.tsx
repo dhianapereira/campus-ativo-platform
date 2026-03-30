@@ -32,14 +32,13 @@ export interface FilterDialogProps {
   filterOptions: FilterOption[]
 }
 
-export const FilterDialog = ({
-  isOpen,
+function FilterDialogContent({
   onClose,
   onApply,
-  title = 'Filtrar Problemas',
-  description = 'Selecione os filtros para refinar sua busca',
-  filterOptions = [],
-}: FilterDialogProps) => {
+  title,
+  description,
+  filterOptions,
+}: Omit<FilterDialogProps, 'isOpen'>) {
   const [filters, setFilters] = useState<FilterOption[]>(
     filterOptions.map((option) => ({ ...option })),
   )
@@ -64,8 +63,6 @@ export const FilterDialog = ({
   const getActiveFiltersCount = () => {
     return filters.filter((f) => f.checked).length
   }
-
-  if (!isOpen) return null
 
   return (
     <DialogOverlay onClick={onClose}>
@@ -102,6 +99,27 @@ export const FilterDialog = ({
         </ButtonGroup>
       </DialogContent>
     </DialogOverlay>
+  )
+}
+
+export const FilterDialog = ({
+  isOpen,
+  onClose,
+  onApply,
+  title = 'Filtrar Problemas',
+  description = 'Selecione os filtros para refinar sua busca',
+  filterOptions = [],
+}: FilterDialogProps) => {
+  if (!isOpen) return null
+
+  return (
+    <FilterDialogContent
+      onClose={onClose}
+      onApply={onApply}
+      title={title}
+      description={description}
+      filterOptions={filterOptions}
+    />
   )
 }
 

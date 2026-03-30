@@ -8,6 +8,10 @@ export const Container = styled('div', {
   height: '100vh',
   backgroundColor: '$greenishWhite',
   overflowY: 'hidden',
+
+  '@supports (height: 100dvh)': {
+    height: '100dvh',
+  },
 })
 
 export const EditButton = styled('button', {

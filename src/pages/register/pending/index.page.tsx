@@ -6,13 +6,17 @@ import ifalLogo from '@/assets/ifal-logo.png'
 import illustrationLogin from '@/assets/illustration-login.png'
 
 const PageWrapper = styled('div', {
-  width: '100vw',
+  width: '100%',
   minHeight: '100vh',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   backgroundColor: '$greenishWhite',
   padding: '$4',
+
+  '@supports (min-height: 100dvh)': {
+    minHeight: '100dvh',
+  },
 })
 
 const Container = styled('main', {
