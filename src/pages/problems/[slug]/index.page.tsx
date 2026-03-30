@@ -11,7 +11,6 @@ import {
   InfoContainer,
   CategoryInfo,
   LocationInfo,
-  EditButton,
   HistorySection,
   HistoryHeader,
   HistoryPanel,
@@ -26,6 +25,10 @@ import {
   HistoryBadge,
   HistoryNote,
   HistoryChangeList,
+  MobileActionsMenu,
+  MobileActionsMenuContainer,
+  MobileActionsMenuItem,
+  MobileActionsMenuTrigger,
   ImageViewerOverlay,
   ImageViewerContent,
   ImageViewerHeader,
@@ -38,6 +41,7 @@ import {
   ArrowLeft,
   CaretDown,
   ClockCounterClockwise,
+  DotsThreeVertical,
   MagnifyingGlassPlus,
   MapPin,
   NotePencil,
@@ -228,6 +232,8 @@ export default function ProblemDetails() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false)
   const [showTrashConfirmationModal, setShowTrashConfirmationModal] =
     useState(false)
+  const [isMobileActionsMenuOpen, setIsMobileActionsMenuOpen] = useState(false)
+  const mobileActionsMenuRef = React.useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (!isImageViewerOpen) return
@@ -248,6 +254,31 @@ export default function ProblemDetails() {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [isImageViewerOpen])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        mobileActionsMenuRef.current &&
+        !mobileActionsMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileActionsMenuOpen(false)
+      }
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMobileActionsMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleEscape)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [])
 
   const {
     data: apiResponse,
@@ -437,6 +468,8 @@ export default function ProblemDetails() {
   }
 
   async function goToEditPage() {
+    setIsMobileActionsMenuOpen(false)
+
     if (typeof slug !== 'string') {
       await router.push('/problems')
       return
@@ -450,6 +483,7 @@ export default function ProblemDetails() {
 
   function handleMoveToTrash() {
     if (!canMoveToTrash) return
+    setIsMobileActionsMenuOpen(false)
     setShowTrashConfirmationModal(true)
   }
 
@@ -500,19 +534,6 @@ export default function ProblemDetails() {
                     <Trash weight="bold" size={24} />
                     <span className="label">Mover para lixeira</span>
                   </TrashActionButton>
-                  <TrashActionButton
-                    className="mobile"
-                    variant="danger"
-                    mobileBehavior="iconOnly"
-                    onClick={handleMoveToTrash}
-                    disabled={moveToTrashMutation.isPending}
-                    aria-label="Mover para a lixeira"
-                    tabIndex={0}
-                    role="button"
-                  >
-                    <Trash weight="bold" size={24} />
-                    <span className="label">Mover para lixeira</span>
-                  </TrashActionButton>
                 </>
               )}
               {canEdit && (
@@ -527,16 +548,53 @@ export default function ProblemDetails() {
                     <NotePencil weight="bold" size={24} />
                     Editar
                   </Button>
-                  <EditButton
-                    className="mobile"
-                    onClick={goToEditPage}
-                    aria-label="Editar problema"
-                    tabIndex={0}
-                    role="button"
-                  >
-                    <NotePencil weight="bold" size={24} />
-                  </EditButton>
                 </>
+              )}
+              {(canEdit || canMoveToTrash) && (
+                <MobileActionsMenuContainer ref={mobileActionsMenuRef}>
+                  <MobileActionsMenuTrigger
+                    type="button"
+                    className="mobile"
+                    aria-label="Abrir menu de ações do problema"
+                    aria-haspopup="menu"
+                    aria-expanded={isMobileActionsMenuOpen}
+                    onClick={() => setIsMobileActionsMenuOpen((prev) => !prev)}
+                  >
+                    <DotsThreeVertical size={20} weight="bold" />
+                  </MobileActionsMenuTrigger>
+
+                  {isMobileActionsMenuOpen && (
+                    <MobileActionsMenu
+                      className="mobile"
+                      role="menu"
+                      aria-label="Ações do problema"
+                    >
+                      {canEdit && (
+                        <MobileActionsMenuItem
+                          type="button"
+                          role="menuitem"
+                          onClick={() => void goToEditPage()}
+                        >
+                          <NotePencil size={18} weight="regular" />
+                          Editar problema
+                        </MobileActionsMenuItem>
+                      )}
+
+                      {canMoveToTrash && (
+                        <MobileActionsMenuItem
+                          type="button"
+                          role="menuitem"
+                          data-variant="danger"
+                          onClick={handleMoveToTrash}
+                          disabled={moveToTrashMutation.isPending}
+                        >
+                          <Trash size={18} weight="regular" />
+                          Mover para lixeira
+                        </MobileActionsMenuItem>
+                      )}
+                    </MobileActionsMenu>
+                  )}
+                </MobileActionsMenuContainer>
               )}
             </div>
           </Header>

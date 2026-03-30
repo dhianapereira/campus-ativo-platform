@@ -65,6 +65,87 @@ export const EditButton = styled('button', {
   },
 })
 
+export const MobileActionsMenuContainer = styled('div', {
+  position: 'relative',
+  display: 'none',
+  zIndex: 30,
+
+  '@media (max-width: 768px)': {
+    display: 'flex',
+    alignItems: 'center',
+  },
+})
+
+export const MobileActionsMenuTrigger = styled('button', {
+  all: 'unset',
+  boxSizing: 'border-box',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '44px',
+  height: '44px',
+  borderRadius: '$card',
+  color: '$darkGray',
+  cursor: 'pointer',
+  transition: 'background-color 0.2s ease',
+
+  '&:hover': {
+    backgroundColor: 'rgba(18, 90, 57, 0.08)',
+  },
+
+  '&:focus-visible': {
+    boxShadow: '0 0 0 2px $colors$greenAccent',
+  },
+})
+
+export const MobileActionsMenu = styled('div', {
+  position: 'absolute',
+  top: 'calc(100% + 0.5rem)',
+  right: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.25rem',
+  minWidth: '210px',
+  padding: '0.5rem',
+  borderRadius: '$card',
+  border: '1px solid rgba(0, 0, 0, 0.08)',
+  backgroundColor: '$white',
+  boxShadow: '0 12px 30px rgba(0, 0, 0, 0.12)',
+  zIndex: 40,
+
+  '& svg': {
+    flexShrink: 0,
+  },
+})
+
+export const MobileActionsMenuItem = styled('button', {
+  all: 'unset',
+  boxSizing: 'border-box',
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.75rem',
+  padding: '0.75rem',
+  borderRadius: '$card',
+  color: '$gray',
+  cursor: 'pointer',
+  fontSize: '0.875rem',
+  fontWeight: 500,
+
+  '&:hover': {
+    backgroundColor: '$blue12Bg',
+  },
+
+  '&[data-variant="danger"]': {
+    color: '$red',
+  },
+
+  '& svg': {
+    width: '1.125rem',
+    height: '1.125rem',
+  },
+})
+
 export const Header = styled('header', {
   display: 'flex',
   flexDirection: 'row',
@@ -74,7 +155,7 @@ export const Header = styled('header', {
   minHeight: '80px',
   justifyContent: 'space-between',
   borderBottom: '1px solid $lightGray',
-  overflow: 'hidden',
+  overflow: 'visible',
   flexShrink: 0,
 
   '& .first-component': {
@@ -106,6 +187,10 @@ export const Header = styled('header', {
     },
 
     '& .mobile': {
+      display: 'flex',
+    },
+
+    [`> ${MobileActionsMenuContainer} > ${MobileActionsMenu}`]: {
       display: 'flex',
     },
   },
