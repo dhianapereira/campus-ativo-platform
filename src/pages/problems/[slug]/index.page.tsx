@@ -218,7 +218,7 @@ function renderHistoryChanges(
 
 export default function ProblemDetails() {
   const router = useRouter()
-  const { id } = router.query
+  const { slug } = router.query
   const queryClient = useQueryClient()
   const { user } = useAuthSession()
   const { hasRole } = useAuthPermissions()
@@ -254,9 +254,9 @@ export default function ProblemDetails() {
     isLoading,
     error,
   } = useQuery<GetProblemBySlugControllerHandle200, QueryError>({
-    queryKey: ['problem', id],
+    queryKey: ['problem', slug],
     queryFn: async () => {
-      const res = await fetch(`/api/problems/${id}`, {
+      const res = await fetch(`/api/problems/${slug}`, {
         credentials: 'include',
       })
       if (!res.ok) {
@@ -272,12 +272,12 @@ export default function ProblemDetails() {
       }
       return res.json()
     },
-    enabled: !!id && typeof id === 'string',
+    enabled: !!slug && typeof slug === 'string',
   })
 
   const problem = apiResponse?.problem
   const problemQueryKey =
-    typeof id === 'string' ? id : (problem?.slug ?? problem?.id)
+    typeof slug === 'string' ? slug : (problem?.slug ?? problem?.id)
 
   const problemData = useMemo<ProblemDetailsProps | null>(() => {
     if (!problem) return null
@@ -373,7 +373,7 @@ export default function ProblemDetails() {
   const canEdit = canMoveToTrash
   const canAccessActions = hasRole('MANAGER')
 
-  if (isLoading || (id && !problem && !error)) {
+  if (isLoading || (slug && !problem && !error)) {
     return (
       <ProtectedRoute>
         <Container>
@@ -437,14 +437,14 @@ export default function ProblemDetails() {
   }
 
   async function goToEditPage() {
-    if (typeof id !== 'string') {
+    if (typeof slug !== 'string') {
       await router.push('/problems')
       return
     }
 
     await router.push({
-      pathname: '/problems/[id]/edit',
-      query: { id, from: 'details' },
+      pathname: '/problems/[slug]/edit',
+      query: { slug, from: 'details' },
     })
   }
 

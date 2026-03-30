@@ -76,7 +76,7 @@ function buildUnavailableLabel(label: string) {
 
 export default function EditProblem() {
   const router = useRouter()
-  const { id, from } = router.query
+  const { slug, from } = router.query
   const { user } = useAuthSession()
   const queryClient = useQueryClient()
   const cameFromDetails = from === 'details'
@@ -95,11 +95,11 @@ export default function EditProblem() {
 
   useEffect(() => {
     async function fetchProblemData() {
-      if (!id || typeof id !== 'string') return
+      if (!slug || typeof slug !== 'string') return
 
       setIsLoading(true)
       try {
-        const response = await fetch(`/api/problems/${id}`, {
+        const response = await fetch(`/api/problems/${slug}`, {
           credentials: 'include',
         })
 
@@ -148,7 +148,7 @@ export default function EditProblem() {
     if (user) {
       fetchProblemData()
     }
-  }, [id, user])
+  }, [slug, user])
 
   const {
     register,
@@ -407,10 +407,10 @@ export default function EditProblem() {
       return
     }
 
-    if (typeof id === 'string') {
+    if (typeof slug === 'string') {
       router.replace({
-        pathname: '/problems/[id]',
-        query: { id },
+        pathname: '/problems/[slug]',
+        query: { slug },
       })
       return
     }

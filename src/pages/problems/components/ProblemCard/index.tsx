@@ -15,8 +15,8 @@ export default function ProblemCard({
 
   async function goToDetails() {
     await router.push({
-      pathname: '/problems/[id]',
-      query: { id: slug },
+      pathname: '/problems/[slug]',
+      query: { slug },
     })
   }
 

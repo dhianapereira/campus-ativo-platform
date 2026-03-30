@@ -15,15 +15,15 @@ export default async function handler(
     return res.status(401).json({ message: 'Não autenticado.' })
   }
 
-  const { id } = req.query
+  const { slug } = req.query
 
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({ message: 'ID do problema é obrigatório.' })
+  if (!slug || typeof slug !== 'string') {
+    return res.status(400).json({ message: 'Slug do problema é obrigatório.' })
   }
 
   if (req.method === 'GET') {
     try {
-      const result = await getProblemBySlugControllerHandle(id, {
+      const result = await getProblemBySlugControllerHandle(slug, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -32,7 +32,7 @@ export default async function handler(
       return res.status(200).json(result)
     } catch (error) {
       return sendSafeError(res, error, {
-        route: 'API /problems/[id] GET',
+        route: 'API /problems/[slug] GET',
         fallbackMessage: 'Erro ao buscar problema.',
       })
     }
@@ -51,7 +51,7 @@ export default async function handler(
       }
 
       await editProblemControllerHandle(
-        id,
+        slug,
         {
           title,
           description,
@@ -70,7 +70,7 @@ export default async function handler(
       return res.status(200).json({ message: 'Problema editado com sucesso.' })
     } catch (error) {
       return sendSafeError(res, error, {
-        route: 'API /problems/[id] PUT',
+        route: 'API /problems/[slug] PUT',
         fallbackMessage: 'Erro ao editar problema.',
       })
     }
@@ -79,7 +79,7 @@ export default async function handler(
   if (req.method === 'PATCH') {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/problems/${slug}`,
         {
           method: 'PATCH',
           headers: {
@@ -101,7 +101,7 @@ export default async function handler(
       return res.status(204).end()
     } catch (error) {
       return sendSafeError(res, error, {
-        route: 'API /problems/[id] PATCH',
+        route: 'API /problems/[slug] PATCH',
         fallbackMessage: 'Erro ao atualizar histórico do problema.',
       })
     }

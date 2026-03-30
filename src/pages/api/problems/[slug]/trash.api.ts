@@ -14,13 +14,15 @@ export default async function handler(
     return res.status(401).json({ message: 'Não autenticado.' })
   }
 
-  const { id } = req.query
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({ message: 'ID do problema é obrigatório.' })
+  const { slug } = req.query
+  if (!slug || typeof slug !== 'string') {
+    return res.status(400).json({
+      message: 'Identificador do problema é obrigatório.',
+    })
   }
 
   try {
-    await trashProblemControllerHandle(id, {
+    await trashProblemControllerHandle(slug, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
