@@ -19,4 +19,6 @@ export interface ImportProblemsCsvRowRequest {
   locationName: string;
   /** Código da localização conforme cadastrada no sistema. */
   locationCode?: string;
+  /** URL pública da imagem a ser baixada e anexada ao problema. */
+  imageUrl?: string;
 }

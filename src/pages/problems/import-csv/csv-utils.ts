@@ -5,6 +5,7 @@ export interface ParsedProblemCsvRow {
   category: string
   locationName: string
   locationCode: string
+  imageUrl: string
 }
 
 const HEADER_ALIASES = {
@@ -23,6 +24,7 @@ const HEADER_ALIASES = {
     'codigo_localizacao',
     'locationcode',
   ],
+  imageUrl: ['image_url', 'imagem_url', 'url_imagem', 'imageurl'],
 } as const
 
 function normalizeHeader(value: string) {
@@ -128,6 +130,7 @@ export function parseProblemsCsv(content: string): ParsedProblemCsvRow[] {
     headers,
     HEADER_ALIASES.locationCode,
   )
+  const imageUrlIndex = findHeaderIndex(headers, HEADER_ALIASES.imageUrl)
   if (
     titleIndex === -1 ||
     descriptionIndex === -1 ||
@@ -135,7 +138,7 @@ export function parseProblemsCsv(content: string): ParsedProblemCsvRow[] {
     locationNameIndex === -1
   ) {
     throw new Error(
-      'Cabeçalho inválido. Use titulo, descricao, categoria, localizacao_nome e localizacao_codigo.',
+      'Cabeçalho inválido. Use titulo, descricao, categoria, localizacao_nome, localizacao_codigo e, opcionalmente, image_url.',
     )
   }
 
@@ -147,5 +150,6 @@ export function parseProblemsCsv(content: string): ParsedProblemCsvRow[] {
     locationName: row[locationNameIndex]?.trim() ?? '',
     locationCode:
       locationCodeIndex !== -1 ? (row[locationCodeIndex]?.trim() ?? '') : '',
+    imageUrl: imageUrlIndex !== -1 ? (row[imageUrlIndex]?.trim() ?? '') : '',
   }))
 }

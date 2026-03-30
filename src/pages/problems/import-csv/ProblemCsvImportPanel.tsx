@@ -95,6 +95,19 @@ function pickLocationInput(row: ParsedProblemCsvRow) {
   }
 }
 
+function isValidImageUrl(value: string) {
+  if (!value.trim()) {
+    return true
+  }
+
+  try {
+    const url = new URL(value)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
 function buildFingerprint({
   title,
   description,
@@ -186,6 +199,14 @@ function resolvePreviewRows(
         ...row,
         status: 'invalid',
         message: 'Localização é obrigatória.',
+      }
+    }
+
+    if (!isValidImageUrl(row.imageUrl)) {
+      return {
+        ...row,
+        status: 'invalid',
+        message: 'A imagem deve usar uma URL http(s) válida.',
       }
     }
 
@@ -501,10 +522,12 @@ export function ProblemCsvImportPanel() {
               <ColumnChip>categoria</ColumnChip>
               <ColumnChip>localizacao_nome</ColumnChip>
               <ColumnChip>localizacao_codigo</ColumnChip>
+              <ColumnChip>imagem_url</ColumnChip>
             </ColumnExample>
             <Text size="sm" css={{ color: '$textSecondary' }}>
               A categoria deve usar o nome cadastrado no sistema. Para
-              localizações com nomes repetidos, informe o código.
+              localizações com nomes repetidos, informe o código. A coluna{' '}
+              <strong>image_url</strong> é opcional.
             </Text>
           </InfoCard>
 
