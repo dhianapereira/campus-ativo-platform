@@ -38,7 +38,7 @@ const locationSchema = z.object({
     .max(100, 'Nome deve ter no máximo 100 caracteres.'),
   code: z
     .string()
-    .max(20, 'Número deve ter no máximo 20 caracteres.')
+    .max(20, 'Código deve ter no máximo 20 caracteres.')
     .optional(),
   description: z
     .string()
@@ -240,7 +240,7 @@ function EditLocationModalContent({
 
               <div className="form-row">
                 <FormField className="code-field">
-                  <Label htmlFor="code">Número</Label>
+                  <Label htmlFor="code">Código</Label>
                   <Input
                     id="code"
                     {...register('code')}

@@ -31,7 +31,7 @@ const locationSchema = z.object({
     .max(100, 'Nome deve ter no máximo 100 caracteres.'),
   number: z
     .string()
-    .max(20, 'Número deve ter no máximo 20 caracteres.')
+    .max(20, 'Código deve ter no máximo 20 caracteres.')
     .optional(),
   description: z
     .string()
@@ -142,11 +142,11 @@ export function AddLocationModal({
             </FormField>
 
             <FormField>
-              <Label htmlFor="number">Número</Label>
+              <Label htmlFor="number">Código</Label>
               <Input
                 id="number"
                 {...register('number')}
-                placeholder="Insira o número identificador do local..."
+                placeholder="Insira o código identificador do local..."
                 disabled={isSubmitting}
               />
               {errors.number && (

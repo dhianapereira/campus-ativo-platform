@@ -366,7 +366,7 @@ export default function LocationsPage() {
                   </SearchIcon>
                   <SearchInput
                     type="text"
-                    placeholder="Busque por nome, número ou descrição..."
+                    placeholder="Busque por nome, código ou descrição..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -446,7 +446,7 @@ export default function LocationsPage() {
                         />
                       </TableHeader>
                       <TableHeader>Nome</TableHeader>
-                      <TableHeader>Número</TableHeader>
+                      <TableHeader>Código</TableHeader>
                       <TableHeader>Descrição</TableHeader>
                     </TableRow>
                   </thead>
@@ -496,7 +496,7 @@ export default function LocationsPage() {
                           <strong>Nome:</strong> {item.name}
                         </CardTitle>
                         <CardInfo>
-                          <strong>Número:</strong> {item.code}
+                          <strong>Código:</strong> {item.code}
                         </CardInfo>
                         <CardDescription>
                           <strong>Descrição</strong>

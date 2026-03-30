@@ -180,7 +180,7 @@ export function ViewLocationModal({
           </InfoItem>
 
           <InfoItem>
-            <Label>Número</Label>
+            <Label>Código</Label>
             <Value>{location.code || '-'}</Value>
           </InfoItem>
 
