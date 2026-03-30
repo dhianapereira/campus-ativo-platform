@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { trashLocationControllerHandle } from '../../../../lib/api/generated/locations/locations'
+import { sendSafeError } from '../../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,17 +30,10 @@ export default async function handler(
         .status(200)
         .json({ message: 'Localização movida para a lixeira com sucesso.' })
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as unknown as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const errorData = axiosError.response?.data || {}
-
-        return res.status(status).json(errorData)
-      }
-
-      return res.status(500).json({ message: 'Internal server error' })
+      return sendSafeError(res, error, {
+        route: 'API /locations/[id]/trash',
+        fallbackMessage: 'Erro ao mover localização para a lixeira.',
+      })
     }
   } else {
     return res.status(405).json({ message: 'Method not allowed' })

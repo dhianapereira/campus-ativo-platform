@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { createLocationControllerHandle } from '../../lib/api/generated/locations/locations'
 import { AXIOS_INSTANCE } from '../../lib/api/axios'
+import { sendSafeError } from './_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -53,18 +54,10 @@ export default async function handler(
 
       return res.status(200).json(result.data)
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as unknown as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const message =
-          axiosError.response?.data?.message || 'Internal server error'
-
-        return res.status(status).json({ message })
-      }
-
-      return res.status(500).json({ message: 'Internal server error' })
+      return sendSafeError(res, error, {
+        route: 'API /locations GET',
+        fallbackMessage: 'Erro ao buscar localizações.',
+      })
     }
   } else if (req.method === 'POST') {
     try {
@@ -89,17 +82,10 @@ export default async function handler(
 
       return res.status(201).json(result)
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as unknown as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const errorData = axiosError.response?.data || {}
-
-        return res.status(status).json(errorData)
-      }
-
-      return res.status(500).json({ message: 'Internal server error' })
+      return sendSafeError(res, error, {
+        route: 'API /locations POST',
+        fallbackMessage: 'Erro ao criar localização.',
+      })
     }
   } else {
     return res.status(405).json({ message: 'Method not allowed' })

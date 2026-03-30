@@ -3,6 +3,7 @@ import {
   editLocationControllerHandle,
   fetchLocationsControllerHandle,
 } from '../../../lib/api/generated/locations/locations'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -43,17 +44,10 @@ export default async function handler(
 
       return res.status(200).json(location)
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as unknown as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const errorData = axiosError.response?.data || {}
-
-        return res.status(status).json(errorData)
-      }
-
-      return res.status(500).json({ message: 'Internal server error' })
+      return sendSafeError(res, error, {
+        route: 'API /locations/[id] GET',
+        fallbackMessage: 'Erro ao buscar localização.',
+      })
     }
   } else if (req.method === 'PATCH') {
     try {
@@ -79,17 +73,10 @@ export default async function handler(
 
       return res.status(200).json(result)
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as unknown as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const errorData = axiosError.response?.data || {}
-
-        return res.status(status).json(errorData)
-      }
-
-      return res.status(500).json({ message: 'Internal server error' })
+      return sendSafeError(res, error, {
+        route: 'API /locations/[id] PATCH',
+        fallbackMessage: 'Erro ao atualizar localização.',
+      })
     }
   } else {
     return res.status(405).json({ message: 'Method not allowed' })

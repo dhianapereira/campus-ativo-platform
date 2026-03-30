@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { DashboardReportData } from '@/pages/home/types'
+import { sendSafeError } from '../_helpers/error-response'
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3333'
@@ -49,9 +50,9 @@ export default async function handler(
     const data = (await response.json()) as DashboardReportData
     return res.status(200).json(data)
   } catch (error) {
-    console.error('[API /dashboard/report]', error)
-    return res
-      .status(500)
-      .json({ message: 'Erro ao buscar dados do relatório. Tente novamente.' })
+    return sendSafeError(res, error, {
+      route: 'API /dashboard/report',
+      fallbackMessage: 'Erro ao buscar dados do relatório. Tente novamente.',
+    })
   }
 }

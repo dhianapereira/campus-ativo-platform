@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { AXIOS_INSTANCE } from '../../../lib/api/axios'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -44,20 +45,10 @@ export default async function handler(
     )
 
     return res.status(200).json(result.data)
-  } catch (error: unknown) {
-    console.error('[API /problems/import]', error)
-
-    const axiosError = error as {
-      response?: { status?: number; data?: { message?: string } }
-      message?: string
-    }
-
-    const status = axiosError.response?.status ?? 500
-    const message =
-      axiosError.response?.data?.message ??
-      axiosError.message ??
-      'Erro ao importar problemas.'
-
-    return res.status(status).json({ message })
+  } catch (error) {
+    return sendSafeError(res, error, {
+      route: 'API /problems/import',
+      fallbackMessage: 'Erro ao importar problemas.',
+    })
   }
 }

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { changeUserStatusControllerHandle } from '../../../../lib/api/generated/user-management/user-management'
+import { sendSafeError } from '../../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -38,17 +39,10 @@ export default async function handler(
 
       return res.status(200).json(result)
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as unknown as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const errorData = axiosError.response?.data || {}
-
-        return res.status(status).json(errorData)
-      }
-
-      return res.status(500).json({ message: 'Internal server error' })
+      return sendSafeError(res, error, {
+        route: 'API /users/[id]/status',
+        fallbackMessage: 'Erro ao alterar status do usuário.',
+      })
     }
   } else {
     return res.status(405).json({ message: 'Method not allowed' })

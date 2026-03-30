@@ -16,6 +16,7 @@ import {
 } from '../../lib/api/generated/problems/problems'
 import { getUserProfileControllerHandle } from '../../lib/api/generated/user-profile/user-profile'
 import { getRoleLevel } from '../../contexts/auth/role-mapping'
+import { getSafeErrorMessage, sendSafeError } from './_helpers/error-response'
 
 const TRASH_SOURCE_PAGE_SIZE = 20
 const TRASH_ITEMS_PER_PAGE = 10
@@ -535,18 +536,10 @@ export default async function handler(
 
       return res.status(200).json(results)
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as unknown as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const message =
-          axiosError.response?.data?.message || 'Internal server error'
-
-        return res.status(status).json({ message })
-      }
-
-      return res.status(500).json({ message: 'Internal server error' })
+      return sendSafeError(res, error, {
+        route: 'API /trash GET',
+        fallbackMessage: 'Erro ao buscar itens da lixeira.',
+      })
     }
   } else if (req.method === 'POST') {
     try {
@@ -583,8 +576,10 @@ export default async function handler(
               id: items[index].id,
               type: items[index].type,
               status: error?.response?.status ?? 500,
-              message:
-                error?.response?.data?.message || 'Internal server error',
+              message: getSafeErrorMessage(
+                result.reason,
+                'Erro ao processar item.',
+              ),
             },
           ]
         })
@@ -620,17 +615,10 @@ export default async function handler(
         return res.status(400).json({ message: 'Ação inválida.' })
       }
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as unknown as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const errorData = axiosError.response?.data || {}
-
-        return res.status(status).json(errorData)
-      }
-
-      return res.status(500).json({ message: 'Internal server error' })
+      return sendSafeError(res, error, {
+        route: 'API /trash POST',
+        fallbackMessage: 'Erro ao processar itens da lixeira.',
+      })
     }
   } else {
     return res.status(405).json({ message: 'Method not allowed' })

@@ -3,6 +3,7 @@ import { IncomingForm } from 'formidable'
 import fs from 'fs'
 import FormData from 'form-data'
 import axios from 'axios'
+import { sendSafeError } from './_helpers/error-response'
 
 export const config = {
   api: {
@@ -69,15 +70,17 @@ export default async function handler(
 
     return res.status(201).json(response.data)
   } catch (error) {
-    console.error('Erro ao fazer upload:', error)
-
     if (axios.isAxiosError(error)) {
-      const status = error.response?.status || 500
-      const message =
-        error.response?.data?.message || 'Erro ao fazer upload da imagem.'
-      return res.status(status).json({ message })
+      return sendSafeError(res, error, {
+        route: 'API /attachments',
+        fallbackMessage: 'Erro ao fazer upload da imagem.',
+      })
     }
 
-    return res.status(500).json({ message: 'Erro ao fazer upload da imagem.' })
+    return sendSafeError(res, error, {
+      route: 'API /attachments',
+      fallbackMessage: 'Erro ao fazer upload da imagem.',
+      exposeUpstreamMessage: false,
+    })
   }
 }

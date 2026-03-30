@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { changeUserPasswordControllerHandle } from '../../../lib/api/generated/user-profile/user-profile'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -48,10 +49,10 @@ export default async function handler(
     )
 
     return res.status(200).json(result)
-  } catch (error: any) {
-    console.error('Erro ao alterar senha:', error)
-    return res.status(error.status || 500).json({
-      message: error.message || 'Erro ao alterar senha.',
+  } catch (error) {
+    return sendSafeError(res, error, {
+      route: 'API /profile/password',
+      fallbackMessage: 'Erro ao alterar senha.',
     })
   }
 }

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { CreateAccountRequest } from '../../../lib/api/generated/models'
 import { createAccountControllerHandle } from '../../../lib/api/generated/authentication/authentication'
+import { logApiError } from '../_helpers/error-response'
 
 interface RegisterResponse {
   success: boolean
@@ -58,12 +59,7 @@ export default async function handler(
       message = genericMessage
     }
 
-    console.error('Erro no proxy de cadastro', {
-      status,
-      code: err?.code,
-      message: err?.message,
-      backendData: err?.response?.data,
-    })
+    logApiError('API /auth/register', error)
 
     return res.status(status).json({
       success: false,

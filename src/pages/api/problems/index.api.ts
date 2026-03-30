@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { AXIOS_INSTANCE } from '../../../lib/api/axios'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -39,10 +40,10 @@ export default async function handler(
     })
 
     return res.status(200).json(result.data)
-  } catch (error: any) {
-    console.error('Erro ao buscar problemas:', error)
-    return res.status(error.status || 500).json({
-      message: error.message || 'Erro ao buscar problemas',
+  } catch (error) {
+    return sendSafeError(res, error, {
+      route: 'API /problems',
+      fallbackMessage: 'Erro ao buscar problemas.',
     })
   }
 }

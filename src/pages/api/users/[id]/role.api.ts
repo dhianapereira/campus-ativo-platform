@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { changeUserRoleControllerHandle } from '../../../../lib/api/generated/user-management/user-management'
 import type { ChangeUserRoleControllerHandleBodyRole } from '../../../../lib/api/generated/models'
+import { sendSafeError } from '../../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -37,17 +38,9 @@ export default async function handler(
 
     return res.status(200).json(result)
   } catch (error) {
-    if (error && typeof error === 'object' && 'response' in error) {
-      const axiosError = error as unknown as {
-        response?: { status?: number; data?: { message?: string } }
-      }
-      const status = axiosError.response?.status || 500
-      const message =
-        axiosError.response?.data?.message || 'Internal server error'
-
-      return res.status(status).json({ message })
-    }
-
-    return res.status(500).json({ message: 'Internal server error' })
+    return sendSafeError(res, error, {
+      route: 'API /users/[id]/role',
+      fallbackMessage: 'Erro ao alterar papel do usuário.',
+    })
   }
 }

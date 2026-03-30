@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { trashLocationControllerHandle } from '../../../lib/api/generated/locations/locations'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -40,10 +41,10 @@ export default async function handler(
           ? 'Localização movida para a lixeira.'
           : `${ids.length} localizações movidas para a lixeira.`,
     })
-  } catch (error: any) {
-    console.error('Erro ao mover localizações para a lixeira:', error)
-    return res.status(error.status || 500).json({
-      message: error.message || 'Erro ao mover localizações para a lixeira',
+  } catch (error) {
+    return sendSafeError(res, error, {
+      route: 'API /locations/delete',
+      fallbackMessage: 'Erro ao mover localizações para a lixeira.',
     })
   }
 }

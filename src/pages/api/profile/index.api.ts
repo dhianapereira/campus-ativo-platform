@@ -3,6 +3,7 @@ import {
   getUserProfileControllerHandle,
   editUserProfileControllerHandle,
 } from '../../../lib/api/generated/user-profile/user-profile'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -52,10 +53,10 @@ export default async function handler(
     }
 
     return res.status(405).json({ message: 'Método não permitido.' })
-  } catch (error: any) {
-    console.error('Erro na API de perfil:', error)
-    return res.status(error.status || 500).json({
-      message: error.message || 'Erro ao processar requisição.',
+  } catch (error) {
+    return sendSafeError(res, error, {
+      route: 'API /profile',
+      fallbackMessage: 'Erro ao processar requisição.',
     })
   }
 }

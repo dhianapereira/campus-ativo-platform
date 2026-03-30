@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import type { DashboardMetrics } from '@/pages/home/types'
+import { sendSafeError } from './_helpers/error-response'
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3333'
@@ -48,9 +49,9 @@ export default async function handler(
     const data = (await response.json()) as DashboardMetrics
     return res.status(200).json(data)
   } catch (error) {
-    console.error('[API /dashboard]', error)
-    return res
-      .status(500)
-      .json({ message: 'Erro ao carregar dados do dashboard' })
+    return sendSafeError(res, error, {
+      route: 'API /dashboard',
+      fallbackMessage: 'Erro ao carregar dados do dashboard.',
+    })
   }
 }

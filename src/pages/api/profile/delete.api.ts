@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { deleteUserAccountControllerHandle } from '../../../lib/api/generated/user-profile/user-profile'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,10 +35,10 @@ export default async function handler(
     )
 
     return res.status(200).json(result)
-  } catch (error: any) {
-    console.error('Erro ao excluir conta:', error)
-    return res.status(error.status || 500).json({
-      message: error.message || 'Erro ao excluir conta',
+  } catch (error) {
+    return sendSafeError(res, error, {
+      route: 'API /profile/delete',
+      fallbackMessage: 'Erro ao excluir conta.',
     })
   }
 }

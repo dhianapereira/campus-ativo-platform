@@ -3,6 +3,7 @@ import {
   getProblemBySlugControllerHandle,
   editProblemControllerHandle,
 } from '../../../lib/api/generated/problems/problems'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -30,18 +31,10 @@ export default async function handler(
 
       return res.status(200).json(result)
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const message =
-          axiosError.response?.data?.message || 'Erro ao buscar problema'
-
-        return res.status(status).json({ message })
-      }
-
-      return res.status(500).json({ message: 'Erro ao buscar problema' })
+      return sendSafeError(res, error, {
+        route: 'API /problems/[id] GET',
+        fallbackMessage: 'Erro ao buscar problema.',
+      })
     }
   }
 
@@ -76,18 +69,10 @@ export default async function handler(
 
       return res.status(200).json({ message: 'Problema editado com sucesso.' })
     } catch (error) {
-      if (error && typeof error === 'object' && 'response' in error) {
-        const axiosError = error as {
-          response?: { status?: number; data?: { message?: string } }
-        }
-        const status = axiosError.response?.status || 500
-        const message =
-          axiosError.response?.data?.message || 'Erro ao editar problema.'
-
-        return res.status(status).json({ message })
-      }
-
-      return res.status(500).json({ message: 'Erro ao editar problema.' })
+      return sendSafeError(res, error, {
+        route: 'API /problems/[id] PUT',
+        fallbackMessage: 'Erro ao editar problema.',
+      })
     }
   }
 
@@ -115,13 +100,10 @@ export default async function handler(
 
       return res.status(204).end()
     } catch (error) {
-      if (error instanceof Error) {
-        return res.status(500).json({ message: error.message })
-      }
-
-      return res
-        .status(500)
-        .json({ message: 'Erro ao atualizar histórico do problema.' })
+      return sendSafeError(res, error, {
+        route: 'API /problems/[id] PATCH',
+        fallbackMessage: 'Erro ao atualizar histórico do problema.',
+      })
     }
   }
 

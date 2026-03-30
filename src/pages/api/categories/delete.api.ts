@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { trashCategoryControllerHandle } from '../../../lib/api/generated/categories/categories'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -40,10 +41,10 @@ export default async function handler(
           ? 'Categoria movida para a lixeira.'
           : `${ids.length} categorias movidas para a lixeira.`,
     })
-  } catch (error: any) {
-    console.error('Erro ao mover categorias para a lixeira:', error)
-    return res.status(error.status || 500).json({
-      message: error.message || 'Erro ao mover categorias para a lixeira',
+  } catch (error) {
+    return sendSafeError(res, error, {
+      route: 'API /categories/delete',
+      fallbackMessage: 'Erro ao mover categorias para a lixeira.',
     })
   }
 }

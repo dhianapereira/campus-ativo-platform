@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { createProblemControllerHandle } from '../../../lib/api/generated/problems/problems'
+import { sendSafeError } from '../_helpers/error-response'
 
 export default async function handler(
   req: NextApiRequest,
@@ -57,17 +58,10 @@ export default async function handler(
     return res
       .status(201)
       .json({ message: 'Problema cadastrado com sucesso.', data: result })
-  } catch (error: unknown) {
-    console.error('Erro ao cadastrar problema:', error)
-    const axiosError = error as {
-      response?: { status?: number; data?: { message?: string } }
-      message?: string
-    }
-    const status = axiosError.response?.status ?? 500
-    const message =
-      axiosError.response?.data?.message ??
-      axiosError.message ??
-      'Erro ao cadastrar problema.'
-    return res.status(status).json({ message })
+  } catch (error) {
+    return sendSafeError(res, error, {
+      route: 'API /problems/create',
+      fallbackMessage: 'Erro ao cadastrar problema.',
+    })
   }
 }
