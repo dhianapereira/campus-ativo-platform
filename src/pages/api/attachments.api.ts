@@ -5,6 +5,8 @@ import FormData from 'form-data'
 import axios from 'axios'
 import { sendSafeError } from './_helpers/error-response'
 
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024
+
 export const config = {
   api: {
     bodyParser: false,
@@ -25,16 +27,26 @@ export default async function handler(
     return res.status(401).json({ message: 'Não autenticado.' })
   }
 
+  let uploadedFilePath: string | null = null
+
   try {
-    const form = new IncomingForm()
+    const form = new IncomingForm({
+      multiples: false,
+      allowEmptyFiles: false,
+      maxFiles: 1,
+      maxFileSize: MAX_FILE_SIZE_BYTES,
+      maxTotalFileSize: MAX_FILE_SIZE_BYTES,
+    })
 
     const [, files] = await form.parse(req)
 
-    const file = files.file?.[0]
+    const file = Array.isArray(files.file) ? files.file[0] : files.file
 
     if (!file) {
       return res.status(400).json({ message: 'Nenhum arquivo enviado' })
     }
+
+    uploadedFilePath = file.filepath
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
     if (!allowedTypes.includes(file.mimetype || '')) {
@@ -43,8 +55,7 @@ export default async function handler(
       })
     }
 
-    const maxSizeBytes = 5 * 1024 * 1024 // 5MB
-    if (file.size > maxSizeBytes) {
+    if (file.size > MAX_FILE_SIZE_BYTES) {
       return res.status(400).json({
         message: 'Arquivo muito grande. Tamanho máximo: 5MB.',
       })
@@ -65,11 +76,17 @@ export default async function handler(
         Authorization: `Bearer ${authToken}`,
       },
     })
-
-    fs.unlinkSync(file.filepath)
-
     return res.status(201).json(response.data)
   } catch (error) {
+    if (
+      error instanceof Error &&
+      /maxFileSize|maxTotalFileSize|too large|bigger than/i.test(error.message)
+    ) {
+      return res.status(400).json({
+        message: 'Arquivo muito grande. Tamanho máximo: 5MB.',
+      })
+    }
+
     if (axios.isAxiosError(error)) {
       return sendSafeError(res, error, {
         route: 'API /attachments',
@@ -82,5 +99,9 @@ export default async function handler(
       fallbackMessage: 'Erro ao fazer upload da imagem.',
       exposeUpstreamMessage: false,
     })
+  } finally {
+    if (uploadedFilePath) {
+      await fs.promises.rm(uploadedFilePath, { force: true }).catch(() => {})
+    }
   }
 }
