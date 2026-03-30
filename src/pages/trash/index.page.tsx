@@ -20,6 +20,8 @@ import {
   ActionsContainer,
   SelectionToolbar,
   ActionButton,
+  MobileSelectionToolbar,
+  MobileSelectionGroup,
   DesktopTableWrapper,
   TableWrapper,
   Table,
@@ -331,6 +333,8 @@ export default function TrashPage() {
     totalPages > 0 ? Math.min(currentPage, totalPages) : currentPage
   const bulkActionIsPending =
     restoreMutation.isPending || deletePermanentlyMutation.isPending
+  const isAllCurrentSelected =
+    items.length > 0 && selectedItems.length === items.length
 
   const getBulkActionPayload = ():
     | BulkActionPayload
@@ -805,6 +809,43 @@ export default function TrashPage() {
             </SelectionToolbar>
           )}
 
+          {items.length > 0 && (
+            <MobileSelectionToolbar>
+              <MobileSelectionGroup>
+                <Checkbox
+                  type="checkbox"
+                  checked={isAllCurrentSelected}
+                  onChange={(e) => handleSelectAll(e.target.checked)}
+                />
+                <span>Selecionar todos ({selectedItems.length})</span>
+              </MobileSelectionGroup>
+              <ActionsContainer>
+                <ActionButton
+                  variant="primary"
+                  onClick={handleRestore}
+                  disabled={selectedItems.length === 0 || bulkActionIsPending}
+                >
+                  <ArrowCounterClockwise size={20} weight="bold" />
+                  <span>
+                    {restoreMutation.isPending ? 'Restaurando...' : 'Restaurar'}
+                  </span>
+                </ActionButton>
+                <ActionButton
+                  variant="danger"
+                  onClick={handleDeletePermanently}
+                  disabled={selectedItems.length === 0 || bulkActionIsPending}
+                >
+                  <Trash size={20} weight="bold" />
+                  <span>
+                    {deletePermanentlyMutation.isPending
+                      ? 'Excluindo...'
+                      : 'Excluir'}
+                  </span>
+                </ActionButton>
+              </ActionsContainer>
+            </MobileSelectionToolbar>
+          )}
+
           {isLoading ? (
             <div style={{ padding: '2rem', textAlign: 'center' }}>
               Carregando...
@@ -865,6 +906,7 @@ export default function TrashPage() {
                     <Checkbox
                       type="checkbox"
                       checked={selectedItems.includes(item.id)}
+                      onClick={(e) => e.stopPropagation()}
                       onChange={(e) => {
                         e.stopPropagation()
                         handleSelectItem(item, e.target.checked)

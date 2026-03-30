@@ -299,6 +299,33 @@ export const DesktopTableWrapper = styled('div', {
   },
 })
 
+export const MobileSelectionToolbar = styled('div', {
+  display: 'none',
+
+  '@media(max-width: 640px)': {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '0.75rem',
+    flexWrap: 'wrap',
+    backgroundColor: '$surfaceMuted',
+    border: '1px solid $borderLight',
+    borderRadius: '14px',
+    padding: '0.875rem 1rem',
+    marginBottom: '1rem',
+  },
+})
+
+export const MobileSelectionGroup = styled('label', {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.625rem',
+  color: '$textBody',
+  fontSize: '0.875rem',
+  fontWeight: 600,
+  cursor: 'pointer',
+})
+
 export const TableWrapper = styled('div', {
   width: '100%',
   backgroundColor: '$white',
@@ -410,6 +437,16 @@ export const LocationCard = styled('article', {
   padding: '$4',
   display: 'grid',
   gap: '$2',
+  position: 'relative',
+
+  '@media(max-width: 640px)': {
+    paddingRight: '3.5rem',
+  },
+
+  '& > div': {
+    display: 'grid',
+    gap: '0.625rem',
+  },
 })
 
 export const CardTitle = styled('h2', {

@@ -21,6 +21,8 @@ import {
   ActionsContainer,
   ActionButton,
   DesktopTableWrapper,
+  MobileSelectionToolbar,
+  MobileSelectionGroup,
   TableWrapper,
   Table,
   TableHeader,
@@ -434,6 +436,28 @@ export default function LocationsPage() {
           )}
 
           {filteredLocations.length > 0 && (
+            <MobileSelectionToolbar>
+              <MobileSelectionGroup>
+                <Checkbox
+                  type="checkbox"
+                  checked={isAllCurrentSelected}
+                  onChange={handleSelectAll}
+                />
+                <span>Selecionar todos ({selectedItems.length})</span>
+              </MobileSelectionGroup>
+
+              <ActionButton
+                variant="delete"
+                onClick={handleDeleteSelected}
+                disabled={selectedItems.length === 0}
+              >
+                <Trash size={20} weight="bold" />
+                <span>Mover para lixeira</span>
+              </ActionButton>
+            </MobileSelectionToolbar>
+          )}
+
+          {filteredLocations.length > 0 && (
             <DesktopTableWrapper>
               <TableWrapper>
                 <Table>
@@ -494,6 +518,17 @@ export default function LocationsPage() {
                       style={{ cursor: 'pointer' }}
                       onClick={() => handleEditLocation(item)}
                     >
+                      <Checkbox
+                        type="checkbox"
+                        checked={selectedItems.includes(item.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={() => handleSelectItem(item.id!)}
+                        style={{
+                          position: 'absolute',
+                          top: '1rem',
+                          right: '1rem',
+                        }}
+                      />
                       <div>
                         <CardTitle>
                           <strong>Nome:</strong> {item.name}

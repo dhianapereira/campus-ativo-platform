@@ -216,6 +216,10 @@ export const SelectionToolbar = styled('div', {
   '@media(max-width: 480px)': {
     alignItems: 'stretch',
   },
+
+  '@media(max-width: 640px)': {
+    display: 'none',
+  },
 })
 
 export const ActionButton = styled('button', {
@@ -286,6 +290,33 @@ export const ItemsCount = styled('p', {
   fontSize: '0.875rem',
   color: '$lightGray',
   marginBottom: '1rem',
+})
+
+export const MobileSelectionToolbar = styled('div', {
+  display: 'none',
+
+  '@media(max-width: 640px)': {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '0.75rem',
+    flexWrap: 'wrap',
+    backgroundColor: '$surfaceMuted',
+    border: '1px solid $borderLight',
+    borderRadius: '14px',
+    padding: '0.875rem 1rem',
+    marginBottom: '1rem',
+  },
+})
+
+export const MobileSelectionGroup = styled('label', {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.625rem',
+  color: '$textBody',
+  fontSize: '0.875rem',
+  fontWeight: 600,
+  cursor: 'pointer',
 })
 
 export const SelectedCount = styled('p', {
