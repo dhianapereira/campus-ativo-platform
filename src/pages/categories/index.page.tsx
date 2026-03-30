@@ -135,6 +135,8 @@ export default function CategoriesPage() {
     [categoriesData],
   )
 
+  const hasDisplayValue = (value?: string | null) => Boolean(value?.trim())
+
   const deleteCategoriesMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const response = await fetch('/api/categories/delete', {
@@ -467,7 +469,9 @@ export default function CategoriesPage() {
                             />
                           </TableCell>
                           <TableCell>{item.name}</TableCell>
-                          <TableCell>{item.description}</TableCell>
+                          <TableCell>
+                            {item.description?.trim() ?? ''}
+                          </TableCell>
                         </TableRow>
                       )
                     })}
@@ -492,11 +496,13 @@ export default function CategoriesPage() {
                         <CardTitle>
                           <strong>Nome:</strong> {item.name}
                         </CardTitle>
-                        <CardDescription>
-                          <strong>Descrição</strong>
-                          <br />
-                          {item.description}
-                        </CardDescription>
+                        {hasDisplayValue(item.description) && (
+                          <CardDescription>
+                            <strong>Descrição</strong>
+                            <br />
+                            {item.description?.trim()}
+                          </CardDescription>
+                        )}
                       </div>
                     </CategoryCard>
                   </div>

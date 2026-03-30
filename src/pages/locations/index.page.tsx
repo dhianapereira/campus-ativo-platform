@@ -30,7 +30,6 @@ import {
   MobileCardsWrapper,
   LocationCard,
   CardTitle,
-  CardInfo,
   CardDescription,
   PaginationContainer,
   PaginationButton,
@@ -133,6 +132,8 @@ export default function LocationsPage() {
     () => (locationsData?.locations || []).filter((item) => item.id),
     [locationsData],
   )
+
+  const hasDisplayValue = (value?: string | null) => Boolean(value?.trim())
 
   const deleteLocationsMutation = useMutation({
     mutationFn: async (ids: string[]) => {
@@ -469,8 +470,10 @@ export default function LocationsPage() {
                             />
                           </TableCell>
                           <TableCell>{item.name}</TableCell>
-                          <TableCell>{item.code}</TableCell>
-                          <TableCell>{item.description}</TableCell>
+                          <TableCell>{item.code?.trim() ?? ''}</TableCell>
+                          <TableCell>
+                            {item.description?.trim() ?? ''}
+                          </TableCell>
                         </TableRow>
                       )
                     })}
@@ -495,14 +498,18 @@ export default function LocationsPage() {
                         <CardTitle>
                           <strong>Nome:</strong> {item.name}
                         </CardTitle>
-                        <CardInfo>
-                          <strong>Código:</strong> {item.code}
-                        </CardInfo>
-                        <CardDescription>
-                          <strong>Descrição</strong>
-                          <br />
-                          {item.description}
-                        </CardDescription>
+                        {hasDisplayValue(item.code) && (
+                          <CardDescription>
+                            <strong>Código:</strong> {item.code?.trim()}
+                          </CardDescription>
+                        )}
+                        {hasDisplayValue(item.description) && (
+                          <CardDescription>
+                            <strong>Descrição</strong>
+                            <br />
+                            {item.description?.trim()}
+                          </CardDescription>
+                        )}
                       </div>
                     </LocationCard>
                   </div>
