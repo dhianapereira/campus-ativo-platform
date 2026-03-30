@@ -380,9 +380,17 @@ export const TableCell = styled('td', {
 })
 
 export const Checkbox = styled('input', {
-  width: '1rem',
-  height: '1rem',
+  width: '1.125rem',
+  height: '1.125rem',
+  borderRadius: '0.25rem',
+  border: '1px solid $borderDefault',
   cursor: 'pointer',
+  accentColor: '$green',
+
+  '&:focus': {
+    outline: '2px solid $green',
+    outlineOffset: '2px',
+  },
 })
 
 export const MobileCardsWrapper = styled('div', {

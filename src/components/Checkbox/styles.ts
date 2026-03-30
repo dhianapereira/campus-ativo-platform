@@ -4,10 +4,10 @@ import { keyframes } from '@stitches/react'
 
 export const CheckboxContainer = styled(Checkbox.Root, {
   all: 'unset',
-  width: '$6',
-  height: '$6',
+  width: '1.125rem',
+  height: '1.125rem',
   backgroundColor: '$white',
-  borderRadius: '$xs',
+  borderRadius: '0.25rem',
   lineHeight: 0,
   cursor: 'pointer',
   overflow: 'hidden',
@@ -15,7 +15,7 @@ export const CheckboxContainer = styled(Checkbox.Root, {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  border: '2px solid $lightGray',
+  border: '1px solid $borderDefault',
 
   '&[data-state="checked"]': {
     backgroundColor: '$green',
@@ -24,11 +24,12 @@ export const CheckboxContainer = styled(Checkbox.Root, {
   },
 
   '&[data-state="unchecked"]:focus': {
-    borderColor: '$lightGray',
+    borderColor: '$borderDefault',
   },
 
   '&:focus': {
-    borderColor: '$green',
+    outline: '2px solid $green',
+    outlineOffset: '2px',
   },
 })
 
@@ -52,8 +53,8 @@ const slideOut = keyframes({
 
 export const CheckboxIndicator = styled(Checkbox.Indicator, {
   color: '$white',
-  width: '$4',
-  height: '$4',
+  width: '0.875rem',
+  height: '0.875rem',
 
   '&[data-state="checked"]': {
     animation: `${slideIn} 200ms ease-out`,
