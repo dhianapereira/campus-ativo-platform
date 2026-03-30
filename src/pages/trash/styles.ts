@@ -309,11 +309,6 @@ export const TableWrapper = styled('div', {
   boxShadow:
     '0 10px 24px -12px rgba(0,0,0,0.18), 0 6px 12px -6px rgba(0,0,0,0.10)',
   overflow: 'hidden',
-  padding: '0 2rem',
-
-  '@media (max-width: 768px)': {
-    padding: '0 1.25rem',
-  },
 })
 
 export const Table = styled('table', {
@@ -329,7 +324,7 @@ export const Table = styled('table', {
 
 export const TableHeader = styled('th', {
   background: '$white',
-  padding: '1.25rem 0',
+  padding: '1.25rem 2rem',
   textAlign: 'left',
   fontWeight: 600,
   fontSize: '1rem',
@@ -344,7 +339,7 @@ export const TableHeader = styled('th', {
   },
 
   '@media (max-width: 768px)': {
-    padding: '1rem 0',
+    padding: '1rem 1.25rem',
     fontSize: '0.9rem',
   },
 })
@@ -372,7 +367,7 @@ export const TableRow = styled('tr', {
 })
 
 export const TableCell = styled('td', {
-  padding: '1.25rem 0',
+  padding: '1.25rem 2rem',
   color: '$textNeutral',
   fontSize: '0.95rem',
   lineHeight: 1.5,
@@ -386,7 +381,7 @@ export const TableCell = styled('td', {
   },
 
   '@media (max-width: 768px)': {
-    padding: '1rem 0',
+    padding: '1rem 1.25rem',
     fontSize: '0.85rem',
   },
 })
