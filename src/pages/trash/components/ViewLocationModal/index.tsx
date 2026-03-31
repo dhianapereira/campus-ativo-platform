@@ -116,7 +116,6 @@ export function ViewLocationModal({
       ])
       await invalidateTrashQueries(queryClient)
       toast.success('Localização excluída permanentemente.')
-      setShowDeleteConfirmationModal(false)
       onSuccess()
       onClose()
     },
@@ -214,6 +213,7 @@ export function ViewLocationModal({
         message="Esta localização será removida de forma definitiva e não poderá ser recuperada depois."
         confirmText="Excluir permanentemente"
         cancelText="Cancelar"
+        closeOnConfirm
         variant="danger"
       />
     </>

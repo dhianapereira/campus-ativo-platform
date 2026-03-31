@@ -116,7 +116,6 @@ export function ViewCategoryModal({
       ])
       await invalidateTrashQueries(queryClient)
       toast.success('Categoria excluída permanentemente.')
-      setShowDeleteConfirmationModal(false)
       onSuccess()
       onClose()
     },
@@ -209,6 +208,7 @@ export function ViewCategoryModal({
         message="Esta categoria será removida de forma definitiva e não poderá ser recuperada depois."
         confirmText="Excluir permanentemente"
         cancelText="Cancelar"
+        closeOnConfirm
         variant="danger"
       />
     </>

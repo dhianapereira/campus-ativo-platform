@@ -20,6 +20,7 @@ interface ConfirmationModalProps {
   isOpen: boolean
   onClose: () => void
   onConfirm: () => void
+  closeOnConfirm?: boolean
   title?: string
   message?: string
   confirmText?: string
@@ -31,6 +32,7 @@ export function ConfirmationModal({
   isOpen,
   onClose,
   onConfirm,
+  closeOnConfirm = false,
   title = 'Descartar alterações?',
   message = 'Se você sair agora, todas as suas alterações não salvas serão perdidas.',
   confirmText = 'Continuar editando',
@@ -40,6 +42,10 @@ export function ConfirmationModal({
   if (!isOpen) return null
 
   const handleConfirm = () => {
+    if (closeOnConfirm) {
+      onClose()
+    }
+
     onConfirm()
   }
 

@@ -155,7 +155,6 @@ export function ViewProblemModal({
       ])
       await invalidateTrashQueries(queryClient)
       toast.success('Problema excluído permanentemente.')
-      setShowDeleteConfirmationModal(false)
       onSuccess()
       onClose()
     },
@@ -269,6 +268,7 @@ export function ViewProblemModal({
         message="Este problema será removido de forma definitiva e não poderá ser recuperado depois."
         confirmText="Excluir permanentemente"
         cancelText="Cancelar"
+        closeOnConfirm
         variant="danger"
       />
     </>

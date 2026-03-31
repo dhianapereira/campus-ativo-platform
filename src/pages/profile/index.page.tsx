@@ -487,6 +487,7 @@ function ProfileContent({
         message="Esta ação é irreversível. Todos os seus dados serão permanentemente excluídos do sistema e você não poderá mais acessar sua conta."
         confirmText="Excluir"
         cancelText="Cancelar"
+        closeOnConfirm
         variant="danger"
       />
     </PlatformLayout>

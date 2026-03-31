@@ -306,7 +306,6 @@ export default function TrashPage() {
     }) => {
       await invalidateTrashQueries(queryClient)
       setSelectedItems([])
-      setShowDeleteConfirmation(false)
       if (data?.failedCount) {
         toast.success(
           data.deletedCount
@@ -938,6 +937,7 @@ export default function TrashPage() {
           message="Esta ação não pode ser desfeita. Os itens selecionados serão excluídos permanentemente do sistema."
           confirmText="Excluir permanentemente"
           cancelText="Cancelar"
+          closeOnConfirm
           variant="danger"
         />
 
