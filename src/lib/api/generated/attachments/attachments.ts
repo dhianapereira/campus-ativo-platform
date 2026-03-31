@@ -95,3 +95,64 @@ export const useUploadAttachmentControllerHandle = <TError = ErrorType<void>,
       > => {
       return useMutation(getUploadAttachmentControllerHandleMutationOptions(options), queryClient);
     }
+    /**
+ * @summary Excluir attachment órfão
+ */
+export const deleteOrphanAttachmentControllerHandle = (
+    id: string,
+ options?: SecondParameter<typeof axiosInstance>,signal?: AbortSignal
+) => {
+
+
+      return axiosInstance<void>(
+      {url: `/attachments/${id}/orphan`, method: 'DELETE', signal
+    },
+      options);
+    }
+
+
+
+export const getDeleteOrphanAttachmentControllerHandleMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteOrphanAttachmentControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteOrphanAttachmentControllerHandle>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['deleteOrphanAttachmentControllerHandle'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteOrphanAttachmentControllerHandle>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteOrphanAttachmentControllerHandle(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteOrphanAttachmentControllerHandleMutationResult = NonNullable<Awaited<ReturnType<typeof deleteOrphanAttachmentControllerHandle>>>
+
+    export type DeleteOrphanAttachmentControllerHandleMutationError = ErrorType<void>
+
+    /**
+ * @summary Excluir attachment órfão
+ */
+export const useDeleteOrphanAttachmentControllerHandle = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteOrphanAttachmentControllerHandle>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof axiosInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteOrphanAttachmentControllerHandle>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getDeleteOrphanAttachmentControllerHandleMutationOptions(options), queryClient);
+    }

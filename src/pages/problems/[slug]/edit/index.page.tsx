@@ -220,6 +220,18 @@ export default function EditProblem() {
 
   const categories: Category[] = categoriesData?.categories || []
   const locations: Location[] = locationsData?.locations || []
+  async function deleteAttachment(attachmentIdToDelete: string) {
+    const response = await fetch(`/api/attachments/${attachmentIdToDelete}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Falha ao excluir o anexo.')
+    }
+  }
+
   const categoryItems = categories.map((category) => ({
     value: category.id,
     name: category.name,
@@ -286,12 +298,26 @@ export default function EditProblem() {
     setUploadError(null)
 
     if (!file) {
+      const previousNewAttachmentId = newAttachmentId
       setNewAttachmentId(null)
       setAttachmentChanged(true)
+
+      if (previousNewAttachmentId) {
+        try {
+          await deleteAttachment(previousNewAttachmentId)
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : 'Falha ao excluir o anexo.'
+          setUploadError(errorMessage)
+          toast.error(errorMessage)
+        }
+      }
+
       return
     }
 
     setIsUploadingImage(true)
+    const previousNewAttachmentId = newAttachmentId
 
     try {
       const formData = new FormData()
@@ -311,6 +337,14 @@ export default function EditProblem() {
       const data = await response.json()
       setNewAttachmentId(data.attachmentId)
       setAttachmentChanged(true)
+
+      if (
+        previousNewAttachmentId &&
+        previousNewAttachmentId !== data.attachmentId
+      ) {
+        await deleteAttachment(previousNewAttachmentId)
+      }
+
       toast.success('Imagem enviada com sucesso!')
     } catch (error) {
       const errorMessage =
@@ -319,13 +353,24 @@ export default function EditProblem() {
           : 'Falha ao fazer upload da imagem.'
       setUploadError(errorMessage)
       toast.error(errorMessage)
-      setNewAttachmentId(null)
+      setNewAttachmentId(previousNewAttachmentId)
     } finally {
       setIsUploadingImage(false)
     }
   }
 
-  const handleRemoveCurrentImage = () => {
+  const handleRemoveCurrentImage = async () => {
+    if (newAttachmentId) {
+      try {
+        await deleteAttachment(newAttachmentId)
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : 'Falha ao excluir o anexo.'
+        setUploadError(errorMessage)
+        toast.error(errorMessage)
+      }
+    }
+
     setCurrentAttachment(null)
     setNewAttachmentId(null)
     setAttachmentChanged(true)

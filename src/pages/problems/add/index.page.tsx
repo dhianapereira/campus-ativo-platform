@@ -107,15 +107,41 @@ export default function AddProblem() {
     label: getLocationOptionLabel(location),
   }))
 
+  async function deleteAttachment(attachmentIdToDelete: string) {
+    const response = await fetch(`/api/attachments/${attachmentIdToDelete}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || 'Falha ao excluir o anexo.')
+    }
+  }
+
   const handleImageSelect = async (file: File | null) => {
     setUploadError(null)
 
     if (!file) {
+      const previousAttachmentId = attachmentId
       setAttachmentId(null)
+
+      if (previousAttachmentId) {
+        try {
+          await deleteAttachment(previousAttachmentId)
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : 'Falha ao excluir o anexo.'
+          setUploadError(errorMessage)
+          toast.error(errorMessage)
+        }
+      }
+
       return
     }
 
     setIsUploadingImage(true)
+    const previousAttachmentId = attachmentId
 
     try {
       const formData = new FormData()
@@ -140,6 +166,11 @@ export default function AddProblem() {
 
       const data = await response.json()
       setAttachmentId(data.attachmentId)
+
+      if (previousAttachmentId && previousAttachmentId !== data.attachmentId) {
+        await deleteAttachment(previousAttachmentId)
+      }
+
       toast.success('Imagem enviada com sucesso!')
     } catch (error) {
       const errorMessage =
@@ -150,7 +181,7 @@ export default function AddProblem() {
           : 'Falha ao fazer upload da imagem.'
       setUploadError(errorMessage)
       toast.error(errorMessage)
-      setAttachmentId(null)
+      setAttachmentId(previousAttachmentId)
     } finally {
       setIsUploadingImage(false)
     }

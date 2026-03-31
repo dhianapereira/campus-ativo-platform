@@ -5,6 +5,20 @@ import {
 } from '../../../lib/api/generated/problems/problems'
 import { sendSafeError } from '../_helpers/error-response'
 
+function getErrorStatus(error: unknown) {
+  if (!error || typeof error !== 'object') {
+    return 500
+  }
+
+  const normalized = error as {
+    status?: unknown
+    response?: { status?: unknown }
+  }
+  const status = normalized.response?.status ?? normalized.status
+
+  return typeof status === 'number' && Number.isFinite(status) ? status : 500
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -31,6 +45,13 @@ export default async function handler(
 
       return res.status(200).json(result)
     } catch (error) {
+      if (getErrorStatus(error) === 404) {
+        console.warn('[API /problems/[slug] GET] upstream returned 404', {
+          slug,
+          method: req.method,
+        })
+      }
+
       return sendSafeError(res, error, {
         route: 'API /problems/[slug] GET',
         fallbackMessage: 'Erro ao buscar problema.',
