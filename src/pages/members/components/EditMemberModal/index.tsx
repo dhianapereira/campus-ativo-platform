@@ -13,7 +13,6 @@ import {
   Form,
   FormField,
   Label,
-  Input,
   ErrorMessage,
   ButtonGroup,
   CancelButton,
@@ -25,6 +24,11 @@ import {
   StatusToggle,
   StatusIndicator,
   BottomFieldsContainer,
+  InfoGroup,
+  InfoItem,
+  InfoLabel,
+  InfoValue,
+  DescriptionValue,
 } from './styles'
 import { X } from 'phosphor-react'
 import { useQueryClient } from '@tanstack/react-query'
@@ -38,18 +42,6 @@ import type {
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 
 const memberSchema = z.object({
-  name: z
-    .string()
-    .min(1, 'Nome é obrigatório.')
-    .max(100, 'Nome deve ter no máximo 100 caracteres.'),
-  email: z
-    .string()
-    .min(1, 'Email é obrigatório.')
-    .email('Email deve ser válido.'),
-  position: z
-    .string()
-    .min(1, 'Cargo é obrigatório.')
-    .max(100, 'Cargo deve ter no máximo 100 caracteres.'),
   permissions: z.string(),
 })
 
@@ -104,9 +96,6 @@ export function EditMemberModal({
       const memberStatus = member.isActive ?? true
 
       reset({
-        name: member.name || '',
-        email: member.email || '',
-        position: member.position || '',
         permissions: memberRole,
       })
 
@@ -143,32 +132,39 @@ export function EditMemberModal({
       const roleChanged = data.permissions !== initialPermission
       const statusChanged = isActive !== initialStatus
 
-      const updates: Promise<Response>[] = []
+      const updates: Array<{
+        type: 'role' | 'status'
+        request: () => Promise<Response>
+      }> = []
 
       if (roleChanged) {
-        updates.push(
-          fetch(`/api/users/${member.id}/role`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
-              role: data.permissions as ChangeUserRoleControllerHandleBodyRole,
+        updates.push({
+          type: 'role',
+          request: () =>
+            fetch(`/api/users/${member.id}/role`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                role: data.permissions as ChangeUserRoleControllerHandleBodyRole,
+              }),
             }),
-          }),
-        )
+        })
       }
 
       if (statusChanged) {
-        updates.push(
-          fetch(`/api/users/${member.id}/status`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
-              isActive,
+        updates.push({
+          type: 'status',
+          request: () =>
+            fetch(`/api/users/${member.id}/status`, {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                isActive,
+              }),
             }),
-          }),
-        )
+        })
       }
 
       if (updates.length === 0) {
@@ -177,16 +173,33 @@ export function EditMemberModal({
         return
       }
 
-      const responses = await Promise.all(updates)
+      const completedUpdates: Array<'role' | 'status'> = []
 
-      const allSuccessful = responses.every((response) => response.ok)
+      for (const update of updates) {
+        const response = await update.request()
 
-      if (!allSuccessful) {
-        const firstError = responses.find((response) => !response.ok)
-        if (firstError) {
-          const errorData = await firstError.json().catch(() => ({}))
-          throw new Error(errorData.message || 'Falha ao atualizar usuário.')
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}))
+          const defaultMessage =
+            update.type === 'role'
+              ? 'Falha ao atualizar permissão.'
+              : 'Falha ao atualizar status.'
+
+          if (completedUpdates.length > 0) {
+            const completedLabels = completedUpdates.map((item) =>
+              item === 'role' ? 'permissão' : 'status',
+            )
+            const failedLabel = update.type === 'role' ? 'permissão' : 'status'
+
+            throw new Error(
+              `${completedLabels.join(' e ')} atualizada com sucesso, mas houve falha ao atualizar ${failedLabel}.`,
+            )
+          }
+
+          throw new Error(errorData.message || defaultMessage)
         }
+
+        completedUpdates.push(update.type)
       }
 
       await queryClient.invalidateQueries({ queryKey: ['users'] })
@@ -237,6 +250,11 @@ export function EditMemberModal({
   if (!isOpen || !member) return null
 
   const isSelf = user?.id && member?.id && user.id === member.id
+  const statusText = isActive ? 'Ativo' : 'Inativo'
+  const currentRoleLabel =
+    permissionOptions.find(
+      (option) => option.value === watchedFields.permissions,
+    )?.label ?? watchedFields.permissions
   const visiblePermissionOptions = permissionOptions.filter((opt) =>
     canManageUserRole(opt.value as ChangeUserRoleControllerHandleBodyRole),
   )
@@ -277,57 +295,43 @@ export function EditMemberModal({
 
           <ModalBody>
             <Form onSubmit={handleSubmit(onSubmit)}>
-              <div className="form-row">
-                <FormField className="name-field">
-                  <Label htmlFor="name">Nome</Label>
-                  <Input id="name" {...register('name')} disabled={true} />
-                  {errors.name && (
-                    <ErrorMessage>{errors.name.message}</ErrorMessage>
-                  )}
-                </FormField>
-              </div>
+              <InfoGroup>
+                <InfoItem>
+                  <InfoLabel>Nome</InfoLabel>
+                  <InfoValue>{member.name || '-'}</InfoValue>
+                </InfoItem>
 
-              <FormField>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register('email')}
-                  disabled={true}
-                />
-                {errors.email && (
-                  <ErrorMessage>{errors.email.message}</ErrorMessage>
-                )}
-              </FormField>
+                <InfoItem>
+                  <InfoLabel>Email</InfoLabel>
+                  <InfoValue>{member.email || '-'}</InfoValue>
+                </InfoItem>
 
-              <FormField>
-                <Label htmlFor="position">Cargo</Label>
-                <Input
-                  id="position"
-                  {...register('position')}
-                  disabled={true}
-                />
-                {errors.position && (
-                  <ErrorMessage>{errors.position.message}</ErrorMessage>
-                )}
-              </FormField>
+                <InfoItem>
+                  <InfoLabel>Cargo</InfoLabel>
+                  <DescriptionValue>{member.position || '-'}</DescriptionValue>
+                </InfoItem>
+              </InfoGroup>
 
               <BottomFieldsContainer>
                 <FormField>
                   <Label htmlFor="permissions">Permissão</Label>
-                  <SelectContainer>
-                    <Select
-                      id="permissions"
-                      {...register('permissions')}
-                      disabled={isSubmitting || !!isSelf}
-                    >
-                      {finalPermissionOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </Select>
-                  </SelectContainer>
+                  {isSelf ? (
+                    <InfoValue>{currentRoleLabel || '-'}</InfoValue>
+                  ) : (
+                    <SelectContainer>
+                      <Select
+                        id="permissions"
+                        {...register('permissions')}
+                        disabled={isSubmitting}
+                      >
+                        {finalPermissionOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </Select>
+                    </SelectContainer>
+                  )}
                   {errors.permissions && (
                     <ErrorMessage>{errors.permissions.message}</ErrorMessage>
                   )}
@@ -335,14 +339,18 @@ export function EditMemberModal({
 
                 <StatusContainer>
                   <StatusLabel>Status</StatusLabel>
-                  <StatusToggle
-                    type="button"
-                    isActive={isActive}
-                    onClick={() => setIsActive(!isActive)}
-                    disabled={isSubmitting || !!isSelf}
-                  >
-                    <StatusIndicator isActive={isActive} />
-                  </StatusToggle>
+                  {isSelf ? (
+                    <InfoValue>{statusText}</InfoValue>
+                  ) : (
+                    <StatusToggle
+                      type="button"
+                      isActive={isActive}
+                      onClick={() => setIsActive(!isActive)}
+                      disabled={isSubmitting}
+                    >
+                      <StatusIndicator isActive={isActive} />
+                    </StatusToggle>
+                  )}
                 </StatusContainer>
               </BottomFieldsContainer>
             </Form>
@@ -350,15 +358,23 @@ export function EditMemberModal({
 
           <ModalFooter>
             <ButtonGroup>
-              <CancelButton onClick={handleClose} disabled={isSubmitting}>
-                Cancelar
-              </CancelButton>
-              <SubmitButton
-                onClick={handleSubmit(onSubmit)}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Salvando...' : 'Salvar'}
-              </SubmitButton>
+              {isSelf ? (
+                <CancelButton onClick={handleClose} disabled={isSubmitting}>
+                  Fechar
+                </CancelButton>
+              ) : (
+                <>
+                  <CancelButton onClick={handleClose} disabled={isSubmitting}>
+                    Cancelar
+                  </CancelButton>
+                  <SubmitButton
+                    onClick={handleSubmit(onSubmit)}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Salvando...' : 'Salvar'}
+                  </SubmitButton>
+                </>
+              )}
             </ButtonGroup>
           </ModalFooter>
         </ModalContent>
