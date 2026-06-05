@@ -17,6 +17,8 @@ import {
   FormRow,
   Label,
   Input,
+  PasswordInputContainer,
+  PasswordToggleSlot,
   ButtonsContainer,
   Button,
   ErrorMessage,
@@ -28,6 +30,7 @@ import {
 import PlatformLayout from '@/layouts/platform/layout'
 import { ConfirmationModal } from '@/components/ConfirmationModal'
 import { USER_PROFILE_QUERY_KEY, useAuthSession } from '@/contexts/auth-context'
+import PasswordIcon from '@/components/PasswordIcon'
 
 type AuthUser = NonNullable<ReturnType<typeof useAuthSession>['user']>
 
@@ -67,6 +70,10 @@ function ProfileContent({
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const [isOldPasswordVisible, setIsOldPasswordVisible] = useState(false)
+  const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false)
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false)
 
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [showProfileDiscardConfirmation, setShowProfileDiscardConfirmation] =
@@ -144,6 +151,9 @@ function ProfileContent({
       setNewPassword('')
       setConfirmPassword('')
       setPasswordError('')
+      setIsOldPasswordVisible(false)
+      setIsNewPasswordVisible(false)
+      setIsConfirmPasswordVisible(false)
       toast.success('Senha alterada com sucesso.')
     },
     onError: (error: Error) => {
@@ -362,39 +372,90 @@ function ProfileContent({
             <Form onSubmit={handlePasswordSubmit}>
               <FormGroup>
                 <Label htmlFor="oldPassword">Senha atual</Label>
-                <Input
-                  id="oldPassword"
-                  type="password"
-                  value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
-                  placeholder="Digite sua senha atual"
-                  disabled={changePasswordMutation.isPending}
-                />
+                <PasswordInputContainer>
+                  <Input
+                    id="oldPassword"
+                    type={isOldPasswordVisible ? 'text' : 'password'}
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    placeholder="Digite sua senha atual"
+                    disabled={changePasswordMutation.isPending}
+                    hasPasswordToggle
+                  />
+                  <PasswordToggleSlot>
+                    <PasswordIcon
+                      isVisible={isOldPasswordVisible}
+                      onTap={() =>
+                        setIsOldPasswordVisible((isVisible) => !isVisible)
+                      }
+                      aria-label={
+                        isOldPasswordVisible
+                          ? 'Ocultar senha atual'
+                          : 'Mostrar senha atual'
+                      }
+                      disabled={changePasswordMutation.isPending}
+                    />
+                  </PasswordToggleSlot>
+                </PasswordInputContainer>
               </FormGroup>
 
               <FormRow>
                 <FormGroup>
                   <Label htmlFor="newPassword">Nova senha</Label>
-                  <Input
-                    id="newPassword"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Digite sua nova senha"
-                    disabled={changePasswordMutation.isPending}
-                  />
+                  <PasswordInputContainer>
+                    <Input
+                      id="newPassword"
+                      type={isNewPasswordVisible ? 'text' : 'password'}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="Digite sua nova senha"
+                      disabled={changePasswordMutation.isPending}
+                      hasPasswordToggle
+                    />
+                    <PasswordToggleSlot>
+                      <PasswordIcon
+                        isVisible={isNewPasswordVisible}
+                        onTap={() =>
+                          setIsNewPasswordVisible((isVisible) => !isVisible)
+                        }
+                        aria-label={
+                          isNewPasswordVisible
+                            ? 'Ocultar nova senha'
+                            : 'Mostrar nova senha'
+                        }
+                        disabled={changePasswordMutation.isPending}
+                      />
+                    </PasswordToggleSlot>
+                  </PasswordInputContainer>
                 </FormGroup>
 
                 <FormGroup>
                   <Label htmlFor="confirmPassword">Confirmar nova senha</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Confirme sua nova senha"
-                    disabled={changePasswordMutation.isPending}
-                  />
+                  <PasswordInputContainer>
+                    <Input
+                      id="confirmPassword"
+                      type={isConfirmPasswordVisible ? 'text' : 'password'}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirme sua nova senha"
+                      disabled={changePasswordMutation.isPending}
+                      hasPasswordToggle
+                    />
+                    <PasswordToggleSlot>
+                      <PasswordIcon
+                        isVisible={isConfirmPasswordVisible}
+                        onTap={() =>
+                          setIsConfirmPasswordVisible((isVisible) => !isVisible)
+                        }
+                        aria-label={
+                          isConfirmPasswordVisible
+                            ? 'Ocultar confirmação de senha'
+                            : 'Mostrar confirmação de senha'
+                        }
+                        disabled={changePasswordMutation.isPending}
+                      />
+                    </PasswordToggleSlot>
+                  </PasswordInputContainer>
                 </FormGroup>
               </FormRow>
 
@@ -409,6 +470,9 @@ function ProfileContent({
                     setNewPassword('')
                     setConfirmPassword('')
                     setPasswordError('')
+                    setIsOldPasswordVisible(false)
+                    setIsNewPasswordVisible(false)
+                    setIsConfirmPasswordVisible(false)
                   }}
                   disabled={
                     !hasPasswordInput || changePasswordMutation.isPending

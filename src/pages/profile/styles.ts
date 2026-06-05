@@ -108,6 +108,32 @@ export const Input = styled('input', {
   '&::placeholder': {
     color: '$textDisabled',
   },
+
+  variants: {
+    hasPasswordToggle: {
+      true: {
+        paddingRight: '2.75rem',
+      },
+    },
+  },
+})
+
+export const PasswordInputContainer = styled('div', {
+  position: 'relative',
+})
+
+export const PasswordToggleSlot = styled('div', {
+  position: 'absolute',
+  top: '50%',
+  right: '0.875rem',
+  color: '$green',
+  display: 'flex',
+  transform: 'translateY(-50%)',
+
+  '& button:disabled': {
+    cursor: 'not-allowed',
+    opacity: 0.5,
+  },
 })
 
 export const FormRow = styled('div', {

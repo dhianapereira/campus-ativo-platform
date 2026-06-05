@@ -1,6 +1,9 @@
-import type { MouseEventHandler } from 'react'
+import type { ButtonHTMLAttributes } from 'react'
 
-export interface PasswordIconProps {
+export interface PasswordIconProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'onClick'
+> {
   isVisible: boolean
-  onTap?: MouseEventHandler
+  onTap?: ButtonHTMLAttributes<HTMLButtonElement>['onClick']
 }
