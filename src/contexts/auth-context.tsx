@@ -35,6 +35,7 @@ interface AuthPermissionsData {
   canAccessUserManagement: () => boolean
   canAccessLocations: () => boolean
   canAccessCategories: () => boolean
+  canAccessDashboard: () => boolean
   canAccessTrash: () => boolean
   canManageUserRole: (targetUserRole: string) => boolean
 }
@@ -189,6 +190,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       canAccessUserManagement: () => hasRoleLevel(3),
       canAccessLocations: () => hasRoleLevel(2),
       canAccessCategories: () => hasRoleLevel(2),
+      canAccessDashboard: () => hasRoleLevel(2),
       canAccessTrash: () => !!user,
       canManageUserRole: (targetUserRole: string): boolean => {
         if (!role) return false

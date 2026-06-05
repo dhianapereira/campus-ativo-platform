@@ -1,12 +1,19 @@
+export const USER_ROLES = {
+  ADMIN: 'ADMIN',
+  DIRECTOR: 'DIRECTOR',
+  MANAGER: 'MANAGER',
+  REPORTER: 'REPORTER',
+} as const
+
 export function mapRoleToDisplayName(role: string): string {
   switch (role) {
-    case 'ADMIN':
+    case USER_ROLES.ADMIN:
       return 'Administrador'
-    case 'DIRECTOR':
+    case USER_ROLES.DIRECTOR:
       return 'Diretor'
-    case 'MANAGER':
+    case USER_ROLES.MANAGER:
       return 'Gerente'
-    case 'REPORTER':
+    case USER_ROLES.REPORTER:
       return 'Usuário'
     default:
       return 'Relator'
@@ -15,13 +22,13 @@ export function mapRoleToDisplayName(role: string): string {
 
 export function getRoleLevel(role: string): number {
   switch (role) {
-    case 'ADMIN':
+    case USER_ROLES.ADMIN:
       return 4
-    case 'DIRECTOR':
+    case USER_ROLES.DIRECTOR:
       return 3
-    case 'MANAGER':
+    case USER_ROLES.MANAGER:
       return 2
-    case 'REPORTER':
+    case USER_ROLES.REPORTER:
       return 1
     default:
       return 0
@@ -37,13 +44,13 @@ export function hasRequiredRole(
 
 export function getRoleDescription(role: string): string {
   switch (role) {
-    case 'ADMIN':
+    case USER_ROLES.ADMIN:
       return 'Acesso completo ao sistema'
-    case 'DIRECTOR':
+    case USER_ROLES.DIRECTOR:
       return 'Gerenciamento de usuários e problemas'
-    case 'MANAGER':
+    case USER_ROLES.MANAGER:
       return 'Gerenciamento de problemas'
-    case 'REPORTER':
+    case USER_ROLES.REPORTER:
       return 'Relatar e visualizar problemas'
     default:
       return 'Usuário básico'

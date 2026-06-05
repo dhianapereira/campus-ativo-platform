@@ -20,6 +20,7 @@ interface MenuOptionsConfig {
   canAccessUserManagement?: boolean
   canAccessLocations?: boolean
   canAccessCategories?: boolean
+  canAccessDashboard?: boolean
   canAccessTrash?: boolean
 }
 
@@ -32,10 +33,13 @@ export const createMenuOptions = ({
   canAccessUserManagement = false,
   canAccessLocations = false,
   canAccessCategories = false,
+  canAccessDashboard = false,
   canAccessTrash = false,
 }: MenuOptionsConfig): IOption[] => {
-  const options: IOption[] = [
-    {
+  const options: IOption[] = []
+
+  if (canAccessDashboard) {
+    options.push({
       id: 'dashboard',
       name: 'Dashboard',
       icon: <ChartLineUp weight="bold" />,
@@ -43,17 +47,18 @@ export const createMenuOptions = ({
         router.push('/')
         onClose?.()
       },
+    })
+  }
+
+  options.push({
+    id: 'problems',
+    name: 'Problemas',
+    icon: <Warning weight="bold" />,
+    onClick: () => {
+      router.push('/problems')
+      onClose?.()
     },
-    {
-      id: 'problems',
-      name: 'Problemas',
-      icon: <Warning weight="bold" />,
-      onClick: () => {
-        router.push('/problems')
-        onClose?.()
-      },
-    },
-  ]
+  })
 
   if (canAccessLocations) {
     options.push({

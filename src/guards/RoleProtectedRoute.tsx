@@ -50,7 +50,6 @@ export function RoleProtectedRoute({
 
     const backTo =
       typeof window !== 'undefined' ? window.location.pathname : fallbackPath
-
     void router.replace({ pathname: '/unauthorized', query: { back: backTo } })
   }, [fallbackPath, hasPermission, isAuthenticated, isLoading, router])
 

@@ -25,6 +25,7 @@ export default function Drawer({
     canAccessUserManagement,
     canAccessLocations,
     canAccessCategories,
+    canAccessDashboard,
     canAccessTrash,
   } = useAuthPermissions()
 
@@ -37,6 +38,7 @@ export default function Drawer({
     canAccessUserManagement: canAccessUserManagement(),
     canAccessLocations: canAccessLocations(),
     canAccessCategories: canAccessCategories(),
+    canAccessDashboard: canAccessDashboard(),
     canAccessTrash: canAccessTrash(),
   })
 

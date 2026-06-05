@@ -48,6 +48,8 @@ import { Button, LoadErrorState } from '@/components'
 import { colors } from '@/styles/tokens'
 import { FileText, MagnifyingGlass, Gear } from 'phosphor-react'
 import { ReportModal } from '@/layouts/platform/components/ReportModal'
+import { RoleProtectedRoute } from '@/guards/RoleProtectedRoute'
+import { useAuthPermissions } from '@/contexts/auth-context'
 
 const EMPTY_TOP_MESSAGE =
   'Não há dados suficientes ainda para exibir esta lista.'
@@ -263,7 +265,7 @@ function DashboardContent({
   )
 }
 
-export default function Home() {
+function DashboardPage() {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false)
   const [selectedPeriod, setSelectedPeriod] = useState('30')
 
@@ -337,5 +339,15 @@ export default function Home() {
         />
       </MainContainer>
     </PlatformLayout>
+  )
+}
+
+export default function Home() {
+  const { canAccessDashboard } = useAuthPermissions()
+
+  return (
+    <RoleProtectedRoute canAccess={canAccessDashboard()}>
+      <DashboardPage />
+    </RoleProtectedRoute>
   )
 }
