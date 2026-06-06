@@ -74,7 +74,7 @@ export default function Menu({ onLogoutClick }: MenuProps) {
             const path = MENU_OPTION_PATHS[option.id]
             const isActive =
               option.id === 'dashboard'
-                ? pathname === '/' || pathname === '/home'
+                ? pathname === '/' || pathname === '/dashboard'
                 : path
                   ? pathname === path
                   : false

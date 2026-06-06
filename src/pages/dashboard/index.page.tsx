@@ -342,7 +342,7 @@ function DashboardPage() {
   )
 }
 
-export default function Home() {
+export default function Dashboard() {
   const { canAccessDashboard } = useAuthPermissions()
 
   return (

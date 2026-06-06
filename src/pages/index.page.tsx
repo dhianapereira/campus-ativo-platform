@@ -29,7 +29,7 @@ export default function RootPage() {
       return
     }
 
-    void router.replace(canAccessDashboard() ? '/home' : '/problems')
+    void router.replace(canAccessDashboard() ? '/dashboard' : '/problems')
   }, [canAccessDashboard, hasProfileError, isAuthenticated, isLoading, router])
 
   if (isLoading || (isProfileLoading && hasProfileError)) {

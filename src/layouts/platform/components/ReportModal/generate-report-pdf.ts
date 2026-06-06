@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import type { DashboardReportData } from '@/pages/home/types'
+import type { DashboardReportData } from '@/pages/dashboard/types'
 
 const BRAND = [0, 135, 95] as const
 const BRAND_DARK = [0, 94, 67] as const

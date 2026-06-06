@@ -10,7 +10,7 @@ import PlatformLayout from '@/layouts/platform/layout'
 globalStyles()
 
 function shouldUsePlatformLayout(pathname: string) {
-  if (pathname === '/' || pathname === '/home') {
+  if (pathname === '/' || pathname === '/dashboard') {
     return true
   }
 

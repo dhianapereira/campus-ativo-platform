@@ -44,7 +44,7 @@ export const createMenuOptions = ({
       name: 'Dashboard',
       icon: <ChartLineUp weight="bold" />,
       onClick: () => {
-        router.push('/')
+        router.push('/dashboard')
         onClose?.()
       },
     })
@@ -138,7 +138,7 @@ export const createMenuOptions = ({
 }
 
 export const MENU_OPTION_PATHS: Record<string, string> = {
-  dashboard: '/',
+  dashboard: '/dashboard',
   problems: '/problems',
   locations: '/locations',
   categories: '/categories',

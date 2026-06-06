@@ -19,7 +19,7 @@ import {
   SubmitButton,
 } from './styles'
 import { X } from 'phosphor-react'
-import type { DashboardReportData } from '@/pages/home/types'
+import type { DashboardReportData } from '@/pages/dashboard/types'
 import { generateReportPdf } from './generate-report-pdf'
 
 function getPeriodDates(days: number): { start: string; end: string } {

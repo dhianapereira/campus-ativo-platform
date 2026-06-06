@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { DashboardReportData } from '@/pages/home/types'
+import type { DashboardReportData } from '@/pages/dashboard/types'
 import { sendSafeError } from '../_helpers/error-response'
 
 const BACKEND_URL =
