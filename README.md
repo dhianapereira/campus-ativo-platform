@@ -4,6 +4,15 @@ Aplicação em Next.js do Campus Ativo, responsável pela interface de autentica
 
 Se você vai contribuir com o projeto, consulte o [guia de contribuição](./.github/docs/CONTRIBUTING.md).
 
+## Projetos relacionados
+
+O Campus Ativo é dividido em dois repositórios:
+
+- [`campus-ativo-platform`](https://github.com/dhianapereira/campus-ativo-platform): aplicação web em Next.js.
+- [`campus-ativo`](https://github.com/dhianapereira/campus-ativo): API em NestJS, documentação OpenAPI, banco de dados e integrações.
+
+Para rodar o projeto completo localmente, suba primeiro o backend `campus-ativo` e depois esta aplicação. Por padrão, o frontend espera a API disponível em `http://localhost:3333`.
+
 ## Stack
 
 - Node.js `22.18.0` via `.nvmrc`
@@ -128,6 +137,12 @@ npm run generate:api
 Evite editar manualmente arquivos em `src/lib/api/generated`.
 
 Quando o backend mudar contratos ou endpoints, atualize primeiro o `openapi.json` e depois regenere o cliente aqui.
+
+Fluxo recomendado:
+
+1. No backend `campus-ativo`, rode `npm run openapi`.
+2. Copie o arquivo `campus-ativo/openapi.json` atualizado para `campus-ativo-platform/openapi/openapi.json`.
+3. Neste projeto, rode `npm run generate:api`.
 
 ## Scripts
 
