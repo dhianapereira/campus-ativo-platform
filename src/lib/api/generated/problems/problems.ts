@@ -607,7 +607,7 @@ export const useRestoreProblemControllerHandle = <TError = ErrorType<void>,
       return useMutation(getRestoreProblemControllerHandleMutationOptions(options), queryClient);
     }
     /**
- * Recebe linhas já extraídas de um CSV, valida os dados e importa apenas os problemas válidos e não duplicados.
+ * Recebe linhas já extraídas de um CSV, valida os dados e importa apenas os problemas válidos e não duplicados (requer role MANAGER+).
  * @summary Importar problemas via CSV
  */
 export const importProblemsFromCsvControllerHandle = (
