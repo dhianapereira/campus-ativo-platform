@@ -12,7 +12,7 @@ export function mapRoleToDisplayName(role: string): string {
     case USER_ROLES.DIRECTOR:
       return 'Diretor'
     case USER_ROLES.MANAGER:
-      return 'Gerente'
+      return 'Gestor'
     case USER_ROLES.REPORTER:
       return 'Usuário'
     default:

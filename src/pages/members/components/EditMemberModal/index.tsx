@@ -56,7 +56,7 @@ interface EditMemberModalProps {
 
 const permissionOptions = [
   { value: 'REPORTER', label: 'Relator' },
-  { value: 'MANAGER', label: 'Gerente' },
+  { value: 'MANAGER', label: 'Gestor' },
   { value: 'DIRECTOR', label: 'Diretor' },
   { value: 'ADMIN', label: 'Administrador' },
 ]
