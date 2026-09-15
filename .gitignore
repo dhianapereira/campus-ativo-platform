@@ -37,3 +37,10 @@ next-env.d.ts
 
 # local cookie jars
 cookies.txt
+
+# Environment variants and private credential files
+.env.*
+!.env.example
+*.key
+*.p12
+*.pfx
