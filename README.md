@@ -10,6 +10,10 @@ Aplicação em Next.js do Campus Ativo, responsável pela interface de autentica
 
 Para continuar o desenvolvimento por conta própria, crie um fork e observe os avisos de licença e identidade visual acima. O [guia de contribuição](./.github/docs/CONTRIBUTING.md) foi preservado como documentação histórica.
 
+## Demonstração
+
+https://github.com/user-attachments/assets/05d3b377-0f54-491a-b6b4-7b9fc9f9d863
+
 ## Projetos relacionados
 
 O Campus Ativo é dividido em dois repositórios:
